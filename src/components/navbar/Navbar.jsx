@@ -1,12 +1,13 @@
 import React from "react";
+import classes from './navbar.module.css';
 
 function Header() {
   return (
     <div>
       <header className="sticky-top">
-        <nav className="navbar navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded">
+        <nav className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}>
           <div className="container-fluid bg-light">
-            <a className="navbar-brand" href="/">
+            <a className={`navbar-brand`} href="/">
               Mahbub Alam
             </a>
             <button
@@ -27,8 +28,8 @@ function Header() {
               <div className="me-auto"></div>
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item px-2">
-                  <a
-                    className="nav-link active"
+                  <a                    
+                    className={`nav-link active`}
                     aria-current="page"
                     href="#home"
                   >
@@ -37,14 +38,16 @@ function Header() {
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className="nav-link" aria-current="page" href="#skills">
+                  <a 
+                  className={`nav-link`}
+                  aria-current="page" href="#skills">
                     SKILLS
                   </a>
                 </li>
 
                 <li className="nav-item px-2">
                   <a
-                    className="nav-link"
+                    className={`nav-link`}
                     aria-current="page"
                     href="#experience"
                   >
@@ -53,19 +56,19 @@ function Header() {
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className="nav-link" aria-current="page" href="#education">
+                  <a className={`nav-link`} aria-current="page" href="#education">
                     EDUCATIONS
                   </a>
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className="nav-link" aria-current="page" href="#project">
+                  <a className={`nav-link`} aria-current="page" href="#project">
                     PROJECTS
                   </a>
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className="nav-link" aria-current="page" href="#contract">
+                  <a className={`nav-link`} aria-current="page" href="#contract">
                     CONTRACT
                   </a>
                 </li>

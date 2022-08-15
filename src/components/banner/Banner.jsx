@@ -1,17 +1,18 @@
 import React from "react";
-import profile from "./../assets/img/profile.png";
+import profile from "../../assets/img/profile.png";
+import styles from "./banner.module.css";
 
 function Banner() {
   return (
     <div>
-      <div className="container">
+      <div className="container" style={{ marginTop: "110px" }}>
         <div className="rounded cont pb-4">
           <div className="row">
             <div className="col-4"></div>
             <div className="col-4 d-flex justify-content-center">
-              <div className="my-card">
+              <div className={styles.my_card}>
                 <img
-                  className="rounded-circle profile"
+                  className={`rounded-circle ${styles.profile}`}
                   src={profile}
                   alt="profile pic"
                 />
@@ -41,7 +42,9 @@ function Banner() {
               rel="noopener noreferrer"
             >
               <span>
-                <i className="fa fa-google mx-3 mx-md-5 social-icon"></i>
+                <i
+                  className={`fa fa-google mx-3 mx-md-5 ${styles.social_icon}`}
+                ></i>
               </span>
             </a>
             <a
@@ -51,7 +54,9 @@ function Banner() {
               rel="noopener noreferrer"
             >
               <span>
-                <i className="fa fa-github mx-3 mx-md-5 social-icon"></i>
+                <i
+                  className={`fa fa-github mx-3 mx-md-5 ${styles.social_icon}`}
+                ></i>
               </span>
             </a>
             <a
@@ -61,12 +66,14 @@ function Banner() {
               rel="noopener noreferrer"
             >
               <span>
-                <i className="fa fa-facebook mx-3 mx-md-5 social-icon"></i>
+                <i
+                  className={`fa fa-facebook mx-3 mx-md-5 ${styles.social_icon}`}
+                ></i>
               </span>
             </a>
             <a href="#home" title="Twitter Profile" rel="noopener noreferrer">
               <span>
-                <i className="fa fa-twitter mx-3 mx-md-5 social-icon"></i>
+                <i className={`fa fa-twitter mx-3 mx-md-5 ${styles.social_icon}`}></i>
               </span>
             </a>
           </div>

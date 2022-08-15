@@ -1,5 +1,5 @@
 import React from "react";
-import IMAGES from "./Images/SkillsImages";
+import IMAGES from "./../Images/SkillsImages";
 import Project from "./Project";
 
 function Projects() {

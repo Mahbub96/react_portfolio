@@ -1,16 +1,16 @@
 import React from "react";
-import Banner from "./Banner";
-import Educations from "./Educations";
-import Experience from "./Experience";
+import Banner from "./banner/Banner";
+import Educations from "./educations/Educations";
+import Experience from "./experiences/Experience";
 import Footer from "./Footer";
-import Header from "./Header";
-import Projects from "./Projects";
-import Skills from "./Skills";
+import Navbar from './navbar/Navbar';
+import Projects from "./projects/Projects";
+import Skills from "./skills/Skills";
 
 function Home() {
   return (
     <div>
-      <Header />
+      <Navbar />
       <Banner />
       <Skills />
       <Experience />

@@ -1,3 +1,5 @@
+/* Global CSS */
+
 :root {
   --blue: #1e90ff;
   --white: #dddfe0;
@@ -34,45 +36,37 @@ h6 {
   background-color: #fff;
   margin-top: 80px;
 }
-.navbar {
-  padding: 0 !important;
-}
 
-nav ul li.nav-item a {
+nav ul li.nav-item a{
   border-bottom: 1px solid #fff;
+  color: blue;
 }
-
 nav ul li.nav-item a:hover {
+  overflow: hidden;
   border-bottom: 1px solid var(--blue);
-  color: var(--blue) !important;
-}
-
-.profile {
-  height: 170px;
-  width: 170px;
-  border: 3px solid var(--blue);
-  margin-top: -40px;
-}
-.my-card {
-  text-align: center;
-}
-div span i.social-icon {
-  background-color: white;
-  padding: 5px;
   color: var(--blue);
-  font-size: 25px;
-  border-radius: 100%;
-  width: 40px;
-  border: 1px solid var(--blue);
-  cursor: pointer;
-  text-align: center;
 }
-div span i.social-icon:hover {
-  background-color: var(--blue);
-  color: white;
-  transition: ease-in-out all 0dddfe0;
+.experience .content .conts h4,
+.education .content .conts h4,
+.education .content .conts h5{
+  text-transform: capitalize;
+  font-size: 16px;
+  font-weight: bold;
+}
+@media (max-width: 768px) {
+  /* border style  */
+  .experience .content .right::before,
+  .education .content .right::before {
+    content: none;
+  }
+  .experience .content .right::after,
+  .education .content .right::after {
+    content: none;
+  }
 }
 
+
+/* skills section  */
 .skills .header h2,
 .experience .header h2,
 .education .header h2,
@@ -111,7 +105,7 @@ div span i.social-icon:hover {
   text-transform: capitalize;
 }
 
-/*experience*/
+/* experience */
 .experience,
 .education,
 .project {
@@ -168,6 +162,7 @@ div span i.social-icon:hover {
   right: -7px;
 }
 
+/* exprerience section  */
 .experience .content .right,
 .education .content .right {
   padding: none;
@@ -175,41 +170,13 @@ div span i.social-icon:hover {
   padding-right: 50px;
   border-right: 1px solid rgba(30, 144, 255, 0.2);
 }
-.experience .content .conts .times {
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 5px;
-}
-.experience .content .conts h4,
-.education .content .conts h4,
-.education .content .conts h5 {
-  text-transform: capitalize;
-  font-size: 16px;
-  font-weight: bold;
-}
-.education .content .conts h5 {
-  font-size: 14px;
-}
-.education .content .conts p {
-  margin: 1px;
-}
 
-@media (max-width: 768px) {
-  /* border style  */
-  .experience .content .right::before,
-  .education .content .right::before {
-    content: none;
-  }
-  .experience .content .right::after,
-  .education .content .right::after {
-    content: none;
-  }
-}
 
-/*project */
+/* project section  */
+
 .project .menus {
   list-style-type: none;
 }
-
 .project .menus a {
   text-decoration: none;
   color: #666;
@@ -217,9 +184,6 @@ div span i.social-icon:hover {
   text-align: center;
   font-size: small;
   border-right: 1px solid rgba(102, 102, 102, 0.322);
-}
-.project .menus a:last-child {
-  border: none;
 }
 
 .project .card {
@@ -235,11 +199,18 @@ div span i.social-icon:hover {
   }
 }
 
+
+.project .menus a:last-child {
+  border: none;
+}
+
+/* contact form  */
 .contract h2 {
   font-size: 30px;
   background-color: #fff;
 }
 
+/* footar section  */
 footer a i {
   color: #666;
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import classes from './experience.module.css';
 
 function Experience() {
   return (
@@ -15,7 +16,7 @@ function Experience() {
             <div className="col-12 col-md-6"></div>
             <div className="col-12 col-md-6">
               <div className="conts mt-4">
-                <p className="times">January 2019 - Present</p>
+                <p className={classes.times}>January 2019 - Present</p>
                 <h4>
                   Stamford University Bangladesh <br />
                   Student
