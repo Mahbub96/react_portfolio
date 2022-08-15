@@ -1,3 +1,5 @@
+/* Global CSS */
+
 :root {
   --blue: #1e90ff;
   --white: #dddfe0;
@@ -34,6 +36,8 @@ h6 {
   background-color: #fff;
   margin-top: 80px;
 }
+
+/* Navbar CSS */
 .navbar {
   padding: 0 !important;
 }
@@ -47,6 +51,8 @@ nav ul li.nav-item a:hover {
   color: var(--blue) !important;
 }
 
+
+/* banner section */
 .profile {
   height: 170px;
   width: 170px;
@@ -73,6 +79,7 @@ div span i.social-icon:hover {
   transition: ease-in-out all 0dddfe0;
 }
 
+/* skills section  */
 .skills .header h2,
 .experience .header h2,
 .education .header h2,
@@ -111,7 +118,7 @@ div span i.social-icon:hover {
   text-transform: capitalize;
 }
 
-/*experience*/
+/* experience */
 .experience,
 .education,
 .project {
@@ -168,6 +175,7 @@ div span i.social-icon:hover {
   right: -7px;
 }
 
+/* exprerience section  */
 .experience .content .right,
 .education .content .right {
   padding: none;
@@ -179,6 +187,8 @@ div span i.social-icon:hover {
   color: rgba(0, 0, 0, 0.5);
   margin-bottom: 5px;
 }
+
+/* education section  */
 .experience .content .conts h4,
 .education .content .conts h4,
 .education .content .conts h5 {
@@ -205,7 +215,7 @@ div span i.social-icon:hover {
   }
 }
 
-/*project */
+/* project section  */
 .project .menus {
   list-style-type: none;
 }
@@ -235,11 +245,13 @@ div span i.social-icon:hover {
   }
 }
 
+/* contact form  */
 .contract h2 {
   font-size: 30px;
   background-color: #fff;
 }
 
+/* footar section  */
 footer a i {
   color: #666;
 }
