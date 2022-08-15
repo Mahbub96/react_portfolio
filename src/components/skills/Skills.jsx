@@ -1,14 +1,17 @@
 import IMAGES from "./../Images/SkillsImages";
 import Skill from "./Skill";
 
-
 function Skills() {
-  // const [skillsData,useSkillsData] = useState([]);
-  // load all images src to an array
+ // load all images src to an array
   let imgs = [];
-  for (let val in IMAGES[0]) {
-    imgs.push(val);
+  
+  
+  for(let val in IMAGES[0]){
+    imgs.push(val)
   }
+  // 
+
+
 
   return (
     <>
