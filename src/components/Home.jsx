@@ -1,5 +1,6 @@
 import React from "react";
 import Banner from "./banner/Banner";
+import Contact from "./contact/Contact";
 import Educations from "./educations/Educations";
 import Experience from "./experiences/Experience";
 import Footer from "./Footer";
@@ -16,7 +17,9 @@ function Home() {
       <Experience />
       <Educations />
       <Projects />
+      <Contact />
       <Footer />
+      
     </div>
   );
 }
