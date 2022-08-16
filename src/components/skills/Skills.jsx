@@ -1,18 +1,22 @@
-import IMAGES from "./../Images/SkillsImages";
+import { useEffect, useState } from 'react';
+import DATABASE from "../database/data";
 import Skill from "./Skill";
 
 function Skills() {
- // load all images src to an array
-  let imgs = [];
+ // load all DATABASE src to an array
+  const [data,setData] = useState([]);
+
+  useEffect(()=>{
+    const getDATABASE = async () => {
+      for (let img in DATABASE[0]) {
+        setData(prev => [...prev, img]);
+      }
+    }    
+    getDATABASE();
+
+  },[]);
+
   
-  
-  for(let val in IMAGES[0]){
-    imgs.push(val)
-  }
-  // 
-
-
-
   return (
     <>
       <div className="container mt-5" id="skills">
@@ -23,17 +27,18 @@ function Skills() {
             </h2>
           </div>
           <div className="mt-2 cards row justify-content-center g-4">
-            {imgs.map((srcs, i) => (
+            {data.map((srcs, i) => (
               <Skill
-                key={i}
+                key={i * new Date()}
                 name={srcs.replace("_", " ").replace("_", " ")}
-                imgSrc={IMAGES[0][srcs]}
+                imgSrc={DATABASE[0][srcs]}
                 altTxt={srcs.replace("_", " ")}
               />
             ))}
           </div>
         </div>
       </div>
+     
     </>
   );
 }

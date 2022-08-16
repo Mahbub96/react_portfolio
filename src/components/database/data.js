@@ -25,6 +25,16 @@ const Images = [
     React_Project5: require("./../../assets/img/projects.png"),
     React_Project6: require("./../../assets/img/projects.png"),
   },
+  {
+    0: "All",
+    1: "React Js",
+    2: "Node Js",
+    3: "JavaScript",
+    4: "PHP",
+    5: "Laravel",
+    6: "Bootstrap",
+    7:"Django"
+  },
 ];
 
 export default Images;

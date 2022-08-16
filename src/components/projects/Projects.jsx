@@ -1,13 +1,33 @@
-import React from "react";
-import IMAGES from "./../Images/SkillsImages";
+import { useEffect, useState } from "react";
+import DATABASE from "../database/data";
 import Project from "./Project";
 
 function Projects() {
-  // load all images src to an array
-  let imgs = [];
-  for (let val in IMAGES[1]) {
-    imgs.push(val);
-  }
+  
+   // load all DATABASE src to an array
+   const [data,setData] = useState([]);
+   const [menuItems,setMenuItems] = useState([]);
+
+
+   useEffect(()=>{
+     const getDATABASE = async() => {
+       for (let img in DATABASE[1]) {
+         setData(prev => [...prev, img]);
+       }
+     }    
+
+     const getMenu = async ()=>{
+      for (let item in DATABASE[2]) {
+        setMenuItems(prev => [...prev, item]);
+      }
+    }
+    getMenu();
+    getDATABASE();
+     console.log(menuItems);
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[]);
+
+
   return (
     <>
       <div className="container mt-5" id="project">
@@ -19,56 +39,22 @@ function Projects() {
           </div>
           <div className="menus">
             <div className="row d-flex justify-content-center g-2 my-1">
-              <a
+              {
+                menuItems.map((item,i)=>  <a key={i*12+100}
                 className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                 href="#home"
               >
-                All
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                React Js
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                Node Js
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                JavaScript
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                PHP
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                Laravel
-              </a>
-              <a
-                className="col-4 bg-light col-lg-1 col-md-2 col-sm-3"
-                href="#home"
-              >
-                Bootstrap
-              </a>
+                {item && DATABASE[2][item]}
+              </a>)
+              }
             </div>
           </div>
           <div className="cards row d-flex justify-content-center my-1 g-3">
-            {imgs.map((srcs, i) => (
+            {data.map((srcs, i) => (
               <Project
-                key={i}
+                key={i*2}
                 title={srcs.replace("_", " ").replace("_", " ")}
-                imgSrc={IMAGES[1][srcs]}
+                imgSrc={DATABASE[1][srcs]}
                 altTxt={srcs.replace("_", " ")}
                 desc="Some quick example text to build on the card title and make
                 up the bulk of the card's content."
