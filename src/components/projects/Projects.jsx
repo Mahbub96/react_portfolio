@@ -23,7 +23,6 @@ function Projects() {
     }
     getMenu();
     getDATABASE();
-     console.log(menuItems);
    // eslint-disable-next-line react-hooks/exhaustive-deps
    },[]);
 
