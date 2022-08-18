@@ -2,7 +2,8 @@
 
 :root {
   --blue: #1e90ff;
-  --white: #dddfe0;
+  --bg_color: #dddfe0;
+  --text_color:#666;
 }
 * {
   margin: 0;
@@ -16,7 +17,7 @@ i:hover {
   transition: ease-in-out all 0.5s;
 }
 body {
-  background-color: var(--white);
+  background-color: var(--bg_color);
   font-family: Arial, Helvetica, sans-serif;
   color: rgba(0, 0, 0, 0.6);
 }
@@ -75,7 +76,7 @@ nav ul li.nav-item a:hover {
   display: block;
   text-align: center;
   font-size: 36px;
-  background-color: var(--white);
+  background-color: var(--bg_color);
   font-family: "Times New Roman", Times, serif;
   color: rgba(0, 0, 0, 0.5);
   margin-top: 60px;
@@ -179,7 +180,7 @@ nav ul li.nav-item a:hover {
 }
 .project .menus a {
   text-decoration: none;
-  color: #666;
+  color: var(--text_color);
   padding: 5px 8px;
   text-align: center;
   font-size: small;
@@ -212,5 +213,5 @@ nav ul li.nav-item a:hover {
 
 /* footar section  */
 footer a i {
-  color: #666;
+  color: var(--text_color);
 }

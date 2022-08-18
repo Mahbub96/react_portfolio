@@ -3,7 +3,7 @@ import classes from './navbar.module.css';
 
 function Header() {
   return (
-    <div>
+    <div id="home">
       <header className="sticky-top">
         <nav className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}>
           <div className="container-fluid bg-light">
