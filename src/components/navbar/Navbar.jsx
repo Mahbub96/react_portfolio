@@ -75,6 +75,11 @@ function Header() {
               </ul>
 
               <button className="btn btn-light d-flexd-flex" type="submit">
+                Login
+              </button>
+
+
+              <button className="btn btn-light d-flexd-flex" type="submit">
                 <i className="fa fa-sun-o"></i>
               </button>
             </div>

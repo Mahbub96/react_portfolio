@@ -1,5 +1,4 @@
 import React from "react";
-import profile from "../../assets/img/profile.png";
 import styles from "./banner.module.css";
 
 function Banner() {
@@ -13,7 +12,7 @@ function Banner() {
               <div className={styles.my_card}>
                 <img
                   className={`rounded-circle ${styles.profile}`}
-                  src={profile}
+                  src="./assets/img/profile.png"
                   alt="profile pic"
                 />
                 <h2>Mahbub Alam</h2>
@@ -73,7 +72,9 @@ function Banner() {
             </a>
             <a href="#home" title="Twitter Profile" rel="noopener noreferrer">
               <span>
-                <i className={`fa fa-twitter mx-3 mx-md-5 ${styles.social_icon}`}></i>
+                <i
+                  className={`fa fa-twitter mx-3 mx-md-5 ${styles.social_icon}`}
+                ></i>
               </span>
             </a>
           </div>

@@ -1,12 +1,10 @@
-import React from "react";
 import Banner from "./banner/Banner";
-import Contact from "./contact/Contact";
 import Educations from "./educations/Educations";
 import Experience from "./experiences/Experience";
 import Footer from "./Footer";
-import Navbar from './navbar/Navbar';
-import Projects from "./projects/Projects";
+import Navbar from "./navbar/Navbar";
 import Skills from "./skills/Skills";
+import Projects from "./projects/Projects";
 
 function Home() {
   return (
@@ -17,9 +15,8 @@ function Home() {
       <Experience />
       <Educations />
       <Projects />
-      <Contact />
+      {/* <Contact /> */}
       <Footer />
-      
     </div>
   );
 }
