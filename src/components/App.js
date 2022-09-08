@@ -1,20 +1,22 @@
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import DataContextProvider from "../contexts/useAllContext";
 import "./../App.css";
 import Home from "./Home";
-import ReqForm from './ReqForm';
+
 
 function App() {
   return (
+    <Router>
     <div className="App">
       <DataContextProvider>
-        <Routes>
+        <Switch>
           {/* <Home/> */}
-          <Route path="/" element={<Home />} />
-          <Route path="/inp" element={<ReqForm />} />
-        </Routes>
+          <Route exact path="/" component={<Home />} />
+          {/* <Route exact path="/inp" component={<ReqForm />} /> */}
+        </Switch>
       </DataContextProvider>
     </div>
+    </Router>
   );
 }
 

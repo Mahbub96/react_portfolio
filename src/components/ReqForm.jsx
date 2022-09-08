@@ -1,18 +1,25 @@
+import axios from "axios";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
-import { useDataContex } from "../contexts/useAllContext";
+import { useHistory } from "react-router-dom";
 import InputForm from "./InputForm";
 
 function ReqForm() {
-  const [needRedirect, setNeedRedirect] = useState(false);
+  const ins = 1;
+  const tableName = ["skills", "experiences", "educations", "projects"];
 
-  const { skillsData, setSkillsData } = useDataContex();
-  const [name, setName] = useState("");
-  const [imgSrc, setImgSrc] = useState("");
+  const history = useHistory();
 
-  const handleClick = () => {
-    setNeedRedirect(true);
-    setSkillsData([...skillsData, { name, imgSrc }]);
+  const [data, setData] = useState({
+    id: "",
+    name: "",
+    type: "",
+    placeholder: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(`http://localhost:3001/${tableName[ins]}`, data);
+    history.push("/");
   };
 
   return (
@@ -43,7 +50,7 @@ function ReqForm() {
               </button>
             </div>
             <div className="modal-body">
-              <InputForm />
+              <InputForm data={data} setData={setData} ins={ins} />
             </div>
             <div className="modal-footer">
               <button
@@ -58,11 +65,11 @@ function ReqForm() {
                 type="button"
                 data-dismiss="modal"
                 className="btn btn-primary"
-                onClick={handleClick}
+                onClick={handleSubmit}
               >
                 Save changes
               </button>
-              {needRedirect && <Navigate replace to="/" />}
+              {/* {needRedirect && <Navigate replace to="/" />} */}
             </div>
           </div>
         </div>

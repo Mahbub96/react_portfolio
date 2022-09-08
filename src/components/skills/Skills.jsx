@@ -1,13 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import axios from "axios";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react/cjs/react.development";
+
 import { NavLink } from "react-router-dom";
-import { useDataContex } from "./../../contexts/useAllContext.js";
 import Skill from "./Skill.jsx";
 
 function Skills() {
   // load all DATABASE src to an array
-
-  const { skillsData, isLogin } = useDataContex();
-  console.log(skillsData);
-
+  const { id } = useParams();
+  const [skillsData, setSkillsData] = useState({
+    id: "",
+    name: "",
+    type: "",
+    placeholder: "",
+  });
+  useEffect(() => {
+    loadUser();
+  }, []);
+  const loadUser = async () => {
+    // const  import { connect } from 'react-redux';
+    const res = await axios.get(`http://localhost:3001/users/${id}`);
+    setSkillsData(res.data);
+  };
   return (
     <>
       <div className="container mt-5" id="skills">
@@ -19,13 +35,14 @@ function Skills() {
           </div>
 
           <div className="mt-2 cards row justify-content-center g-4">
-            {skillsData.map(({ name, src }, i) => (
+            {skillsData.map(({ id, name, src }) => (
               <Skill
                 classes="col-6 col-lg-2 col-md-4 skill_hover"
-                key={i * 10 + 1}
+                key={id}
                 name={name}
                 imgSrc={src}
                 altTxt={name}
+                data={skillsData}
               ></Skill>
             ))}
             <NavLink
@@ -34,14 +51,14 @@ function Skills() {
               data-toggle="modal"
               data-target="#exampleModalCenter"
             >
-              {isLogin && (
+              {
                 <Skill
                   key={new Date(0)}
                   name="Add New"
                   imgSrc="../assets/img/add.png"
                   altTxt="Add New"
                 ></Skill>
-              )}
+              }
             </NavLink>
           </div>
         </div>

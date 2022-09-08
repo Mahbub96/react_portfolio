@@ -39,11 +39,33 @@
   "educations": [
     {
       "id": 1,
+      "time": "2019 - Present",
       "name": "Stamford University Bangladesh",
       "degName": "Bachelor Of Science",
-      "cgpa": "CGPA:3.75 out of 4.00",
+      "cgpa": "3.75 out of 4.00",
       "Department": "Computer Science and Engineering",
+      "group": "Science",
       "Thesis": "Sound to Emotion Detection"
+    },
+    {
+      "id": 2,
+      "time": "2014 - 2016",
+      "name": "BAF SHAHEEN COLLEGE,JESSORE",
+      "degName": "Higher Secondary Certificate (HSC)",
+      "cgpa": "4.00 out of 5.00",
+      "Department": "Computer Science and Engineering",
+      "group": "Science",
+      "Thesis": "No"
+    },
+    {
+      "id": 3,
+      "time": "2009 - 2014",
+      "name": "Shyamkur High School",
+      "degName": "Secondary School Certificate (SSC)",
+      "cgpa": "4.44 out of 5.00",
+      "Department": "Computer Science and Engineering",
+      "group": "Science",
+      "Thesis": "No"
     }
   ],
   "projects": [
