@@ -1,4 +1,5 @@
 .experience .content .conts .times {
     color: rgba(0, 0, 0, 0.5);
+    color: var(--text_color);
     margin-bottom: 5px;
   }

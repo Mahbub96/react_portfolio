@@ -1,9 +1,9 @@
 import React from "react";
 
-function Skill({ name, imgSrc, altTxt }) {
+function Skill({ name, imgSrc, altTxt, classes }) {
   return (
     <>
-      <div className="col-6 col-lg-2 col-md-4">
+      <div className={classes}>
         <div className="card">
           <div className="card-img-top">
             <img src={imgSrc} alt={altTxt} />

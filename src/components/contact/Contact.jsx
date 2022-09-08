@@ -9,6 +9,7 @@ export default function Contact() {
 
   const handleSubmit = (e)=>{
     e.preventDefault();
+    alert("This project is under depevelopment");
     console.log(name,email,subject,message);
 
   }
