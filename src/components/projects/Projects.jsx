@@ -1,28 +1,16 @@
-import { useEffect, useState } from "react";
-import DATABASE from "../database/data";
+import { useDataContex } from "./../../contexts/useAllContext.js";
+
 import Project from "./Project";
 
 function Projects() {
-  // load all DATABASE src to an array
-  const [data, setData] = useState([]);
-  const [menuItems, setMenuItems] = useState([]);
-
-  useEffect(() => {
-    const getDATABASE = async () => {
-      for (let img in DATABASE[1]) {
-        setData((prev) => [...prev, img]);
-      }
-    };
-
-    const getMenu = async () => {
-      for (let item in DATABASE[2]) {
-        setMenuItems((prev) => [...prev, item]);
-      }
-    };
-    getMenu();
-    getDATABASE();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    projectsData,
+    setProjectsData,
+    projectTitle,
+    setProjectTitle,
+    isLogin,
+    setIsLogin,
+  } = useDataContex();
 
   return (
     <>
@@ -35,28 +23,40 @@ function Projects() {
           </div>
           <div className="menus">
             <div className="row d-flex justify-content-center g-2 my-1">
-              {menuItems.map((item, i) => (
+              {projectTitle.map((value, i) => (
                 <a
                   key={i * 12 + 100}
                   className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                   href="#home"
                 >
-                  {item && DATABASE[2][item]}
+                  {value}
                 </a>
               ))}
             </div>
           </div>
           <div className="cards row d-flex justify-content-center my-1 g-3">
-            {data.map((srcs, i) => (
+            {projectsData.map(({ name, src }, i) => (
               <Project
+                to="/"
                 key={i * 2}
-                title={srcs.replace("_", " ").replace("_", " ")}
-                imgSrc={DATABASE[1][srcs]}
-                altTxt={srcs.replace("_", " ")}
+                title={name}
+                imgSrc={src}
+                altTxt={name}
                 desc="Some quick example text to build on the card title and make
                 up the bulk of the card's content."
               />
             ))}
+            {isLogin && (
+              <Project
+                to="inp"
+                key={new Date() * 2}
+                title="Add New Projects"
+                imgSrc="../assets/img/add.png"
+                altTxt="Add New Projects"
+                desc="Some quick example text to build on the card title and make
+              up the bulk of the card's content."
+              />
+            )}
           </div>
         </div>
       </div>

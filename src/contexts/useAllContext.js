@@ -19,13 +19,13 @@ import { createContext, useContext, useState } from "react";
   ];
   
   const projects = [
-    {name:"React_Project",src:"./../../assets/img/projects.png"},
-    {name:"React_Project1",src:"./../../assets/img/projects.png"},
-    {name:"React_Project2",src:"./../../assets/img/projects.png"},
-    {name:"React_Project3",src:"./../../assets/img/projects.png"},
-    {name:"React_Project4",src:"./../../assets/img/projects.png"},
-    {name:"React_Project5",src:"./../../assets/img/projects.png"},
-    {name:"React_Project6",src:"./../../assets/img/projects.png"},
+    {name:"React Project",src:"./../../assets/img/projects.png"},
+    {name:"React Project 1",src:"./../../assets/img/projects.png"},
+    {name:"React Project 2",src:"./../../assets/img/projects.png"},
+    {name:"React Project 3",src:"./../../assets/img/projects.png"},
+    {name:"React Project 4",src:"./../../assets/img/projects.png"},
+    {name:"React Project 5",src:"./../../assets/img/projects.png"},
+    {name:"React Project 6",src:"./../../assets/img/projects.png"},
   ];
   const projectsTitle = [
     "All",

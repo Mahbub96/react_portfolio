@@ -30,6 +30,12 @@ h5,
 h6 {
   text-transform: uppercase;
 }
+a,
+Nav,
+NavLink {
+  text-decoration: none;
+}
+
 .right {
   text-align: right;
 }

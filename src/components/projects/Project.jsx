@@ -1,9 +1,10 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
-function Project({ imgSrc, title, desc, altTxt }) {
+function Project({ imgSrc, title, desc, altTxt, to }) {
   return (
-    <>
-      <div className="pcard col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+    <div className="pcard col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+      <NavLink to={to} data-toggle="modal" data-target="#exampleModalCenter">
         <div className="card text-center" style={{ width: "15rem" }}>
           <img
             style={{ height: "7rem" }}
@@ -23,8 +24,8 @@ function Project({ imgSrc, title, desc, altTxt }) {
             </a>
           </div>
         </div>
-      </div>
-    </>
+      </NavLink>
+    </div>
   );
 }
 
