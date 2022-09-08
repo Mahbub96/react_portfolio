@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useDataContex } from "../contexts/useAllContext";
+import InputForm from "./InputForm";
 
 function ReqForm() {
   const [needRedirect, setNeedRedirect] = useState(false);
@@ -42,25 +43,7 @@ function ReqForm() {
               </button>
             </div>
             <div className="modal-body">
-              <form className="row g-4">
-                <div className="col-12">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Experience Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="col-12">
-                  <input
-                    type="file"
-                    className="form-control"
-                    value={imgSrc}
-                    onChange={(e) => setImgSrc(e.target.value)}
-                  />
-                </div>
-              </form>
+              <InputForm />
             </div>
             <div className="modal-footer">
               <button

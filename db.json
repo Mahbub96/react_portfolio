@@ -1,58 +1,96 @@
 {
   "skills": [
-    { "name": "PHP", "src": "/assets/img/php.png" },
-    { "name": "React JS", "src": "/assets/img/javaScript.png" },
-    { "name": "Vue JS", "src": "/assets/img/vue`.png" },
-    { "name": "jQuery", "src": "/assets/img/jquery.png" },
-    { "name": "Node Js", "src": "/assets/img/nodejs.png" },
-    { "name": "MY SQL", "src": "/assets/img/mysql.png" },
-    { "name": "git", "src": "/assets/img/git.png" },
-    { "name": "github", "src": "/assets/img/github.png" },
-    { "name": "CSS", "src": "/assets/img/css.png" },
-    { "name": "bootstarp", "src": "/assets/img/bootstarp.png" },
-    { "name": "tailwind", "src": "/assets/img/tailwind.png" },
-    { "name": "python", "src": "/assets/img/python.png" },
-    { "name": "C Plus Plus", "src": "/assets/img/c++.png" },
-    { "name": "C", "src": "/assets/img/c.png" },
-    { "name": "Assembly Language", "src": "/assets/img/asm.png" }
+    { "id": 100, "name": "PHP", "src": "/assets/img/php.png" },
+    { "id": 101, "name": "React JS", "src": "/assets/img/javaScript.png" },
+    { "id": 102, "name": "Vue JS", "src": "/assets/img/vue`.png" },
+    { "id": 103, "name": "jQuery", "src": "/assets/img/jquery.png" },
+    { "id": 104, "name": "Node Js", "src": "/assets/img/nodejs.png" },
+    { "id": 105, "name": "MY SQL", "src": "/assets/img/mysql.png" },
+    { "id": 106, "name": "git", "src": "/assets/img/git.png" },
+    { "id": 107, "name": "github", "src": "/assets/img/github.png" },
+    { "id": 108, "name": "CSS", "src": "/assets/img/css.png" },
+    { "id": 109, "name": "bootstarp", "src": "/assets/img/bootstarp.png" },
+    { "id": 110, "name": "tailwind", "src": "/assets/img/tailwind.png" },
+    { "id": 111, "name": "python", "src": "/assets/img/python.png" },
+    { "id": 112, "name": "C Plus Plus", "src": "/assets/img/c++.png" },
+    { "id": 113, "name": "C", "src": "/assets/img/c.png" },
+    { "id": 114, "name": "Assembly Language", "src": "/assets/img/asm.png" }
+  ],
+  "experiences": [
+    {
+      "id": 1,
+      "name": "Stamford University Bangladesh",
+      "time": "January 2019 - Present",
+      "how": "Student"
+    },
+    {
+      "id": 2,
+      "name": "Web Development",
+      "time": "March 2017 - 2019",
+      "how": "Self Learning"
+    },
+    {
+      "id": 3,
+      "name": "C,C++,Java",
+      "time": "September 2015 - 2018",
+      "how": "Self Learning"
+    }
+  ],
+  "educations": [
+    {
+      "id": 1,
+      "name": "Stamford University Bangladesh",
+      "degName": "Bachelor Of Science",
+      "cgpa": "CGPA:3.75 out of 4.00",
+      "Department": "Computer Science and Engineering",
+      "Thesis": "Sound to Emotion Detection"
+    }
   ],
   "projects": [
     {
+      "id": 1,
       "name": "React Project",
       "src": "./../../assets/img/projects.png",
       "lang": "react,node,axios"
     },
     {
+      "id": 2,
       "name": "React Project 1",
       "src": "./../../assets/img/projects.png",
       "lang": "react,axios"
     },
     {
+      "id": 3,
       "name": "React Project 2",
       "src": "./../../assets/img/projects.png",
       "lang": "node"
     },
     {
+      "id": 4,
       "name": "React Project 3",
       "src": "./../../assets/img/projects.png",
       "lang": "react"
     },
     {
+      "id": 5,
       "name": "React Project 4",
       "src": "./../../assets/img/projects.png",
       "lang": "C"
     },
     {
+      "id": 6,
       "name": "React Project 5",
       "src": "./../../assets/img/projects.png",
       "lang": "C++,STL"
     },
     {
+      "id": 7,
       "name": "React Project 6",
       "src": "./../../assets/img/projects.png",
       "lang": "HTML,python"
     },
     {
+      "id": 8,
       "name": "React Project 7",
       "src": "./../../assets/img/projects.png",
       "lang": "assimbly,javascript,html,css"
