@@ -4,8 +4,6 @@ import Experience from "./experiences/Experience";
 import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
 import Skills from "./skills/Skills";
-import Projects from "./projects/Projects";
-
 function Home() {
   return (
     <div>
@@ -14,7 +12,7 @@ function Home() {
       <Skills />
       <Experience />
       <Educations />
-      <Projects />
+      {/* <Projects /> */}
       {/* <Contact /> */}
       <Footer />
     </div>

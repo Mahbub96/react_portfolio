@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import DataContextProvider from "../contexts/useAllContext";
 import "./../App.css";
 import Home from "./Home";
-
+import ReqForm from "./ReqForm";
 
 function App() {
   return (
@@ -11,8 +11,8 @@ function App() {
       <DataContextProvider>
         <Switch>
           {/* <Home/> */}
-          <Route exact path="/" component={<Home />} />
-          {/* <Route exact path="/inp" component={<ReqForm />} /> */}
+          <Route exact path="/" component={Home} />
+          <Route exact path="/inp:id" component={ReqForm} />
         </Switch>
       </DataContextProvider>
     </div>

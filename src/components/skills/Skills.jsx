@@ -1,29 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import axios from "axios";
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react/cjs/react.development";
+import React, { useEffect, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 import Skill from "./Skill.jsx";
 
 function Skills() {
+  let ins = 0;
   // load all DATABASE src to an array
-  const { id } = useParams();
   const [skillsData, setSkillsData] = useState({
     id: "",
     name: "",
     type: "",
-    placeholder: "",
   });
+
   useEffect(() => {
-    loadUser();
+    loadSkills();
   }, []);
-  const loadUser = async () => {
-    // const  import { connect } from 'react-redux';
-    const res = await axios.get(`http://localhost:3001/users/${id}`);
+
+  const loadSkills = async () => {
+    const res = await axios.get("http://localhost:3001/skills");
     setSkillsData(res.data);
   };
+
   return (
     <>
       <div className="container mt-5" id="skills">
@@ -35,18 +35,19 @@ function Skills() {
           </div>
 
           <div className="mt-2 cards row justify-content-center g-4">
-            {skillsData.map(({ id, name, src }) => (
-              <Skill
-                classes="col-6 col-lg-2 col-md-4 skill_hover"
-                key={id}
-                name={name}
-                imgSrc={src}
-                altTxt={name}
-                data={skillsData}
-              ></Skill>
-            ))}
+            {Object.entries(skillsData).map(([key, { id, name, src }]) => {
+              return (
+                <Skill
+                  classes="col-6 col-lg-2 col-md-4 skill_hover"
+                  key={id}
+                  name={name}
+                  imgSrc={src}
+                  altTxt={name}
+                ></Skill>
+              );
+            })}
             <NavLink
-              to="/inp"
+              to={`inp/${ins}`}
               className="col-6 col-lg-2 col-md-4 skill_hover"
               data-toggle="modal"
               data-target="#exampleModalCenter"

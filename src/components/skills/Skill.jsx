@@ -1,5 +1,3 @@
-import React from "react";
-
 function Skill({ name, imgSrc, altTxt, classes }) {
   return (
     <>

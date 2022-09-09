@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import InputForm from "./InputForm";
 
 function ReqForm() {
-  const ins = 1;
   const tableName = ["skills", "experiences", "educations", "projects"];
 
+  const { id } = useParams();
   const history = useHistory();
 
   const [data, setData] = useState({
@@ -18,7 +18,7 @@ function ReqForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`http://localhost:3001/${tableName[ins]}`, data);
+    await axios.post(`http://localhost:3001/${tableName[id]}`, data);
     history.push("/");
   };
 
@@ -50,7 +50,7 @@ function ReqForm() {
               </button>
             </div>
             <div className="modal-body">
-              <InputForm data={data} setData={setData} ins={ins} />
+              <InputForm data={data} setData={setData} id={id} />
             </div>
             <div className="modal-footer">
               <button

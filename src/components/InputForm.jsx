@@ -1,4 +1,5 @@
-function inputForm({ data, setData, ins }) {
+import { useHistory, useParams } from "react-router-dom";
+function InputForm() {
   const formName = [
     [
       {
@@ -78,40 +79,20 @@ function inputForm({ data, setData, ins }) {
     ],
   ];
 
-  const { name } = data;
+  // const { name } = data;
+  const history = useHistory();
+  const { id } = useParams();
 
-  const onInputChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
+  // const onInputChange = (e) => {
+  //   setData({ ...data, [e.target.name]: e.target.value });
+  // };
 
   return (
     <>
-      <form className="row g-4">
-        {/* {FormData[ins].map((val) => console.log(ins, " : line 115 ", val))} */}
-
-        <div className="col-12">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Experience Name"
-            value={name}
-            name="name"
-            onChange={(e) => onInputChange(e.target.value)}
-          />
-        </div>
-
-        <div className="col-12">
-          <input
-            name="src"
-            type="file"
-            className="form-control"
-            // value={imgSrc}
-            onChange={(e) => onInputChange(e.target.value)}
-          />
-        </div>
-      </form>
+      {console.log(id)}
+      {/* {FormData[ins].map((val) => console.log(ins, " : line 115 ", val))} */}
     </>
   );
 }
 
-export default inputForm;
+export default InputForm;
