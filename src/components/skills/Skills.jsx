@@ -1,28 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-
 import { NavLink } from "react-router-dom";
+import { useDataContex } from "../../contexts/useAllContext";
 import Skill from "./Skill.jsx";
 
 function Skills() {
+  const { skillsData, setSkillsData, getSkillsData } = useDataContex();
   let ins = 0;
-  // load all DATABASE src to an array
-  const [skillsData, setSkillsData] = useState({
+
+  const [newData, setNewData] = useState({
     id: "",
     name: "",
-    type: "",
+    src: "",
   });
 
   useEffect(() => {
-    loadSkills();
-  }, []);
-
-  const loadSkills = async () => {
-    const res = await axios.get("http://localhost:3001/skills");
-    setSkillsData(res.data);
-  };
+    setSkillsData([...skillsData, newData]);
+    getSkillsData();
+  }, [skillsData]);
 
   return (
     <>
@@ -47,7 +43,7 @@ function Skills() {
               );
             })}
             <NavLink
-              to={`inp/${ins}`}
+              to={`inp/${ins}/${newData}`}
               className="col-6 col-lg-2 col-md-4 skill_hover"
               data-toggle="modal"
               data-target="#exampleModalCenter"

@@ -7,29 +7,23 @@ function ReqForm() {
   const tableName = ["skills", "experiences", "educations", "projects"];
 
   const { id } = useParams();
-  const history = useHistory();
+  const [data, setData] = useState({ id: "", name: "", src: "" });
 
-  const [data, setData] = useState({
-    id: "",
-    name: "",
-    type: "",
-    placeholder: "",
-  });
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     await axios.post(`http://localhost:3001/${tableName[id]}`, data);
     history.push("/");
   };
 
   return (
-    <div>
-      {/* <!-- Button trigger modal --> */}
-
+    <>
       <div
         className="modal fade"
         id="exampleModalCenter"
-        // tabIndex="-1"
+        tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true"
@@ -38,19 +32,21 @@ function ReqForm() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLongTitle">
-                Modal title
+                Please Enter Your Data
               </h5>
               <button
                 type="button"
                 className="close"
                 data-dismiss="modal"
-                aria-label="Clo se"
+                aria-label="Close"
               >
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true" data-dismiss="modal">
+                  &times;
+                </span>
               </button>
             </div>
             <div className="modal-body">
-              <InputForm data={data} setData={setData} id={id} />
+              <InputForm data={data} id={id} setData={setData} />
             </div>
             <div className="modal-footer">
               <button
@@ -60,21 +56,19 @@ function ReqForm() {
               >
                 Close
               </button>
-
               <button
                 type="button"
-                data-dismiss="modal"
                 className="btn btn-primary"
+                data-dismiss="modal"
                 onClick={handleSubmit}
               >
                 Save changes
               </button>
-              {/* {needRedirect && <Navigate replace to="/" />} */}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
