@@ -1,24 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
 import Skill from "./Skill.jsx";
 
 function Skills() {
-  const { skillsData, setSkillsData, getSkillsData } = useDataContex();
-  let ins = 0;
+  const { states, getSkillsData } = useDataContex();
 
-  const [newData, setNewData] = useState({
-    id: "",
-    name: "",
-    src: "",
-  });
+  let ins = 0;
+  console.log(states[ins]);
+  const skillsData = states[ins];
+  // const setSkillsData = states[ins + 1];
+  // const getSkillsData = states[ins + 1];
 
   useEffect(() => {
-    setSkillsData([...skillsData, newData]);
     getSkillsData();
-  }, [skillsData]);
+  }, []);
 
   return (
     <>
@@ -31,19 +29,20 @@ function Skills() {
           </div>
 
           <div className="mt-2 cards row justify-content-center g-4">
-            {Object.entries(skillsData).map(([key, { id, name, src }]) => {
-              return (
-                <Skill
-                  classes="col-6 col-lg-2 col-md-4 skill_hover"
-                  key={id}
-                  name={name}
-                  imgSrc={src}
-                  altTxt={name}
-                ></Skill>
-              );
-            })}
+            {skillsData &&
+              Object.entries(skillsData).map(([key, { id, name, src }]) => {
+                return (
+                  <Skill
+                    classes="col-6 col-lg-2 col-md-4 skill_hover"
+                    key={id}
+                    name={name}
+                    imgSrc={src}
+                    altTxt={name}
+                  ></Skill>
+                );
+              })}
             <NavLink
-              to={`inp/${ins}/${newData}`}
+              to={`inp/${ins}`}
               className="col-6 col-lg-2 col-md-4 skill_hover"
               data-toggle="modal"
               data-target="#exampleModalCenter"

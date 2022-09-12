@@ -13,6 +13,7 @@ const formName = [
       {
         type: "file",
         name: "src",
+        placeholder:""
       },
     ],
     [
@@ -78,6 +79,7 @@ const formName = [
       {
         type: "file",
         name: "src",
+        placeholder:""
       },
       {
         type: "select",
@@ -96,33 +98,41 @@ function DataContextProvider(props) {
   const [projectsData,setProjectsData] = useState([]);
   const [isLogin,setIsLogin] = useState(true);
   const [projectTag,setProjectTag] = useState([]);
- 
-  const getDatas = async () => {
 
-    setEducationsData(await axios.get("http://localhost:3001/educations").data);
-    setSkillsData(await axios.get("http://localhost:3001/skills").data);
-    setExperienceData(await axios.get("http://localhost:3001/experiences").data);
-    setProjectsData(await axios.get("http://localhost:3001/projects").data);
-    // isLogin(await axios.get("http://localhost:3001/login").data);
-    setProjectTag([...skillsData.name]);
-    
-  };
+  const getSkillsData = async () => {
+    const res =  await axios.get("http://localhost:3001/skills");
+    setSkillsData(res.data);
+  }
+  const getExperienceData = async () => {
+    const res =  await axios.get("http://localhost:3001/experiences");
+    setExperienceData(res.data);
+  }
+  const getEducationsData = async () => {
+    const res =  await axios.get("http://localhost:3001/educations");
+    setEducationsData(res.data);
+  }
+  const getProjectsData = async () => {
+    const res =  await axios.get("http://localhost:3001/projects");
+    setProjectsData(res.data);
+  }
 
-  const getSkillsData = async ()=> setSkillsData(await axios.get("http://localhost:3001/skills").data);
-  const getExperienceData = async ()=> setExperienceData(await axios.get("http://localhost:3001/experiences").data);
-  const getEducationsData = async ()=> setEducationsData(await axios.get("http://localhost:3001/educations").data);
-  const getProjectsData = async ()=> setProjectsData(await axios.get("http://localhost:3001/projects").data);
   // const getIslogin = async ()=> setIsLogin(await axios.get("http://localhost:3001/login").data);
 
   
   useEffect(() => {
-    getDatas();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getSkillsData();
+    getExperienceData();
+    getEducationsData();
+    getProjectsData();
   }, []);
   
+  const states = [skillsData,setSkillsData,experienceData,setExperienceData,educationsData,setEducationsData,projectsData,setProjectsData];
+  
   const values = {
-    projectTag,setProjectTag,getEducationsData,setEducationsData,educationsData,getProjectsData,getExperienceData,getSkillsData,formName,isLogin,setIsLogin,skillsData,setSkillsData,experienceData,setExperienceData,projectsData,setProjectsData
-  };
+    states
+    ,
+    getSkillsData,projectTag,setProjectTag,getEducationsData,getProjectsData,getExperienceData,formName,isLogin,setIsLogin
+  }
   return (
     <DataContext.Provider value={values}>{props.children}</DataContext.Provider>
   );

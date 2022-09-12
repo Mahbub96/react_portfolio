@@ -1,20 +1,23 @@
 import axios from "axios";
-import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useDataContex } from "../contexts/useAllContext";
 import InputForm from "./InputForm";
 
 function ReqForm() {
-  const tableName = ["skills", "experiences", "educations", "projects"];
+  const { states } = useDataContex();
+
+  // const tableName = ["skills", "experiences", "educations", "projects"];
 
   const { id } = useParams();
-  const [data, setData] = useState({ id: "", name: "", src: "" });
+  const data = states[id];
+  const setData = states[id + 1];
 
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(`http://localhost:3001/${tableName[id]}`, data);
+    await axios.post(`http://localhost:3001/${data}`, data);
     history.push("/");
   };
 
@@ -23,7 +26,7 @@ function ReqForm() {
       <div
         className="modal fade"
         id="exampleModalCenter"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true"
@@ -46,7 +49,7 @@ function ReqForm() {
               </button>
             </div>
             <div className="modal-body">
-              <InputForm data={data} id={id} setData={setData} />
+              <InputForm id={id} data={data} setData={setData} />
             </div>
             <div className="modal-footer">
               <button

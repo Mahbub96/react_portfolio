@@ -1,9 +1,11 @@
 import Footer from "./Footer";
+import Navbar from "./navbar/Navbar";
 import Skills from "./skills/Skills";
+
 function Home() {
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
       {/* <Banner /> */}
       <Skills />
       {/* <Experience /> */}

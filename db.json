@@ -1,5 +1,12 @@
 {
-  "login": "true",
+  "login": [
+    {
+      "id": 1,
+      "user": "mahbub",
+      "password": "1234",
+      "state": true
+    }
+  ],
   "skills": [
     {
       "id": 100,
@@ -75,21 +82,6 @@
       "id": 114,
       "name": "Assembly Language",
       "src": "/assets/img/asm.png"
-    },
-    {
-      "id": 115,
-      "name": "Test",
-      "src": "C:\\fakepath\\Screenshot from 2022-03-09 22-07-44.png"
-    },
-    {
-      "id": 116,
-      "name": "Mahbub",
-      "src": ""
-    },
-    {
-      "id": 117,
-      "name": "Mahbub",
-      "src": ""
     }
   ],
   "experiences": [

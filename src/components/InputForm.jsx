@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { useDataContex } from "../contexts/useAllContext";
 
-function InputForm({ id }) {
+function InputForm({ id, data, setData }) {
   const { formName } = useDataContex();
-  const [data, setData] = useState([]);
-
+  console.log(data);
   const onInputChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };

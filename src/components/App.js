@@ -13,7 +13,7 @@ function App() {
           
           <Route exact path='/' component={Home}/>
           {/* <Route exact path="/inp/:id" component={ReqForm} /> */}
-          <Route exact path='/inp/:id/:newData' component={ReqForm} />
+          <Route exact path='/inp/:id' component={ReqForm} />
           {/* <ReqForm /> */}
         </Switch>
       </DataContextProvider>
