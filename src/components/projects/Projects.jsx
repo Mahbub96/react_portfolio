@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
 import Project from "./Project";
 
@@ -54,7 +54,7 @@ function Projects() {
               </a>
               {skillsData &&
                 Object.entries(skillsData).map(([key, { id, name }]) => (
-                  <Link
+                  <NavLink
                     style={{
                       whiteSpace: "nowrap",
                       width: "fitContent",
@@ -70,7 +70,7 @@ function Projects() {
                     className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                   >
                     <span>{name}</span>
-                  </Link>
+                  </NavLink>
                 ))}
             </div>
           </div>
@@ -100,7 +100,7 @@ function Projects() {
                 data-target="#exampleModalCenter"
               >
                 <Project
-                  key={new Date() * 2}
+                  key={new Date()}
                   title="Add New Projects"
                   imgSrc="../assets/img/add.png"
                   altTxt="Add New Projects"

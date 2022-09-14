@@ -102,6 +102,24 @@
       "name": "C,C++,Java",
       "time": "September 2015 - 2018",
       "how": "Self Learning"
+    },
+    {
+      "name": "Data Science",
+      "time": "Jun 22 to Now",
+      "how": "Doing a course on it",
+      "id": 4
+    },
+    {
+      "name": "Machine Learning",
+      "time": "August - 22 to Present",
+      "how": "Doing Thesis on Machine Learning",
+      "id": 5
+    },
+    {
+      "name": "Demo Experience",
+      "time": "March -22 to Present",
+      "how": "Self Learning",
+      "id": 6
     }
   ],
   "educations": [
@@ -142,56 +160,88 @@
       "name": "React Project",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "Node Js", "axios", "Vue JS", "Bootstarp"]
+      "lang": [
+        "React JS",
+        "Node Js",
+        "axios",
+        "Vue JS",
+        "Bootstarp"
+      ]
     },
     {
       "id": 2,
       "name": "React Project 1",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "axios", "Bootstarp"]
+      "lang": [
+        "React JS",
+        "axios",
+        "Bootstarp"
+      ]
     },
     {
       "id": 3,
       "name": "React Project 2",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["Node Js", "MY SQL"]
+      "lang": [
+        "Node Js",
+        "MY SQL"
+      ]
     },
     {
       "id": 4,
       "name": "React Project 3",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "Bootstarp"]
+      "lang": [
+        "React JS",
+        "Bootstarp"
+      ]
     },
     {
       "id": 5,
       "name": "React Project 4",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["C"]
+      "lang": [
+        "C"
+      ]
     },
     {
       "id": 6,
       "name": "React Project 5",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["C Plus Plus", "STL"]
+      "lang": [
+        "C Plus Plus",
+        "STL"
+      ]
     },
     {
       "id": 7,
       "name": "React Project 6",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["HTML", "CSS", "python", "PHP"]
+      "lang": [
+        "HTML",
+        "CSS",
+        "python",
+        "PHP"
+      ]
     },
     {
       "id": 8,
       "name": "React Project 7",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["Assembly Language", "javascript", "html", "CSS", "jQuery"]
+      "lang": [
+        "Assembly Language",
+        "javascript",
+        "html",
+        "CSS",
+        "jQuery"
+      ]
     }
   ]
 }

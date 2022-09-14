@@ -1,6 +1,6 @@
+import Experience from "./experiences/Experience";
 import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
-import Projects from "./projects/Projects";
 
 function Home() {
   return (
@@ -8,9 +8,9 @@ function Home() {
       <Navbar />
       {/* <Banner /> */}
       {/* <Skills /> */}
-      {/* <Experience /> */}
+      <Experience />
       {/* <Educations /> */}
-      <Projects />
+      {/* <Projects /> */}
       {/* <Contact /> */}
 
       <Footer />
