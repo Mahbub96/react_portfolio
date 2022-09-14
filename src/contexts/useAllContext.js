@@ -101,7 +101,10 @@ function DataContextProvider(props) {
 
   const getSkillsData = async () => {
     const res =  await axios.get("http://localhost:3001/skills");
-    setSkillsData(res.data);
+    const skill = res.data;
+    setSkillsData(skill);
+    console.log({...skillsData});
+
   }
   const getExperienceData = async () => {
     const res =  await axios.get("http://localhost:3001/experiences");
@@ -112,9 +115,13 @@ function DataContextProvider(props) {
     setEducationsData(res.data);
   }
   const getProjectsData = async () => {
+    console.log("getProjectsData");
     const res =  await axios.get("http://localhost:3001/projects");
     setProjectsData(res.data);
   }
+  const getProjectTag = () =>{
+    skillsData && setProjectTag({...skillsData.name})
+  } 
 
   // const getIslogin = async ()=> setIsLogin(await axios.get("http://localhost:3001/login").data);
 
@@ -124,14 +131,14 @@ function DataContextProvider(props) {
     getExperienceData();
     getEducationsData();
     getProjectsData();
+    getProjectTag();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
-  const states = [skillsData,setSkillsData,experienceData,setExperienceData,educationsData,setEducationsData,projectsData,setProjectsData];
+  
   
   const values = {
-    states
-    ,
-    getSkillsData,projectTag,setProjectTag,getEducationsData,getProjectsData,getExperienceData,formName,isLogin,setIsLogin
+       skillsData,setSkillsData,experienceData,setExperienceData,educationsData,setEducationsData,getSkillsData,projectsData,setProjectsData,projectTag,setProjectTag,getEducationsData,getProjectsData,getExperienceData,formName,isLogin,setIsLogin,getProjectTag
   }
   return (
     <DataContext.Provider value={values}>{props.children}</DataContext.Provider>

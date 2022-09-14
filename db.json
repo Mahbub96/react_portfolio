@@ -55,7 +55,7 @@
     },
     {
       "id": 109,
-      "name": "bootstarp",
+      "name": "Bootstarp",
       "src": "/assets/img/bootstarp.png"
     },
     {
@@ -142,28 +142,28 @@
       "name": "React Project",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["react", "node", "axios"]
+      "lang": ["React JS", "Node Js", "axios", "Vue JS", "Bootstarp"]
     },
     {
       "id": 2,
       "name": "React Project 1",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["react", "axios"]
+      "lang": ["React JS", "axios", "Bootstarp"]
     },
     {
       "id": 3,
       "name": "React Project 2",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["node"]
+      "lang": ["Node Js", "MY SQL"]
     },
     {
       "id": 4,
       "name": "React Project 3",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["react"]
+      "lang": ["React JS", "Bootstarp"]
     },
     {
       "id": 5,
@@ -177,49 +177,21 @@
       "name": "React Project 5",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["C++", "STL"]
+      "lang": ["C Plus Plus", "STL"]
     },
     {
       "id": 7,
       "name": "React Project 6",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["HTML", "python"]
+      "lang": ["HTML", "CSS", "python", "PHP"]
     },
     {
       "id": 8,
       "name": "React Project 7",
       "src": "./../../assets/img/projects.png",
       "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["assimbly", "javascript", "html", "css"]
-    },
-    {
-      "id": 9,
-      "name": "abcde",
-      "src": ""
-    },
-    {
-      "id": 10,
-      "name": "asdf",
-      "src": "",
-      "desc": "asdfasdfasdfasdfasdfasd"
-    },
-    {
-      "id": 11,
-      "name": "",
-      "src": ""
-    },
-    {
-      "id": 12,
-      "name": "Md.Mahbub Alam",
-      "src": "C:\\fakepath\\Screenshot from 2022-03-09 22-07-44.png",
-      "desc": "asdfasdfasdfasdfasdfasd"
-    },
-    {
-      "id": 13,
-      "name": "React Project 12",
-      "src": "",
-      "desc": "this is not just a Description,this is not just a Description ,this is not just a Description ,this is not just a Description "
+      "lang": ["Assembly Language", "javascript", "html", "CSS", "jQuery"]
     }
   ]
 }

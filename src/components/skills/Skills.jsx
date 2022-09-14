@@ -6,13 +6,11 @@ import { useDataContex } from "../../contexts/useAllContext";
 import Skill from "./Skill.jsx";
 
 function Skills() {
-  const { states, getSkillsData } = useDataContex();
+  console.log("skills");
+
+  const { skillsData, getSkillsData } = useDataContex();
 
   let ins = 0;
-  console.log(states[ins]);
-  const skillsData = states[ins];
-  // const setSkillsData = states[ins + 1];
-  // const getSkillsData = states[ins + 1];
 
   useEffect(() => {
     getSkillsData();

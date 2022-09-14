@@ -1,23 +1,21 @@
 import axios from "axios";
+import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useDataContex } from "../contexts/useAllContext";
 import InputForm from "./InputForm";
 
 function ReqForm() {
-  const { states } = useDataContex();
-
-  // const tableName = ["skills", "experiences", "educations", "projects"];
+  const tableName = ["skills", "experiences", "educations", "projects"];
 
   const { id } = useParams();
-  const data = states[id];
-  const setData = states[id + 1];
+
+  const [data, setData] = useState({});
 
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(`http://localhost:3001/${data}`, data);
+    await axios.post(`http://localhost:3001/${tableName[id]}`, data);
     history.push("/");
   };
 

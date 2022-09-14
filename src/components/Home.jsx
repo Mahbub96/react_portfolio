@@ -1,16 +1,16 @@
 import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
-import Skills from "./skills/Skills";
+import Projects from "./projects/Projects";
 
 function Home() {
   return (
     <div>
       <Navbar />
       {/* <Banner /> */}
-      <Skills />
+      {/* <Skills /> */}
       {/* <Experience /> */}
       {/* <Educations /> */}
-      {/* <Projects /> */}
+      <Projects />
       {/* <Contact /> */}
 
       <Footer />

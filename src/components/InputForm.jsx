@@ -2,10 +2,13 @@ import { useDataContex } from "../contexts/useAllContext";
 
 function InputForm({ id, data, setData }) {
   const { formName } = useDataContex();
-  console.log(data);
+
   const onInputChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
+  console.log(data, setData);
+
   return (
     <>
       {Object.entries(formName[id]).map(
@@ -14,6 +17,7 @@ function InputForm({ id, data, setData }) {
             <form className="row">
               {type === "select" ? (
                 <select
+                  key={key}
                   className="col-12 mt-3 form-control"
                   id="cars"
                   name="cars"
@@ -25,6 +29,7 @@ function InputForm({ id, data, setData }) {
                 </select>
               ) : (
                 <input
+                  key={key}
                   className="col-12 mt-3 form-control"
                   type={type}
                   placeholder={placeholder}

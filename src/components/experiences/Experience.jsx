@@ -1,5 +1,5 @@
 import React from "react";
-import classes from './experience.module.css';
+import classes from "./experience.module.css";
 
 function Experience() {
   return (
