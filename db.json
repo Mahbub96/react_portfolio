@@ -139,7 +139,7 @@
       "name": "BAF SHAHEEN COLLEGE,JESSORE",
       "degName": "Higher Secondary Certificate (HSC)",
       "cgpa": "4.00 out of 5.00",
-      "Department": "Computer Science and Engineering",
+      "Department": "",
       "group": "Science",
       "Thesis": "No"
     },
@@ -149,9 +149,17 @@
       "name": "Shyamkur High School",
       "degName": "Secondary School Certificate (SSC)",
       "cgpa": "4.44 out of 5.00",
-      "Department": "Computer Science and Engineering",
       "group": "Science",
-      "Thesis": "No"
+      "Thesis": "No",
+      "Department": ""
+    },
+    {
+      "insName": "Jan - 22 to Present",
+      "degName": "Online Degree",
+      "cgpa": "4.00",
+      "dept": "Machine Learning",
+      "thesis": "no",
+      "id": 4
     }
   ],
   "projects": [

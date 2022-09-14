@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { useDataContex } from "../../contexts/useAllContext";
 import styles from "./education.module.css";
 
 function Educations() {
+  // console.log("projects");
+  let ins = 2;
+
+  const { getEducationsData, educationsData } = useDataContex();
+
+  useEffect(() => {
+    getEducationsData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <div className="container mt-5" id="education">
@@ -12,57 +23,84 @@ function Educations() {
             </h2>
           </div>
           <div className="content bg-light py-5 mt-4 row g-0">
-            <div className="col-12 col-md-6"></div>
-            <div className="col-12 col-md-6">
-              <div className="conts mt-4">
-                <p className="times">2019 - Present</p>
-                <h5 className={styles.title}>Stamford University Bangladesh</h5>
-                <h4 className={styles.degree}>Bachelor of Science</h4>
-                <p className={styles.ext}>
-                  <b>CGPA</b>:3.75 out of 4.00
-                </p>
-                <p className={styles.ext}>
-                  <b>Department</b>:Computer Science and Engineering
-                </p>
-                <p className={styles.ext}>
-                  <b>Thesis</b>:Hmm thinking...
-                </p>
-              </div>
-            </div>
+            {educationsData &&
+              Object.entries(educationsData).map(
+                ([
+                  key,
+                  { id, name, time, degName, Department, cgpa, group, Thesis },
+                ]) => {
+                  if (key % 2 === 0)
+                    return (
+                      <>
+                        <div className="col-12 col-md-6"></div>
+                        <div className="col-12 col-md-6">
+                          <div className="conts mt-4">
+                            <p className="times">{time}</p>
+                            <h5 className={styles.title}>{name}</h5>
+                            <h4 className={styles.degree}>{degName}</h4>
+                            <p className={styles.ext}>
+                              <b>CGPA</b>: {cgpa}
+                            </p>
+                            <p className={styles.ext}>
+                              <b>Department</b>:{Department}
+                            </p>
+                            <p className={styles.ext}>
+                              <b>Group</b>:{group}
+                            </p>
+                            <p className={styles.ext}>
+                              <b>Thesis</b>:{Thesis}
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  else {
+                    return (
+                      <>
+                        <div className="col-12 col-md-6">
+                          <div className="conts mt-4 right">
+                            <p className="times">{time}</p>
+                            <h5 className={styles.title}>{name}</h5>
+                            <h4 className={styles.degree}>{degName}</h4>
+                            <p className={styles.ext}>
+                              <b>CGPA</b>:{cgpa}
+                            </p>
+                            <p className={styles.ext}>
+                              <b>Department</b>:{Department}
+                            </p>
+                            <p className={styles.ext}>
+                              <b>Group</b>:{group}
+                            </p>
 
-            <div className="col-12 col-md-6">
-              <div className="conts mt-4 right">
-                <p className="times">2014 - 2016</p>
-                <h5 className={styles.title}>BAF SHAHEEN COLLEGE,JESSORE</h5>
-                <h4 className={styles.degree}>
-                  Higher Secondary Certificate (HSC)
-                </h4>
-                <p className={styles.ext}>
-                  <b>CGPA</b>:4.00 out of 5.00
-                </p>
-                <p className={styles.ext}>
-                  <b>Group</b>:Science
-                </p>
-              </div>
-            </div>
-            <div className="col-12 col-md-6"></div>
-
-            <div className="col-12 col-md-6"></div>
-            <div className="col-12 col-md-6">
-              <div className="conts mt-4">
-                <p className="times">2009 - 2014</p>
-                <h5 className={styles.title}>Shyamkur High School</h5>
-                <h4 className={styles.degree}>
-                  Secondary School Certificate (SSC)
-                </h4>
-                <p className={styles.ext}>
-                  <b>CGPA</b>:4.44 out of 5.00
-                </p>
-                <p className={styles.ext}>
-                  <b>Group</b>:Science
-                </p>
-              </div>
-            </div>
+                            <p className={styles.ext}>
+                              <b>Thesis</b>:{Thesis}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="col-12 col-md-6"></div>
+                      </>
+                    );
+                  }
+                }
+              )}
+            {educationsData && (
+              <NavLink
+                key="3"
+                to={`inp/${ins}`}
+                // className="col-6 col-lg-2 col-md-4 skill_hover"
+                data-toggle="modal"
+                data-target="#exampleModalCenter"
+              >
+                <div className="col-12 col-md-6" key="1"></div>
+                <div className="col-12 col-md-6" key="2">
+                  <div className="conts mt-4">
+                    <h4>
+                      Add New Education Information <br />
+                    </h4>
+                  </div>
+                </div>
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
