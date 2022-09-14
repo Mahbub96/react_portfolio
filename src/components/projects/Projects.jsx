@@ -40,10 +40,10 @@ function Projects() {
           </div>
           <div className="menus">
             <div className="row d-flex justify-content-center g-2 my-1">
-              <a
+              <NavLink
                 key="999"
                 className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
-                href="#home"
+                to="#"
                 onClick={() => getProjectsData()}
                 style={{
                   curser: "pointer",
@@ -51,10 +51,10 @@ function Projects() {
                 }}
               >
                 All
-              </a>
-              {skillsData &&
+              </NavLink>
+              {NavLink &&
                 Object.entries(skillsData).map(([key, { id, name }]) => (
-                  <NavLink
+                  <div
                     style={{
                       whiteSpace: "nowrap",
                       width: "fitContent",
@@ -64,13 +64,13 @@ function Projects() {
                       curser: "pointer",
                       boxShadow: "2px 2px 2px #aaa,-2px -2px 2px #aaa",
                     }}
-                    to="#"
                     onClick={() => filterProjectsData(name)}
+                    to="#"
                     key={id}
                     className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                   >
                     <span>{name}</span>
-                  </NavLink>
+                  </div>
                 ))}
             </div>
           </div>
