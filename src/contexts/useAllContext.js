@@ -100,7 +100,7 @@ function DataContextProvider(props) {
   const [projectTag,setProjectTag] = useState([]);
 
   const getSkillsData = async () => {
-    const res =  await axios.get("https://backend996.herokuapp.com/skills");
+    const res =  await axios.get(" http://localhost:3001/skills");
     const skill = res.data;
     setSkillsData(skill);
     console.log({...skillsData});
