@@ -100,30 +100,30 @@ function DataContextProvider(props) {
   const [projectTag,setProjectTag] = useState([]);
 
   const getSkillsData = async () => {
-    const res =  await axios.get("http://localhost:3001/skills");
+    const res =  await axios.get("https://backend996.herokuapp.com/skills");
     const skill = res.data;
     setSkillsData(skill);
     console.log({...skillsData});
 
   }
   const getExperienceData = async () => {
-    const res =  await axios.get("http://localhost:3001/experiences");
+    const res =  await axios.get("https://backend996.herokuapp.com/experiences");
     setExperienceData(res.data);
   }
   const getEducationsData = async () => {
-    const res =  await axios.get("http://localhost:3001/educations");
+    const res =  await axios.get("https://backend996.herokuapp.com/educations");
     setEducationsData(res.data);
   }
   const getProjectsData = async () => {
     console.log("getProjectsData");
-    const res =  await axios.get("http://localhost:3001/projects");
+    const res =  await axios.get("https://backend996.herokuapp.com/projects");
     setProjectsData(res.data);
   }
   const getProjectTag = () =>{
     skillsData && setProjectTag({...skillsData.name})
   } 
 
-  // const getIslogin = async ()=> setIsLogin(await axios.get("http://localhost:3001/login").data);
+  // const getIslogin = async ()=> setIsLogin(await axios.get("https://backend996.herokuapp.com/login").data);
 
   
   useEffect(() => {
