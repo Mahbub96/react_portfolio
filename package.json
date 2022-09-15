@@ -18,7 +18,7 @@
   "scripts": {
     "start:front": "react-scripts start",
     "json-server": "json-server --watch db.json --port 3001",
-    "start": "concurrently \"yarn start:front\" \"yarn json-server\"",
+    "start": "concurrently \"npm run start:front\" \"npm run json-server\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
