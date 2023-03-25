@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
 import Project from "./Project";
 
 function Projects() {
   // console.log("projects");
   let ins = 3;
+  const { data } = useFirestore();
 
   const {
     skillsData,
