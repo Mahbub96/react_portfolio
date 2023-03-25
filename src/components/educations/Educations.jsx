@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
 import styles from "./education.module.css";
 
 function Educations() {
   // console.log("projects");
   let ins = 2;
 
-  const { getEducationsData, educationsData } = useDataContex();
-
+  const { data, setDocuments } = useFirestore();
+  const { Education } = data;
   useEffect(() => {
-    getEducationsData();
+    // getEducationsData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -23,8 +23,8 @@ function Educations() {
             </h2>
           </div>
           <div className="content bg-light py-5 mt-4 row g-0">
-            {educationsData &&
-              Object.entries(educationsData).map(
+            {Education &&
+              Object.entries(Education.data).map(
                 ([
                   key,
                   { id, name, time, degName, Department, cgpa, group, Thesis },
@@ -83,7 +83,7 @@ function Educations() {
                   }
                 }
               )}
-            {educationsData && (
+            {Education && (
               <NavLink
                 key="3"
                 to={`inp/${ins}`}

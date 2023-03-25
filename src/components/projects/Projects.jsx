@@ -16,8 +16,8 @@ function Projects() {
   } = useDataContex();
 
   useEffect(() => {
-    getProjectTag();
-    getProjectsData();
+    // getProjectTag();
+    // getProjectsData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,15 +1,18 @@
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
 import classes from "./experience.module.css";
 function Experience() {
   // console.log("projects");
   let ins = 1;
 
-  const { getExperienceData, experienceData } = useDataContex();
+  const { data } = useFirestore();
+
+  const { Experiences } = data;
 
   useEffect(() => {
-    getExperienceData();
+    // getExperienceData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -24,8 +27,8 @@ function Experience() {
             <p>3 years 6th months</p>
           </div>
           <div className="content bg-light py-5 row g-0">
-            {experienceData &&
-              Object.entries(experienceData).map(
+            {Experiences &&
+              Object.entries(Experiences.data).map(
                 ([key, { id, name, time, how }]) => {
                   if (key % 2 === 0)
                     return (
@@ -63,7 +66,7 @@ function Experience() {
                   }
                 }
               )}
-            {experienceData && (
+            {Experiences && (
               <NavLink
                 key="3"
                 to={`inp/${ins}`}

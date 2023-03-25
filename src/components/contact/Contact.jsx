@@ -13,6 +13,7 @@ export default function Contact() {
       message,
     },
   ]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
