@@ -1,7 +1,20 @@
 import React from "react";
 import styles from "./banner.module.css";
+import { TypeAnimation } from "react-type-animation";
 
 function Banner() {
+  const txt = [
+    "Web Application Developer",
+    1000,
+    "Mobile Application Developer",
+    1000,
+    "Machine Learning",
+    1000,
+    "Data Science",
+    1000,
+    "Student",
+    1000,
+  ];
   return (
     <div>
       <div className="container" style={{ marginTop: "110px" }}>
@@ -21,13 +34,23 @@ function Banner() {
             <div className="col-4"></div>
           </div>
           <div className="desc mx-5">
-            <h4 className="my-2">Student</h4>
+            <h4 className="my-2">
+              <TypeAnimation
+                sequence={txt}
+                speed={20}
+                repeat={Infinity}
+                deletionSpeed={90}
+              />
+            </h4>
             <h5 className="my-2">Dhaka,Bangladesh</h5>
             <p className="my-3">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime
-              error corrupti necessitatibus eos assumenda rerum sint, voluptatem
-              officia! Animi cumque ut minima non in libero quaerat voluptatem.
-              Voluptates corporis perspiciatis natus quo nobis architecto harum
+              Dynamic, detail-oriented Software Engineer with over 4 years of
+              experience in Self Learning. Skilled in a variety of programming
+              languages, including JavaScript,React Js, and Node.js,React Native
+              and Expo CLI. Proficient in agile development methodologies and
+              experienced in the full software development lifecycle. Hold a
+              Bachelor's degree in Computer Science from Stamford University
+              Bangladesh. Maintain several open source projects.
             </p>
             <button className="btn btn-primary btn-sm rounded-pill">
               Get in Touch
@@ -59,7 +82,7 @@ function Banner() {
               </span>
             </a>
             <a
-              href="https://fb.me/mahabub.sobuz"
+              href="https://fb.me/MahbubCSE96"
               target="_blank"
               title="Facebook Profile"
               rel="noopener noreferrer"
