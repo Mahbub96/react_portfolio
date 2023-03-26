@@ -1,27 +1,22 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
+import Project from "./Project";
+import useFirestore from "../../hooks/useFirestore";
+
 function Projects() {
-  // console.log("projects");
   let ins = 3;
   const { data } = useFirestore();
+  console.log(data);
+  const { projectsData, Skills } = data;
 
-  const {
-    skillsData,
-    projectsData,
-    setProjectsData,
-    getProjectsData,
-    getProjectTag,
-  } = useDataContex();
+  const { skillsData, setProjectsData, getProjectsData, getProjectTag } =
+    useDataContex();
 
-  useEffect(() => {
-    // getProjectTag();
-    // getProjectsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {}, []);
 
   const filterProjectsData = (name) => {
-    const filteredItems = Object.values(projectsData).filter(
+    const filteredItems = Object.values(projectsData.data).filter(
       (values) => values.lang && values.lang.indexOf(name) !== -1
     );
 
@@ -51,8 +46,8 @@ function Projects() {
               >
                 All
               </NavLink>
-              {NavLink &&
-                Object.entries(skillsData).map(([key, { id, name }]) => (
+              {Skills &&
+                Object.entries(Skills.data).map(([key, { id, name }]) => (
                   <div
                     style={{
                       whiteSpace: "nowrap",
@@ -76,7 +71,7 @@ function Projects() {
 
           <div className="cards row d-flex justify-content-center my-1 g-3">
             {projectsData &&
-              Object.entries(projectsData).map(
+              Object.entries(projectsData.data).map(
                 ([key, { id, name, src, desc, lang }]) => {
                   return (
                     <Project
