@@ -1,18 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
 import styles from "./education.module.css";
 
 function Educations() {
-  // console.log("projects");
   let ins = 2;
-
   const { data, setDocuments } = useFirestore();
   const { Education } = data;
-  useEffect(() => {
-    // getEducationsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [modalShow, setModalShow] = useState(false);
   return (
     <>
       <div className="container mt-5" id="education">
@@ -84,12 +80,9 @@ function Educations() {
                 }
               )}
             {Education && (
-              <NavLink
-                key="3"
-                to={`inp/${ins}`}
+              <div
                 // className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+                onClick={() => setModalShow(true)}
               >
                 <div className="col-12 col-md-6" key="1"></div>
                 <div className="col-12 col-md-6" key="2">
@@ -99,11 +92,16 @@ function Educations() {
                     </h4>
                   </div>
                 </div>
-              </NavLink>
+              </div>
             )}
           </div>
         </div>
       </div>
+      <ModalView
+        name={"Education"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }

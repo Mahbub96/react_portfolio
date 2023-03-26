@@ -1,20 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
-import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
 import useFirestore from "../../hooks/useFirestore";
 import ThreeDots from "../ThreeDots";
 import Skill from "./Skill.jsx";
+import React from "react";
+import ModalView from "../ModalView";
 
 function Skills() {
   const { data } = useFirestore();
 
   const { Skills } = data;
-
-  useEffect(() => {
-    //	getSkillsData();
-  }, []);
-
+  const [modalShow, setModalShow] = React.useState(false);
   return (
     <>
       {Skills ? (
@@ -39,11 +33,9 @@ function Skills() {
                     ></Skill>
                   );
                 })}
-              <NavLink
-                to={`inp/0`}
+              <div
                 className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+                onClick={() => setModalShow(true)}
               >
                 {
                   <Skill
@@ -53,7 +45,7 @@ function Skills() {
                     altTxt="Add New"
                   ></Skill>
                 }
-              </NavLink>
+              </div>
             </div>
           </div>
         </div>
@@ -68,6 +60,11 @@ function Skills() {
           <ThreeDots />
         </div>
       )}
+      <ModalView
+        name={"Skills"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }

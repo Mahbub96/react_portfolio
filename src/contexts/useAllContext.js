@@ -3,8 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const DataContext = createContext();
 export const useDataContex = () => useContext(DataContext);
-const formName = [
-  [
+const formName = {
+  Skills: [
     {
       type: "name",
       name: "name",
@@ -16,7 +16,8 @@ const formName = [
       placeholder: "",
     },
   ],
-  [
+
+  Experiences: [
     {
       type: "name",
       name: "name",
@@ -33,7 +34,7 @@ const formName = [
       placeholder: "How you Learned? Ex : Self Learning",
     },
   ],
-  [
+  Education: [
     {
       type: "name",
       name: "insName",
@@ -65,7 +66,7 @@ const formName = [
       placeholder: "Thesis / Project / No",
     },
   ],
-  [
+  projectsData: [
     {
       type: "name",
       name: "name",
@@ -85,7 +86,7 @@ const formName = [
       type: "select",
     },
   ],
-];
+};
 
 function DataContextProvider(props) {
   const [skillsData, setSkillsData] = useState([]);

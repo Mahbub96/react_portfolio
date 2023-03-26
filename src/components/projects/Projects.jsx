@@ -1,35 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useDataContex } from "../../contexts/useAllContext";
 import Project from "./Project";
 import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
 
 function Projects() {
-  let ins = 3;
+  const [modalShow, setModalShow] = useState(false);
+  const [filteredItems, setFilteredItems] = useState([]);
 
   const { data } = useFirestore();
   console.log(data);
   const { projectsData, Skills } = data;
 
   const finalData = projectsData && [...projectsData.data];
-  console.log("final Data :", finalData);
 
-  const { getProjectsData } = useDataContex();
-
-  let filteredItems = finalData && [...finalData];
   useEffect(() => {
-    getProjectsData();
-    console.log("hello");
-  }, [filteredItems]);
+    setFilteredItems(projectsData?.data);
+  }, [projectsData]);
 
   const filterProjectsData = (name) => {
-    console.log("name found :", name);
-    console.log(finalData);
-    filteredItems = finalData.filter((item) => item.lang.includes(name));
-    console.log(filteredItems.length);
+    if (name === "All") setFilteredItems(finalData);
+    else setFilteredItems(finalData.filter((item) => item.lang.includes(name)));
   };
-
-  console.log(filteredItems);
 
   return (
     <>
@@ -44,9 +36,9 @@ function Projects() {
             <div className="row d-flex justify-content-center g-2 my-1">
               <NavLink
                 key="999"
+                onClick={() => filterProjectsData("All")}
                 className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                 to="#"
-                onClick={() => getProjectsData()}
                 style={{
                   curser: "pointer",
                   boxShadow: "2px 2px 2px #aaa,-2px -2px 2px #aaa",
@@ -95,12 +87,7 @@ function Projects() {
               )}
 
             {projectsData && (
-              <NavLink
-                to={`inp/${ins}`}
-                // className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
-              >
+              <div onClick={() => setModalShow(true)}>
                 <Project
                   key={new Date()}
                   title="Add New Projects"
@@ -109,11 +96,17 @@ function Projects() {
                   desc="Some quick example text to build on the card title and make
               up the bulk of the card's content."
                 />
-              </NavLink>
+              </div>
             )}
           </div>
         </div>
       </div>
+
+      <ModalView
+        name={"Experiences"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }
