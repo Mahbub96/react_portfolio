@@ -6,22 +6,30 @@ import useFirestore from "../../hooks/useFirestore";
 
 function Projects() {
   let ins = 3;
+
   const { data } = useFirestore();
   console.log(data);
   const { projectsData, Skills } = data;
 
-  const { skillsData, setProjectsData, getProjectsData, getProjectTag } =
-    useDataContex();
+  const finalData = projectsData && [...projectsData.data];
+  console.log("final Data :", finalData);
 
-  useEffect(() => {}, []);
+  const { getProjectsData } = useDataContex();
+
+  let filteredItems = finalData && [...finalData];
+  useEffect(() => {
+    getProjectsData();
+    console.log("hello");
+  }, [filteredItems]);
 
   const filterProjectsData = (name) => {
-    const filteredItems = Object.values(projectsData.data).filter(
-      (values) => values.lang && values.lang.indexOf(name) !== -1
-    );
-
-    setProjectsData(filteredItems);
+    console.log("name found :", name);
+    console.log(finalData);
+    filteredItems = finalData.filter((item) => item.lang.includes(name));
+    console.log(filteredItems.length);
   };
+
+  console.log(filteredItems);
 
   return (
     <>
@@ -47,7 +55,7 @@ function Projects() {
                 All
               </NavLink>
               {Skills &&
-                Object.entries(Skills.data).map(([key, { id, name }]) => (
+                Object.entries(Skills.data).map(([, { id, name }]) => (
                   <div
                     style={{
                       whiteSpace: "nowrap",
@@ -55,7 +63,7 @@ function Projects() {
                       maxWidth: "110px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      curser: "pointer",
+                      cursor: "pointer",
                       boxShadow: "2px 2px 2px #aaa,-2px -2px 2px #aaa",
                     }}
                     onClick={() => filterProjectsData(name)}
@@ -70,8 +78,8 @@ function Projects() {
           </div>
 
           <div className="cards row d-flex justify-content-center my-1 g-3">
-            {projectsData &&
-              Object.entries(projectsData.data).map(
+            {filteredItems &&
+              Object.entries(filteredItems).map(
                 ([key, { id, name, src, desc, lang }]) => {
                   return (
                     <Project

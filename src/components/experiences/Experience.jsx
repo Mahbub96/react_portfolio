@@ -33,7 +33,10 @@ function Experience() {
                   if (key % 2 === 0)
                     return (
                       <>
-                        <div className="col-12 col-md-6" key={id + key}></div>
+                        <div
+                          className="col-12 col-md-6"
+                          key={id + key + new Date()}
+                        ></div>
                         <div className="col-12 col-md-6" key={id + key * 10}>
                           <div className="conts mt-4">
                             <p className={classes.times}>{time}</p>
@@ -48,7 +51,10 @@ function Experience() {
                   else {
                     return (
                       <>
-                        <div className="col-12 col-md-6" key={id + key}>
+                        <div
+                          className="col-12 col-md-6"
+                          key={id + key + new Date()}
+                        >
                           <div className="conts mt-4 right">
                             <p className="times">{time}</p>
                             <h4>

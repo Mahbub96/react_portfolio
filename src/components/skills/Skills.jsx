@@ -2,20 +2,19 @@
 
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ThreeDots from "../ThreeDots";
 import Skill from "./Skill.jsx";
 
 function Skills() {
-  const { data, setDocuments } = useFirestore();
+  const { data } = useFirestore();
 
   const { Skills } = data;
 
   useEffect(() => {
     //	getSkillsData();
   }, []);
-  console.log(Skills);
+
   return (
     <>
       {Skills ? (
@@ -66,7 +65,6 @@ function Skills() {
             justifyContent: "center",
           }}
         >
-          {" "}
           <ThreeDots />
         </div>
       )}

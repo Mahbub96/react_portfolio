@@ -121,11 +121,11 @@ function DataContextProvider(props) {
   // const getIslogin = async ()=> setIsLogin(await axios.get("https://backend996.herokuapp.com/login").data);
 
   useEffect(() => {
-    getSkillsData();
-    //getExperienceData();
-    //getEducationsData();
-    //getProjectsData();
-    //getProjectTag();
+    //	 getSkillsData();
+    //	 getExperienceData();
+    //	 getEducationsData();
+    //	 getProjectsData();
+    //	 getProjectTag();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
