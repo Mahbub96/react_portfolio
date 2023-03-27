@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import Project from "./Project";
@@ -7,7 +8,7 @@ import Project from "./Project";
 function Projects() {
   const [modalShow, setModalShow] = useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
-
+  const { auth } = useDataContex();
   const { data } = useFirestore();
   console.log(data);
   const { projectsData, Skills } = data;
@@ -86,7 +87,7 @@ function Projects() {
                 }
               )}
 
-            {projectsData && (
+            {projectsData && auth && (
               <div
                 onClick={() => setModalShow(true)}
                 style={{

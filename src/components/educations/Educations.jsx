@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import styles from "./education.module.css";
@@ -6,6 +7,7 @@ import styles from "./education.module.css";
 function Educations() {
   const { data } = useFirestore();
   const { Education } = data;
+  const { auth } = useDataContex();
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
@@ -77,7 +79,7 @@ function Educations() {
                   }
                 }
               )}
-            {Education && (
+            {Education && auth && (
               <div
               // className="col-6 col-lg-2 col-md-4 skill_hover"
               >

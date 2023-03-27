@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import classes from "./experience.module.css";
@@ -6,6 +7,7 @@ import classes from "./experience.module.css";
 function Experience() {
   const [modalShow, setModalShow] = useState(false);
   const { data } = useFirestore();
+  const { auth } = useDataContex();
 
   const { Experiences } = data;
 
@@ -65,7 +67,7 @@ function Experience() {
                   }
                 }
               )}
-            {Experiences && (
+            {Experiences && auth && (
               <div>
                 <div className="col-12 col-md-6" key="1"></div>
                 <div className="col-12 col-md-6" key="2">

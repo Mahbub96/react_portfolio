@@ -1,11 +1,15 @@
 import React from "react";
-import classes from './navbar.module.css';
+import { useDataContex } from "../../contexts/useAllContext";
+import classes from "./navbar.module.css";
 
 function Header() {
+  const { auth } = useDataContex();
   return (
     <div id="home">
       <header className="sticky-top">
-        <nav className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}>
+        <nav
+          className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}
+        >
           <div className="container-fluid bg-light">
             <a className={`navbar-brand`} href="/">
               Mahbub Alam
@@ -28,7 +32,7 @@ function Header() {
               <div className="me-auto"></div>
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item px-2">
-                  <a                    
+                  <a
                     className={`nav-link active`}
                     aria-current="page"
                     href="#home"
@@ -38,9 +42,7 @@ function Header() {
                 </li>
 
                 <li className="nav-item px-2">
-                  <a 
-                  className={`nav-link`}
-                  aria-current="page" href="#skills">
+                  <a className={`nav-link`} aria-current="page" href="#skills">
                     SKILLS
                   </a>
                 </li>
@@ -56,7 +58,11 @@ function Header() {
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className={`nav-link`} aria-current="page" href="#education">
+                  <a
+                    className={`nav-link`}
+                    aria-current="page"
+                    href="#education"
+                  >
                     EDUCATIONS
                   </a>
                 </li>
@@ -68,16 +74,25 @@ function Header() {
                 </li>
 
                 <li className="nav-item px-2">
-                  <a className={`nav-link`} aria-current="page" href="#contract">
+                  <a
+                    className={`nav-link`}
+                    aria-current="page"
+                    href="#contract"
+                  >
                     CONTRACT
                   </a>
                 </li>
               </ul>
 
-              <button className="btn btn-light d-flexd-flex" type="submit">
-                Login
-              </button>
-
+              {auth ? (
+                <button className="btn btn-light d-flexd-flex" type="submit">
+                  Log Out
+                </button>
+              ) : (
+                <button className="btn btn-light d-flexd-flex" type="submit">
+                  Login
+                </button>
+              )}
 
               <button className="btn btn-light d-flexd-flex" type="submit">
                 <i className="fa fa-sun-o"></i>

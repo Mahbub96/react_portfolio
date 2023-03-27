@@ -1,4 +1,5 @@
 import React from "react";
+import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
@@ -6,6 +7,7 @@ import Skill from "./Skill.jsx";
 
 function Skills() {
   const { data } = useFirestore();
+  const { auth } = useDataContex();
 
   const { Skills } = data;
   const [modalShow, setModalShow] = React.useState(false);
@@ -33,24 +35,27 @@ function Skills() {
                     ></Skill>
                   );
                 })}
-              <div
-                className="col-6 col-lg-2 col-md-4 skill_hover"
-                onClick={() => setModalShow(true)}
-                style={{
-                  color: "blue",
-                  cursor: "pointer",
-                  display: "inline-block",
-                }}
-              >
-                {
-                  <Skill
-                    key={new Date(0)}
-                    name="Add New"
-                    imgSrc="../assets/img/add.png"
-                    altTxt="Add New"
-                  ></Skill>
-                }
-              </div>
+
+              {auth && (
+                <div
+                  className="col-6 col-lg-2 col-md-4 skill_hover"
+                  onClick={() => setModalShow(true)}
+                  style={{
+                    color: "blue",
+                    cursor: "pointer",
+                    display: "inline-block",
+                  }}
+                >
+                  {
+                    <Skill
+                      key={new Date(0)}
+                      name="Add New"
+                      imgSrc="../assets/img/add.png"
+                      altTxt="Add New"
+                    ></Skill>
+                  }
+                </div>
+              )}
             </div>
           </div>
         </div>
