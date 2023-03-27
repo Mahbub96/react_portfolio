@@ -19,6 +19,11 @@
       "src": "/assets/img/javaScript.png"
     },
     {
+      "id": 116,
+      "name": "React Native",
+      "src": "/assets/img/react-native.png"
+    },
+    {
       "id": 102,
       "name": "Vue JS",
       "src": "/assets/img/vue`.png"
@@ -82,6 +87,18 @@
       "id": 114,
       "name": "Assembly Language",
       "src": "/assets/img/asm.png"
+    },
+    ,
+    {
+      "id": 115,
+      "name": "SQlite3",
+      "src": "/assets/img/sqlite3.png"
+    },
+    ,
+    {
+      "id": 117,
+      "name": "Swings",
+      "src": "/assets/img/swings.png"
     }
   ],
   "experiences": [
