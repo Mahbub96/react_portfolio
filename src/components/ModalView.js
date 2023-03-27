@@ -6,16 +6,15 @@ import { formName } from "../Utils/StaticData";
 export default function ModalView(props) {
   const { name, ...events } = props;
   const { data } = useFirestore();
-  console.log(data);
+
   const { Skills } = data;
 
   const items = formName[name];
-  console.log(items);
+
   const [dynamicState, setDynamicState] = useState({});
   const [language, setLanguage] = useState([]);
-  console.log("lang:", language);
+
   const handleSubmit = () => {
-    console.log(dynamicState);
     //props.onHide();
   };
   return (
@@ -32,7 +31,7 @@ export default function ModalView(props) {
       </Modal.Header>
       <Modal.Body>
         {items?.map(({ type, name, placeholder }) => (
-          <p>
+          <p key={new Date().getSeconds()}>
             {type === "select" ? (
               <select
                 key={new Date().getSeconds()}
@@ -47,7 +46,11 @@ export default function ModalView(props) {
               >
                 {Skills &&
                   Skills.data.map(({ name }) => (
-                    <option value={name} name={name}>
+                    <option
+                      value={name}
+                      name={name}
+                      key={new Date().getSeconds()}
+                    >
                       {name}
                     </option>
                   ))}
@@ -55,6 +58,7 @@ export default function ModalView(props) {
             ) : (
               <input
                 type={type}
+                key={new Date().getSeconds()}
                 name={name}
                 placeholder={placeholder}
                 onChange={(e) =>

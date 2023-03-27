@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
@@ -10,7 +9,7 @@ function Projects() {
   const [filteredItems, setFilteredItems] = useState([]);
   const { auth } = useDataContex();
   const { data } = useFirestore();
-  console.log(data);
+
   const { projectsData, Skills } = data;
 
   const finalData = projectsData && [...projectsData.data];
@@ -35,7 +34,7 @@ function Projects() {
           </div>
           <div className="menus">
             <div className="row d-flex justify-content-center g-2 my-1">
-              <NavLink
+              <div
                 key="999"
                 onClick={() => filterProjectsData("All")}
                 className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
@@ -46,7 +45,7 @@ function Projects() {
                 }}
               >
                 All
-              </NavLink>
+              </div>
               {Skills &&
                 Object.entries(Skills.data).map(([, { id, name }]) => (
                   <div

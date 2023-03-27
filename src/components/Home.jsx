@@ -1,4 +1,3 @@
-import { useDataContex } from "../contexts/useAllContext";
 import Banner from "./banner/Banner";
 import Contact from "./contact/Contact";
 import Educations from "./educations/Educations";

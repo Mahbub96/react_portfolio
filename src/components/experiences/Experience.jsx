@@ -45,7 +45,7 @@ function Experience() {
                     );
                   else {
                     return (
-                      <>
+                      <div key={new Date().getSeconds()}>
                         <div
                           className="col-12 col-md-6"
                           key={id + key + new Date()}
@@ -62,7 +62,7 @@ function Experience() {
                           className="col-12 col-md-6"
                           key={id + key * 10}
                         ></div>
-                      </>
+                      </div>
                     );
                   }
                 }

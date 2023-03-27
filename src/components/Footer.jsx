@@ -6,7 +6,7 @@ function Footer() {
       <footer className="container my-5">
         <div className="d-flex justify-content-center my-3">
           <a
-            href="http://facebook.com/mahabub.sobuz"
+            href="https://www.facebook.com/MahbubCSE96/"
             aria-current="page"
             title="Facebook Profile"
           >

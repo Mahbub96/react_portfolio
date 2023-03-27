@@ -7,7 +7,7 @@ function Header() {
   return (
     <div id="home">
       <header className="sticky-top">
-        <nav
+        <div
           className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}
         >
           <div className="container-fluid bg-light">
@@ -99,7 +99,7 @@ function Header() {
               </button>
             </div>
           </div>
-        </nav>
+        </div>
       </header>
     </div>
   );
