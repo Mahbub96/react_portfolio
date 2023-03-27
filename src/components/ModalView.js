@@ -6,7 +6,7 @@ export default function ModalView(props) {
   const { name, ...events } = props;
   console.log(name);
   const data = formName[name];
-
+  console.log(data);
   const [dynamicState, setDynamicState] = useState({});
 
   const handleSubmit = () => {

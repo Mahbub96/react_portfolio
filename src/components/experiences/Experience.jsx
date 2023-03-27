@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useFirestore from "../../hooks/useFirestore";
-import classes from "./experience.module.css";
 import ModalView from "../ModalView";
+import classes from "./experience.module.css";
 
 function Experience() {
   const [modalShow, setModalShow] = useState(false);
@@ -74,6 +74,7 @@ function Experience() {
                       onClick={() => setModalShow(true)}
                       style={{
                         color: "blue",
+                        cursor: "pointer",
                         display: "inline-block",
                       }}
                     >

@@ -1,8 +1,8 @@
+import React from "react";
 import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
 import Skill from "./Skill.jsx";
-import React from "react";
-import ModalView from "../ModalView";
 
 function Skills() {
   const { data } = useFirestore();
@@ -36,6 +36,11 @@ function Skills() {
               <div
                 className="col-6 col-lg-2 col-md-4 skill_hover"
                 onClick={() => setModalShow(true)}
+                style={{
+                  color: "blue",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
               >
                 {
                   <Skill

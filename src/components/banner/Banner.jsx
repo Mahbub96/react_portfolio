@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./banner.module.css";
 import { TypeAnimation } from "react-type-animation";
+import styles from "./banner.module.css";
 
 function Banner() {
   const txt = [

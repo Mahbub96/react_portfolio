@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import Project from "./Project";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
+import Project from "./Project";
 
 function Projects() {
   const [modalShow, setModalShow] = useState(false);
@@ -87,7 +87,14 @@ function Projects() {
               )}
 
             {projectsData && (
-              <div onClick={() => setModalShow(true)}>
+              <div
+                onClick={() => setModalShow(true)}
+                style={{
+                  color: "blue",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
+              >
                 <Project
                   key={new Date()}
                   title="Add New Projects"
@@ -103,7 +110,7 @@ function Projects() {
       </div>
 
       <ModalView
-        name={"Experiences"}
+        name={"projectsData"}
         show={modalShow}
         onHide={() => setModalShow(false)}
       />

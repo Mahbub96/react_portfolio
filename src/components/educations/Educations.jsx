@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import styles from "./education.module.css";
 
 function Educations() {
-  let ins = 2;
-  const { data, setDocuments } = useFirestore();
+  const { data } = useFirestore();
   const { Education } = data;
   const [modalShow, setModalShow] = useState(false);
   return (
@@ -81,13 +79,19 @@ function Educations() {
               )}
             {Education && (
               <div
-                // className="col-6 col-lg-2 col-md-4 skill_hover"
-                onClick={() => setModalShow(true)}
+              // className="col-6 col-lg-2 col-md-4 skill_hover"
               >
                 <div className="col-12 col-md-6" key="1"></div>
                 <div className="col-12 col-md-6" key="2">
                   <div className="conts mt-4">
-                    <h4>
+                    <h4
+                      onClick={() => setModalShow(true)}
+                      style={{
+                        color: "blue",
+                        cursor: "pointer",
+                        display: "inline-block",
+                      }}
+                    >
                       Add New Education Information <br />
                     </h4>
                   </div>
