@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import Project from "./Project";
 
 function Projects() {
@@ -46,7 +47,7 @@ function Projects() {
               >
                 All
               </div>
-              {Skills &&
+              {Skills ? (
                 Object.entries(Skills.data).map(([, { id, name }]) => (
                   <div
                     style={{
@@ -65,12 +66,23 @@ function Projects() {
                   >
                     <span>{name}</span>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThreeDots />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="cards row d-flex justify-content-center my-1 g-3">
-            {filteredItems &&
+            {filteredItems ? (
               Object.entries(filteredItems).map(
                 ([key, { id, name, src, desc, lang }]) => {
                   return (
@@ -84,7 +96,18 @@ function Projects() {
                     />
                   );
                 }
-              )}
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots />
+              </div>
+            )}
 
             {projectsData && auth && (
               <div

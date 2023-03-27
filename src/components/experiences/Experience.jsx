@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import classes from "./experience.module.css";
 
 function Experience() {
@@ -22,7 +23,7 @@ function Experience() {
             <p>3 years 6th months</p>
           </div>
           <div className="content bg-light py-5 row g-0">
-            {Experiences &&
+            {Experiences ? (
               Object.entries(Experiences.data).map(
                 ([key, { id, name, time, how }]) => {
                   if (key % 2 === 0)
@@ -66,7 +67,19 @@ function Experience() {
                     );
                   }
                 }
-              )}
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots />
+              </div>
+            )}
+
             {Experiences && auth && (
               <div>
                 <div className="col-12 col-md-6" key="1"></div>

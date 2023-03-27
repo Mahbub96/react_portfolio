@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import styles from "./education.module.css";
 
 function Educations() {
@@ -19,7 +20,7 @@ function Educations() {
             </h2>
           </div>
           <div className="content bg-light py-5 mt-4 row g-0">
-            {Education &&
+            {Education ? (
               Object.entries(Education.data).map(
                 ([
                   key,
@@ -78,7 +79,18 @@ function Educations() {
                     );
                   }
                 }
-              )}
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots />
+              </div>
+            )}
             {Education && auth && (
               <div
               // className="col-6 col-lg-2 col-md-4 skill_hover"

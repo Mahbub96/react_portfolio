@@ -31,9 +31,12 @@ function Footer() {
               <i className="fa fa-github"></i>
             </span>
           </a>
-          <a href="#home" title="Twitter Profile">
+          <a
+            href="https://www.linkedin.com/in/md-mahbub-alam-6b751821b"
+            title="Twitter Profile"
+          >
             <span className="mx-3">
-              <i className="fa fa-twitter"></i>
+              <i className="fa fa-linkedin"></i>
             </span>
           </a>
         </div>

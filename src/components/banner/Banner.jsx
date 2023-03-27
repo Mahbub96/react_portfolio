@@ -93,10 +93,14 @@ function Banner() {
                 ></i>
               </span>
             </a>
-            <a href="#home" title="Twitter Profile" rel="noopener noreferrer">
+            <a
+              href="https://www.linkedin.com/in/md-mahbub-alam-6b751821b"
+              title="linkedin Profile"
+              rel="noopener noreferrer"
+            >
               <span>
                 <i
-                  className={`fa fa-twitter mx-3 mx-md-5 ${styles.social_icon}`}
+                  className={`fa fa-linkedin mx-3 mx-md-5 ${styles.social_icon}`}
                 ></i>
               </span>
             </a>
