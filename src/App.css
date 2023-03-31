@@ -64,11 +64,11 @@ nav ul li.nav-item a:hover {
   /* border style  */
   .experience .content .right::before,
   .education .content .right::before {
-    content: none;
+    display: none;
   }
   .experience .content .right::after,
   .education .content .right::after {
-    content: none;
+    display: none;
   }
 }
 
@@ -193,6 +193,14 @@ nav ul li.nav-item a:hover {
 
 .project .card {
   box-shadow: 3px 3px 30px #ddd;
+}
+
+.pcard {
+  position: relative;
+}
+.pcard a {
+  background-color: blue;
+  bottom: 10px;
 }
 
 @media (max-width: 576px) {

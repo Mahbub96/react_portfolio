@@ -8,10 +8,10 @@ function Project({ imgSrc, title, desc, altTxt, lang }) {
     >
       <div className="card text-center" style={{ width: "15rem" }}>
         <img
-          style={{ height: "7rem" }}
           src={imgSrc}
           className="card-img-top"
           alt={altTxt}
+          style={{ height: "7rem" }}
         />
         <div className="card-body">
           <h5
@@ -25,10 +25,14 @@ function Project({ imgSrc, title, desc, altTxt, lang }) {
           <p className="card-text" style={{ fontSize: "10px" }}>
             {desc}
           </p>
-          <a href="#home" className="btn btn-light bg-light">
-            Go somewhere
-          </a>
         </div>
+        <a
+          href="#home"
+          className="btn btn-light bg-light"
+          style={{ paddingBottom: "20px" }}
+        >
+          Go To Project
+        </a>
       </div>
     </div>
   );

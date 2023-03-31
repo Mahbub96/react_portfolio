@@ -1,4 +1,5 @@
 import { useState } from "react";
+import uuid from "react-uuid";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
@@ -7,10 +8,9 @@ import classes from "./experience.module.css";
 
 function Experience() {
   const [modalShow, setModalShow] = useState(false);
-  const { data } = useFirestore();
   const { auth } = useDataContex();
 
-  const { Experiences } = data;
+  const { Experiences } = useFirestore().data;
 
   return (
     <>
@@ -25,15 +25,18 @@ function Experience() {
           <div className="content bg-light py-5 row g-0">
             {Experiences ? (
               Object.entries(Experiences.data).map(
-                ([key, { id, name, time, how }]) => {
+                ([key, { name, time, how }]) => {
                   if (key % 2 === 0)
                     return (
-                      <>
-                        <div
-                          className="col-12 col-md-6"
-                          key={id + key + new Date()}
-                        ></div>
-                        <div className="col-12 col-md-6" key={id + key * 10}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                        key={uuid()}
+                      >
+                        <div className="col-12 col-md-6"></div>
+                        <div className="col-12 col-md-6">
                           <div className="conts mt-4">
                             <p className={classes.times}>{time}</p>
                             <h4>
@@ -42,15 +45,12 @@ function Experience() {
                             </h4>
                           </div>
                         </div>
-                      </>
+                      </div>
                     );
                   else {
                     return (
-                      <div key={new Date().getSeconds()}>
-                        <div
-                          className="col-12 col-md-6"
-                          key={id + key + new Date()}
-                        >
+                      <div key={uuid()}>
+                        <div className="col-12 col-md-6">
                           <div className="conts mt-4 right">
                             <p className="times">{time}</p>
                             <h4>
@@ -59,10 +59,7 @@ function Experience() {
                             </h4>
                           </div>
                         </div>
-                        <div
-                          className="col-12 col-md-6"
-                          key={id + key * 10}
-                        ></div>
+                        <div className="col-12 col-md-6"></div>
                       </div>
                     );
                   }
@@ -82,8 +79,8 @@ function Experience() {
 
             {Experiences && auth && (
               <div>
-                <div className="col-12 col-md-6" key="1"></div>
-                <div className="col-12 col-md-6" key="2">
+                <div className="col-12 col-md-6"></div>
+                <div className="col-12 col-md-6">
                   <div className="conts mt-4">
                     <h4
                       onClick={() => setModalShow(true)}
@@ -103,6 +100,7 @@ function Experience() {
         </div>
       </div>
       <ModalView
+        key={uuid()}
         name={"Experiences"}
         show={modalShow}
         onHide={() => setModalShow(false)}

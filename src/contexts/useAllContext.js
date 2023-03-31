@@ -5,7 +5,7 @@ export const useDataContex = () => useContext(DataContext);
 
 function DataContextProvider(props) {
   // const getIslogin = async ()=> setIsLogin(await axios.get("https://backend996.herokuapp.com/login").data);
-  const auth = false;
+  const auth = true;
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,4 +1,5 @@
 import React from "react";
+import uuid from "react-uuid";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
@@ -14,7 +15,15 @@ function Skills() {
   return (
     <>
       {Skills ? (
-        <div className="container mt-5" id="skills">
+        <div
+          className="container mt-5"
+          id="skills"
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+          key={uuid()}
+        >
           <div className="skills">
             <div className="header">
               <h2>
@@ -28,7 +37,7 @@ function Skills() {
                   return (
                     <Skill
                       classes="col-6 col-lg-2 col-md-4 skill_hover"
-                      key={id}
+                      key={uuid()}
                       name={name}
                       imgSrc={src}
                       altTxt={name}
