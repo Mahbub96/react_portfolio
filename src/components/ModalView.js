@@ -3,18 +3,19 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import useFirestore from "../hooks/useFirestore";
 import { formName } from "../Utils/StaticData";
+
 export default function ModalView(props) {
   const { name, ...events } = props;
-  const { data } = useFirestore();
 
-  const { Skills } = data;
+  const { Skills } = useFirestore().data;
 
   const items = formName[name];
-
+  console.log(items);
   const [dynamicState, setDynamicState] = useState({});
   const [language, setLanguage] = useState([]);
-
+  console.log("lang:", language);
   const handleSubmit = () => {
+    console.log(dynamicState);
     //props.onHide();
   };
   return (
@@ -31,7 +32,7 @@ export default function ModalView(props) {
       </Modal.Header>
       <Modal.Body>
         {items?.map(({ type, name, placeholder }) => (
-          <p key={new Date().getSeconds()}>
+          <p>
             {type === "select" ? (
               <select
                 key={new Date().getSeconds()}
@@ -46,11 +47,7 @@ export default function ModalView(props) {
               >
                 {Skills &&
                   Skills.data.map(({ name }) => (
-                    <option
-                      value={name}
-                      name={name}
-                      key={new Date().getSeconds()}
-                    >
+                    <option value={name} name={name}>
                       {name}
                     </option>
                   ))}
@@ -58,7 +55,6 @@ export default function ModalView(props) {
             ) : (
               <input
                 type={type}
-                key={new Date().getSeconds()}
                 name={name}
                 placeholder={placeholder}
                 onChange={(e) =>
