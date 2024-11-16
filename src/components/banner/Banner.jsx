@@ -44,13 +44,18 @@ function Banner() {
             </h4>
             <h5 className="my-2">Dhaka,Bangladesh</h5>
             <p className="my-3">
-              Dynamic, detail-oriented Software Engineer with over 4 years of
-              experience in Self Learning. Skilled in a variety of programming
-              languages, including JavaScript,React Js, and Node.js,React Native
-              and Expo CLI. Proficient in agile development methodologies and
-              experienced in the full software development lifecycle. Hold a
-              Bachelor's degree in Computer Science from Stamford University
-              Bangladesh. Maintain several open source projects.
+              As a Junior Software Engineer at Brotecs Technologies Ltd., I
+              specialize in the backend development of web applications and
+              cloud-based VoIP calling solutions. I have hands-on experience
+              with PHP frameworks like CodeIgniter and Laravel, and have also
+              worked with modern JavaScript frameworks such as Node.js and
+              React. Additionally, I am familiar with ASTPP and various UI
+              frameworks including Tailwind, MaterialUI, and Bootstrap.
+              <br></br> My background extends into Python, particularly for deep
+              learning applications, and I am continually exploring new
+              technologies in cloud and DevSecOps to expand my skill set. I am
+              committed to ongoing learning, believing it is key to personal and
+              professional growth.
             </p>
             <button className="btn btn-primary btn-sm rounded-pill">
               Get in Touch

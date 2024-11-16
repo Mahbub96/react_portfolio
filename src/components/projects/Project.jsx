@@ -1,6 +1,6 @@
 import React from "react";
 
-function Project({ imgSrc, title, desc, altTxt, lang }) {
+function Project({ imgSrc, title, desc, altTxt, lang, to }) {
   return (
     <div
       lang={lang}
@@ -27,7 +27,7 @@ function Project({ imgSrc, title, desc, altTxt, lang }) {
           </p>
         </div>
         <a
-          href="#home"
+          href={to}
           className="btn btn-light bg-light"
           style={{ paddingBottom: "20px" }}
         >

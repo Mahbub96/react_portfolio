@@ -2,8 +2,8 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import uuid from "react-uuid";
-import useFirestore from "../hooks/useFirestore";
 import { formName } from "../Utils/StaticData";
+import useFirestore from "../hooks/useFirestore";
 
 export default function ModalView(props) {
   const { name, ...events } = props;
@@ -17,7 +17,6 @@ export default function ModalView(props) {
   const [language, setLanguage] = useState([]);
 
   const handleSubmit = () => {
-    console.log(dynamicState, language);
     //props.onHide();
   };
 

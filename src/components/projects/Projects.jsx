@@ -84,7 +84,7 @@ function Projects() {
           <div className="cards row d-flex justify-content-center my-1 g-3">
             {filteredItems ? (
               Object.entries(filteredItems).map(
-                ([key, { id, name, src, desc, lang }]) => {
+                ([key, { id, name, src, desc, lang, to }]) => {
                   return (
                     <Project
                       key={id}
@@ -93,6 +93,7 @@ function Projects() {
                       altTxt={name}
                       desc={desc}
                       lang={lang}
+                      to={to}
                     />
                   );
                 }
