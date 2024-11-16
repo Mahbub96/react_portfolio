@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import uuid from "react-uuid";
 import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import styles from "./education.module.css";
 
 function Educations() {
-  // console.log("projects");
-  let ins = 2;
-
-  const { getEducationsData, educationsData } = useDataContex();
-
-  useEffect(() => {
-    getEducationsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { data } = useFirestore();
+  const { Education } = data;
+  const { auth } = useDataContex();
+  const [modalShow, setModalShow] = useState(false);
   return (
     <>
       <div className="container mt-5" id="education">
@@ -23,15 +21,21 @@ function Educations() {
             </h2>
           </div>
           <div className="content bg-light py-5 mt-4 row g-0">
-            {educationsData &&
-              Object.entries(educationsData).map(
+            {Education ? (
+              Object.entries(Education.data).map(
                 ([
                   key,
                   { id, name, time, degName, Department, cgpa, group, Thesis },
                 ]) => {
                   if (key % 2 === 0)
                     return (
-                      <>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                        key={uuid()}
+                      >
                         <div className="col-12 col-md-6"></div>
                         <div className="col-12 col-md-6">
                           <div className="conts mt-4">
@@ -52,11 +56,11 @@ function Educations() {
                             </p>
                           </div>
                         </div>
-                      </>
+                      </div>
                     );
                   else {
                     return (
-                      <>
+                      <div key={uuid()}>
                         <div className="col-12 col-md-6">
                           <div className="conts mt-4 right">
                             <p className="times">{time}</p>
@@ -78,32 +82,52 @@ function Educations() {
                           </div>
                         </div>
                         <div className="col-12 col-md-6"></div>
-                      </>
+                      </div>
                     );
                   }
                 }
-              )}
-            {educationsData && (
-              <NavLink
-                key="3"
-                to={`inp/${ins}`}
-                // className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots />
+              </div>
+            )}
+            {Education && auth && (
+              <div
+              // className="col-6 col-lg-2 col-md-4 skill_hover"
               >
                 <div className="col-12 col-md-6" key="1"></div>
                 <div className="col-12 col-md-6" key="2">
                   <div className="conts mt-4">
-                    <h4>
+                    <h4
+                      onClick={() => setModalShow(true)}
+                      style={{
+                        color: "blue",
+                        cursor: "pointer",
+                        display: "inline-block",
+                      }}
+                    >
                       Add New Education Information <br />
                     </h4>
                   </div>
                 </div>
-              </NavLink>
+              </div>
             )}
           </div>
         </div>
       </div>
+      <ModalView
+        key={uuid()}
+        name={"Education"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }

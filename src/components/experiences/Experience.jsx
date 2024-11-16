@@ -1,17 +1,16 @@
-import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import uuid from "react-uuid";
 import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import classes from "./experience.module.css";
+
 function Experience() {
-  // console.log("projects");
-  let ins = 1;
+  const [modalShow, setModalShow] = useState(false);
+  const { auth } = useDataContex();
 
-  const { getExperienceData, experienceData } = useDataContex();
-
-  useEffect(() => {
-    getExperienceData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { Experiences } = useFirestore().data;
 
   return (
     <>
@@ -24,14 +23,20 @@ function Experience() {
             <p>3 years 6th months</p>
           </div>
           <div className="content bg-light py-5 row g-0">
-            {experienceData &&
-              Object.entries(experienceData).map(
-                ([key, { id, name, time, how }]) => {
+            {Experiences ? (
+              Object.entries(Experiences.data).map(
+                ([key, { name, time, how }]) => {
                   if (key % 2 === 0)
                     return (
-                      <>
-                        <div className="col-12 col-md-6" key={id + key}></div>
-                        <div className="col-12 col-md-6" key={id + key * 10}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                        }}
+                        key={uuid()}
+                      >
+                        <div className="col-12 col-md-6"></div>
+                        <div className="col-12 col-md-6">
                           <div className="conts mt-4">
                             <p className={classes.times}>{time}</p>
                             <h4>
@@ -40,12 +45,12 @@ function Experience() {
                             </h4>
                           </div>
                         </div>
-                      </>
+                      </div>
                     );
                   else {
                     return (
-                      <>
-                        <div className="col-12 col-md-6" key={id + key}>
+                      <div key={uuid()}>
+                        <div className="col-12 col-md-6">
                           <div className="conts mt-4 right">
                             <p className="times">{time}</p>
                             <h4>
@@ -54,36 +59,52 @@ function Experience() {
                             </h4>
                           </div>
                         </div>
-                        <div
-                          className="col-12 col-md-6"
-                          key={id + key * 10}
-                        ></div>
-                      </>
+                        <div className="col-12 col-md-6"></div>
+                      </div>
                     );
                   }
                 }
-              )}
-            {experienceData && (
-              <NavLink
-                key="3"
-                to={`inp/${ins}`}
-                // className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <div className="col-12 col-md-6" key="1"></div>
-                <div className="col-12 col-md-6" key="2">
+                <ThreeDots />
+              </div>
+            )}
+
+            {Experiences && auth && (
+              <div>
+                <div className="col-12 col-md-6"></div>
+                <div className="col-12 col-md-6">
                   <div className="conts mt-4">
-                    <h4>
+                    <h4
+                      onClick={() => setModalShow(true)}
+                      style={{
+                        color: "blue",
+                        cursor: "pointer",
+                        display: "inline-block",
+                      }}
+                    >
                       Add New Experience <br />
                     </h4>
                   </div>
                 </div>
-              </NavLink>
+              </div>
             )}
           </div>
         </div>
       </div>
+      <ModalView
+        key={uuid()}
+        name={"Experiences"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }

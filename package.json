@@ -8,21 +8,35 @@
     "@testing-library/react": "^13.0.1",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
+<<<<<<< HEAD
     "concurrently": "^7.4.0",
     "gh-pages": "^4.0.0",
     "json-server": "^0.17.0",
+=======
+    "bootstrap": "^5.2.3",
+    "firebase": "^9.18.0",
+>>>>>>> main
     "react": "^18.0.0",
+    "react-bootstrap": "^2.7.2",
+    "react-content-loader": "^6.2.1",
     "react-dom": "^18.0.0",
+    "react-loading-skeleton": "^3.2.0",
     "react-router-dom": "5",
     "react-scripts": "5.0.1",
+    "react-type-animation": "^3.0.1",
+    "react-uuid": "^2.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+<<<<<<< HEAD
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start:front": "react-scripts start",
     "json-server": "json-server --watch db.json --port 3001",
     "start": "concurrently \"yarn start:front\" \"yarn json-server\"",
+=======
+    "start": "react-scripts start",
+>>>>>>> main
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

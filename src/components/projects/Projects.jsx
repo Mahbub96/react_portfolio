@@ -1,32 +1,27 @@
-import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
+import useFirestore from "../../hooks/useFirestore";
+import ModalView from "../ModalView";
+import ThreeDots from "../ThreeDots";
 import Project from "./Project";
 
 function Projects() {
-  // console.log("projects");
-  let ins = 3;
+  const [modalShow, setModalShow] = useState(false);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const { auth } = useDataContex();
+  const { data } = useFirestore();
 
-  const {
-    skillsData,
-    projectsData,
-    setProjectsData,
-    getProjectsData,
-    getProjectTag,
-  } = useDataContex();
+  const { projectsData, Skills } = data;
+
+  const finalData = projectsData && [...projectsData.data];
 
   useEffect(() => {
-    getProjectTag();
-    getProjectsData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setFilteredItems(projectsData?.data);
+  }, [projectsData]);
 
   const filterProjectsData = (name) => {
-    const filteredItems = Object.values(projectsData).filter(
-      (values) => values.lang && values.lang.indexOf(name) !== -1
-    );
-
-    setProjectsData(filteredItems);
+    if (name === "All") setFilteredItems(finalData);
+    else setFilteredItems(finalData.filter((item) => item.lang.includes(name)));
   };
 
   return (
@@ -40,20 +35,20 @@ function Projects() {
           </div>
           <div className="menus">
             <div className="row d-flex justify-content-center g-2 my-1">
-              <NavLink
+              <div
                 key="999"
+                onClick={() => filterProjectsData("All")}
                 className="col-4 bg-light col-lg-1 col-md-2 col-sm-3 col-md-2"
                 to="#"
-                onClick={() => getProjectsData()}
                 style={{
                   curser: "pointer",
                   boxShadow: "2px 2px 2px #aaa,-2px -2px 2px #aaa",
                 }}
               >
                 All
-              </NavLink>
-              {NavLink &&
-                Object.entries(skillsData).map(([key, { id, name }]) => (
+              </div>
+              {Skills ? (
+                Object.entries(Skills.data).map(([, { id, name }]) => (
                   <div
                     style={{
                       whiteSpace: "nowrap",
@@ -61,7 +56,7 @@ function Projects() {
                       maxWidth: "110px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      curser: "pointer",
+                      cursor: "pointer",
                       boxShadow: "2px 2px 2px #aaa,-2px -2px 2px #aaa",
                     }}
                     onClick={() => filterProjectsData(name)}
@@ -71,14 +66,25 @@ function Projects() {
                   >
                     <span>{name}</span>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThreeDots />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="cards row d-flex justify-content-center my-1 g-3">
-            {projectsData &&
-              Object.entries(projectsData).map(
-                ([key, { id, name, src, desc, lang }]) => {
+            {filteredItems ? (
+              Object.entries(filteredItems).map(
+                ([key, { id, name, src, desc, lang, to }]) => {
                   return (
                     <Project
                       key={id}
@@ -87,17 +93,31 @@ function Projects() {
                       altTxt={name}
                       desc={desc}
                       lang={lang}
+                      to={to} // Example value: "https://github.com/username/project-name"
                     />
                   );
                 }
-              )}
+              )
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots />
+              </div>
+            )}
 
-            {projectsData && (
-              <NavLink
-                to={`inp/${ins}`}
-                // className="col-6 col-lg-2 col-md-4 skill_hover"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+            {projectsData && auth && (
+              <div
+                onClick={() => setModalShow(true)}
+                style={{
+                  color: "blue",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
               >
                 <Project
                   key={new Date()}
@@ -107,11 +127,17 @@ function Projects() {
                   desc="Some quick example text to build on the card title and make
               up the bulk of the card's content."
                 />
-              </NavLink>
+              </div>
             )}
           </div>
         </div>
       </div>
+
+      <ModalView
+        name={"projectsData"}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
     </>
   );
 }

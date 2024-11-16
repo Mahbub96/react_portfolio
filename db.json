@@ -19,14 +19,9 @@
       "src": "/assets/img/javaScript.png"
     },
     {
-      "id": 102,
-      "name": "Vue JS",
-      "src": "/assets/img/vue`.png"
-    },
-    {
-      "id": 103,
-      "name": "jQuery",
-      "src": "/assets/img/jquery.png"
+      "id": 116,
+      "name": "React Native",
+      "src": "/assets/img/react-native.png"
     },
     {
       "id": 104,
@@ -42,16 +37,6 @@
       "id": 106,
       "name": "git",
       "src": "/assets/img/git.png"
-    },
-    {
-      "id": 107,
-      "name": "github",
-      "src": "/assets/img/github.png"
-    },
-    {
-      "id": 108,
-      "name": "CSS",
-      "src": "/assets/img/css.png"
     },
     {
       "id": 109,
@@ -74,20 +59,27 @@
       "src": "/assets/img/c++.png"
     },
     {
-      "id": 113,
-      "name": "C",
-      "src": "/assets/img/c.png"
-    },
-    {
       "id": 114,
       "name": "Assembly Language",
       "src": "/assets/img/asm.png"
+    },
+    ,
+    {
+      "id": 115,
+      "name": "SQlite3",
+      "src": "/assets/img/sqlite3.png"
+    },
+    ,
+    {
+      "id": 117,
+      "name": "Swings",
+      "src": "/assets/img/swings.png"
     }
   ],
   "experiences": [
     {
       "id": 1,
-      "name": "Stamford University Bangladesh",
+      "name": "Junior Software Engineer | ",
       "time": "January 2019 - Present",
       "how": "Student"
     },
