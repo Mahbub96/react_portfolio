@@ -93,7 +93,7 @@ function Projects() {
                       altTxt={name}
                       desc={desc}
                       lang={lang}
-                      to={to}
+                      to={to} // Example value: "https://github.com/username/project-name"
                     />
                   );
                 }
