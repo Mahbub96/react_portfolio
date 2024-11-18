@@ -80,14 +80,14 @@
     {
       "id": 1,
       "name": "Junior Software Engineer | ",
-      "time": "January 2019 - Present",
-      "how": "Student"
+      "time": "March 24 - Present",
+      "how": "Brotecs Technologies Ltd."
     },
     {
       "id": 2,
-      "name": "Web Development",
-      "time": "March 2017 - 2019",
-      "how": "Self Learning"
+      "name": "Internship Software Engineer",
+      "time": "September 23 - March 24",
+      "how": "Brotecs Technologies Ltd."
     },
     {
       "id": 3,
@@ -96,20 +96,20 @@
       "how": "Self Learning"
     },
     {
+      "id": 4,
       "name": "Data Science",
-      "time": "Jun 22 to Now",
-      "how": "Doing a course on it",
-      "id": 4
+      "time": "Jun 22 - Now",
+      "how": "Doing a course on it"
     },
     {
       "name": "Machine Learning",
-      "time": "August - 22 to Present",
+      "time": "August - 22 - Present",
       "how": "Doing Thesis on Machine Learning",
       "id": 5
     },
     {
       "name": "Demo Experience",
-      "time": "March -22 to Present",
+      "time": "March -22 - Present",
       "how": "Self Learning",
       "id": 6
     }

@@ -23,8 +23,8 @@ function Experience() {
             <p>3 years 6th months</p>
           </div>
           <div className="content bg-light py-5 row g-0">
-            {Experiences ? (
-              Object.entries(Experiences.data).map(
+            {Experiences?.data ? (
+              Object.entries(Experiences?.data).map(
                 ([key, { name, time, how }]) => {
                   if (key % 2 === 0)
                     return (

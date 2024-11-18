@@ -9,15 +9,16 @@ export default function ModalView(props) {
   const { name, ...events } = props;
 
   const { Skills } = useFirestore().data;
+  const { AddData } = useFirestore();
 
-  //const items = formName[name];
   const items = formName[name];
 
   const [dynamicState, setDynamicState] = useState({});
   const [language, setLanguage] = useState([]);
 
   const handleSubmit = () => {
-    //props.onHide();
+    AddData(name, { ...dynamicState });
+    props.onHide();
   };
 
   return (
@@ -29,7 +30,7 @@ export default function ModalView(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
+          Add New {name}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

@@ -1,36 +1,60 @@
 import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { db } from "./../DB/DB_init";
 
 const useFirestore = () => {
   const [data, setData] = useState({});
 
+  // Memoize collection reference
+  const collectionRef = useMemo(() => collection(db, "portfolio_data"), []);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "portfolio_data"), (res) => {
-      const tmpData = {};
-
-      res.forEach((doc) => {
-        tmpData[doc.id] = doc.data();
-      });
-
-      res.size === Object.keys(tmpData).length && setData(tmpData);
+    const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+      // Process snapshot data in one pass
+      const tmpData = Object.fromEntries(
+        snapshot.docs.map((doc) => [doc.id, doc.data()])
+      );
+      setData(tmpData);
     });
 
-    return unsubscribe;
-  }, []);
-
-  const setDocuments = (id, data) => {
-    return new Promise(async (resolve, reject) => {
+    return () => unsubscribe();
+  }, [collectionRef]);
+  // Memoize setDocuments function
+  const UpdateData = useCallback(
+    async (id, data) => {
       try {
-        await setDoc(doc(db, "portfolio_data", id), data);
-        resolve({ message: "Product Added Successfully" }, { merge: true });
+        const docRef = doc(collectionRef, id);
+        await setDoc(docRef, data, { merge: true });
+        return { message: "Data Updated Successfully" };
       } catch (e) {
-        reject(e);
+        throw e;
       }
-    });
-  };
+    },
+    [collectionRef]
+  );
 
-  return { data, setDocuments };
+  const AddData = useCallback(
+    async (id, newData) => {
+      try {
+        const docRef = doc(collectionRef, id);
+        // Get existing data first
+        const existingData = data[id] || {};
+
+        // If data field exists, append to array, otherwise create new array
+        const updatedData = {
+          data: existingData.data ? [...existingData.data, newData] : [newData],
+        };
+
+        await setDoc(docRef, updatedData);
+        return { message: "Data Added Successfully" };
+      } catch (e) {
+        throw e;
+      }
+    },
+    [collectionRef, data]
+  );
+
+  return { data, UpdateData, AddData };
 };
 
 export default useFirestore;
