@@ -46,24 +46,25 @@ function Skills() {
                 })}
 
               {auth && (
-                <div
+                <button
                   className="col-6 col-lg-2 col-md-4 skill_hover"
                   onClick={() => setModalShow(true)}
                   style={{
                     color: "blue",
                     cursor: "pointer",
                     display: "inline-block",
+                    border: "none",
+                    background: "none",
+                    padding: 0,
                   }}
                 >
-                  {
-                    <Skill
-                      key={new Date(0)}
-                      name="Add New"
-                      imgSrc="../assets/img/add.png"
-                      altTxt="Add New"
-                    ></Skill>
-                  }
-                </div>
+                  <Skill
+                    key={new Date(0)}
+                    name="Add New"
+                    imgSrc="../assets/img/add.png"
+                    altTxt="Add New"
+                  />
+                </button>
               )}
             </div>
           </div>

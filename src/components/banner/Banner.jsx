@@ -4,7 +4,7 @@ import styles from "./banner.module.css";
 
 function Banner() {
   const txt = [
-    "Web Application Developer",
+    "Full Stack Web Application Developer",
     1000,
     "Mobile Application Developer",
     1000,
@@ -12,7 +12,7 @@ function Banner() {
     1000,
     "Data Science",
     1000,
-    "Student",
+    "Cloud & DevSecOps",
     1000,
   ];
   return (

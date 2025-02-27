@@ -4,6 +4,10 @@ import classes from "./navbar.module.css";
 
 function Header() {
   const { auth } = useDataContex();
+  // if auth found then store this auth in the local storage
+  if (auth) {
+    localStorage.setItem("auth", auth);
+  }
   return (
     <div id="home">
       <header className="sticky-top">
