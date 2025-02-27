@@ -171,8 +171,8 @@ nav ul li.nav-item a:hover {
 /* exprerience section  */
 .experience .content .right,
 .education .content .right {
-  padding: none;
-  border: none;
+  padding: 0;
+  border: 0;
   padding-right: 50px;
   border-right: 1px solid rgba(30, 144, 255, 0.2);
 }
