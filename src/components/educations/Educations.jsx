@@ -1,76 +1,115 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import styles from "./educations.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import styles from "./education.module.css";
 
 function Educations() {
   const [modalShow, setModalShow] = useState(false);
   const { auth } = useDataContex();
   const { Education } = useFirestore().data;
+  const [selectedEducation, setSelectedEducation] = useState(null);
+  const { deleteDocument } = useFirestore();
+
+  const handleEdit = (education) => {
+    setSelectedEducation(education);
+    setModalShow(true);
+  };
+
+  const handleDelete = async (education) => {
+    if (window.confirm("Are you sure you want to delete this education?")) {
+      try {
+        await deleteDocument("Education", education.id);
+      } catch (error) {
+        console.error("Error deleting education:", error);
+      }
+    }
+  };
 
   return (
     <section id="education" className={styles.educationSection}>
       <div className="container">
-        <div className={styles.sectionHeader}>
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2>
-            <span className={styles.sectionNumber}>04.</span>
-            Education & Learning
+            <span className={styles.sectionNumber}>04.</span> Education
           </h2>
           <div className={styles.headerLine}></div>
-        </div>
+        </motion.div>
 
-        <div className={styles.educationGrid}>
+        <div className={styles.timelineContainer}>
+          <div className={styles.verticalLine}></div>
           {Education ? (
-            Object.entries(Education.data).map(
-              ([
-                key,
-                { name, time, degName, Department, cgpa, group, Thesis },
-              ]) => (
-                <div key={key} className={styles.educationCard}>
-                  <div className={styles.cardHeader}>
-                    <span className={styles.date}>{time}</span>
-                    <h3 className={styles.institution}>{name}</h3>
-                  </div>
-                  <div className={styles.cardBody}>
-                    <h4 className={styles.degree}>{degName}</h4>
-                    <div className={styles.details}>
-                      <div className={styles.detail}>
-                        <span className={styles.label}>CGPA:</span>
-                        <span className={styles.value}>{cgpa}</span>
-                      </div>
-                      <div className={styles.detail}>
-                        <span className={styles.label}>Department:</span>
-                        <span className={styles.value}>{Department}</span>
-                      </div>
-                      <div className={styles.detail}>
-                        <span className={styles.label}>Group:</span>
-                        <span className={styles.value}>{group}</span>
-                      </div>
-                      <div className={styles.detail}>
-                        <span className={styles.label}>Thesis:</span>
-                        <span className={styles.value}>{Thesis}</span>
-                      </div>
+            Education.data.map((education, index) => (
+              <motion.div
+                key={education.id}
+                className={`${styles.timelineItem} ${
+                  index % 2 === 0 ? styles.left : styles.right
+                }`}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+              >
+                <div className={styles.timelineContent}>
+                  {auth && (
+                    <div className={styles.cardActions}>
+                      <button
+                        className={`${styles.actionButton} ${styles.editButton}`}
+                        onClick={() => handleEdit(education)}
+                        title="Edit Education"
+                      >
+                        <i className="fa fa-edit"></i>
+                      </button>
+                      <button
+                        className={`${styles.actionButton} ${styles.deleteButton}`}
+                        onClick={() => handleDelete(education)}
+                        title="Delete Education"
+                      >
+                        <i className="fa fa-trash"></i>
+                      </button>
                     </div>
-                  </div>
+                  )}
+                  <div className={styles.timelineDot}></div>
+                  <span className={styles.date}>{education.time}</span>
+                  <h3 className={styles.title}>{education.name}</h3>
+                  <p className={styles.degree}>{education.degName}</p>
+                  <p className={styles.department}>{education.Department}</p>
+                  <p className={styles.cgpa}>CGPA: {education.cgpa}</p>
+                  {education.Thesis && (
+                    <p className={styles.thesis}>Thesis: {education.Thesis}</p>
+                  )}
                 </div>
-              )
-            )
+              </motion.div>
+            ))
           ) : (
             <div className={styles.loading}>
               <ThreeDots />
             </div>
           )}
 
-          {Education && auth && (
-            <div
+          {auth && (
+            <motion.button
               className={styles.addEducation}
-              onClick={() => setModalShow(true)}
+              onClick={() => {
+                setSelectedEducation(null);
+                setModalShow(true);
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
             >
               <div className={styles.addIcon}>+</div>
               <p>Add New Education</p>
-            </div>
+            </motion.button>
           )}
         </div>
       </div>
@@ -78,7 +117,12 @@ function Educations() {
       <ModalView
         name="Education"
         show={modalShow}
-        onHide={() => setModalShow(false)}
+        onHide={() => {
+          setModalShow(false);
+          setSelectedEducation(null);
+        }}
+        initialData={selectedEducation}
+        title={selectedEducation ? "Edit Education" : "Add Education"}
       />
     </section>
   );

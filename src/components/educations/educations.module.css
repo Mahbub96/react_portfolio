@@ -1,0 +1,279 @@
+.educationSection {
+  padding: 100px 0;
+  background: var(--bg_color);
+  min-height: 100vh;
+  position: relative;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+  color: var(--heading_color);
+  font-size: 2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionNumber {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 1.25rem;
+}
+
+.headerLine {
+  height: 1px;
+  flex-grow: 1;
+  background: var(--border_color);
+}
+
+.timelineContainer {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.verticalLine {
+  position: absolute;
+  width: 2px;
+  background: var(--border_color);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.timelineItem {
+  padding: 1rem;
+  position: relative;
+  width: 50%;
+  margin-bottom: 2rem;
+}
+
+.timelineItem.left {
+  left: 0;
+  padding-right: 3rem;
+}
+
+.timelineItem.right {
+  left: 50%;
+  padding-left: 3rem;
+}
+
+.timelineContent {
+  background: var(--card_bg);
+  padding: 1.5rem;
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.timelineContent:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent_color);
+}
+
+.timelineDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--accent_color);
+  border-radius: 50%;
+  border: 2px solid var(--bg_color);
+}
+
+.left .timelineDot {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.right .timelineDot {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.date {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.title {
+  color: var(--heading_color);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-family: "Fira Code", monospace;
+}
+
+.degree {
+  color: var(--text_color);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.department {
+  color: var(--text_color);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.cgpa {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.thesis {
+  color: var(--text_color);
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.cardActions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.timelineContent:hover .cardActions {
+  opacity: 1;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.editButton {
+  color: var(--accent_color);
+  border: 1px solid var(--accent_color);
+}
+
+.editButton:hover {
+  background: var(--accent_color);
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.deleteButton:hover {
+  background: #ff4444;
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.addEducation {
+  width: 50%;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--card_bg);
+  border: 2px dashed var(--accent_color);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.addEducation:hover {
+  background: rgba(100, 255, 218, 0.1);
+  transform: translateY(-5px);
+}
+
+.addIcon {
+  font-size: 2rem;
+  color: var(--accent_color);
+  margin-bottom: 0.5rem;
+}
+
+.addEducation p {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .educationSection {
+    padding: 60px 0;
+  }
+
+  .sectionHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .timelineContainer {
+    padding: 0 1rem;
+  }
+
+  .verticalLine {
+    left: 20px;
+  }
+
+  .timelineItem {
+    width: 100%;
+    padding-left: 3rem;
+  }
+
+  .timelineItem.left,
+  .timelineItem.right {
+    left: 0;
+    padding-right: 0;
+  }
+
+  .timelineDot {
+    left: -6px;
+    right: auto;
+  }
+
+  .cardActions {
+    opacity: 1;
+  }
+
+  .addEducation {
+    width: calc(100% - 3rem);
+    margin-left: 3rem;
+  }
+}

@@ -31,34 +31,34 @@ const formName = {
   ],
   Education: [
     {
-      type: "name",
-      name: "insName",
-      placeholder: "Institute Name",
+      type: "text",
+      name: "name",
+      placeholder: "Institution Name",
     },
     {
-      type: "name",
-      name: "insName",
-      placeholder: "while - to, Ex: 2019 - Present",
+      type: "text",
+      name: "time",
+      placeholder: "2019 - Present",
     },
     {
-      type: "name",
+      type: "text",
       name: "degName",
-      placeholder: "Bachelor Of Science",
+      placeholder: "Bachelor of Science",
     },
     {
-      type: "number",
+      type: "text",
+      name: "Department",
+      placeholder: "Computer Science and Engineering",
+    },
+    {
+      type: "text",
       name: "cgpa",
-      placeholder: "3.75 out of 4.00",
+      placeholder: "3.75",
     },
     {
-      type: "name",
-      name: "dept",
-      placeholder: "Department Ex : Computer Science and Engineering",
-    },
-    {
-      type: "name",
-      name: "thesis",
-      placeholder: "Thesis / Project / No",
+      type: "text",
+      name: "Thesis",
+      placeholder: "Thesis Title (Optional)",
     },
   ],
   projectsData: [
