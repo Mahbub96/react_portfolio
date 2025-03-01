@@ -106,22 +106,26 @@
 
 .projectsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
-  padding: 0 2rem;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .projectCard {
   background: var(--card_bg);
-  border: 1px solid var(--border_color);
   border-radius: 8px;
+  border: 1px solid var(--border_color);
   overflow: hidden;
+  position: relative;
   transition: all 0.3s ease;
 }
 
 .projectCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent_color);
 }
 
 .projectImage {
@@ -145,89 +149,115 @@
   padding: 1.5rem;
 }
 
-.projectTitle {
+.projectContent h3 {
   color: var(--heading_color);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-family: "Fira Code", monospace;
 }
 
-.projectDesc {
+.projectContent p {
   color: var(--text_color);
   font-size: 0.9rem;
   line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.projectTech {
+.techStack {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .techTag {
   background: var(--border_color);
   color: var(--accent_color);
   padding: 0.25rem 0.75rem;
-  border-radius: 4px;
+  border-radius: 15px;
   font-size: 0.8rem;
   font-family: "Fira Code", monospace;
 }
 
-.projectLink {
-  color: var(--accent_color);
-  text-decoration: none;
-  font-family: "Fira Code", monospace;
-  font-size: 0.9rem;
+.cardActions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   display: flex;
-  align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
 }
 
-.projectLink:hover {
-  color: var(--heading_color);
+.projectCard:hover .cardActions {
+  opacity: 1;
 }
 
-.projectLink i {
-  font-size: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.projectLink:hover i {
-  transform: translateX(5px);
-}
-
-.addProject {
+.actionButton {
   background: var(--card_bg);
-  border: 2px dashed var(--accent_color);
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
+  border: none;
   cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
-  height: 100%;
+  border-radius: 4px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 35px;
+  height: 35px;
 }
 
-.addProject:hover {
-  background: var(--border_color);
+.editButton {
+  color: var(--accent_color);
+  border: 1px solid var(--accent_color);
 }
 
-.addIcon {
+.editButton:hover {
+  background: var(--accent_color);
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.deleteButton:hover {
+  background: #ff4444;
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.addCard {
+  border: 2px dashed var(--accent_color);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.addCard:hover {
+  background: rgba(100, 255, 218, 0.1);
+}
+
+.addContent {
+  text-align: center;
+  color: var(--accent_color);
+}
+
+.addContent i {
   font-size: 2rem;
-  color: var(--accent_color);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.addProject p {
-  color: var(--accent_color);
+.addContent p {
   font-family: "Fira Code", monospace;
   margin: 0;
+  color: var(--accent_color);
 }
 
 .loading {
@@ -258,9 +288,18 @@
 
   .projectsGrid {
     grid-template-columns: 1fr;
+    padding: 0 1rem;
   }
 
   .filterContainer {
     padding: 0 1rem;
+  }
+
+  .cardActions {
+    opacity: 1;
+  }
+
+  .projectCard {
+    margin-bottom: 1rem;
   }
 }
