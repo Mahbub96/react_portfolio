@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import {
   doc,
@@ -22,7 +22,7 @@ const ConfigButton = () => {
     try {
       // Initial Education data
       await setDoc(doc(db, "Education", "education1"), {
-        name: "Daffodil International University",
+        name: "Stamford University Bangladesh",
         time: "2019 - Present",
         degName: "Bachelor of Science",
         Department: "Computer Science and Engineering",
@@ -96,7 +96,7 @@ const ConfigButton = () => {
     }
   };
 
-  const fetchAllCollections = async () => {
+  const fetchAllCollections = useCallback(async () => {
     const collections = [
       "admin",
       "analytics",
@@ -139,20 +139,18 @@ const ConfigButton = () => {
       console.error("Error in fetchAllCollections:", error);
       throw error;
     }
-  };
+  }, []);
 
   // Check and create initial backup if needed
   useEffect(() => {
     const checkInitialBackup = async () => {
       try {
         setIsLoading(true);
-        // Check if initial backup exists
         const initialBackupRef = doc(db, "backups", "initial_backup");
         const initialBackupDoc = await getDoc(initialBackupRef);
 
         if (!initialBackupDoc.exists()) {
           console.log("No initial backup found, creating one...");
-          // Fetch all current data
           const currentData = await fetchAllCollections();
 
           if (Object.keys(currentData).length === 0) {
@@ -195,7 +193,7 @@ const ConfigButton = () => {
     if (auth) {
       checkInitialBackup();
     }
-  }, [auth]);
+  }, [auth, fetchAllCollections]);
 
   // Only show in development mode and when authenticated
   if (process.env.NODE_ENV !== "development" || !auth) return null;

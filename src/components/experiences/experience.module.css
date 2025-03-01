@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
 .sectionHeader h2 {
@@ -41,23 +41,14 @@
   background: var(--border_color);
 }
 
-.totalExperience {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
 .timelineContainer {
   position: relative;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 0;
 }
 
-.timelineContainer::after {
-  content: "";
+.verticalLine {
   position: absolute;
   width: 2px;
   background: var(--border_color);
@@ -85,8 +76,8 @@
 }
 
 .timelineContent {
-  padding: 1.5rem;
   background: var(--card_bg);
+  padding: 1.5rem;
   border: 1px solid var(--border_color);
   border-radius: 8px;
   position: relative;
@@ -95,7 +86,8 @@
 
 .timelineContent:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent_color);
 }
 
 .timelineDot {
@@ -109,10 +101,14 @@
 
 .left .timelineDot {
   right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .right .timelineDot {
   left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .date {
@@ -136,6 +132,58 @@
   line-height: 1.6;
 }
 
+.cardActions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.timelineContent:hover .cardActions {
+  opacity: 1;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.editButton {
+  color: var(--accent_color);
+  border: 1px solid var(--accent_color);
+}
+
+.editButton:hover {
+  background: var(--accent_color);
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.deleteButton:hover {
+  background: #ff4444;
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
 .addExperience {
   width: 50%;
   margin: 2rem auto;
@@ -146,10 +194,12 @@
   cursor: pointer;
   text-align: center;
   transition: all 0.3s ease;
+  display: block;
 }
 
 .addExperience:hover {
-  background: var(--border_color);
+  background: rgba(100, 255, 218, 0.1);
+  transform: translateY(-5px);
 }
 
 .addIcon {
@@ -179,25 +229,36 @@
     font-size: 1.5rem;
   }
 
-  .timelineContainer::after {
-    left: 31px;
+  .timelineContainer {
+    padding: 0 1rem;
+  }
+
+  .verticalLine {
+    left: 20px;
   }
 
   .timelineItem {
     width: 100%;
-    padding-left: 70px;
-    padding-right: 25px;
+    padding-left: 3rem;
   }
 
+  .timelineItem.left,
   .timelineItem.right {
     left: 0;
+    padding-right: 0;
   }
 
   .timelineDot {
-    left: 25px;
+    left: -6px;
+    right: auto;
+  }
+
+  .cardActions {
+    opacity: 1;
   }
 
   .addExperience {
-    width: 100%;
+    width: calc(100% - 3rem);
+    margin-left: 3rem;
   }
 }

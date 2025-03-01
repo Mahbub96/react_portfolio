@@ -2,7 +2,6 @@
   padding: 100px 0;
   background: var(--bg_color);
   min-height: 100vh;
-  position: relative;
 }
 
 .sectionHeader {
@@ -37,64 +36,98 @@
 
 .skillsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 2rem;
-  padding: 0 2rem;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .skillCard {
   background: var(--card_bg);
-  border: 1px solid var(--border_color);
-  border-radius: 8px;
   padding: 2rem;
-  text-align: center;
+  border-radius: 8px;
+  border: 1px solid var(--border_color);
+  position: relative;
   transition: all 0.3s ease;
-  cursor: pointer;
+  text-align: center;
 }
 
 .skillCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   border-color: var(--accent_color);
 }
 
 .skillIcon {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 1.5rem;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
 }
 
-.skillName {
+.skillIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.skillCard h3 {
   color: var(--heading_color);
-  font-size: 1.1rem;
-  font-family: "Fira Code", monospace;
+  font-size: 1rem;
   margin: 0;
+  font-family: "Fira Code", monospace;
 }
 
-.addSkill {
-  background: var(--card_bg);
-  border: 2px dashed var(--accent_color);
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
+.cardActions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.skillCard:hover .cardActions {
+  opacity: 1;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
   cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
 }
 
-.addSkill:hover {
-  background: var(--border_color);
-}
-
-.addIcon {
-  font-size: 2rem;
+.editButton {
   color: var(--accent_color);
-  margin-bottom: 0.5rem;
+  border: 1px solid var(--accent_color);
 }
 
-.addSkill p {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
-  margin: 0;
+.editButton:hover {
+  background: var(--accent_color);
+  color: var(--bg_color);
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.deleteButton:hover {
+  background: #ff4444;
+  color: var(--bg_color);
+  transform: translateY(-2px);
 }
 
 .loading {
@@ -102,6 +135,37 @@
   display: flex;
   justify-content: center;
   padding: 2rem;
+}
+
+.addCard {
+  border: 2px dashed var(--accent_color);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.addCard:hover {
+  background: rgba(100, 255, 218, 0.1);
+  transform: translateY(-5px);
+}
+
+.addContent {
+  text-align: center;
+  color: var(--accent_color);
+}
+
+.addContent i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.addContent p {
+  font-family: "Fira Code", monospace;
+  margin: 0;
+  color: var(--accent_color);
 }
 
 @media (max-width: 768px) {
@@ -114,7 +178,21 @@
   }
 
   .skillsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .skillCard {
+    padding: 1.5rem;
+  }
+
+  .cardActions {
+    opacity: 1;
+  }
+
+  .skillIcon {
+    width: 50px;
+    height: 50px;
   }
 }

@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../DB/DB_init";
 import { FaEye, FaUserClock } from "react-icons/fa";
 import styles from "./visitorCounter.module.css";

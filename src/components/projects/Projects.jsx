@@ -33,8 +33,8 @@ function Projects() {
       <div className="container">
         <div className={styles.sectionHeader}>
           <h2>
-            <span className={styles.sectionNumber}>05.</span>
-            Some Things I've Built
+            <span className={styles.sectionNumber}>05.</span> Some Things I've
+            Built
           </h2>
           <div className={styles.headerLine}></div>
         </div>
@@ -84,13 +84,15 @@ function Projects() {
           )}
 
           {projectsData && auth && (
-            <div
+            <button
               className={styles.addProject}
               onClick={() => setModalShow(true)}
+              aria-label="Add New Project"
+              type="button"
             >
               <div className={styles.addIcon}>+</div>
               <p>Add New Project</p>
-            </div>
+            </button>
           )}
         </div>
       </div>

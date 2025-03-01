@@ -35,6 +35,50 @@
   background: var(--border_color);
 }
 
+.projectNav {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border_color);
+  background: var(--nav_bg);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.projectNavItem {
+  padding: 1rem 2rem;
+  color: var(--text_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: transparent;
+  border: none;
+  opacity: 0.7;
+}
+
+.projectNavItem:hover {
+  color: var(--accent_color);
+  opacity: 1;
+}
+
+.projectNavItem.active {
+  color: var(--accent_color);
+  opacity: 1;
+}
+
+.projectNavItem.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent_color);
+  box-shadow: 0 0 8px var(--accent_color);
+}
+
 .filterContainer {
   display: flex;
   flex-wrap: wrap;
@@ -45,8 +89,8 @@
 
 .filterButton {
   background: transparent;
-  border: 1px solid #64ffda;
-  color: #64ffda;
+  border: 1px solid var(--accent_color);
+  color: var(--accent_color);
   padding: 0.5rem 1rem;
   border-radius: 4px;
   font-family: "Fira Code", monospace;
@@ -200,6 +244,16 @@
 
   .sectionHeader h2 {
     font-size: 1.5rem;
+  }
+
+  .projectNav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .projectNavItem {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
   }
 
   .projectsGrid {

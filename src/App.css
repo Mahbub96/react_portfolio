@@ -27,13 +27,7 @@
   margin: 0;
   padding: 0;
 }
-i {
-  cursor: pointer;
-}
-i:hover {
-  color: var(--blue);
-  transition: ease-in-out all 0.5s;
-}
+
 body {
   background-color: var(--bg_color);
   font-family: Arial, Helvetica, sans-serif;
@@ -48,204 +42,68 @@ h5,
 h6 {
   text-transform: uppercase;
 }
-a,
-Nav,
-NavLink {
+
+a {
   text-decoration: none;
 }
 
-.right {
-  text-align: right;
-}
-.cont {
-  background-color: #fff;
-  margin-top: 80px;
+i {
+  cursor: pointer;
+  transition: color 0.5s ease-in-out;
 }
 
-nav ul li.nav-item a {
-  border-bottom: 1px solid #fff;
-  color: blue;
+i:hover {
+  color: var(--blue);
 }
-nav ul li.nav-item a:hover {
-  overflow: hidden;
+
+/* Navigation */
+.nav-item a {
+  border-bottom: 1px solid transparent;
+  color: var(--text_color);
+  transition: all 0.3s ease;
+}
+
+.nav-item a:hover {
   border-bottom: 1px solid var(--blue);
   color: var(--blue);
 }
-.experience .content .conts h4,
-.education .content .conts h4,
-.education .content .conts h5 {
+
+/* Content sections */
+.content-section {
+  margin-top: 80px;
+  background-color: var(--card_bg);
+}
+
+.section-header {
+  text-align: center;
+  font-size: 36px;
+  margin-top: 60px;
+  letter-spacing: 5px;
+  font-family: "Times New Roman", Times, serif;
+  color: var(--heading_color);
+}
+
+/* Text alignment */
+.text-right {
+  text-align: right;
+}
+
+/* Typography */
+.content h4,
+.content h5 {
   text-transform: capitalize;
   font-size: 16px;
   font-weight: bold;
 }
+
+/* Media queries */
 @media (max-width: 768px) {
-  /* border style  */
-  .experience .content .right::before,
-  .education .content .right::before {
-    display: none;
-  }
-  .experience .content .right::after,
-  .education .content .right::after {
+  .timeline-marker {
     display: none;
   }
 }
 
-/* skills section  */
-.skills .header h2,
-.experience .header h2,
-.education .header h2,
-.project .header h2,
-.contract h2 {
-  display: block;
-  text-align: center;
-  font-size: 36px;
-  background-color: var(--bg_color);
-  font-family: "Times New Roman", Times, serif;
-  color: rgba(0, 0, 0, 0.5);
-  margin-top: 60px;
-  letter-spacing: 5px;
-}
-
-.skills .cards .card {
-  height: 160px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 2px 2px 30px #999;
-}
-
-.skills .cards .card .card-img-top {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100px;
-}
-
-.skills .cards .card img {
-  height: 70px;
-  width: 70px;
-}
-
-.skills .cards .card .card-text {
-  text-transform: capitalize;
-}
-
-/* experience */
-.experience,
-.education,
-.project {
-  text-align: center;
-}
-.experience .content,
-.education .content,
-.contract .content,
-.project .content,
-.project .cards .card {
-  box-shadow: 3px 3px 30px #999;
-  text-align: left;
-}
-.experience .content .conts,
-.education .content .conts {
-  padding: 50px 0;
-  padding-left: 30px;
-  border-left: 1px solid rgba(30, 144, 255, 0.2);
-  margin-top: 0px !important;
-  position: relative;
-}
-
-/* border style  */
-.experience .content .right::before,
-.education .content .right::before {
-  content: " ";
-  color: rgba(30, 144, 255, 0.2);
-  background-color: #fff;
-  padding: 0;
-  margin: 0;
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--blue);
-  border-radius: 50%;
-
-  position: absolute;
-  top: -5px;
-  right: -7px;
-}
-.experience .content .right::after,
-.education .content .right::after {
-  content: " ";
-  color: rgba(30, 144, 255, 0.2);
-  background-color: #fff;
-  padding: 0;
-  margin: 0;
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--blue);
-  border-radius: 50%;
-
-  position: absolute;
-  bottom: -5px;
-  right: -7px;
-}
-
-/* exprerience section  */
-.experience .content .right,
-.education .content .right {
-  padding: 0;
-  border: 0;
-  padding-right: 50px;
-  border-right: 1px solid rgba(30, 144, 255, 0.2);
-}
-
-/* project section  */
-
-.project .menus {
-  list-style-type: none;
-}
-.project .menus a {
-  text-decoration: none;
-  color: var(--text_color);
-  padding: 5px 8px;
-  text-align: center;
-  font-size: small;
-  border-right: 1px solid rgba(102, 102, 102, 0.322);
-}
-
-.project .card {
-  box-shadow: 3px 3px 30px #ddd;
-}
-
-.pcard {
-  position: relative;
-}
-.pcard a {
-  background-color: blue;
-  bottom: 10px;
-}
-
-@media (max-width: 576px) {
-  .project .cards .card {
-    width: 95% !important;
-  }
-  .project .cards .card img {
-    height: 14rem !important;
-  }
-}
-
-.project .menus a:last-child {
-  border: none;
-}
-
-/* contact form  */
-.contract h2 {
-  font-size: 30px;
-  background-color: #fff;
-}
-
-/* footar section  */
-footer a i {
-  color: var(--text_color);
-}
-
-/* Add these styles to your App.css */
+/* Visitor analytics styles */
 .visitor-analytics {
   padding: 20px;
   max-width: 800px;
@@ -253,7 +111,7 @@ footer a i {
 }
 
 .stats-section {
-  background: #f5f5f5;
+  background: var(--card_bg);
   border-radius: 8px;
   padding: 15px;
   margin: 15px 0;
@@ -261,274 +119,13 @@ footer a i {
 
 .stats-section h3 {
   margin-top: 0;
-  color: #333;
+  color: var(--heading_color);
 }
 
-.stats-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.stats-section li {
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.stats-section li:last-child {
-  border-bottom: none;
-}
-
-/* Analytics Floating Button */
-.analytics-float-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: var(--blue);
-  color: white;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s;
-  z-index: 1000;
-}
-
-.analytics-float-btn:hover {
-  transform: scale(1.1);
-}
-
-/* Analytics Modal */
-.analytics-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-}
-
-.analytics-modal {
-  background: white;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-.analytics-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-  background: white;
-  border-radius: 12px 12px 0 0;
-}
-
-.analytics-modal-header h2 {
-  margin: 0;
-  color: var(--text_color);
-}
-
-.analytics-modal-content {
-  padding: 20px;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text_color);
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.close-btn:hover {
-  background-color: #f0f0f0;
-}
-
-@keyframes modalSlideIn {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Visitor Counter Float */
-.visitor-counter-float {
-  position: fixed;
-  bottom: 20px;
-  left: 30px;
-  padding: 10px 15px;
-  border-radius: 30px;
-  background-color: var(--blue);
-  color: white;
-  border: none;
-  font-size: 14px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.visitor-stat {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.visitor-stat svg {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.visitor-counter-float:hover {
-  transform: scale(1.05);
-  transition: transform 0.2s;
-}
-
-/* Additional Analytics Styles */
-.stats-section.total-visitors {
-  background: var(--blue);
-  color: white;
-}
-
-.stats-section.total-visitors h3 {
-  color: white;
-  font-size: 1.5em;
-}
-
-.recent-visit-item {
-  margin-bottom: 15px;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-
-.visit-timestamp {
-  font-weight: bold;
-  color: var(--blue);
-  margin-bottom: 5px;
-}
-
-.visit-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 0.9em;
-}
-
-.visit-details span {
-  background: #eee;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.stats-section ul {
-  max-height: 300px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-.stats-section ul::-webkit-scrollbar {
-  width: 6px;
-}
-
-.stats-section ul::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.stats-section ul::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-.analytics-modal-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.analytics-modal-content .stats-section {
-  height: fit-content;
-}
-
-@media (max-width: 768px) {
-  .analytics-modal-content {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* IP Stats Styles */
-.ip-stats {
-  background: #f8f9fa;
-}
-
-.ip-stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.ip-info {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-}
-
-.ip-info .ip {
-  font-family: monospace;
-  color: var(--blue);
-}
-
-.ip-info .visit-count {
-  color: #666;
-  font-size: 0.9em;
-}
-
-/* Update visit details style */
-.visit-details span {
-  background: #eee;
-  padding: 3px 8px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.visit-details span:first-child {
-  background: var(--blue);
-  color: white;
-}
-
-/* Add at the top of your App.css */
+/* Scroll behavior */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 70px; /* Height of your fixed navbar */
+  scroll-padding-top: 70px;
 }
 
 /* Rest of your CSS */

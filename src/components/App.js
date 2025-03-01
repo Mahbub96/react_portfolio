@@ -1,6 +1,4 @@
-import { ThemeProvider } from "../contexts/ThemeContext";
 import DataContextProvider from "../contexts/useAllContext";
-import { HelmetProvider } from "react-helmet-async";
 import "./../App.css";
 import Home from "./Home";
 import useVisitorTracker from "../hooks/useVisitorTracker";
@@ -19,21 +17,23 @@ function App() {
     setupAdminCredentials();
   }, []);
 
+  // Since we're using a single page for now, we'll use static SEO data
+  const seoData = {
+    title: "Mahbub Alam | Full Stack Developer Portfolio",
+    description:
+      "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh.",
+  };
+
   return (
-    <HelmetProvider>
-      <ThemeProvider>
-        <div className="App">
-          <SEOMetaTags />
-          <DataContextProvider>
-            <Home />
-            {/* Analytics components will self-manage visibility based on auth state */}
-            <VisitorCounter />
-            <VisitorAnalytics />
-            <ConfigButton />
-          </DataContextProvider>
-        </div>
-      </ThemeProvider>
-    </HelmetProvider>
+    <div className="App">
+      <SEOMetaTags title={seoData.title} description={seoData.description} />
+      <DataContextProvider>
+        <Home />
+        <VisitorCounter />
+        <VisitorAnalytics />
+        <ConfigButton />
+      </DataContextProvider>
+    </div>
   );
 }
 

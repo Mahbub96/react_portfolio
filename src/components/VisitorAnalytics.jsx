@@ -5,7 +5,7 @@ import { FaChartBar } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import styles from "./visitorAnalytics.module.css";
 import { useDataContex } from "../contexts/useAllContext";
-
+import { v4 as uuidv4 } from "uuid";
 const VisitorAnalytics = () => {
   const { auth } = useDataContex(); // Get auth status
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +25,7 @@ const VisitorAnalytics = () => {
     ipStats: {},
     recentVisits: [],
   });
+  const [visitsToShow, setVisitsToShow] = useState(3);
 
   useEffect(() => {
     if (isOpen) {
@@ -124,7 +125,7 @@ const VisitorAnalytics = () => {
         totalCount,
         ...stats,
         recentVisits: stats.recentVisits
-          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .toSorted((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
           .slice(0, 10),
       });
     } catch (error) {
@@ -167,8 +168,8 @@ const VisitorAnalytics = () => {
           <div className={styles.analyticsModal}>
             <div className={styles.analyticsModalHeader}>
               <h2>
-                <span className={styles.sectionNumber}>07.</span>
-                Visitor Analytics
+                <span className={styles.sectionNumber}>07.</span> Visitor
+                Analytics
               </h2>
               <button
                 className={styles.closeBtn}
@@ -238,23 +239,35 @@ const VisitorAnalytics = () => {
 
               <div className={styles.statsSection}>
                 <h3>Recent Visits</h3>
-                <ul>
-                  {visitorStats.recentVisits.map((visit, index) => (
-                    <li key={index} className={styles.recentVisitItem}>
-                      <div className={styles.visitTimestamp}>
-                        {new Date(visit.timestamp).toLocaleString()}
-                      </div>
-                      <div className={styles.visitDetails}>
-                        <span>IP: {visit.ip}</span>
-                        <span>Page: {visit.path}</span>
-                        <span>From: {visit.referrer}</span>
-                        <span>Browser: {visit.browser}</span>
-                        <span>Device: {visit.platform}</span>
-                        <span>Screen: {visit.screenSize}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <div className={styles.recentVisitsContainer}>
+                  <ul>
+                    {visitorStats.recentVisits
+                      .slice(0, visitsToShow)
+                      .map((visit, index) => (
+                        <li key={uuidv4()} className={styles.recentVisitItem}>
+                          <div className={styles.visitTimestamp}>
+                            {new Date(visit.timestamp).toLocaleString()}
+                          </div>
+                          <div className={styles.visitDetails}>
+                            <span>IP: {visit.ip}</span>
+                            <span>Page: {visit.path}</span>
+                            <span>From: {visit.referrer || "Direct"}</span>
+                            <span>Browser: {visit.browser}</span>
+                            <span>Device: {visit.platform}</span>
+                            <span>Screen: {visit.screenSize}</span>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                  {visitorStats.recentVisits.length > visitsToShow && (
+                    <button
+                      className={styles.seeMoreButton}
+                      onClick={() => setVisitsToShow((prev) => prev + 3)}
+                    >
+                      Load More <i className="fa fa-angle-down"></i>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -1,4 +1,3 @@
-import Banner from "./banner/Banner";
 import About from "./about/About";
 import Contact from "./contact/Contact";
 import Educations from "./educations/Educations";
@@ -13,7 +12,6 @@ function Home() {
     <div>
       <Navbar />
       <main className="home">
-        {/* <Banner /> */}
         <About />
         <Skills />
         <Experience />
