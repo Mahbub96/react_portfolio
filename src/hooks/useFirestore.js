@@ -29,12 +29,10 @@ const useFirestore = () => {
           if (
             doc.id === "Experiences" ||
             doc.id === "Skills" ||
-            doc.id === "Projects"
+            doc.id === "Projects" ||
+            doc.id === "profile"
           ) {
-            collectionData[doc.id] = {
-              data: Array.isArray(docData.data) ? docData.data : [],
-              lastUpdate: new Date().getTime(),
-            };
+            collectionData[doc.id] = docData;
           }
         });
 
@@ -102,44 +100,40 @@ const useFirestore = () => {
     }
   };
 
-  const updateDocument = async (collectionName, itemId, updatedData) => {
-    const dbCollectionName =
-      collectionName === "Experience" ? "Experiences" : collectionName;
-
+  const updateDocument = async (collectionName, documentId, updatedData) => {
     try {
-      console.log(`Updating item in ${dbCollectionName}:`, itemId, updatedData);
+      const docRef = doc(db, collectionName, documentId);
 
-      // Get current items
-      const currentDoc = portfolioData[dbCollectionName] || { data: [] };
-      const currentItems = Array.isArray(currentDoc.data)
-        ? currentDoc.data
-        : [];
+      // If it's a profile update
+      if (collectionName === "portfolio_data" && documentId === "profile") {
+        await setDoc(
+          docRef,
+          {
+            ...updatedData,
+            lastUpdate: serverTimestamp(),
+          },
+          { merge: true }
+        );
+        return;
+      }
 
-      // Update the specific item
-      const updatedItems = currentItems.map((item) =>
-        item.id === itemId
-          ? {
-              ...item,
-              ...updatedData,
-              updatedAt: new Date().toISOString(),
-            }
-          : item
-      );
+      // Existing update logic for other documents
+      const currentDoc = await getDoc(docRef);
+      if (currentDoc.exists()) {
+        const currentData = currentDoc.data();
+        const updatedItems = currentData.data.map((item) =>
+          item.id === documentId
+            ? { ...item, ...updatedData, updatedAt: new Date().toISOString() }
+            : item
+        );
 
-      // Update the document in portfolio_data
-      await setDoc(
-        doc(db, "portfolio_data", dbCollectionName),
-        {
+        await setDoc(docRef, {
           data: updatedItems,
           lastUpdate: serverTimestamp(),
-        },
-        { merge: true }
-      );
-
-      console.log(`Item updated successfully in ${dbCollectionName}`);
-      return { id: itemId };
+        });
+      }
     } catch (error) {
-      console.error(`Error updating item in ${dbCollectionName}:`, error);
+      console.error(`Error updating document in ${collectionName}:`, error);
       throw error;
     }
   };
