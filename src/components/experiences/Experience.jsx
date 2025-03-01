@@ -12,6 +12,23 @@ function Experience() {
 
   const { Experiences } = useFirestore().data;
 
+  const calculateExperience = (startDate) => {
+    const start = new Date(startDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - start.getFullYear();
+    let months = today.getMonth() - start.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} year${years !== 1 ? "s" : ""} ${months} month${
+      months !== 1 ? "s" : ""
+    }`;
+  };
+
   return (
     <>
       <div className="container mt-5" id="experience">
@@ -20,7 +37,7 @@ function Experience() {
             <h2>
               <b>EXPERIENCES</b>
             </h2>
-            <p>3 years 6th months</p>
+            <p>{calculateExperience("2023-09-15")}</p>
           </div>
           <div className="content bg-light py-5 row g-0">
             {Experiences ? (

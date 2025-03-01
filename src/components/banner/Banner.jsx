@@ -23,10 +23,16 @@ function Banner() {
             <div className="col-4"></div>
             <div className="col-4 d-flex justify-content-center">
               <div className={styles.my_card}>
-                <img
+                <div
                   className={`rounded-circle ${styles.profile}`}
-                  src="./assets/img/profile.png"
-                  alt="profile pic"
+                  style={{
+                    backgroundImage: "url('./assets/img/profile.png')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  role="img"
+                  aria-label="profile picture"
+                ></div>
                 />
                 <h2>Mahbub Alam</h2>
               </div>
