@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 const generateSitemap = async () => {
   try {
     const smStream = new SitemapStream({
-      hostname: "https://mahbub.dev", // Replace with your actual domain
+      hostname: "https://mahbub.dev",
     });
 
     // List all your routes with detailed metadata
@@ -33,7 +33,6 @@ const generateSitemap = async () => {
         priority: 0.6,
         lastmod: new Date().toISOString(),
       },
-      // Add all your routes
     ];
 
     // Create each URL row
@@ -48,16 +47,7 @@ const generateSitemap = async () => {
     const sitemap = await streamToPromise(smStream);
     createWriteStream("./public/sitemap.xml").write(sitemap.toString());
 
-    // Also generate robots.txt
-    const robotsTxt = `
-User-agent: *
-Allow: /
-
-# Sitemaps
-Sitemap: https://mahbub.dev/sitemap.xml
-    `.trim();
-
-    createWriteStream("./public/robots.txt").write(robotsTxt);
+    console.log("Sitemap generated successfully");
   } catch (error) {
     console.error("Error generating sitemap:", error);
   }

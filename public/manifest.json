@@ -20,6 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#1e90ff",
-  "background_color": "#ffffff"
+  "theme_color": "#0a192f",
+  "background_color": "#ffffff",
+  "description": "Portfolio of Mahbub Alam - Full Stack Developer specializing in web applications and VoIP solutions"
 }
