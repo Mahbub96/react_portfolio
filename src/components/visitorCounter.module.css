@@ -1,0 +1,117 @@
+.visitorCounterFloat {
+  position: fixed;
+  bottom: 20px;
+  left: 30px;
+  background-color: var(--accent_color);
+  color: var(--bg_color);
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.visitorCounterFloat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(100, 255, 218, 0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.visitorStat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statIcon {
+  color: var(--bg_color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(100, 255, 218, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.visitorStat:hover .statIcon {
+  transform: scale(1.1);
+  background: rgba(100, 255, 218, 0.2);
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabel {
+  color: var(--bg_color);
+  opacity: 0.9;
+  font-size: 0.75rem;
+  font-family: "Fira Code", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  color: var(--bg_color);
+  font-size: 1rem;
+  font-family: "Fira Code", monospace;
+  font-weight: 600;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--bg_color);
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .visitorCounterFloat {
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+  }
+
+  .visitorCounterFloat:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .statIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .statLabel {
+    font-size: 0.7rem;
+  }
+
+  .statValue {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .visitorCounterFloat {
+    bottom: 15px;
+    padding: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .statIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .statContent {
+    min-width: 60px;
+  }
+}

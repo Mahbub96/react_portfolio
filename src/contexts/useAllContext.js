@@ -1,13 +1,35 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const DataContext = createContext();
 export const useDataContex = () => useContext(DataContext);
 
 function DataContextProvider(props) {
-  // const getIslogin = async ()=> setIsLogin(await axios.get("https://backend996.herokuapp.com/login").data);
-  const auth = false;
+  // Initialize auth state from localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check localStorage on initial load
+    const savedAuth = localStorage.getItem("isAuthenticated");
+    return savedAuth === "true";
+  });
 
-  const values = { auth };
+  // Update localStorage whenever auth state changes
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
+
+  const login = () => {
+    setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+  };
+
+  const values = {
+    auth: isAuthenticated,
+    login,
+    logout,
+  };
+
   return (
     <DataContext.Provider value={values}>{props.children}</DataContext.Provider>
   );

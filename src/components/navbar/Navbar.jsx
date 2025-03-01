@@ -1,110 +1,116 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
-import classes from "./navbar.module.css";
+import { useTheme } from "../../contexts/ThemeContext";
+import styles from "./navbar.module.css";
+import LoginModal from "../auth/LoginModal";
 
 function Header() {
-  const { auth } = useDataContex();
-  // if auth found then store this auth in the local storage
-  if (auth) {
-    localStorage.setItem("auth", auth);
-  }
+  const { auth, login, logout } = useDataContex();
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const navHeight = 70; // Approximate navbar height
+      const sectionTop = section.offsetTop - navHeight;
+      window.scrollTo({
+        top: sectionTop,
+        behavior: "smooth",
+      });
+      setIsMenuOpen(false);
+    }
+  };
+
+  const handleLogin = () => {
+    login(); // Call the login function from context
+  };
+
+  const handleLogout = () => {
+    logout(); // Call the logout function from context
+  };
+
+  const navItems = [
+    { id: "about", label: "About", number: "01" },
+    { id: "skills", label: "Skills", number: "02" },
+    { id: "experience", label: "Experience", number: "03" },
+    { id: "education", label: "Education", number: "04" },
+    { id: "projects", label: "Projects", number: "05" },
+    { id: "contact", label: "Contact", number: "06" },
+  ];
+
   return (
     <div id="home">
-      <header className="sticky-top">
-        <div
-          className={`navbar ${classes.nav} navbar-expand-lg navbar-light px-3 shadow-sm p-2 mb-5 bg-white rounded`}
-        >
-          <div className="container-fluid bg-light">
-            <a className={`navbar-brand`} href="/">
+      <header className={styles.header}>
+        <nav className={styles.navbar}>
+          <div className={styles.container}>
+            <a className={styles.logo} href="/">
+              <span className={styles.bracket}>{"<"}</span>
               Mahbub Alam
+              <span className={styles.bracket}>{"/>"}</span>
             </a>
+
             <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
+              className={`${styles.menuButton} ${
+                isMenuOpen ? styles.active : ""
+              }`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle navigation"
             >
-              <span className="navbar-toggler-icon"></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
+
             <div
-              className="collapse navbar-collapse bg-light"
-              id="navbarSupportedContent"
+              className={`${styles.navContent} ${
+                isMenuOpen ? styles.show : ""
+              }`}
             >
-              <div className="me-auto"></div>
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item px-2">
-                  <a
-                    className={`nav-link active`}
-                    aria-current="page"
-                    href="#home"
-                  >
-                    ABOUT
-                  </a>
-                </li>
-
-                <li className="nav-item px-2">
-                  <a className={`nav-link`} aria-current="page" href="#skills">
-                    SKILLS
-                  </a>
-                </li>
-
-                <li className="nav-item px-2">
-                  <a
-                    className={`nav-link`}
-                    aria-current="page"
-                    href="#experience"
-                  >
-                    EXPERIENCES
-                  </a>
-                </li>
-
-                <li className="nav-item px-2">
-                  <a
-                    className={`nav-link`}
-                    aria-current="page"
-                    href="#education"
-                  >
-                    EDUCATIONS
-                  </a>
-                </li>
-
-                <li className="nav-item px-2">
-                  <a className={`nav-link`} aria-current="page" href="#project">
-                    PROJECTS
-                  </a>
-                </li>
-
-                <li className="nav-item px-2">
-                  <a
-                    className={`nav-link`}
-                    aria-current="page"
-                    href="#contract"
-                  >
-                    CONTRACT
-                  </a>
-                </li>
+              <ul className={styles.navLinks}>
+                {navItems.map(({ id, label, number }) => (
+                  <li key={id}>
+                    <a href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
+                      <span className={styles.navNumber}>{number}.</span>
+                      {label}
+                    </a>
+                  </li>
+                ))}
               </ul>
 
-              {auth ? (
-                <button className="btn btn-light d-flexd-flex" type="submit">
-                  Log Out
+              <div className={styles.navButtons}>
+                {auth ? (
+                  <button className={styles.authButton} onClick={handleLogout}>
+                    Log Out
+                  </button>
+                ) : (
+                  <button
+                    className={styles.authButton}
+                    onClick={() => setShowLoginModal(true)}
+                  >
+                    Login
+                  </button>
+                )}
+                <button
+                  className={styles.themeButton}
+                  onClick={toggleTheme}
+                  aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+                >
+                  <i className={`fa fa-${isDarkMode ? "sun-o" : "moon-o"}`}></i>
                 </button>
-              ) : (
-                <button className="btn btn-light d-flexd-flex" type="submit">
-                  Login
-                </button>
-              )}
-
-              <button className="btn btn-light d-flexd-flex" type="submit">
-                <i className="fa fa-sun-o"></i>
-              </button>
+              </div>
             </div>
           </div>
-        </div>
+        </nav>
       </header>
+
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLogin={handleLogin}
+      />
     </div>
   );
 }

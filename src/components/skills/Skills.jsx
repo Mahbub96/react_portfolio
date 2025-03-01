@@ -1,91 +1,51 @@
-import React from "react";
-import uuid from "react-uuid";
+import React, { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import Skill from "./Skill.jsx";
+import Skill from "./Skill";
+import styles from "./skills.module.css";
 
 function Skills() {
-  const { data } = useFirestore();
+  const [modalShow, setModalShow] = useState(false);
   const { auth } = useDataContex();
+  const { Skills } = useFirestore().data;
 
-  const { Skills } = data;
-  const [modalShow, setModalShow] = React.useState(false);
   return (
-    <>
-      {Skills ? (
-        <div
-          className="container mt-5"
-          id="skills"
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-          key={uuid()}
-        >
-          <div className="skills">
-            <div className="header">
-              <h2>
-                <b>Skills </b>
-              </h2>
-            </div>
-
-            <div className="mt-2 cards row justify-content-center g-4">
-              {Skills?.data &&
-                Object.entries(Skills?.data).map(([, { id, name, src }]) => {
-                  return (
-                    <Skill
-                      classes="col-6 col-lg-2 col-md-4 skill_hover"
-                      key={uuid()}
-                      name={name}
-                      imgSrc={src}
-                      altTxt={name}
-                    ></Skill>
-                  );
-                })}
-
-              {auth && (
-                <button
-                  className="col-6 col-lg-2 col-md-4 skill_hover"
-                  onClick={() => setModalShow(true)}
-                  style={{
-                    color: "blue",
-                    cursor: "pointer",
-                    display: "inline-block",
-                    border: "none",
-                    background: "none",
-                    padding: 0,
-                  }}
-                >
-                  <Skill
-                    key={new Date(0)}
-                    name="Add New"
-                    imgSrc="../assets/img/add.png"
-                    altTxt="Add New"
-                  />
-                </button>
-              )}
-            </div>
-          </div>
+    <section id="skills" className={styles.skillsSection}>
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <h2>
+            <span className={styles.sectionNumber}>02.</span>
+            What I Do
+          </h2>
+          <div className={styles.headerLine}></div>
         </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ThreeDots />
+
+        <div className={styles.skillsGrid}>
+          {Skills &&
+            Skills.data.map(({ name, src }) => (
+              <div key={name} className={styles.skillCard}>
+                <img src={src} alt={name} className={styles.skillIcon} />
+                <h3 className={styles.skillName}>{name}</h3>
+              </div>
+            ))}
+
+          {auth && (
+            <div className={styles.addSkill} onClick={() => setModalShow(true)}>
+              <div className={styles.addIcon}>+</div>
+              <p>Add New Skill</p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+
       <ModalView
-        name={"Skills"}
+        name="Skills"
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
-    </>
+    </section>
   );
 }
 

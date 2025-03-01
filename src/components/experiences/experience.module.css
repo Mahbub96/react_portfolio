@@ -1,5 +1,203 @@
 .experience .content .conts .times {
-    color: rgba(0, 0, 0, 0.5);
-    color: var(--text_color);
-    margin-bottom: 5px;
+  color: rgba(0, 0, 0, 0.5);
+  color: var(--text_color);
+  margin-bottom: 5px;
+}
+
+.experienceSection {
+  padding: 100px 0;
+  background: var(--bg_color);
+  min-height: 100vh;
+  position: relative;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.sectionHeader h2 {
+  color: var(--heading_color);
+  font-size: 2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionNumber {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 1.25rem;
+}
+
+.headerLine {
+  height: 1px;
+  flex-grow: 1;
+  background: var(--border_color);
+}
+
+.totalExperience {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.timelineContainer {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.timelineContainer::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  background: var(--border_color);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.timelineItem {
+  padding: 1rem;
+  position: relative;
+  width: 50%;
+  margin-bottom: 2rem;
+}
+
+.timelineItem.left {
+  left: 0;
+  padding-right: 3rem;
+}
+
+.timelineItem.right {
+  left: 50%;
+  padding-left: 3rem;
+}
+
+.timelineContent {
+  padding: 1.5rem;
+  background: var(--card_bg);
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.timelineContent:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.5);
+}
+
+.timelineDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--accent_color);
+  border-radius: 50%;
+  border: 2px solid var(--bg_color);
+}
+
+.left .timelineDot {
+  right: -6px;
+}
+
+.right .timelineDot {
+  left: -6px;
+}
+
+.date {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.title {
+  color: var(--heading_color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-family: "Fira Code", monospace;
+}
+
+.description {
+  color: var(--text_color);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.addExperience {
+  width: 50%;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--card_bg);
+  border: 2px dashed var(--accent_color);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.addExperience:hover {
+  background: var(--border_color);
+}
+
+.addIcon {
+  font-size: 2rem;
+  color: var(--accent_color);
+  margin-bottom: 0.5rem;
+}
+
+.addExperience p {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .experienceSection {
+    padding: 60px 0;
   }
+
+  .sectionHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .timelineContainer::after {
+    left: 31px;
+  }
+
+  .timelineItem {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+
+  .timelineItem.right {
+    left: 0;
+  }
+
+  .timelineDot {
+    left: 25px;
+  }
+
+  .addExperience {
+    width: 100%;
+  }
+}

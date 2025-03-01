@@ -1,10 +1,28 @@
 /* Global CSS */
 
 :root {
+  /* Dark theme (default) */
+  --bg_color: #0a192f;
+  --text_color: #8892b0;
+  --heading_color: #ccd6f6;
+  --accent_color: #64ffda;
+  --nav_bg: rgba(10, 25, 47, 0.85);
+  --card_bg: rgba(17, 34, 64, 0.95);
+  --border_color: rgba(100, 255, 218, 0.1);
   --blue: #1e90ff;
-  --bg_color: #dddfe0;
-  --text_color: #666;
 }
+
+/* Light theme overrides */
+[data-theme="light"] {
+  --bg_color: #f5f5f5;
+  --text_color: #333333;
+  --heading_color: #2d3436;
+  --accent_color: #0984e3;
+  --nav_bg: rgba(255, 255, 255, 0.85);
+  --card_bg: rgba(255, 255, 255, 0.95);
+  --border_color: rgba(9, 132, 227, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -19,7 +37,7 @@ i:hover {
 body {
   background-color: var(--bg_color);
   font-family: Arial, Helvetica, sans-serif;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text_color);
 }
 
 h1,
@@ -363,24 +381,154 @@ footer a i {
   position: fixed;
   bottom: 20px;
   left: 30px;
-  padding: 15px 20px;
+  padding: 10px 15px;
   border-radius: 30px;
   background-color: var(--blue);
   color: white;
   border: none;
-  font-size: 16px;
+  font-size: 14px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
 }
 
-.visitor-counter-float i {
-  color: white;
+.visitor-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.visitor-stat svg {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .visitor-counter-float:hover {
   transform: scale(1.05);
   transition: transform 0.2s;
 }
+
+/* Additional Analytics Styles */
+.stats-section.total-visitors {
+  background: var(--blue);
+  color: white;
+}
+
+.stats-section.total-visitors h3 {
+  color: white;
+  font-size: 1.5em;
+}
+
+.recent-visit-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.visit-timestamp {
+  font-weight: bold;
+  color: var(--blue);
+  margin-bottom: 5px;
+}
+
+.visit-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9em;
+}
+
+.visit-details span {
+  background: #eee;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.stats-section ul {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.stats-section ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.stats-section ul::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.stats-section ul::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.analytics-modal-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.analytics-modal-content .stats-section {
+  height: fit-content;
+}
+
+@media (max-width: 768px) {
+  .analytics-modal-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* IP Stats Styles */
+.ip-stats {
+  background: #f8f9fa;
+}
+
+.ip-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.ip-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.ip-info .ip {
+  font-family: monospace;
+  color: var(--blue);
+}
+
+.ip-info .visit-count {
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Update visit details style */
+.visit-details span {
+  background: #eee;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.visit-details span:first-child {
+  background: var(--blue);
+  color: white;
+}
+
+/* Add at the top of your App.css */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px; /* Height of your fixed navbar */
+}
+
+/* Rest of your CSS */

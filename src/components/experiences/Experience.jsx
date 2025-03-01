@@ -1,128 +1,87 @@
 import { useState } from "react";
-import uuid from "react-uuid";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import classes from "./experience.module.css";
+import styles from "./experience.module.css";
 
 function Experience() {
   const [modalShow, setModalShow] = useState(false);
   const { auth } = useDataContex();
-
   const { Experiences } = useFirestore().data;
 
   const calculateExperience = (startDate) => {
     const start = new Date(startDate);
     const today = new Date();
-
     let years = today.getFullYear() - start.getFullYear();
     let months = today.getMonth() - start.getMonth();
-
     if (months < 0) {
       years--;
       months += 12;
     }
-
     return `${years} year${years !== 1 ? "s" : ""} ${months} month${
       months !== 1 ? "s" : ""
     }`;
   };
 
   return (
-    <>
-      <div className="container mt-5" id="experience">
-        <div className="experience">
-          <div className="header">
-            <h2>
-              <b>EXPERIENCES</b>
-            </h2>
-            <p>{calculateExperience("2023-09-15")}</p>
-          </div>
-          <div className="content bg-light py-5 row g-0">
-            {Experiences ? (
-              Object.entries(Experiences.data).map(
-                ([key, { name, time, how }]) => {
-                  if (key % 2 === 0)
-                    return (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                        key={uuid()}
-                      >
-                        <div className="col-12 col-md-6"></div>
-                        <div className="col-12 col-md-6">
-                          <div className="conts mt-4">
-                            <p className={classes.times}>{time}</p>
-                            <h4>
-                              {name} <br />
-                              {how}
-                            </h4>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  else {
-                    return (
-                      <div key={uuid()}>
-                        <div className="col-12 col-md-6">
-                          <div className="conts mt-4 right">
-                            <p className="times">{time}</p>
-                            <h4>
-                              {name} <br />
-                              {how}
-                            </h4>
-                          </div>
-                        </div>
-                        <div className="col-12 col-md-6"></div>
-                      </div>
-                    );
-                  }
-                }
-              )
-            ) : (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ThreeDots />
-              </div>
-            )}
+    <section id="experience" className={styles.experienceSection}>
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <h2>
+            <span className={styles.sectionNumber}>03.</span>
+            Where I've Worked
+          </h2>
+          <div className={styles.headerLine}></div>
+        </div>
 
-            {Experiences && auth && (
-              <div>
-                <div className="col-12 col-md-6"></div>
-                <div className="col-12 col-md-6">
-                  <div className="conts mt-4">
-                    <h4
-                      onClick={() => setModalShow(true)}
-                      style={{
-                        color: "blue",
-                        cursor: "pointer",
-                        display: "inline-block",
-                      }}
-                    >
-                      Add New Experience <br />
-                    </h4>
+        <div className={styles.totalExperience}>
+          {calculateExperience("2023-09-15")}
+        </div>
+
+        <div className={styles.timelineContainer}>
+          {Experiences ? (
+            Object.entries(Experiences.data).map(
+              ([key, { name, time, how }]) => (
+                <div
+                  key={key}
+                  className={`${styles.timelineItem} ${
+                    parseInt(key) % 2 === 0 ? styles.right : styles.left
+                  }`}
+                >
+                  <div className={styles.timelineContent}>
+                    <div className={styles.timelineDot}></div>
+                    <span className={styles.date}>{time}</span>
+                    <h3 className={styles.title}>{name}</h3>
+                    <p className={styles.description}>{how}</p>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )
+            )
+          ) : (
+            <div className={styles.loading}>
+              <ThreeDots />
+            </div>
+          )}
+
+          {Experiences && auth && (
+            <div
+              className={styles.addExperience}
+              onClick={() => setModalShow(true)}
+            >
+              <div className={styles.addIcon}>+</div>
+              <p>Add New Experience</p>
+            </div>
+          )}
         </div>
       </div>
+
       <ModalView
-        key={uuid()}
-        name={"Experiences"}
+        name="Experiences"
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
-    </>
+    </section>
   );
 }
 

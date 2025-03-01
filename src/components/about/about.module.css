@@ -1,0 +1,284 @@
+.aboutSection {
+  padding: 100px 0;
+  background: var(--bg_color);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+  color: var(--heading_color);
+  font-size: 2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionNumber {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 1.25rem;
+}
+
+.headerLine {
+  height: 1px;
+  flex-grow: 1;
+  background: var(--border_color);
+}
+
+.aboutContent {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 50px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.aboutText {
+  color: var(--text_color);
+  opacity: 0.85;
+}
+
+.aboutText p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.aboutText a {
+  color: var(--accent_color);
+  text-decoration: none;
+  position: relative;
+  font-weight: 500;
+}
+
+.aboutText a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent_color);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.aboutText a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.location {
+  font-family: "Fira Code", monospace;
+  color: var(--accent_color);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.location span {
+  font-size: 1.2rem;
+}
+
+.skillsSection {
+  margin-top: 3rem;
+}
+
+.skillsSection h3 {
+  color: var(--heading_color);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.skillCategory h4 {
+  color: var(--accent_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.skillsList {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.skillsList li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-family: "Fira Code", monospace;
+  font-size: 0.85rem;
+  color: var(--text_color);
+  opacity: 0.8;
+}
+
+.skillsList li::before {
+  content: "▹";
+  position: absolute;
+  left: 0;
+  color: var(--accent_color);
+  font-size: 1rem;
+}
+
+.imageWrapper {
+  position: relative;
+  max-width: 300px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.imageWrapper::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  top: 15px;
+  left: 15px;
+  border: 2px solid rgba(var(--accent_color));
+  z-index: 0;
+  transition: all 0.3s ease;
+}
+
+.imageWrapper img {
+  position: relative;
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+  filter: grayscale(50%) brightness(0.9) contrast(1.2);
+  mix-blend-mode: normal;
+  transition: all 0.3s ease;
+}
+
+.imageWrapper:hover::after {
+  top: 10px;
+  left: 10px;
+}
+
+.imageWrapper:hover img {
+  filter: none;
+}
+
+.expandButton {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--accent_color);
+  color: var(--accent_color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease;
+  width: fit-content;
+  z-index: 10;
+}
+
+.expandButton:hover {
+  background: rgba(var(--accent_color_rgb), 0.1);
+}
+
+.collapsed .expandableContent {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .aboutSection {
+    padding: 60px 0;
+  }
+
+  .sectionHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .aboutContent {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .imageWrapper {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+
+  .skillsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .expandButton {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .aboutText {
+    position: relative;
+    padding-bottom: 3rem;
+  }
+
+  .collapsed {
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  .collapsed::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, transparent, var(--bg_color));
+    pointer-events: none;
+  }
+
+  .aboutImage {
+    margin-top: 2rem;
+  }
+
+  .imageWrapper img {
+    filter: none;
+    mix-blend-mode: normal;
+  }
+
+  .imageWrapper:hover img {
+    filter: none;
+    mix-blend-mode: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .skillsList {
+    grid-template-columns: 1fr;
+  }
+}

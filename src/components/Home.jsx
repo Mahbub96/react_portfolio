@@ -1,4 +1,5 @@
 import Banner from "./banner/Banner";
+import About from "./about/About";
 import Contact from "./contact/Contact";
 import Educations from "./educations/Educations";
 import Experience from "./experiences/Experience";
@@ -11,14 +12,17 @@ function Home() {
   return (
     <div>
       <Navbar />
-      <Banner />
-      <Skills />
-      <Experience />
-      <Educations />
-      <Projects />
-      <Contact />
+      <main className="home">
+        {/* <Banner /> */}
+        <About />
+        <Skills />
+        <Experience />
+        <Educations />
+        <Projects />
+        <Contact />
 
-      <Footer />
+        <Footer />
+      </main>
     </div>
   );
 }

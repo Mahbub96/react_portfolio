@@ -1,0 +1,139 @@
+.footer {
+  background: var(--bg_color);
+  padding: 3rem 0;
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(100, 255, 218, 0),
+    rgba(100, 255, 218, 0.3),
+    rgba(100, 255, 218, 0)
+  );
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.socialLink {
+  color: var(--text_color);
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border_color);
+  border-radius: 50%;
+  background: var(--card_bg);
+}
+
+.socialLink:hover {
+  color: var(--accent_color);
+  transform: translateY(-3px);
+  border-color: var(--accent_color);
+  background: rgba(100, 255, 218, 0.1);
+}
+
+.footerInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.builtWith {
+  color: #8892b0;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.builtWith i {
+  color: #ff6b6b;
+  font-size: 1rem;
+}
+
+.copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.githubLink {
+  color: var(--accent_color);
+  text-decoration: none;
+  font-family: "Fira Code", monospace;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.githubLink:hover {
+  color: #ccd6f6;
+}
+
+.bracket {
+  color: var(--text_color);
+  opacity: 0.8;
+}
+
+.copyrightText {
+  color: var(--text_color);
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 2rem 0;
+  }
+
+  .footerContent {
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+
+  .socialLinks {
+    gap: 1rem;
+  }
+
+  .socialLink {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .githubLink {
+    font-size: 1rem;
+  }
+
+  .copyrightText {
+    font-size: 0.8rem;
+  }
+}

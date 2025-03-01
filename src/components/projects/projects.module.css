@@ -1,13 +1,4 @@
-/* education section  */
-
-.education .content .conts h5 .title {
-  font-size: 14px;
-}
-.education .content .conts p .ext {
-  margin: 1px;
-}
-
-.educationSection {
+.projectsSection {
   padding: 100px 0;
   background: var(--bg_color);
   min-height: 100vh;
@@ -44,91 +35,142 @@
   background: var(--border_color);
 }
 
-.educationGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 0 1rem;
+.filterContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  justify-content: center;
 }
 
-.educationCard {
-  background: var(--card_bg);
-  border: 1px solid var(--border_color);
-  border-radius: 8px;
-  padding: 2rem;
+.filterButton {
+  background: transparent;
+  border: 1px solid #64ffda;
+  color: #64ffda;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.educationCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.5);
+.filterButton:hover,
+.filterButton.active {
+  background: rgba(100, 255, 218, 0.1);
 }
 
-.cardHeader {
-  margin-bottom: 1.5rem;
-}
-
-.date {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
-  font-size: 0.9rem;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.institution {
-  color: var(--heading_color);
-  font-size: 1.4rem;
-  margin: 0;
-  font-family: "Fira Code", monospace;
-}
-
-.degree {
-  color: var(--text_color);
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  font-family: "Fira Code", monospace;
-}
-
-.details {
+.projectsGrid {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
 }
 
-.detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px dashed var(--border_color);
+.projectCard {
+  background: var(--card_bg);
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.label {
-  color: var(--accent_color);
+.projectCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.3);
+}
+
+.projectImage {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.projectImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.projectCard:hover .projectImage img {
+  transform: scale(1.05);
+}
+
+.projectContent {
+  padding: 1.5rem;
+}
+
+.projectTitle {
+  color: var(--heading_color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
   font-family: "Fira Code", monospace;
-  font-size: 0.9rem;
 }
 
-.value {
+.projectDesc {
   color: var(--text_color);
   font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-.addEducation {
+.projectTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.techTag {
+  background: var(--border_color);
+  color: var(--accent_color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: "Fira Code", monospace;
+}
+
+.projectLink {
+  color: var(--accent_color);
+  text-decoration: none;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.projectLink:hover {
+  color: var(--heading_color);
+}
+
+.projectLink i {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.projectLink:hover i {
+  transform: translateX(5px);
+}
+
+.addProject {
   background: var(--card_bg);
   border: 2px dashed var(--accent_color);
   border-radius: 8px;
   padding: 2rem;
-  cursor: pointer;
   text-align: center;
+  cursor: pointer;
   transition: all 0.3s ease;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.addEducation:hover {
+.addProject:hover {
   background: var(--border_color);
 }
 
@@ -138,7 +180,7 @@
   margin-bottom: 0.5rem;
 }
 
-.addEducation p {
+.addProject p {
   color: var(--accent_color);
   font-family: "Fira Code", monospace;
   margin: 0;
@@ -152,7 +194,7 @@
 }
 
 @media (max-width: 768px) {
-  .educationSection {
+  .projectsSection {
     padding: 60px 0;
   }
 
@@ -160,8 +202,11 @@
     font-size: 1.5rem;
   }
 
-  .educationGrid {
+  .projectsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .filterContainer {
     padding: 0 1rem;
   }
 }
