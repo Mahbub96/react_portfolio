@@ -9,10 +9,11 @@ function About() {
   const [isMobile, setIsMobile] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const { auth } = useDataContex();
-  const { updateDocument, data } = useFirestore();
+  const { updateDocument, data, loading } = useFirestore();
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
   const [profileImage, setProfileImage] = useState("/assets/img/profile.png");
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -25,6 +26,7 @@ function About() {
 
   useEffect(() => {
     const loadProfileImage = async () => {
+      setIsImageLoading(true);
       try {
         const profileData = data.profile;
         if (profileData?.image) {
@@ -32,6 +34,8 @@ function About() {
         }
       } catch (error) {
         console.error("Error loading profile image:", error);
+      } finally {
+        setIsImageLoading(false);
       }
     };
 
@@ -267,7 +271,15 @@ function About() {
               role={auth ? "button" : "presentation"}
               title={auth ? "Click to change profile picture" : ""}
             >
-              <img src={profileImage} alt="Mahbub Alam" />
+              {isImageLoading || loading ? (
+                <div className={styles.profileSkeleton}></div>
+              ) : (
+                <img
+                  src={profileImage || "/default-profile.png"}
+                  alt="Mahbub Alam"
+                  className={styles.profileImage}
+                />
+              )}
               {auth && (
                 <div className={styles.imageOverlay}>
                   {isUploading ? (

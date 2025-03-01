@@ -63,7 +63,7 @@ function Experience() {
           {Experiences ? (
             Experiences.data.map((experience, index) => (
               <motion.div
-                key={experience.id}
+                key={experience.id || `experience-${index}`}
                 className={`${styles.timelineItem} ${
                   index % 2 === 0 ? styles.left : styles.right
                 }`}

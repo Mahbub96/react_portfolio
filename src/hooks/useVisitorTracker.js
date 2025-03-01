@@ -14,7 +14,7 @@ const useVisitorTracker = () => {
     return {
       userAgent: window.navigator.userAgent,
       language: window.navigator.language,
-      platform: window.navigator.platform,
+      platform: navigator.userAgentData?.platform || "Unknown",
       screenResolution: `${window.screen.width}x${window.screen.height}`,
       viewport: `${window.innerWidth}x${window.innerHeight}`,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,

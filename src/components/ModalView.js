@@ -113,28 +113,28 @@ export default function ModalView(props) {
       </Modal.Header>
       <Modal.Body>
         <Form className="p-2" onSubmit={(e) => e.preventDefault()}>
-          {items?.map(({ type, name: fieldName, placeholder }) => (
-            <Form.Group className="mb-3" key={fieldName}>
-              <Form.Label className="fw-bold">{fieldName}</Form.Label>
-              {type === "select" ? (
+          {items?.map((item, index) => (
+            <Form.Group className="mb-3" key={`${item.name}-${index}`}>
+              <Form.Label className="fw-bold">{item.name}</Form.Label>
+              {item.type === "select" ? (
                 <Form.Select
-                  name={fieldName}
+                  name={item.name}
                   className="form-select-lg"
-                  value={formData[fieldName] || ""}
+                  value={formData[item.name] || ""}
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select {fieldName}</option>
+                  <option value="">Select {item.name}</option>
                   {skills.map((skill) => (
-                    <option key={skill.id} value={skill.name}>
+                    <option key={`skill-${skill.id}`} value={skill.name}>
                       {skill.name}
                     </option>
                   ))}
                 </Form.Select>
-              ) : type === "file" ? (
+              ) : item.type === "file" ? (
                 <Form.Control
                   type="file"
-                  name={fieldName}
+                  name={item.name}
                   onChange={handleInputChange}
                   className="form-control-lg"
                   accept="image/*"
@@ -142,11 +142,11 @@ export default function ModalView(props) {
                 />
               ) : (
                 <Form.Control
-                  type={type}
-                  name={fieldName}
-                  placeholder={placeholder}
+                  type={item.type}
+                  name={item.name}
+                  placeholder={item.placeholder}
                   className="form-control-lg"
-                  value={formData[fieldName] || ""}
+                  value={formData[item.name] || ""}
                   onChange={handleInputChange}
                   required
                 />
