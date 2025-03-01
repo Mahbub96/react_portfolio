@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../DB/DB_init";
+import { FaEye } from "react-icons/fa";
 
 const VisitorCounter = () => {
   const [visitorCount, setVisitorCount] = useState(0);
-  // get the auth from the local storage
-  const auth = localStorage.getItem("auth");
-  console.log(auth);
 
   useEffect(() => {
-    const visitorRef = doc(db, "analytics", "visitors");
-
-    const unsubscribe = onSnapshot(visitorRef, (doc) => {
-      if (doc.exists()) {
-        setVisitorCount(doc.data().count);
+    const fetchVisitorCount = async () => {
+      try {
+        const visitorRef = doc(db, "analytics", "visitors");
+        const visitorDoc = await getDoc(visitorRef);
+        if (visitorDoc.exists()) {
+          setVisitorCount(visitorDoc.data().count);
+        }
+      } catch (error) {
+        console.error("Error fetching visitor count:", error);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    fetchVisitorCount();
+    // Set up real-time updates if needed
+    const interval = setInterval(fetchVisitorCount, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
-  if (!auth) return null;
-
   return (
-    <div className="visitor-counter">
-      <p>Total Visitors: {visitorCount}</p>
+    <div className="visitor-counter-float">
+      <FaEye size={20} />
+      <span>{visitorCount} visitors</span>
     </div>
   );
 };

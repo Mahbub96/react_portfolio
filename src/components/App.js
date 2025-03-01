@@ -3,6 +3,7 @@ import "./../App.css";
 import Home from "./Home";
 import useVisitorTracker from "../hooks/useVisitorTracker";
 import VisitorCounter from "./VisitorCounter";
+import VisitorAnalytics from "./VisitorAnalytics";
 
 function App() {
   useVisitorTracker();
@@ -12,6 +13,7 @@ function App() {
       <VisitorCounter />
       <DataContextProvider>
         <Home />
+        <VisitorAnalytics />
 
         {/* <Route exact path="/inp/:id" component={ReqForm} /> */}
       </DataContextProvider>
