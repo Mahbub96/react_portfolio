@@ -88,8 +88,6 @@ const ConfigButton = () => {
       for (let i = 0; i < projects.length; i++) {
         await setDoc(doc(db, "Projects", `project${i + 1}`), projects[i]);
       }
-
-      console.log("Initial portfolio data created successfully");
     } catch (error) {
       console.error("Error creating initial data:", error);
       throw error;
@@ -109,7 +107,6 @@ const ConfigButton = () => {
 
     try {
       for (const collectionName of collections) {
-        console.log(`Fetching collection: ${collectionName}`);
         const querySnapshot = await getDocs(collection(db, collectionName));
         allData[collectionName] = {};
 
@@ -117,7 +114,6 @@ const ConfigButton = () => {
           console.log(`Collection ${collectionName} is empty`);
           // If collections are empty, create initial data
           if (collectionName !== "admin" && collectionName !== "analytics") {
-            console.log(`Creating initial data for ${collectionName}`);
             await createInitialData();
             // Fetch again after creating data
             const newSnapshot = await getDocs(collection(db, collectionName));
@@ -127,13 +123,11 @@ const ConfigButton = () => {
           }
         } else {
           querySnapshot.forEach((doc) => {
-            console.log(`Found document in ${collectionName}:`, doc.id);
             allData[collectionName][doc.id] = doc.data();
           });
         }
       }
 
-      console.log("All collected data:", allData);
       return allData;
     } catch (error) {
       console.error("Error in fetchAllCollections:", error);
@@ -150,7 +144,6 @@ const ConfigButton = () => {
         const initialBackupDoc = await getDoc(initialBackupRef);
 
         if (!initialBackupDoc.exists()) {
-          console.log("No initial backup found, creating one...");
           const currentData = await fetchAllCollections();
 
           if (Object.keys(currentData).length === 0) {
@@ -177,10 +170,8 @@ const ConfigButton = () => {
             data: currentData,
           });
 
-          console.log("Initial backup created successfully");
           setConfigData(currentData);
         } else {
-          console.log("Initial backup exists:", initialBackupDoc.data());
           setConfigData(initialBackupDoc.data().data);
         }
       } catch (error) {

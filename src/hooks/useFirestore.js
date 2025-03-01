@@ -36,7 +36,6 @@ const useFirestore = () => {
           }
         });
 
-        console.log("Fetched portfolio_data:", newPortfolioData);
         setPortfolioData(newPortfolioData);
         setData(collectionData);
       },
@@ -55,8 +54,6 @@ const useFirestore = () => {
       collectionName === "Experience" ? "Experiences" : collectionName;
 
     try {
-      console.log(`Adding item to ${dbCollectionName}:`, newItem);
-
       // Check for duplicates if it's a skill
       if (dbCollectionName === "Skills") {
         const existingSkills = getCollection("Skills");
@@ -92,7 +89,6 @@ const useFirestore = () => {
         { merge: true }
       );
 
-      console.log(`Item added successfully to ${dbCollectionName}`);
       return { id: itemWithId.id };
     } catch (error) {
       console.error(`Error adding item to ${dbCollectionName}:`, error);
@@ -162,21 +158,12 @@ const useFirestore = () => {
         };
 
         await setDoc(docRef, updatedData);
-        console.log(`Document deleted successfully from ${collectionName}`);
       }
     } catch (error) {
       console.error(`Error deleting document from ${collectionName}:`, error);
       throw error;
     }
   };
-
-  // Debug function to check data
-  useEffect(() => {
-    console.log("Current Firestore Data:", {
-      collections: data,
-      portfolioData,
-    });
-  }, [data, portfolioData]);
 
   return {
     data: { ...data, ...portfolioData },

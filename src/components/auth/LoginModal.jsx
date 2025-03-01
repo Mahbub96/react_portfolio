@@ -26,18 +26,11 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       }
 
       const storedData = credentialsDoc.data();
-      console.log("Attempting login with:", {
-        enteredUsername: username,
-        enteredPassword: password,
-        storedUsername: storedData.username,
-        storedPassword: storedData.password,
-      });
 
       if (
         username.trim() === storedData.username.trim() &&
         password.trim() === storedData.password.trim()
       ) {
-        console.log("Login successful");
         onLogin();
         onClose();
       } else {

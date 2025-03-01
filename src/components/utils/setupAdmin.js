@@ -3,28 +3,28 @@ import { db } from "../../DB/DB_init"; // Note: Updated the DB import path
 
 export const setupAdminCredentials = async () => {
   try {
-    // Create admin credentials document
     const credentialsRef = doc(db, "admin", "credentials");
+    const credentialsDoc = await getDoc(credentialsRef);
 
-    // Force create/update the document
-    await setDoc(
-      credentialsRef,
-      {
-        username: "mahbub",
-        password: "1234",
-      },
-      { merge: true }
-    );
+    // Only create default credentials if they don't exist
+    if (!credentialsDoc.exists()) {
+      // Instead of hardcoding credentials, you should:
+      // 1. Either prompt for initial setup
+      // 2. Or use environment variables
+      // 3. Or require manual setup through a secure channel
+      console.warn(
+        "No admin credentials found. Please set up admin credentials through a secure channel."
+      );
 
-    // Verify the document was created
-    const verifyDoc = await getDoc(credentialsRef);
-    if (verifyDoc.exists()) {
-      console.log("Admin credentials created/updated successfully");
-      console.log("Current credentials:", verifyDoc.data());
-    } else {
-      console.error("Failed to create admin credentials");
+      // For development only - remove in production
+      if (process.env.NODE_ENV === "development") {
+        await setDoc(credentialsRef, {
+          username: process.env.REACT_APP_ADMIN_USERNAME || "admin",
+          password: process.env.REACT_APP_ADMIN_PASSWORD || "admin123",
+        });
+      }
     }
   } catch (error) {
-    console.error("Error creating admin credentials:", error);
+    console.error("Error setting up admin credentials:", error);
   }
 };

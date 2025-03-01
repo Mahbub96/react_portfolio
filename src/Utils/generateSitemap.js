@@ -58,8 +58,6 @@ Sitemap: https://mahbub.dev/sitemap.xml
     `.trim();
 
     createWriteStream("./public/robots.txt").write(robotsTxt);
-
-    console.log("Sitemap and robots.txt generated successfully");
   } catch (error) {
     console.error("Error generating sitemap:", error);
   }

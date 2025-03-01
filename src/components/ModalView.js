@@ -26,10 +26,6 @@ export default function ModalView(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    console.log("Current Skills:", skills);
-  }, [skills]);
-
-  useEffect(() => {
     if (initialData) {
       // Don't set file input values
       const filteredData = Object.fromEntries(
@@ -85,10 +81,8 @@ export default function ModalView(props) {
 
       if (initialData?.id) {
         await firestore.updateDocument(name, initialData.id, dataToSubmit);
-        console.log("Document updated successfully:", dataToSubmit);
       } else {
         await firestore.addDocument(name, dataToSubmit);
-        console.log("Document added successfully:", dataToSubmit);
       }
 
       setFormData({});
