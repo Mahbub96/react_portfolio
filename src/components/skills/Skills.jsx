@@ -5,7 +5,6 @@ import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import Skill from "./Skill";
 
 function Skills() {
   const [modalShow, setModalShow] = useState(false);

@@ -13,19 +13,19 @@ function Experience() {
   const [selectedExperience, setSelectedExperience] = useState(null);
   const { deleteDocument } = useFirestore();
 
-  const calculateExperience = (startDate) => {
-    const start = new Date(startDate);
-    const today = new Date();
-    let years = today.getFullYear() - start.getFullYear();
-    let months = today.getMonth() - start.getMonth();
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-    return `${years} year${years !== 1 ? "s" : ""} ${months} month${
-      months !== 1 ? "s" : ""
-    }`;
-  };
+  // const calculateExperience = (startDate) => {
+  //   const start = new Date(startDate);
+  //   const today = new Date();
+  //   let years = today.getFullYear() - start.getFullYear();
+  //   let months = today.getMonth() - start.getMonth();
+  //   if (months < 0) {
+  //     years--;
+  //     months += 12;
+  //   }
+  //   return `${years} year${years !== 1 ? "s" : ""} ${months} month${
+  //     months !== 1 ? "s" : ""
+  //   }`;
+  // };
 
   const handleEdit = (experience) => {
     setSelectedExperience(experience);

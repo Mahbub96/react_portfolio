@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import uuid from "react-uuid";
 import { formName } from "../Utils/StaticData";
 import useFirestore from "../hooks/useFirestore";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,7 +15,6 @@ export default function ModalView(props) {
     onHide,
     initialData = null,
     onSuccess = () => {},
-    ...events
   } = props;
 
   const firestore = useFirestore();

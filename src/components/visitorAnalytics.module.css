@@ -104,6 +104,9 @@
   border: 1px solid var(--border_color);
   border-radius: 8px;
   padding: 1.5rem;
+  max-height: 20rem;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .statsSection h3 {
@@ -130,7 +133,8 @@
 }
 
 .statsSection.totalVisitors {
-  background: var(--accent_color);
+  /* background: var(--accent_color); */
+  background: rgb(0, 0, 0);
   grid-column: 1 / -1;
   text-align: center;
 }
@@ -139,6 +143,26 @@
   color: #64ffda;
   font-size: 2rem;
   margin: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .ipStatItem {

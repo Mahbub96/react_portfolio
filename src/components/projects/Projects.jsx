@@ -3,7 +3,6 @@ import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import Project from "./Project";
 import styles from "./projects.module.css";
 import { motion } from "framer-motion";
 
