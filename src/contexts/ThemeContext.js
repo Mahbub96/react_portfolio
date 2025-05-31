@@ -18,13 +18,8 @@ export function ThemeProvider({ children }) {
     );
   }, [isDarkMode]);
 
-  // Force dark theme on initial load
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "dark");
-  }, []);
-
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode((prev) => !prev);
   };
 
   return (

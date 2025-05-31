@@ -123,6 +123,10 @@ function Educations() {
         }}
         initialData={selectedEducation}
         title={selectedEducation ? "Edit Education" : "Add Education"}
+        onSuccess={() => {
+          setModalShow(false);
+          setSelectedEducation(null);
+        }}
       />
     </section>
   );

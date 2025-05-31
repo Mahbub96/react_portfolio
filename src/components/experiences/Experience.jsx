@@ -13,19 +13,47 @@ function Experience() {
   const [selectedExperience, setSelectedExperience] = useState(null);
   const { deleteDocument } = useFirestore();
 
-  // const calculateExperience = (startDate) => {
-  //   const start = new Date(startDate);
-  //   const today = new Date();
-  //   let years = today.getFullYear() - start.getFullYear();
-  //   let months = today.getMonth() - start.getMonth();
-  //   if (months < 0) {
-  //     years--;
-  //     months += 12;
-  //   }
-  //   return `${years} year${years !== 1 ? "s" : ""} ${months} month${
-  //     months !== 1 ? "s" : ""
-  //   }`;
-  // };
+  // Helper to get total experience in years and months or decimal years
+  const getTotalExperienceDisplay = () => {
+    if (!Experiences || !Experiences.data || Experiences.data.length === 0)
+      return null;
+    // Find the earliest start and latest end (or today if any are present)
+    let minStart = null;
+    let maxEnd = null;
+    Experiences.data.forEach((exp) => {
+      // Parse start
+      let start = exp.startDate || exp.time?.split("-")[0] || exp.time;
+      let end = exp.endDate || exp.time?.split("-")[1] || exp.time;
+      // Clean up
+      if (start) start = new Date(start.trim());
+      if (end) {
+        if (typeof end === "string" && end.toLowerCase().includes("present")) {
+          end = new Date();
+        } else {
+          end = new Date(end.trim());
+        }
+      } else {
+        end = new Date();
+      }
+      if (!minStart || (start && start < minStart)) minStart = start;
+      if (!maxEnd || (end && end > maxEnd)) maxEnd = end;
+    });
+    if (!minStart || !maxEnd) return null;
+    let years = maxEnd.getFullYear() - minStart.getFullYear();
+    let months = maxEnd.getMonth() - minStart.getMonth();
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    const decimalYears = (years + months / 12).toFixed(1);
+    const fullText = `${years} year${years !== 1 ? "s" : ""} ${months} month${
+      months !== 1 ? "s" : ""
+    }`;
+    return {
+      decimal: `${decimalYears} year${decimalYears !== "1.0" ? "s" : ""}`,
+      full: fullText,
+    };
+  };
 
   const handleEdit = (experience) => {
     setSelectedExperience(experience);
@@ -56,6 +84,28 @@ function Experience() {
             <span className={styles.sectionNumber}>03.</span> Where I've Worked
           </h2>
           <div className={styles.headerLine}></div>
+          {/* Show total experience */}
+          {Experiences && Experiences.data.length > 0 && (
+            <div
+              className="w-full max-w-full text-center break-words px-6 py-3 rounded-md font-bold text-base mt-4 mb-4 shadow-sm border-0 inline-block sm:text-base sm:px-4 sm:py-2 sm:mt-2 sm:mb-2 bg-white/90 dark:bg-neutral-900/90"
+              style={{
+                color: styles.date ? undefined : "var(--heading_color)",
+                transition: "background 0.3s, color 0.3s",
+              }}
+            >
+              {/* Only show one format at a time based on screen size */}
+              <span className={styles.showOnMobile}>
+                <span className={styles.date}>
+                  {getTotalExperienceDisplay()?.decimal}
+                </span>
+              </span>
+              <span className={styles.showOnDesktop}>
+                <span className={styles.date}>
+                  Total Experience: {getTotalExperienceDisplay()?.full}
+                </span>
+              </span>
+            </div>
+          )}
         </motion.div>
 
         <div className={styles.timelineContainer}>
@@ -132,6 +182,10 @@ function Experience() {
         }}
         initialData={selectedExperience}
         title={selectedExperience ? "Edit Experience" : "Add Experience"}
+        onSuccess={() => {
+          setModalShow(false);
+          setSelectedExperience(null);
+        }}
       />
     </section>
   );

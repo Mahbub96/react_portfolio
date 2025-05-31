@@ -49,7 +49,22 @@ const useFirestore = () => {
     };
   }, []);
 
+  // Helper to check if domain is mahbub.dev
+  const isMahbubDev = () => {
+    if (typeof window !== "undefined") {
+      // Use env variable if available, fallback to window.location.hostname
+      const allowedDomain =
+        process.env.REACT_APP_ADMIN_FIREBASE_AUTH_DOMAIN || "mahbub.dev";
+      return window.location.hostname === allowedDomain;
+    }
+    return false;
+  };
+
   const addDocument = async (collectionName, newItem) => {
+    if (!isMahbubDev()) {
+      throw new Error("Data add/update is only allowed on mahbub.dev domain.");
+    }
+
     const dbCollectionName =
       collectionName === "Experience" ? "Experiences" : collectionName;
 
@@ -97,6 +112,9 @@ const useFirestore = () => {
   };
 
   const updateDocument = async (collectionName, documentId, updatedData) => {
+    if (!isMahbubDev()) {
+      throw new Error("Data add/update is only allowed on mahbub.dev domain.");
+    }
     try {
       const docRef = doc(db, collectionName, documentId);
 

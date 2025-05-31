@@ -220,6 +220,23 @@
   padding: 2rem;
 }
 
+.showOnMobile {
+  display: inline;
+}
+@media (min-width: 768px) {
+  .showOnMobile {
+    display: none;
+  }
+}
+.showOnDesktop {
+  display: none;
+}
+@media (min-width: 768px) {
+  .showOnDesktop {
+    display: inline;
+  }
+}
+
 @media (max-width: 768px) {
   .experienceSection {
     padding: 60px 0;
