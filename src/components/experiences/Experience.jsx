@@ -22,21 +22,44 @@ function Experience() {
     let maxEnd = null;
     Experiences.data.forEach((exp) => {
       // Parse start
-      let start = exp.startDate || exp.time?.split("-")[0] || exp.time;
-      let end = exp.endDate || exp.time?.split("-")[1] || exp.time;
-      // Clean up
-      if (start) start = new Date(start.trim());
-      if (end) {
-        if (typeof end === "string" && end.toLowerCase().includes("present")) {
-          end = new Date();
-        } else {
-          end = new Date(end.trim());
+      let startRaw = exp.startDate || exp.time?.split("-")[0] || exp.time;
+      let endRaw = exp.endDate || exp.time?.split("-")[1] || exp.time;
+      // Helper to parse YYYY-MM or YYYY/MM or YYYY
+      function parseDate(str) {
+        if (!str) return null;
+        str = str.trim();
+        if (/present/i.test(str)) return new Date();
+        // Try YYYY-MM or YYYY/MM
+        let match = str.match(/^(\d{4})[-/](\d{1,2})$/);
+        if (match) {
+          // Month is 0-based in JS Date
+          return new Date(Number(match[1]), Number(match[2]) - 1);
         }
-      } else {
-        end = new Date();
+        // Try YYYY
+        match = str.match(/^(\d{4})$/);
+        if (match) {
+          return new Date(Number(match[1]), 0);
+        }
+        // Fallback to Date constructor
+        let d = new Date(str);
+        if (!isNaN(d)) return d;
+        return null;
       }
-      if (!minStart || (start && start < minStart)) minStart = start;
-      if (!maxEnd || (end && end > maxEnd)) maxEnd = end;
+      let start = parseDate(startRaw);
+      let end = parseDate(endRaw);
+      if (!end) end = new Date();
+      // Debug log for Safari troubleshooting
+      console.log("Experience date debug:", { startRaw, endRaw, start, end });
+      // Only use valid dates
+      if (
+        start instanceof Date &&
+        !isNaN(start) &&
+        end instanceof Date &&
+        !isNaN(end)
+      ) {
+        if (!minStart || start < minStart) minStart = start;
+        if (!maxEnd || end > maxEnd) maxEnd = end;
+      }
     });
     if (!minStart || !maxEnd) return null;
     let years = maxEnd.getFullYear() - minStart.getFullYear();
@@ -85,27 +108,29 @@ function Experience() {
           </h2>
           <div className={styles.headerLine}></div>
           {/* Show total experience */}
-          {Experiences && Experiences.data.length > 0 && (
-            <div
-              className="w-full max-w-full text-center break-words px-6 py-3 rounded-md font-bold text-base mt-4 mb-4 shadow-sm border-0 inline-block sm:text-base sm:px-4 sm:py-2 sm:mt-2 sm:mb-2 bg-white/90 dark:bg-neutral-900/90"
-              style={{
-                color: styles.date ? undefined : "var(--heading_color)",
-                transition: "background 0.3s, color 0.3s",
-              }}
-            >
-              {/* Only show one format at a time based on screen size */}
-              <span className={styles.showOnMobile}>
-                <span className={styles.date}>
-                  {getTotalExperienceDisplay()?.decimal}
+          {Experiences &&
+            Experiences.data.length > 0 &&
+            getTotalExperienceDisplay() && (
+              <div
+                className="w-full max-w-full text-center break-words px-6 py-3 rounded-md font-bold text-base mt-4 mb-4 shadow-sm border-0 inline-block sm:text-base sm:px-4 sm:py-2 sm:mt-2 sm:mb-2 bg-white/90 dark:bg-neutral-900/90"
+                style={{
+                  color: styles.date ? undefined : "var(--heading_color)",
+                  transition: "background 0.3s, color 0.3s",
+                }}
+              >
+                {/* Only show one format at a time based on screen size */}
+                <span className={styles.showOnMobile}>
+                  <span className={styles.date}>
+                    {getTotalExperienceDisplay()?.decimal}
+                  </span>
                 </span>
-              </span>
-              <span className={styles.showOnDesktop}>
-                <span className={styles.date}>
-                  Total Experience: {getTotalExperienceDisplay()?.full}
+                <span className={styles.showOnDesktop}>
+                  <span className={styles.date}>
+                    Total Experience: {getTotalExperienceDisplay()?.full}
+                  </span>
                 </span>
-              </span>
-            </div>
-          )}
+              </div>
+            )}
         </motion.div>
 
         <div className={styles.timelineContainer}>
