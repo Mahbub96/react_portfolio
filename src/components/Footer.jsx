@@ -1,32 +1,43 @@
 import React from "react";
 import styles from "./footer.module.css";
 
-function Footer() {
+function Footer({ data }) {
   const currentYear = new Date().getFullYear();
 
-  const socialLinks = [
+  // Extract data from database
+  const profile = data?.profile?.data || {};
+  const bannerData = data?.Banner?.data || {};
+  const name = profile.name || bannerData.name || "Mahbub Alam";
+  const socialLinks = bannerData.socialLinks || {
+    email: "mahbubcse96@gmail.com",
+    github: "https://github.com/mahbub96",
+    facebook: "https://fb.me/MahbubCSE96",
+    linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
+  };
+
+  const footerSocialLinks = [
     {
       name: "GitHub",
       icon: "fa fa-github",
-      url: "https://github.com/mahbub96",
+      url: socialLinks.github,
       title: "GitHub Profile",
     },
     {
       name: "Email",
       icon: "fa fa-google",
-      url: "mailto:mahbubcse96@gmail.com",
+      url: `mailto:${socialLinks.email}`,
       title: "Email me",
     },
     {
       name: "Facebook",
       icon: "fa fa-facebook",
-      url: "https://fb.me/MahbubCSE96",
+      url: socialLinks.facebook,
       title: "Facebook Profile",
     },
     {
       name: "LinkedIn",
       icon: "fa fa-linkedin",
-      url: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
+      url: socialLinks.linkedin,
       title: "LinkedIn Profile",
     },
   ];
@@ -35,7 +46,7 @@ function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.socialLinks}>
-          {socialLinks.map((link) => (
+          {footerSocialLinks.map((link) => (
             <a
               key={link.name}
               href={link.url}
@@ -57,13 +68,13 @@ function Footer() {
           </div>
           <div className={styles.copyright}>
             <a
-              href="https://github.com/mahbub96"
+              href={socialLinks.github}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.githubLink}
             >
               <span className={styles.bracket}>{"<"}</span>
-              Mahbub Alam
+              {name}
               <span className={styles.bracket}>{"/>"}</span>
             </a>
             <span className={styles.copyrightText}>

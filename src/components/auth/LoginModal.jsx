@@ -7,18 +7,46 @@ function LoginModal({ show, onHide }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useDataContex();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
-    // Simple authentication - replace with your preferred auth method
-    if (username === "mahbub" && password === "1234") {
-      login();
-      onHide();
-    } else {
-      setError("Invalid credentials");
+    try {
+      // Simple authentication with admin/admin credentials
+      if (username === "admin" && password === "admin") {
+        // Store authentication in database for tracking
+        await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            timestamp: new Date().toISOString(),
+            userAgent:
+              typeof navigator !== "undefined"
+                ? navigator.userAgent
+                : "unknown",
+            ip: "unknown", // In production, this would come from server-side
+          }),
+        });
+
+        login();
+        onHide();
+        setUsername("");
+        setPassword("");
+      } else {
+        setError("Invalid credentials. Use admin/admin");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -41,7 +69,9 @@ function LoginModal({ show, onHide }) {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="admin"
               required
+              disabled={isLoading}
             />
           </div>
           <div className={styles.formGroup}>
@@ -51,13 +81,22 @@ function LoginModal({ show, onHide }) {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="admin"
               required
+              disabled={isLoading}
             />
           </div>
           {error && <div className={styles.error}>{error}</div>}
-          <button type="submit" className={styles.submitButton}>
-            Login
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Login"}
           </button>
+          <div className={styles.helpText}>
+            <small>Default credentials: admin/admin</small>
+          </div>
         </form>
       </div>
     </div>

@@ -4,7 +4,19 @@ import axios from "axios";
 import { FaMapMarkerAlt, FaEnvelope, FaPaperPlane } from "react-icons/fa";
 import styles from "./contact.module.css";
 
-export default function Contact() {
+export default function Contact({ data }) {
+  const contactData = data?.Contact?.data || {};
+
+  // Default values if no data from database
+  const contactInfo = contactData.contactInfo || {
+    location: "Dhaka, Bangladesh",
+    email: "mahbubcse96@gmail.com",
+  };
+
+  const message =
+    contactData.message ||
+    "I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -59,20 +71,16 @@ export default function Contact() {
         <div className={styles.contactContent}>
           <div className={styles.contactInfo}>
             <h3>Let's Talk</h3>
-            <p>
-              I'm currently looking for new opportunities. Whether you have a
-              question or just want to say hi, I'll try my best to get back to
-              you!
-            </p>
+            <p>{message}</p>
             <div className={styles.contactDetails}>
               <div className={styles.contactItem}>
                 <FaMapMarkerAlt className={styles.contactIcon} />
-                <span itemProp="address">Dhaka, Bangladesh</span>
+                <span itemProp="address">{contactInfo.location}</span>
               </div>
               <div className={styles.contactItem}>
                 <FaEnvelope className={styles.contactIcon} />
-                <a href="mailto:mahbubcse96@gmail.com" itemProp="email">
-                  mahbubcse96@gmail.com
+                <a href={`mailto:${contactInfo.email}`} itemProp="email">
+                  {contactInfo.email}
                 </a>
               </div>
             </div>

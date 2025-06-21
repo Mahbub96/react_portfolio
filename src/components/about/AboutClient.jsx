@@ -4,7 +4,7 @@ import { useDataContex } from "../../contexts/useAllContext";
 import usePortfolioData from "../../hooks/usePortfolioData";
 import styles from "./about.module.css";
 
-function AboutClient({ profile }) {
+function AboutClient({ profile, technicalSkills }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const { auth } = useDataContex();
@@ -13,7 +13,11 @@ function AboutClient({ profile }) {
   const fileInputRef = useRef(null);
   const [profileImage, setProfileImage] = useState("/assets/img/profile.png");
 
-  const technicalSkills = {
+  // Extract name from profile data
+  const name = profile?.name || "Mahbub Alam";
+
+  // Default technical skills if not provided
+  const defaultTechnicalSkills = {
     "Languages & Frameworks": [
       "JavaScript (ES6+)",
       "TypeScript",
@@ -49,6 +53,9 @@ function AboutClient({ profile }) {
       "TDD",
     ],
   };
+
+  // Use provided technical skills or fallback to defaults
+  const skillsToDisplay = technicalSkills || defaultTechnicalSkills;
 
   useEffect(() => {
     if (profile?.image) {
@@ -114,7 +121,7 @@ function AboutClient({ profile }) {
             <div className={styles.skillsSection}>
               <h3>Technical Expertise</h3>
               <div className={styles.skillsGrid}>
-                {Object.entries(technicalSkills).map(([category, skills]) => (
+                {Object.entries(skillsToDisplay).map(([category, skills]) => (
                   <div key={category} className={styles.skillCategory}>
                     <h4>{category}</h4>
                     <ul>
@@ -148,7 +155,7 @@ function AboutClient({ profile }) {
           >
             <img
               src={profileImage}
-              alt="Mahbub Alam"
+              alt={name}
               onError={() => {
                 setProfileImage("/assets/img/profile.png");
               }}

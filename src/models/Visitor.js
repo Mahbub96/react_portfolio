@@ -22,6 +22,9 @@ const VisitorSchema = new mongoose.Schema(
     city: String,
     region: String,
     timezone: String,
+    referrer: String,
+    screenResolution: String,
+    language: String,
   },
   {
     timestamps: true,
@@ -32,6 +35,8 @@ const VisitorSchema = new mongoose.Schema(
 VisitorSchema.index({ timestamp: -1 });
 VisitorSchema.index({ page: 1 });
 VisitorSchema.index({ ip: 1 });
+VisitorSchema.index({ referrer: 1 });
+VisitorSchema.index({ language: 1 });
 
 export default mongoose.models.Visitor ||
   mongoose.model("Visitor", VisitorSchema);

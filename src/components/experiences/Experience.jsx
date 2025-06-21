@@ -83,7 +83,10 @@ function Experience({ data }) {
   };
 
   const handleDelete = async (experience) => {
-    if (window.confirm("Are you sure you want to delete this experience?")) {
+    if (
+      typeof window !== "undefined" &&
+      window.confirm("Are you sure you want to delete this experience?")
+    ) {
       try {
         // TODO: Implement delete via API endpoint
         console.log("Delete experience:", experience.id);

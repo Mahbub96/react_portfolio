@@ -8,7 +8,13 @@ import {
 import { SiJavascript, SiReact, SiNodedotjs, SiMongodb } from "react-icons/si";
 import styles from "./loadingScreen.module.css";
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ data }) => {
+  // Extract data from database
+  const profile = data?.profile?.data || {};
+  const bannerData = data?.Banner?.data || {};
+  const name = profile.name || bannerData.name || "Mahbub Alam";
+  const title = profile.title || "Full Stack Developer";
+
   return (
     <div className={styles.loadingScreen}>
       {/* Background gradient */}
@@ -33,8 +39,8 @@ const LoadingScreen = () => {
             <div className={styles.logoIcon}>
               <HiCode />
             </div>
-            <h1 className={styles.brandName}>Mahbub Alam</h1>
-            <p className={styles.brandTitle}>Full Stack Developer</p>
+            <h1 className={styles.brandName}>{name}</h1>
+            <p className={styles.brandTitle}>{title}</p>
           </div>
         </div>
 

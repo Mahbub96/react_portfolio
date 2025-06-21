@@ -24,19 +24,19 @@ function Project({ project, idx }) {
       : src;
 
   const handleRunProject = () => {
-    if (liveUrl) {
+    if (typeof window !== "undefined" && liveUrl) {
       window.open(liveUrl, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleDownloadProject = () => {
-    if (downloadUrl) {
+    if (typeof window !== "undefined" && downloadUrl) {
       window.open(downloadUrl, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleViewCode = () => {
-    if (githubUrl) {
+    if (typeof window !== "undefined" && githubUrl) {
       window.open(githubUrl, "_blank", "noopener,noreferrer");
     }
   };

@@ -17,7 +17,10 @@ function SkillsClient({ skills }) {
   };
 
   const handleDelete = async (skill) => {
-    if (window.confirm("Are you sure you want to delete this skill?")) {
+    if (
+      typeof window !== "undefined" &&
+      window.confirm("Are you sure you want to delete this skill?")
+    ) {
       try {
         await deleteDocument("Skills", skill.id);
       } catch (error) {

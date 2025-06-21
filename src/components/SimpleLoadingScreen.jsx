@@ -3,10 +3,16 @@ import React, { useState, useEffect } from "react";
 import { FaCode, FaLaptopCode, FaDatabase, FaServer } from "react-icons/fa";
 import styles from "./loadingScreen.module.css";
 
-const SimpleLoadingScreen = ({ onLoadingComplete }) => {
+const SimpleLoadingScreen = ({ onLoadingComplete, data }) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+
+  // Extract data from database
+  const profile = data?.profile?.data || {};
+  const bannerData = data?.Banner?.data || {};
+  const name = profile.name || bannerData.name || "Mahbub Alam";
+  const title = profile.title || "Full Stack Developer";
 
   const loadingSteps = [
     { icon: FaCode, text: "Initializing Codebase", duration: 800 },
@@ -63,10 +69,10 @@ const SimpleLoadingScreen = ({ onLoadingComplete }) => {
         <div className={styles.brand}>
           <div className={styles.logo}>
             <span className={styles.bracket}>{"<"}</span>
-            <span className={styles.name}>Mahbub Alam</span>
+            <span className={styles.name}>{name}</span>
             <span className={styles.bracket}>{" />"}</span>
           </div>
-          <p className={styles.tagline}>Full Stack Developer</p>
+          <p className={styles.tagline}>{title}</p>
         </div>
 
         {/* Loading Animation */}

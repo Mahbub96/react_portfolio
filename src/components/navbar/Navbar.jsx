@@ -5,23 +5,30 @@ import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./navbar.module.css";
 import LoginModal from "../auth/LoginModal";
 
-function Header() {
-  const { auth, login, logout } = useDataContex();
+function Header({ data }) {
+  const { auth, login, logout, isLoaded } = useDataContex();
   const { isDarkMode, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // Extract name from database data
+  const profile = data?.profile?.data || {};
+  const bannerData = data?.Banner?.data || {};
+  const name = profile.name || bannerData.name || "Mahbub Alam";
+
   const handleNavClick = (e, sectionId) => {
     e.preventDefault();
-    const section = document.getElementById(sectionId);
-    if (section) {
-      const navHeight = 70; // Approximate navbar height
-      const sectionTop = section.offsetTop - navHeight;
-      window.scrollTo({
-        top: sectionTop,
-        behavior: "smooth",
-      });
-      setIsMenuOpen(false);
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const navHeight = 70; // Approximate navbar height
+        const sectionTop = section.offsetTop - navHeight;
+        window.scrollTo({
+          top: sectionTop,
+          behavior: "smooth",
+        });
+        setIsMenuOpen(false);
+      }
     }
   };
 
@@ -40,6 +47,7 @@ function Header() {
     { id: "education", label: "Education", number: "04" },
     { id: "projects", label: "Projects", number: "05" },
     { id: "contact", label: "Contact", number: "06" },
+    { id: "analytics", label: "Analytics", number: "07", href: "/analytics" },
   ];
 
   return (
@@ -49,7 +57,7 @@ function Header() {
           <div className={styles.container}>
             <a className={styles.logo} href="/">
               <span className={styles.bracket}>{"<"}</span>
-              Mahbub Alam
+              {name}
               <span className={styles.bracket}>{"/>"}</span>
             </a>
 
@@ -71,28 +79,42 @@ function Header() {
               }`}
             >
               <ul className={styles.navLinks}>
-                {navItems.map(({ id, label, number }) => (
+                {navItems.map(({ id, label, number, href }) => (
                   <li key={id}>
-                    <a href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
-                      <span className={styles.navNumber}>{number}.</span>
-                      {label}
-                    </a>
+                    {href ? (
+                      <a href={href}>
+                        <span className={styles.navNumber}>{number}.</span>
+                        {label}
+                      </a>
+                    ) : (
+                      <a href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
+                        <span className={styles.navNumber}>{number}.</span>
+                        {label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
 
               <div className={styles.navButtons}>
-                {auth ? (
-                  <button className={styles.authButton} onClick={handleLogout}>
-                    Log Out
-                  </button>
-                ) : (
-                  <button
-                    className={styles.authButton}
-                    onClick={() => setShowLoginModal(true)}
-                  >
-                    Login
-                  </button>
+                {isLoaded && (
+                  <>
+                    {auth ? (
+                      <button
+                        className={styles.authButton}
+                        onClick={handleLogout}
+                      >
+                        Log Out
+                      </button>
+                    ) : (
+                      <button
+                        className={styles.authButton}
+                        onClick={() => setShowLoginModal(true)}
+                      >
+                        Login
+                      </button>
+                    )}
+                  </>
                 )}
                 <button
                   className={styles.themeButton}

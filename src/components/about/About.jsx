@@ -9,8 +9,12 @@ const AboutClient = dynamic(() => import("./AboutClient"), {
 
 function About({ data }) {
   const profile = data?.data || {};
+  const aboutData = data?.About?.data || {};
 
-  const technicalSkills = {
+  // Default values if no data from database
+  const name = profile.name || aboutData.name || "Mahbub Alam";
+  const title = profile.title || "Full Stack Developer";
+  const technicalSkills = aboutData.technicalSkills || {
     "Languages & Frameworks": [
       "JavaScript (ES6+)",
       "TypeScript",
@@ -47,6 +51,19 @@ function About({ data }) {
     ],
   };
 
+  const location = aboutData.location || "Dhaka, Bangladesh";
+  const company = aboutData.company || "Brotecs Technologies Ltd";
+  const companyUrl = aboutData.companyUrl || "https://brotecs.com";
+  const description =
+    aboutData.description ||
+    "I'm a Software Engineer at Brotecs Technologies Ltd, where I specialize in developing scalable web applications and enterprise-level VoIP solutions. With a strong foundation in both frontend and backend development, I focus on creating efficient, maintainable, and high-performance software solutions.";
+  const achievements =
+    aboutData.achievements ||
+    "In my current role, I've successfully implemented microservices architecture for VoIP systems, improving scalability and reducing deployment time by 40%. I've also led the development of RESTful APIs that handle 100K+ daily requests, and contributed to reducing system downtime by 60% through implementing robust error handling and monitoring solutions.";
+  const approach =
+    aboutData.approach ||
+    "My approach to software development emphasizes clean code principles, test-driven development, and continuous integration practices. I'm particularly passionate about system architecture, performance optimization, and implementing DevSecOps best practices.";
+
   return (
     <section
       id="about"
@@ -69,18 +86,18 @@ function About({ data }) {
               <span role="img" aria-label="location">
                 📍
               </span>{" "}
-              Dhaka, Bangladesh
+              {location}
             </div>
 
             <p itemProp="description">
-              I'm a Software Engineer at{" "}
+              {description.replace(company, "").replace(companyUrl, "").trim()}{" "}
               <a
-                href="https://brotecs.com"
+                href={companyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 itemProp="worksFor"
               >
-                Brotecs Technologies Ltd
+                {company}
               </a>
               , where I specialize in developing scalable web applications and
               enterprise-level VoIP solutions. With a strong foundation in both
@@ -88,22 +105,9 @@ function About({ data }) {
               maintainable, and high-performance software solutions.
             </p>
 
-            <p>
-              In my current role, I've successfully implemented microservices
-              architecture for VoIP systems, improving scalability and reducing
-              deployment time by 40%. I've also led the development of RESTful
-              APIs that handle 100K+ daily requests, and contributed to reducing
-              system downtime by 60% through implementing robust error handling
-              and monitoring solutions.
-            </p>
+            <p>{achievements}</p>
 
-            <p>
-              My approach to software development emphasizes clean code
-              principles, test-driven development, and continuous integration
-              practices. I'm particularly passionate about system architecture,
-              performance optimization, and implementing DevSecOps best
-              practices.
-            </p>
+            <p>{approach}</p>
           </div>
 
           <div
@@ -112,7 +116,7 @@ function About({ data }) {
             <div className={styles.profileImage}>
               <img
                 src={profile.image || "/assets/img/profile.png"}
-                alt="Mahbub Alam - Full Stack Developer"
+                alt={`${name} - ${title}`}
                 loading="lazy"
                 itemProp="image"
                 width="300"
@@ -124,7 +128,7 @@ function About({ data }) {
       </div>
 
       {/* Client-side interactive features */}
-      <AboutClient profile={profile} />
+      <AboutClient profile={profile} technicalSkills={technicalSkills} />
     </section>
   );
 }

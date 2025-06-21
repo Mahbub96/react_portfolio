@@ -19,7 +19,10 @@ function Educations({ data }) {
   };
 
   const handleDelete = async (education) => {
-    if (window.confirm("Are you sure you want to delete this education?")) {
+    if (
+      typeof window !== "undefined" &&
+      window.confirm("Are you sure you want to delete this education?")
+    ) {
       try {
         // TODO: Implement delete via API endpoint
         console.log("Delete education:", education.id);

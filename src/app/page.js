@@ -5,6 +5,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 
 // Import components directly for better SSR
 import Navbar from "@/components/navbar/Navbar";
+import Banner from "@/components/banner/Banner";
 import About from "@/components/about/About";
 import Skills from "@/components/skills/Skills";
 import Experience from "@/components/experiences/Experience";
@@ -20,13 +21,11 @@ const VisitorAnalytics = dynamic(
   () => import("@/components/VisitorAnalytics"),
   {
     ssr: false, // Client-side only for analytics
-    loading: () => null,
   }
 );
 
 const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
-  loading: () => null,
 });
 
 // Server-side data fetching with caching
@@ -191,16 +190,17 @@ export default async function HomePage() {
         }}
       />
 
-      <Navbar />
+      <Navbar data={portfolioData} />
 
       <main className="home" role="main">
+        <Banner data={portfolioData.Banner} />
         <About data={portfolioData.profile} />
         <Skills data={portfolioData.Skills} />
         <Experience data={portfolioData.Experiences} />
         <Educations data={portfolioData.Education} />
         <Projects data={portfolioData.projectsData} />
-        <Contact />
-        <Footer />
+        <Contact data={portfolioData} />
+        <Footer data={portfolioData} />
       </main>
 
       {/* Client-side only components */}

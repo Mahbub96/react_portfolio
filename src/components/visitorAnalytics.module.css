@@ -215,9 +215,28 @@
 .monthVisitors {
   background: linear-gradient(
     135deg,
-    rgba(255, 215, 0, 0.1) 0%,
-    rgba(255, 215, 0, 0.05) 100%
+    rgba(255, 107, 107, 0.1) 0%,
+    rgba(255, 107, 107, 0.05) 100%
   );
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.loginStats {
+  background: linear-gradient(
+    135deg,
+    rgba(64, 156, 255, 0.1) 0%,
+    rgba(64, 156, 255, 0.05) 100%
+  );
+  border-color: rgba(64, 156, 255, 0.3);
+}
+
+.securityStats {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 193, 7, 0.1) 0%,
+    rgba(255, 193, 7, 0.05) 100%
+  );
+  border-color: rgba(255, 193, 7, 0.3);
 }
 
 .analyticsGrid {
@@ -232,55 +251,55 @@
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   transition: var(--transition-normal);
-  backdrop-filter: blur(10px);
 }
 
 .analyticsSection:hover {
-  transform: translateY(-2px);
   border-color: var(--border-accent);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .analyticsSection h3 {
   color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: var(--spacing-lg);
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--border-secondary);
+  font-family: var(--font-sans);
+  font-weight: 600;
 }
 
 .pageStatsList,
 .deviceStatsList,
 .countryStatsList,
+.loginHistoryList,
 .hourlyStatsList {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .pageStatItem,
 .deviceStatItem,
 .countryStatItem,
+.loginHistoryItem,
 .hourlyStatItem {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm);
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
   border-radius: var(--radius-md);
   transition: var(--transition-normal);
-  background: var(--background-primary);
-  border: 1px solid var(--border-muted);
 }
 
 .pageStatItem:hover,
 .deviceStatItem:hover,
 .countryStatItem:hover,
+.loginHistoryItem:hover,
 .hourlyStatItem:hover {
-  background: var(--background-card);
+  background: var(--background-elevated);
   border-color: var(--border-accent);
   transform: translateX(4px);
 }
@@ -288,42 +307,45 @@
 .pageRank {
   background: var(--accent-primary);
   color: var(--background-primary);
-  font-size: 0.8rem;
-  font-weight: 600;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
   min-width: 30px;
   text-align: center;
 }
 
 .pageName,
 .deviceName,
-.countryName {
-  flex: 1;
+.countryName,
+.loginTime {
   color: var(--text-primary);
   font-weight: 500;
+  flex: 1;
+  margin: 0 var(--spacing-md);
 }
 
 .pageCount,
 .deviceCount,
 .countryCount,
-.hourlyCount {
+.loginUser {
   color: var(--accent-primary);
-  font-weight: 600;
+  font-weight: 700;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+}
+
+.loginStatus {
+  font-size: 1.2rem;
+  margin-left: var(--spacing-sm);
 }
 
 .deviceIcon {
   color: var(--accent-primary);
-  width: 20px;
-  text-align: center;
+  margin-right: var(--spacing-sm);
 }
 
 .hourTime {
   color: var(--text-secondary);
-  font-family: var(--font-mono);
   font-size: 0.9rem;
   min-width: 50px;
 }
@@ -331,27 +353,35 @@
 .hourlyBar {
   flex: 1;
   height: 8px;
-  background: var(--background-primary);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+  background: var(--background-elevated);
+  border-radius: var(--radius-sm);
   margin: 0 var(--spacing-md);
+  overflow: hidden;
 }
 
 .hourlyBarFill {
   height: 100%;
   background: var(--gradient-primary);
-  border-radius: var(--radius-full);
-  transition: var(--transition-normal);
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+.hourlyCount {
+  color: var(--accent-primary);
+  font-weight: 700;
+  font-family: var(--font-mono);
+  min-width: 30px;
+  text-align: right;
 }
 
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: scale(0.9) translateY(-20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -366,23 +396,57 @@
 
 @media (max-width: 768px) {
   .analyticsModalHeader h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
   .analyticsModalContent {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-xl);
-  }
-
-  .statsSection {
     padding: var(--spacing-lg);
   }
 
+  .statsSection {
+    grid-template-columns: 1fr;
+  }
+
   .analyticsFloatBtn {
-    bottom: 15px;
-    right: 15px;
     width: 50px;
     height: 50px;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .overviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .statsCard h3 {
+    font-size: 2rem;
+  }
+
+  .pageStatItem,
+  .deviceStatItem,
+  .countryStatItem,
+  .loginHistoryItem,
+  .hourlyStatItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .pageName,
+  .deviceName,
+  .countryName,
+  .loginTime,
+  .hourTime {
+    margin: 0;
+  }
+
+  .hourlyBar {
+    margin: var(--spacing-sm) 0;
   }
 }

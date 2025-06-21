@@ -5,7 +5,16 @@ const PortfolioDataSchema = new mongoose.Schema(
     collectionName: {
       type: String,
       required: true,
-      enum: ["profile", "Skills", "Experiences", "Projects", "Educations"],
+      enum: [
+        "profile",
+        "Skills",
+        "Experiences",
+        "Projects",
+        "Educations",
+        "Banner",
+        "About",
+        "Contact",
+      ],
       unique: true,
     },
     data: {

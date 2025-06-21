@@ -209,20 +209,53 @@
 }
 
 .submitButton:active {
-  transform: translateY(0);
+  transform: translateY(1px);
+}
+
+.submitButton:disabled {
+  background: var(--border-secondary, #333);
+  color: var(--text-secondary, #666);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submitButton:disabled::before {
+  display: none;
+}
+
+.helpText {
+  text-align: center;
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(100, 255, 218, 0.05);
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  border-radius: 8px;
+}
+
+.helpText small {
+  color: var(--text-secondary, #888);
+  font-size: 0.8rem;
+  font-family: var(--font-mono, "Fira Code", monospace);
+  letter-spacing: 0.5px;
+}
+
+.formGroup input:disabled {
+  background: var(--background-elevated, #1a1a1a);
+  color: var(--text-secondary, #666);
+  cursor: not-allowed;
+  border-color: var(--border-muted, #222);
 }
 
 /* Responsive design */
 @media (max-width: 480px) {
   .modalContent {
     max-width: 100%;
-    margin: 20px;
+    margin: 10px;
   }
 
   .modalHeader,
   .loginForm {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 20px;
   }
 
   .modalHeader h2 {
@@ -237,7 +270,7 @@
 }
 
 [data-theme="light"] .modalHeader h2 {
-  background: linear-gradient(135deg, #00b894, #00a085);
+  background: linear-gradient(135deg, #00d4aa, #ff6b6b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -245,11 +278,11 @@
 
 [data-theme="light"] .formGroup input {
   background: var(--background-primary, #f8f9fa);
-  border-color: var(--border-secondary, #e0e0e0);
   color: var(--text-primary, #333);
+  border-color: var(--border-secondary, #ddd);
 }
 
 [data-theme="light"] .submitButton {
-  background: linear-gradient(135deg, #00b894, #00a085);
-  color: #ffffff;
+  background: linear-gradient(135deg, #00d4aa, #64ffda);
+  color: #000;
 }

@@ -5,6 +5,7 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Check localStorage on client side only
   useEffect(() => {
@@ -13,12 +14,13 @@ export function ThemeProvider({ children }) {
       if (savedTheme) {
         setIsDarkMode(savedTheme === "dark");
       }
+      setIsLoaded(true);
     }
   }, []);
 
   useEffect(() => {
     // Set theme in localStorage and update document attribute
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isLoaded) {
       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
       document.documentElement.setAttribute(
         "data-theme",
@@ -184,19 +186,23 @@ export function ThemeProvider({ children }) {
         );
       }
     }
-  }, [isDarkMode]);
+  }, [isDarkMode, isLoaded]);
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
   };
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme, isLoaded }}>
       {children}
     </ThemeContext.Provider>
   );
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
 }
