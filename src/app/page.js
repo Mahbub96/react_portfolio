@@ -1,6 +1,9 @@
 import React, { Suspense } from "react";
 import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
+import LoadingScreen from "@/components/LoadingScreen";
+
+// Import components directly for better SSR
 import Navbar from "@/components/navbar/Navbar";
 import About from "@/components/about/About";
 import Skills from "@/components/skills/Skills";
@@ -9,18 +12,21 @@ import Educations from "@/components/educations/Educations";
 import Projects from "@/components/projects/Projects";
 import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
-import ClientHomePage from "@/components/ClientHomePage";
 
-// Client-side only components
+// Client-side only components (for analytics and tracking)
 import dynamic from "next/dynamic";
+
 const VisitorAnalytics = dynamic(
   () => import("@/components/VisitorAnalytics"),
   {
     ssr: false, // Client-side only for analytics
+    loading: () => null,
   }
 );
+
 const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
+  loading: () => null,
 });
 
 // Server-side data fetching with caching
@@ -29,7 +35,7 @@ async function getPortfolioData() {
     await connectDB();
     const portfolioData = await PortfolioData.find({}).lean();
 
-    // Transform data to match the original Firebase structure
+    // Transform data to match the expected structure
     const transformedData = {};
     portfolioData.forEach((item) => {
       transformedData[item.collectionName] = {
@@ -171,36 +177,35 @@ export default async function HomePage() {
   };
 
   return (
-    <ClientHomePage>
-      <div>
-        {/* Skip to content link for accessibility */}
-        <a href="#about" className="skip-link">
-          Skip to main content
-        </a>
+    <>
+      {/* Skip to content link for accessibility */}
+      <a href="#about" className="skip-link">
+        Skip to main content
+      </a>
 
-        {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
 
-        <Navbar />
+      <Navbar />
 
-        <main className="home" role="main">
-          <About data={portfolioData.profile} />
-          <Skills data={portfolioData.Skills} />
-          <Experience data={portfolioData.Experiences} />
-          <Educations data={portfolioData.Educations} />
-          <Projects data={portfolioData.Projects} />
-          <Contact />
-          <Footer />
-        </main>
+      <main className="home" role="main">
+        <About data={portfolioData.profile} />
+        <Skills data={portfolioData.Skills} />
+        <Experience data={portfolioData.Experiences} />
+        <Educations data={portfolioData.Education} />
+        <Projects data={portfolioData.projectsData} />
+        <Contact />
+        <Footer />
+      </main>
 
-        <VisitorAnalytics />
-        <VisitorCounter />
-      </div>
-    </ClientHomePage>
+      {/* Client-side only components */}
+      <VisitorAnalytics />
+      <VisitorCounter />
+    </>
   );
 }

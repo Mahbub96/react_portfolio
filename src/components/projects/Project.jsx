@@ -9,38 +9,35 @@ import {
 import styles from "./projects.module.css";
 
 function Project({ project, idx }) {
-  const { src, name, desc, altTxt, lang, to, liveUrl, downloadUrl, githubUrl } =
-    project;
+  const { name, desc, src, lang, to, id } = project;
 
-  // Convert lang to string and handle cases where it might be undefined/null
-  const technologies = typeof lang === "string" ? lang.split(",") : [];
+  // Handle different data structures
+  const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
+  const liveUrl = to && to !== "#" ? to : null;
+  const githubUrl = null; // Your real projects don't have GitHub URLs
+  const downloadUrl = null; // Your real projects don't have download URLs
+
+  // Fix image path if it's relative
+  const normalizedSrc =
+    src?.startsWith("./") || src?.startsWith("../")
+      ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
+      : src;
 
   const handleRunProject = () => {
     if (liveUrl) {
       window.open(liveUrl, "_blank", "noopener,noreferrer");
-    } else {
-      alert("Live demo URL not available for this project.");
     }
   };
 
   const handleDownloadProject = () => {
     if (downloadUrl) {
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      alert("Download URL not available for this project.");
+      window.open(downloadUrl, "_blank", "noopener,noreferrer");
     }
   };
 
-  const handleGitHubRepo = () => {
+  const handleViewCode = () => {
     if (githubUrl) {
       window.open(githubUrl, "_blank", "noopener,noreferrer");
-    } else {
-      alert("GitHub repository URL not available for this project.");
     }
   };
 
@@ -48,24 +45,37 @@ function Project({ project, idx }) {
     <article
       className={styles.projectCard}
       itemScope
-      itemType="http://schema.org/SoftwareApplication"
+      itemType="https://schema.org/SoftwareApplication"
+      style={{
+        animationDelay: `${idx * 0.1}s`,
+      }}
     >
+      {/* Project Image */}
       <div className={styles.projectImage}>
         <img
-          src={src}
-          alt={altTxt || `${name} project screenshot`}
-          loading="lazy"
+          src={normalizedSrc}
+          alt={name}
           itemProp="image"
+          loading="lazy"
+          onError={(e) => {
+            e.target.src = `https://via.placeholder.com/400x250/20c997/0f1419?text=${encodeURIComponent(
+              name
+            )}`;
+          }}
         />
+        <div className={styles.imageOverlay}>
+          <div className={styles.overlayContent}>
+            <h3>{name}</h3>
+            <p>{desc}</p>
+          </div>
+        </div>
       </div>
+
+      {/* Project Content */}
       <div className={styles.projectContent}>
-        <h3 className={styles.projectTitle} itemProp="name">
-          {name}
-        </h3>
-        <p className={styles.projectDesc} itemProp="description">
-          {desc}
-        </p>
-        <div className={styles.projectTech}>
+        <h3 itemProp="name">{name}</h3>
+        <p itemProp="description">{desc}</p>
+        <div className={styles.techStack}>
           {technologies.map((tech, index) => (
             <span key={index} className={styles.techTag}>
               {tech.trim()}
@@ -75,32 +85,38 @@ function Project({ project, idx }) {
 
         {/* Project Action Buttons */}
         <div className={styles.projectActions}>
-          <button
-            className={`${styles.projectButton} ${styles.runButton}`}
-            onClick={handleRunProject}
-            title="View Live Demo"
-            aria-label={`View ${name} live demo`}
-          >
-            <HiOutlineExternalLink className={styles.buttonIcon} />
-          </button>
+          {liveUrl && (
+            <button
+              className={`${styles.projectButton} ${styles.runButton}`}
+              onClick={handleRunProject}
+              title="View Live Demo"
+              aria-label={`View ${name} live demo`}
+            >
+              <HiOutlineExternalLink className={styles.buttonIcon} />
+            </button>
+          )}
 
-          <button
-            className={`${styles.projectButton} ${styles.downloadButton}`}
-            onClick={handleDownloadProject}
-            title="Download Source Code"
-            aria-label={`Download ${name} source code`}
-          >
-            <HiOutlineDownload className={styles.buttonIcon} />
-          </button>
+          {downloadUrl && (
+            <button
+              className={`${styles.projectButton} ${styles.downloadButton}`}
+              onClick={handleDownloadProject}
+              title="Download Project"
+              aria-label={`Download ${name} project`}
+            >
+              <HiOutlineDownload className={styles.buttonIcon} />
+            </button>
+          )}
 
-          <button
-            className={`${styles.projectButton} ${styles.githubButton}`}
-            onClick={handleGitHubRepo}
-            title="View Source Code"
-            aria-label={`View ${name} source code on GitHub`}
-          >
-            <HiOutlineCode className={styles.buttonIcon} />
-          </button>
+          {githubUrl && (
+            <button
+              className={`${styles.projectButton} ${styles.codeButton}`}
+              onClick={handleViewCode}
+              title="View Source Code"
+              aria-label={`View ${name} source code`}
+            >
+              <HiOutlineCode className={styles.buttonIcon} />
+            </button>
+          )}
         </div>
       </div>
     </article>

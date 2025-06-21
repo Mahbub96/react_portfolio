@@ -27,7 +27,7 @@ function About({ data }) {
       "PostgreSQL",
       "AWS",
       "Docker",
-      "Firebase",
+      "MongoDB",
     ],
     "Development Tools": [
       "Git",

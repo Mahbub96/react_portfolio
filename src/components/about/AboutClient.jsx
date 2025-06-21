@@ -30,7 +30,7 @@ function AboutClient({ profile }) {
       "PostgreSQL",
       "AWS",
       "Docker",
-      "Firebase",
+      "MongoDB",
     ],
     "Development Tools": [
       "Git",

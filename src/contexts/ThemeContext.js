@@ -27,18 +27,18 @@ export function ThemeProvider({ children }) {
 
       // Apply theme-specific CSS variables
       if (isDarkMode) {
-        // Dark theme with enhanced tilt colors
+        // Dark theme with beautiful Teal colors
         document.documentElement.style.setProperty(
           "--background-primary",
-          "#1e1e24"
+          "#0f1419"
         );
         document.documentElement.style.setProperty(
           "--background-secondary",
-          "#2d2d3a"
+          "#1a1f2e"
         );
         document.documentElement.style.setProperty(
           "--background-tertiary",
-          "#3d3d4a"
+          "#2a2f3e"
         );
         document.documentElement.style.setProperty(
           "--background-card",
@@ -52,12 +52,12 @@ export function ThemeProvider({ children }) {
           "--background-glass",
           "rgba(255, 255, 255, 0.1)"
         );
-        document.documentElement.style.setProperty("--text-primary", "#f8f8f2");
+        document.documentElement.style.setProperty("--text-primary", "#f8f9fa");
         document.documentElement.style.setProperty(
           "--text-secondary",
-          "#c8c8d0"
+          "#c8d0d8"
         );
-        document.documentElement.style.setProperty("--text-muted", "#8a8a95");
+        document.documentElement.style.setProperty("--text-muted", "#8a95a0");
         document.documentElement.style.setProperty(
           "--border-secondary",
           "rgba(255, 255, 255, 0.1)"
@@ -66,15 +66,53 @@ export function ThemeProvider({ children }) {
           "--border-muted",
           "rgba(255, 255, 255, 0.08)"
         );
+        // Teal accent colors for dark theme
+        document.documentElement.style.setProperty(
+          "--accent-primary",
+          "#20c997"
+        );
+        document.documentElement.style.setProperty(
+          "--accent-secondary",
+          "#17a2b8"
+        );
+        document.documentElement.style.setProperty(
+          "--accent-tertiary",
+          "#15a085"
+        );
+        document.documentElement.style.setProperty("--text-accent", "#20c997");
+        document.documentElement.style.setProperty(
+          "--border-primary",
+          "rgba(32, 201, 151, 0.2)"
+        );
+        document.documentElement.style.setProperty(
+          "--border-accent",
+          "rgba(32, 201, 151, 0.4)"
+        );
+        document.documentElement.style.setProperty(
+          "--shadow-glow",
+          "0 0 30px rgba(32, 201, 151, 0.2)"
+        );
+        document.documentElement.style.setProperty(
+          "--shadow-glow-strong",
+          "0 0 40px rgba(32, 201, 151, 0.3)"
+        );
+        document.documentElement.style.setProperty(
+          "--gradient-primary",
+          "linear-gradient(135deg, #20c997 0%, #17a2b8 50%, #15a085 100%)"
+        );
+        document.documentElement.style.setProperty(
+          "--gradient-text",
+          "linear-gradient(135deg, #20c997 0%, #17a2b8 100%)"
+        );
       } else {
-        // Light theme
+        // Light theme with beautiful Teal colors
         document.documentElement.style.setProperty(
           "--background-primary",
           "#ffffff"
         );
         document.documentElement.style.setProperty(
           "--background-secondary",
-          "#f8f9fa"
+          "#f8fafc"
         );
         document.documentElement.style.setProperty(
           "--background-tertiary",
@@ -95,9 +133,9 @@ export function ThemeProvider({ children }) {
         document.documentElement.style.setProperty("--text-primary", "#1a1a1a");
         document.documentElement.style.setProperty(
           "--text-secondary",
-          "#666666"
+          "#4a5568"
         );
-        document.documentElement.style.setProperty("--text-muted", "#8a8a95");
+        document.documentElement.style.setProperty("--text-muted", "#718096");
         document.documentElement.style.setProperty(
           "--border-secondary",
           "rgba(0, 0, 0, 0.1)"
@@ -105,6 +143,44 @@ export function ThemeProvider({ children }) {
         document.documentElement.style.setProperty(
           "--border-muted",
           "rgba(0, 0, 0, 0.08)"
+        );
+        // Teal accent colors for light theme
+        document.documentElement.style.setProperty(
+          "--accent-primary",
+          "#0d9488"
+        );
+        document.documentElement.style.setProperty(
+          "--accent-secondary",
+          "#0891b2"
+        );
+        document.documentElement.style.setProperty(
+          "--accent-tertiary",
+          "#0f766e"
+        );
+        document.documentElement.style.setProperty("--text-accent", "#0d9488");
+        document.documentElement.style.setProperty(
+          "--border-primary",
+          "rgba(13, 148, 136, 0.2)"
+        );
+        document.documentElement.style.setProperty(
+          "--border-accent",
+          "rgba(13, 148, 136, 0.4)"
+        );
+        document.documentElement.style.setProperty(
+          "--shadow-glow",
+          "0 0 30px rgba(13, 148, 136, 0.2)"
+        );
+        document.documentElement.style.setProperty(
+          "--shadow-glow-strong",
+          "0 0 40px rgba(13, 148, 136, 0.3)"
+        );
+        document.documentElement.style.setProperty(
+          "--gradient-primary",
+          "linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #0f766e 100%)"
+        );
+        document.documentElement.style.setProperty(
+          "--gradient-text",
+          "linear-gradient(135deg, #0d9488 0%, #0891b2 100%)"
         );
       }
     }

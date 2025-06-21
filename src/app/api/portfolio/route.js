@@ -11,7 +11,7 @@ export async function GET() {
 
     const portfolioData = await PortfolioData.find({}).lean();
 
-    // Transform data to match the original Firebase structure
+    // Transform data to match the expected structure
     const transformedData = {};
     portfolioData.forEach((item) => {
       transformedData[item.collectionName] = {

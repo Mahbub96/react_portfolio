@@ -13,9 +13,9 @@
   height: 1px;
   background: linear-gradient(
     to right,
-    rgba(100, 255, 218, 0),
-    rgba(100, 255, 218, 0.3),
-    rgba(100, 255, 218, 0)
+    rgba(32, 201, 151, 0),
+    rgba(32, 201, 151, 0.3),
+    rgba(32, 201, 151, 0)
   );
 }
 
@@ -52,7 +52,7 @@
   color: var(--accent_color);
   transform: translateY(-3px);
   border-color: var(--accent_color);
-  background: rgba(100, 255, 218, 0.1);
+  background: rgba(32, 201, 151, 0.1);
 }
 
 .footerInfo {
@@ -64,7 +64,7 @@
 }
 
 .builtWith {
-  color: #8892b0;
+  color: var(--text-secondary);
   font-family: "Fira Code", monospace;
   font-size: 0.9rem;
   display: flex;
@@ -73,7 +73,7 @@
 }
 
 .builtWith i {
-  color: #ff6b6b;
+  color: var(--accent-tertiary);
   font-size: 1rem;
 }
 
@@ -95,7 +95,7 @@
 }
 
 .githubLink:hover {
-  color: #ccd6f6;
+  color: var(--text-primary);
 }
 
 .bracket {

@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { formName } from "../Utils/StaticData";
-import useFirestore from "../hooks/useFirestore";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Modal.css";
 
@@ -18,8 +17,7 @@ export default function ModalView(props) {
     onSuccess = () => {},
   } = props;
 
-  const firestore = useFirestore();
-  const skills = firestore.getCollection("Skills") || [];
+  const skills = [];
   const items = formName[name];
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,9 +77,9 @@ export default function ModalView(props) {
       }
 
       if (initialData?.id) {
-        await firestore.updateDocument(name, initialData.id, dataToSubmit);
+        // TODO: Replace Firestore logic with MongoDB API integration
       } else {
-        await firestore.addDocument(name, dataToSubmit);
+        // TODO: Replace Firestore logic with MongoDB API integration
       }
 
       setFormData({});

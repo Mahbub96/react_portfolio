@@ -11,6 +11,14 @@ const SkillsClient = dynamic(() => import("./SkillsClient"), {
 function Skills({ data }) {
   const skills = data?.data || [];
 
+  // Helper function to normalize image paths
+  const normalizeImagePath = (src) => {
+    if (!src) return src;
+    return src.startsWith("./") || src.startsWith("../")
+      ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
+      : src;
+  };
+
   return (
     <section
       id="skills"
@@ -40,7 +48,7 @@ function Skills({ data }) {
               >
                 <div className={styles.skillIcon}>
                   <img
-                    src={skill.src}
+                    src={normalizeImagePath(skill.src)}
                     alt={`${skill.name} technology icon`}
                     loading="lazy"
                     itemProp="image"

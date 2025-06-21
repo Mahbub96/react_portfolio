@@ -1,48 +1,48 @@
 :root {
-  /* Enhanced Tilt Color Palette - Warm, Earthy, Sophisticated */
-  --background-primary: #1e1e24; /* Enhanced deep charcoal */
-  --background-secondary: #2d2d3a; /* Warmer dark tone */
-  --background-tertiary: #3d3d4a; /* Medium warm tone */
+  /* Beautiful Teal Color Palette - Sophisticated and Modern */
+  --background-primary: #0f1419; /* Deep dark blue-gray */
+  --background-secondary: #1a1f2e; /* Rich dark tone */
+  --background-tertiary: #2a2f3e; /* Medium dark tone */
   --background-card: rgba(255, 255, 255, 0.05);
   --background-glass: rgba(255, 255, 255, 0.1);
   --background-elevated: rgba(255, 255, 255, 0.08);
 
-  /* Text Colors - High Contrast with Warm Undertones */
-  --text-primary: #f8f8f2; /* Slightly warm white */
-  --text-secondary: #c8c8d0; /* Warm gray */
-  --text-muted: #8a8a95; /* Medium warm gray */
-  --text-accent: #64ffda;
+  /* Text Colors - High Contrast with Cool Undertones */
+  --text-primary: #f8f9fa; /* Clean white */
+  --text-secondary: #c8d0d8; /* Cool gray */
+  --text-muted: #8a95a0; /* Medium cool gray */
+  --text-accent: #20c997;
 
-  /* Professional Accent Colors */
-  --accent-primary: #64ffda; /* Cyan - Tech/Code feel */
-  --accent-secondary: #8892b0; /* Slate - Professional */
-  --accent-tertiary: #ff6b6b; /* Coral - Highlight */
-  --accent-success: #4ade80; /* Green - Success */
-  --accent-warning: #fbbf24; /* Amber - Warning */
-  --accent-error: #f87171; /* Red - Error */
-  --accent-info: #60a5fa; /* Blue - Info */
+  /* Professional Teal Accent Colors */
+  --accent-primary: #20c997; /* Bright Teal - Primary */
+  --accent-secondary: #17a2b8; /* Medium Teal - Secondary */
+  --accent-tertiary: #15a085; /* Dark Teal - Tertiary */
+  --accent-success: #10b981; /* Green - Success */
+  --accent-warning: #f59e0b; /* Amber - Warning */
+  --accent-error: #ef4444; /* Red - Error */
+  --accent-info: #3b82f6; /* Blue - Info */
 
-  /* Sophisticated Gradients with Tilt Colors */
+  /* Sophisticated Gradients with Teal Colors */
   --gradient-primary: linear-gradient(
     135deg,
-    #64ffda 0%,
-    #00d4aa 50%,
-    #00b4d8 100%
+    #20c997 0%,
+    #17a2b8 50%,
+    #15a085 100%
   );
-  --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-accent: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-  --gradient-dark: linear-gradient(135deg, #1a1a1f 0%, #2a2a35 100%);
+  --gradient-secondary: linear-gradient(135deg, #0891b2 0%, #0f766e 100%);
+  --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-dark: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
   --gradient-card: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.08) 0%,
     rgba(255, 255, 255, 0.03) 100%
   );
-  --gradient-text: linear-gradient(135deg, #64ffda 0%, #00d4aa 100%);
+  --gradient-text: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
 
   /* Borders - Subtle and Professional */
-  --border-primary: rgba(100, 255, 218, 0.2);
+  --border-primary: rgba(32, 201, 151, 0.2);
   --border-secondary: rgba(255, 255, 255, 0.1);
-  --border-accent: rgba(100, 255, 218, 0.4);
+  --border-accent: rgba(32, 201, 151, 0.4);
   --border-muted: rgba(255, 255, 255, 0.08);
 
   /* Shadows - Layered and Sophisticated */
@@ -53,8 +53,8 @@
     0 4px 6px -2px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
     0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 30px rgba(100, 255, 218, 0.2);
-  --shadow-glow-strong: 0 0 40px rgba(100, 255, 218, 0.3);
+  --shadow-glow: 0 0 30px rgba(32, 201, 151, 0.2);
+  --shadow-glow-strong: 0 0 40px rgba(32, 201, 151, 0.3);
 
   /* Spacing System */
   --spacing-xs: 0.25rem;
@@ -141,17 +141,17 @@ body::before {
   height: 100%;
   background: radial-gradient(
       circle at 20% 80%,
-      rgba(100, 255, 218, 0.015) 0%,
+      rgba(32, 201, 151, 0.015) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 80% 20%,
-      rgba(255, 107, 107, 0.015) 0%,
+      rgba(23, 162, 184, 0.015) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 40% 40%,
-      rgba(96, 165, 250, 0.01) 0%,
+      rgba(21, 160, 133, 0.01) 0%,
       transparent 50%
     );
   pointer-events: none;

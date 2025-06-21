@@ -1,14 +1,5 @@
 "use client";
 import { useEffect } from "react";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  increment,
-  collection,
-  addDoc,
-} from "firebase/firestore";
-import { db } from "../DB/DB_init";
 
 const useVisitorTracker = () => {
   const getVisitorInfo = () => {
@@ -32,61 +23,18 @@ const useVisitorTracker = () => {
         const ipResponse = await fetch("https://api.ipify.org?format=json");
         const { ip } = await ipResponse.json();
 
-        // Check if this IP has visited today
-        const today = new Date().toISOString().split("T")[0];
-        const visitorRef = doc(db, "analytics", "visitors");
-        const uniqueVisitorRef = doc(
-          db,
-          "analytics",
-          "unique_visitors",
-          "daily",
-          today
-        );
-
-        // Get the unique visitor document for today
-        const uniqueVisitorDoc = await getDoc(uniqueVisitorRef);
         const visitorInfo = getVisitorInfo();
 
-        if (
-          !uniqueVisitorDoc.exists() ||
-          !uniqueVisitorDoc.data().ips?.includes(ip)
-        ) {
-          // New unique visitor for today
-          await setDoc(
-            uniqueVisitorRef,
-            {
-              ips: uniqueVisitorDoc.exists()
-                ? [...uniqueVisitorDoc.data().ips, ip]
-                : [ip],
-              count: increment(1),
-            },
-            { merge: true }
-          );
-
-          // Increment total visitor count
-          await setDoc(
-            visitorRef,
-            {
-              count: increment(1),
-              lastVisit: new Date().toISOString(),
-            },
-            { merge: true }
-          );
-        }
-
-        // Always store visit details
-        const visitsCollection = collection(
-          db,
-          "analytics",
-          "visitors",
-          "details"
-        );
-        await addDoc(visitsCollection, {
-          ...visitorInfo,
-          ip: ip, // Store IP for analytics
-          isUnique:
-            !uniqueVisitorDoc.exists() ||
-            !uniqueVisitorDoc.data().ips?.includes(ip),
+        // Track visitor using MongoDB API
+        await fetch("/api/visitors", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...visitorInfo,
+            ip: ip,
+          }),
         });
       } catch (error) {
         console.error("Error tracking visitor:", error);

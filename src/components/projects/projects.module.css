@@ -13,12 +13,12 @@
   bottom: 0;
   background: radial-gradient(
       circle at 30% 20%,
-      rgba(100, 255, 218, 0.02) 0%,
+      rgba(32, 201, 151, 0.02) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 70% 80%,
-      rgba(255, 107, 107, 0.01) 0%,
+      rgba(23, 162, 184, 0.01) 0%,
       transparent 50%
     );
   pointer-events: none;
@@ -198,6 +198,9 @@
   position: relative;
   transition: var(--transition-normal);
   backdrop-filter: blur(10px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .projectCard::before {
@@ -214,7 +217,7 @@
 }
 
 .projectCard:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-xl);
   border-color: var(--border-accent);
 }
@@ -225,9 +228,31 @@
 
 .projectImage {
   width: 100%;
-  height: 220px;
+  height: 240px;
   overflow: hidden;
   position: relative;
+  background: var(--background-secondary);
+}
+
+.projectImage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(32, 201, 151, 0.1) 0%,
+    rgba(23, 162, 184, 0.05) 100%
+  );
+  opacity: 0;
+  transition: var(--transition-normal);
+  z-index: 1;
+}
+
+.projectCard:hover .projectImage::before {
+  opacity: 1;
 }
 
 .projectImage img {
@@ -235,22 +260,28 @@
   height: 100%;
   object-fit: cover;
   transition: var(--transition-normal);
+  position: relative;
+  z-index: 0;
 }
 
 .projectCard:hover .projectImage img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .projectContent {
   padding: var(--spacing-xl);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .projectContent h3 {
   color: var(--text-primary);
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   margin-bottom: var(--spacing-md);
   font-family: var(--font-mono);
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .projectContent p {
@@ -258,6 +289,7 @@
   font-size: 0.95rem;
   line-height: 1.6;
   margin-bottom: var(--spacing-lg);
+  flex: 1;
 }
 
 .techStack {
@@ -268,19 +300,32 @@
 }
 
 .techTag {
-  background: var(--background-elevated);
+  background: linear-gradient(
+    135deg,
+    rgba(32, 201, 151, 0.1) 0%,
+    rgba(23, 162, 184, 0.05) 100%
+  );
   color: var(--accent-primary);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
-  border: 1px solid var(--border-muted);
+  border: 1px solid rgba(32, 201, 151, 0.2);
   transition: var(--transition-normal);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .techTag:hover {
-  background: rgba(100, 255, 218, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(32, 201, 151, 0.2) 0%,
+    rgba(23, 162, 184, 0.1) 100%
+  );
   border-color: var(--border-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(32, 201, 151, 0.2);
 }
 
 .cardActions {
@@ -351,7 +396,7 @@
 }
 
 .addCard:hover {
-  background: rgba(100, 255, 218, 0.1);
+  background: rgba(32, 201, 151, 0.1);
   border-color: var(--accent-primary);
   transform: translateY(-6px);
   box-shadow: var(--shadow-glow);
@@ -404,13 +449,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .projectButton::before {
@@ -427,7 +472,7 @@
 
 .projectButton:hover {
   color: var(--background-primary);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-glow);
   border-color: var(--accent-primary);
 }
@@ -437,7 +482,7 @@
 }
 
 .buttonIcon {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   transition: var(--transition-normal);
   z-index: 1;
   display: flex;
@@ -461,8 +506,8 @@
 
 .runButton:hover {
   background: var(--accent-success);
-  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  transform: translateY(-3px);
 }
 
 .downloadButton {
@@ -473,8 +518,8 @@
 
 .downloadButton:hover {
   background: var(--accent-info);
-  box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transform: translateY(-3px);
 }
 
 .githubButton {
@@ -485,8 +530,8 @@
 
 .githubButton:hover {
   background: var(--accent-secondary);
-  box-shadow: 0 0 20px rgba(136, 146, 176, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(23, 162, 184, 0.3);
+  transform: translateY(-3px);
 }
 
 /* Mobile Responsive */

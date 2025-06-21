@@ -2,16 +2,16 @@
 import React, { useState } from "react";
 import styles from "./educations.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
-import useFirestore from "../../hooks/useFirestore";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
 
-function Educations() {
+function Educations({ data }) {
   const [modalShow, setModalShow] = useState(false);
   const { auth } = useDataContex();
-  const { Education } = useFirestore().data;
   const [selectedEducation, setSelectedEducation] = useState(null);
-  const { deleteDocument } = useFirestore();
+
+  // Use server data for rendering
+  const education = data?.data || [];
 
   const handleEdit = (education) => {
     setSelectedEducation(education);
@@ -21,7 +21,8 @@ function Educations() {
   const handleDelete = async (education) => {
     if (window.confirm("Are you sure you want to delete this education?")) {
       try {
-        await deleteDocument("Education", education.id);
+        // TODO: Implement delete via API endpoint
+        console.log("Delete education:", education.id);
       } catch (error) {
         console.error("Error deleting education:", error);
       }
@@ -40,8 +41,8 @@ function Educations() {
 
         <div className={styles.timelineContainer}>
           <div className={styles.verticalLine}></div>
-          {Education ? (
-            Education.data.map((education, index) => (
+          {education.length > 0 ? (
+            education.map((education, index) => (
               <div
                 key={education.id}
                 className={`${styles.timelineItem} ${

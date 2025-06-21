@@ -18,67 +18,7 @@ export const metadata = {
   },
   description:
     "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh.",
-  keywords: [
-    "Mahbub Alam",
-    "Mahbub",
-    "Full Stack Developer",
-    "Web Developer",
-    "React Developer",
-    "PHP Developer",
-    "Bangladesh Developer",
-    "Dhaka",
-  ],
-  authors: [{ name: "Mahbub Alam" }],
-  creator: "Mahbub Alam",
-  publisher: "Mahbub Alam",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
   metadataBase: new URL("https://mahbub.dev"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "Mahbub Alam | Full Stack Developer Portfolio",
-    description:
-      "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies.",
-    url: "https://mahbub.dev",
-    siteName: "Mahbub Alam Portfolio",
-    images: [
-      {
-        url: "/assets/img/profile.png",
-        width: 1200,
-        height: 630,
-        alt: "Mahbub Alam - Full Stack Developer",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mahbub Alam | Full Stack Developer Portfolio",
-    description:
-      "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies.",
-    images: ["/assets/img/profile.png"],
-    creator: "@mahbubcse96",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  verification: {
-    google: "your-google-verification-code",
-  },
 };
 
 export default function RootLayout({ children }) {
@@ -138,9 +78,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={inter.className}>
-        <ThemeProvider>
-          <DataContextProvider>{children}</DataContextProvider>
-        </ThemeProvider>
+        <DataContextProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </DataContextProvider>
       </body>
     </html>
   );
