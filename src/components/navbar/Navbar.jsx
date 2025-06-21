@@ -116,9 +116,8 @@ function Header() {
       </header>
 
       <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLogin={handleLogin}
+        show={showLoginModal}
+        onHide={() => setShowLoginModal(false)}
       />
     </div>
   );

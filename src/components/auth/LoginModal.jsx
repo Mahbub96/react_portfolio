@@ -7,7 +7,7 @@ function LoginModal({ show, onHide }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setAuth } = useDataContex();
+  const { login } = useDataContex();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +15,7 @@ function LoginModal({ show, onHide }) {
 
     // Simple authentication - replace with your preferred auth method
     if (username === "mahbub" && password === "1234") {
-      setAuth(true);
+      login();
       onHide();
     } else {
       setError("Invalid credentials");
