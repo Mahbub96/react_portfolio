@@ -1,5 +1,5 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 const Experience = () => {
   const [experiences, setExperiences] = useState([]);
@@ -22,13 +22,12 @@ const Experience = () => {
   return (
     <section>
       {experiences.map((experience, index) => (
-        <motion.div
+        <div
           key={experience.id || `experience-${index}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="animate-in"
         >
           {/* experience content */}
-        </motion.div>
+        </div>
       ))}
     </section>
   );

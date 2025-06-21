@@ -1,54 +1,41 @@
 {
-  "name": "details-viewers",
+  "name": "mahbub-portfolio-nextjs",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate-sitemap": "node scripts/generateSitemap.js",
+    "seed": "node scripts/seedProjects.js",
+    "prebuild": "npm run generate-sitemap"
+  },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.0.1",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "bootstrap": "^5.2.3",
-    "firebase": "^9.18.0",
+    "firebase": "^11.9.1",
     "framer-motion": "^12.4.7",
-    "fs": "^0.0.1-security",
+    "mongodb": "^6.0.0",
+    "mongoose": "^8.0.0",
+    "next": "^14.0.0",
     "react": "^18.0.0",
     "react-bootstrap": "^2.7.2",
     "react-content-loader": "^6.2.1",
     "react-dom": "^18.0.0",
-    "react-helmet-async": "^2.0.5",
     "react-icons": "^5.5.0",
     "react-loading-skeleton": "^3.2.0",
-    "react-router-dom": "5",
-    "react-scripts": "5.0.1",
     "react-type-animation": "^3.0.1",
     "react-uuid": "^2.0.0",
     "sitemap": "^8.0.0",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "generate-sitemap": "node src/utils/generateSitemap.js",
-    "prebuild": "npm run generate-sitemap"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.0.0"
   }
 }

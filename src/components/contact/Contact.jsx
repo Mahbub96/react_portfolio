@@ -1,5 +1,7 @@
+"use client";
 import React, { useState } from "react";
 import axios from "axios";
+import { FaMapMarkerAlt, FaEnvelope, FaPaperPlane } from "react-icons/fa";
 import styles from "./contact.module.css";
 
 export default function Contact() {
@@ -39,7 +41,12 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className={styles.contactSection}>
+    <section
+      id="contact"
+      className={styles.contactSection}
+      itemScope
+      itemType="http://schema.org/ContactPage"
+    >
       <div className="container">
         <div className={styles.sectionHeader}>
           <h2>
@@ -59,17 +66,24 @@ export default function Contact() {
             </p>
             <div className={styles.contactDetails}>
               <div className={styles.contactItem}>
-                <i className="fa fa-map-marker"></i>
-                <span>Dhaka, Bangladesh</span>
+                <FaMapMarkerAlt className={styles.contactIcon} />
+                <span itemProp="address">Dhaka, Bangladesh</span>
               </div>
               <div className={styles.contactItem}>
-                <i className="fa fa-envelope"></i>
-                <a href="mailto:mahbubcse96@gmail.com">mahbubcse96@gmail.com</a>
+                <FaEnvelope className={styles.contactIcon} />
+                <a href="mailto:mahbubcse96@gmail.com" itemProp="email">
+                  mahbubcse96@gmail.com
+                </a>
               </div>
             </div>
           </div>
 
-          <form className={styles.contactForm} onSubmit={handleSubmit}>
+          <form
+            className={styles.contactForm}
+            onSubmit={handleSubmit}
+            itemScope
+            itemType="http://schema.org/ContactForm"
+          >
             <div className={styles.formGroup}>
               <input
                 type="text"
@@ -78,6 +92,8 @@ export default function Contact() {
                 onChange={handleChange}
                 placeholder="Your Name"
                 required
+                aria-label="Your Name"
+                itemProp="name"
               />
             </div>
             <div className={styles.formGroup}>
@@ -88,6 +104,8 @@ export default function Contact() {
                 onChange={handleChange}
                 placeholder="Your Email"
                 required
+                aria-label="Your Email"
+                itemProp="email"
               />
             </div>
             <div className={styles.formGroup}>
@@ -98,6 +116,8 @@ export default function Contact() {
                 onChange={handleChange}
                 placeholder="Subject"
                 required
+                aria-label="Subject"
+                itemProp="subject"
               />
             </div>
             <div className={styles.formGroup}>
@@ -108,16 +128,18 @@ export default function Contact() {
                 placeholder="Your Message"
                 rows="5"
                 required
+                aria-label="Your Message"
+                itemProp="message"
               ></textarea>
             </div>
 
             {submitStatus === "success" && (
-              <div className={styles.successMessage}>
+              <div className={styles.successMessage} role="alert">
                 Message sent successfully!
               </div>
             )}
             {submitStatus === "error" && (
-              <div className={styles.errorMessage}>
+              <div className={styles.errorMessage} role="alert">
                 Failed to send message. Please try again.
               </div>
             )}
@@ -126,13 +148,14 @@ export default function Contact() {
               type="submit"
               className={styles.submitButton}
               disabled={isSubmitting}
+              aria-label={isSubmitting ? "Sending message..." : "Send message"}
             >
               {isSubmitting ? (
                 <span className={styles.spinner}></span>
               ) : (
                 <>
                   Send Message
-                  <i className="fa fa-paper-plane"></i>
+                  <FaPaperPlane className={styles.sendIcon} />
                 </>
               )}
             </button>

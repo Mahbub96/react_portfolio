@@ -1,70 +1,215 @@
-# Getting Started with Create React App
+# Mahbub Alam Portfolio - Next.js + MongoDB
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, SEO-optimized portfolio website built with Next.js 14, MongoDB, and Server-Side Rendering (SSR).
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **Server-Side Rendering (SSR)** - Better SEO and performance
+- **MongoDB Integration** - Scalable database solution
+- **SEO Optimized** - Meta tags, structured data, sitemap
+- **Responsive Design** - Mobile-first approach
+- **Performance Optimized** - Dynamic imports, image optimization
+- **Visitor Analytics** - Track page visits and user behavior
+- **Admin Panel** - Manage portfolio data (mahbub.dev domain only)
 
-### `npm start`
+## 🛠️ Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: Next.js 14, React 18, Bootstrap 5
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB with Mongoose
+- **Styling**: CSS Modules, Bootstrap
+- **Deployment**: Vercel (recommended)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📋 Prerequisites
 
-### `npm test`
+- Node.js 18+
+- MongoDB (local or cloud)
+- npm or yarn
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Quick Start
 
-### `npm run build`
+### 1. Clone and Install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone <your-repo-url>
+cd react_portfolio
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Environment Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Create a `.env.local` file in the root directory:
 
-### `npm run eject`
+```bash
+cp env.example .env.local
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Edit `.env.local` with your configuration:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+# MongoDB Configuration
+MONGODB_URI=mongodb://localhost:27017/portfolio
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Next.js Configuration
+NEXT_PUBLIC_BASE_URL=https://mahbub.dev
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Google Analytics (optional)
+NEXT_PUBLIC_GA_ID=your-google-analytics-id
 
-## Learn More
+# Google Search Console (optional)
+NEXT_PUBLIC_GOOGLE_VERIFICATION=your-google-verification-code
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Admin Domain (for data management)
+NEXT_PUBLIC_ADMIN_DOMAIN=mahbub.dev
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Data Migration (Optional)
 
-### Code Splitting
+If you have existing Firebase data, migrate it to MongoDB:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+# Install Firebase dependencies for migration
+npm install firebase
 
-### Analyzing the Bundle Size
+# Run migration script
+node scripts/migrateToMongoDB.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 4. Development
 
-### Making a Progressive Web App
+```bash
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### Advanced Configuration
+## 📁 Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+src/
+├── app/                    # Next.js 13+ App Router
+│   ├── api/               # API routes
+│   ├── globals.css        # Global styles
+│   ├── layout.js          # Root layout
+│   └── page.js            # Home page
+├── components/            # React components
+├── hooks/                 # Custom hooks
+├── lib/                   # Utilities (MongoDB connection)
+├── models/                # MongoDB schemas
+└── types/                 # TypeScript types
+```
 
-### Deployment
+## 🔧 Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### MongoDB Setup
 
-### `npm run build` fails to minify
+1. **Local MongoDB**:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   ```bash
+   # Install MongoDB locally
+   brew install mongodb-community  # macOS
+   sudo systemctl start mongod     # Linux
+   ```
+
+2. **MongoDB Atlas** (Cloud):
+   - Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+   - Create a cluster
+   - Get connection string
+   - Update `MONGODB_URI` in `.env.local`
+
+### SEO Configuration
+
+Update metadata in `src/app/layout.js`:
+
+```javascript
+export const metadata = {
+  title: "Your Name | Your Title",
+  description: "Your description",
+  // ... other metadata
+};
+```
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push code to GitHub
+2. Connect repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+### Environment Variables for Production
+
+```env
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/portfolio
+NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+```
+
+## 📊 API Endpoints
+
+- `GET /api/portfolio` - Fetch all portfolio data
+- `POST /api/portfolio` - Add new item (admin only)
+- `PUT /api/portfolio/[collection]/[id]` - Update item (admin only)
+- `DELETE /api/portfolio/[collection]/[id]` - Delete item (admin only)
+- `GET /api/visitors` - Get visitor statistics
+- `POST /api/visitors` - Track visitor
+- `GET /api/sitemap` - Generate sitemap
+
+## 🔒 Security
+
+- Admin operations restricted to `mahbub.dev` domain
+- Input validation and sanitization
+- CORS protection
+- Rate limiting (recommended for production)
+
+## 📈 Performance
+
+- Server-Side Rendering for better SEO
+- Dynamic imports for code splitting
+- Image optimization with Next.js
+- MongoDB indexing for faster queries
+- Caching strategies
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **MongoDB Connection Error**:
+
+   - Check `MONGODB_URI` in `.env.local`
+   - Ensure MongoDB is running
+   - Verify network connectivity
+
+2. **Build Errors**:
+
+   ```bash
+   npm run build
+   # Check for TypeScript errors
+   ```
+
+3. **API Route Issues**:
+   - Check API route files in `src/app/api/`
+   - Verify MongoDB connection in API routes
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- MongoDB for the database solution
+- Bootstrap for the UI components
+- Original Firebase implementation
+
+---
+
+**Note**: This is a conversion from a React + Firebase project to Next.js + MongoDB. The original Firebase configuration and data structure have been preserved for compatibility.

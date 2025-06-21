@@ -1,6 +1,6 @@
 .educationSection {
   padding: 100px 0;
-  background: var(--bg_color);
+  background: var(--background-primary);
   min-height: 100vh;
   position: relative;
 }
@@ -13,7 +13,7 @@
 }
 
 .sectionHeader h2 {
-  color: var(--heading_color);
+  color: var(--text-primary);
   font-size: 2rem;
   font-weight: 600;
   white-space: nowrap;
@@ -24,15 +24,15 @@
 }
 
 .sectionNumber {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
   font-size: 1.25rem;
 }
 
 .headerLine {
   height: 1px;
   flex-grow: 1;
-  background: var(--border_color);
+  background: var(--border-secondary);
 }
 
 .timelineContainer {
@@ -45,7 +45,7 @@
 .verticalLine {
   position: absolute;
   width: 2px;
-  background: var(--border_color);
+  background: var(--border-secondary);
   top: 0;
   bottom: 0;
   left: 50%;
@@ -70,27 +70,28 @@
 }
 
 .timelineContent {
-  background: var(--card_bg);
+  background: var(--background-card);
   padding: 1.5rem;
-  border: 1px solid var(--border_color);
+  border: 1px solid var(--border-secondary);
   border-radius: 8px;
   position: relative;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .timelineContent:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border-color: var(--accent_color);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--border-accent);
 }
 
 .timelineDot {
   position: absolute;
   width: 12px;
   height: 12px;
-  background: var(--accent_color);
+  background: var(--accent-primary);
   border-radius: 50%;
-  border: 2px solid var(--bg_color);
+  border: 2px solid var(--background-primary);
 }
 
 .left .timelineDot {
@@ -106,42 +107,42 @@
 }
 
 .date {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
   display: block;
 }
 
 .title {
-  color: var(--heading_color);
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  font-family: "Fira Code", monospace;
+  font-family: var(--font-mono);
 }
 
 .degree {
-  color: var(--text_color);
+  color: var(--text-secondary);
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
 .department {
-  color: var(--text_color);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
   opacity: 0.8;
 }
 
 .cgpa {
-  color: var(--accent_color);
-  font-family: "Fira Code", monospace;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
 .thesis {
-  color: var(--text_color);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   font-style: italic;
   opacity: 0.8;
@@ -178,24 +179,24 @@
 }
 
 .editButton {
-  color: var(--accent_color);
-  border: 1px solid var(--accent_color);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
 }
 
 .editButton:hover {
-  background: var(--accent_color);
-  color: var(--bg_color);
+  background: var(--accent-primary);
+  color: var(--background-primary);
   transform: translateY(-2px);
 }
 
 .deleteButton {
-  color: #ff4444;
-  border: 1px solid #ff4444;
+  color: var(--accent-error);
+  border: 1px solid var(--accent-error);
 }
 
 .deleteButton:hover {
-  background: #ff4444;
-  color: var(--bg_color);
+  background: var(--accent-error);
+  color: var(--background-primary);
   transform: translateY(-2px);
 }
 
@@ -275,5 +276,38 @@
   .addEducation {
     width: calc(100% - 3rem);
     margin-left: 3rem;
+  }
+}
+
+/* Animation classes to replace framer-motion */
+.animateIn {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animateInTimeline {
+  animation: fadeInTimeline 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.timelineItem.right.animateInTimeline {
+  transform: translateX(50px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInTimeline {
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

@@ -28,11 +28,7 @@ const Root = () => {
           }}
           aria-label="Loading content"
         >
-          <ThreeDots
-            height={80}
-            width={120}
-            backgroundColor="transparent"
-          />
+          <ThreeDots height={80} width={120} backgroundColor="transparent" />
         </div>
       }
     >

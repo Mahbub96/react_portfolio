@@ -1,122 +1,66 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import styles from "./skills.module.css";
-import { useDataContex } from "../../contexts/useAllContext";
-import useFirestore from "../../hooks/useFirestore";
-import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
 
-function Skills() {
-  const [modalShow, setModalShow] = useState(false);
-  const { auth } = useDataContex();
-  const { Skills } = useFirestore().data;
-  const [selectedSkill, setSelectedSkill] = useState(null);
-  const { deleteDocument } = useFirestore();
+// Client-side only components
+import dynamic from "next/dynamic";
+const SkillsClient = dynamic(() => import("./SkillsClient"), {
+  ssr: false,
+});
 
-  const handleEdit = (skill) => {
-    setSelectedSkill(skill);
-    setModalShow(true);
-  };
-
-  const handleDelete = async (skill) => {
-    if (window.confirm("Are you sure you want to delete this skill?")) {
-      try {
-        await deleteDocument("Skills", skill.id);
-      } catch (error) {
-        console.error("Error deleting skill:", error);
-      }
-    }
-  };
+function Skills({ data }) {
+  const skills = data?.data || [];
 
   return (
-    <section id="skills" className={styles.skillsSection}>
+    <section
+      id="skills"
+      className={styles.skillsSection}
+      itemScope
+      itemType="http://schema.org/ItemList"
+    >
       <div className="container">
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
           <h2>
             <span className={styles.sectionNumber}>02.</span> Skills &
             Technologies
           </h2>
           <div className={styles.headerLine}></div>
-        </motion.div>
+        </div>
 
-        <div className={styles.skillsGrid}>
-          {Skills ? (
-            Skills.data.map((skill, index) => (
-              <motion.div
+        <div className={styles.skillsGrid} itemProp="itemListElement">
+          {skills.length > 0 ? (
+            skills.map((skill, index) => (
+              <div
                 key={skill.id}
-                className={styles.skillCard}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={`${styles.skillCard} ${styles.animateInCard}`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+                itemScope
+                itemType="http://schema.org/Thing"
+                itemProp="itemListElement"
               >
-                {auth && (
-                  <div className={styles.cardActions}>
-                    <button
-                      className={`${styles.actionButton} ${styles.editButton}`}
-                      onClick={() => handleEdit(skill)}
-                      title="Edit Skill"
-                    >
-                      <i className="fa fa-edit"></i>
-                    </button>
-                    <button
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={() => handleDelete(skill)}
-                      title="Delete Skill"
-                    >
-                      <i className="fa fa-trash"></i>
-                    </button>
-                  </div>
-                )}
                 <div className={styles.skillIcon}>
-                  <img src={skill.src} alt={skill.name} />
+                  <img
+                    src={skill.src}
+                    alt={`${skill.name} technology icon`}
+                    loading="lazy"
+                    itemProp="image"
+                    width="64"
+                    height="64"
+                  />
                 </div>
-                <h3>{skill.name}</h3>
-              </motion.div>
+                <h3 itemProp="name">{skill.name}</h3>
+              </div>
             ))
           ) : (
             <div className={styles.loading}>
               <ThreeDots />
             </div>
           )}
-
-          {auth && (
-            <motion.div
-              className={`${styles.skillCard} ${styles.addCard}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              onClick={() => {
-                setSelectedSkill(null);
-                setModalShow(true);
-              }}
-            >
-              <div className={styles.addContent}>
-                <i className="fa fa-plus"></i>
-                <p>Add New Skill</p>
-              </div>
-            </motion.div>
-          )}
         </div>
       </div>
 
-      <ModalView
-        name="Skills"
-        show={modalShow}
-        onHide={() => {
-          setModalShow(false);
-          setSelectedSkill(null);
-        }}
-        initialData={selectedSkill}
-        title={selectedSkill ? "Edit Skill" : "Add Skill"}
-      />
+      {/* Client-side interactive features */}
+      <SkillsClient skills={skills} />
     </section>
   );
 }

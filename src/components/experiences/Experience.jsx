@@ -1,5 +1,5 @@
+"use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import styles from "./experience.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
@@ -96,13 +96,7 @@ function Experience() {
   return (
     <section id="experience" className={styles.experienceSection}>
       <div className="container">
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
           <h2>
             <span className={styles.sectionNumber}>03.</span> Where I've Worked
           </h2>
@@ -131,21 +125,18 @@ function Experience() {
                 </span>
               </div>
             )}
-        </motion.div>
+        </div>
 
         <div className={styles.timelineContainer}>
           <div className={styles.verticalLine}></div>
           {Experiences ? (
             Experiences.data.map((experience, index) => (
-              <motion.div
+              <div
                 key={experience.id || `experience-${index}`}
                 className={`${styles.timelineItem} ${
                   index % 2 === 0 ? styles.left : styles.right
-                }`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
+                } ${styles.animateInTimeline}`}
+                style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className={styles.timelineContent}>
                   {auth && (
@@ -171,7 +162,7 @@ function Experience() {
                   <h3 className={styles.title}>{experience.name}</h3>
                   <p className={styles.description}>{experience.how}</p>
                 </div>
-              </motion.div>
+              </div>
             ))
           ) : (
             <div className={styles.loading}>
@@ -180,37 +171,27 @@ function Experience() {
           )}
 
           {auth && (
-            <motion.button
-              className={styles.addExperience}
-              onClick={() => {
-                setSelectedExperience(null);
-                setModalShow(true);
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className={styles.addIcon}>+</div>
-              <p>Add New Experience</p>
-            </motion.button>
+            <div className={`${styles.addExperience} ${styles.animateIn}`}>
+              <button
+                onClick={() => {
+                  setSelectedExperience(null);
+                  setModalShow(true);
+                }}
+              >
+                <div className={styles.addIcon}>+</div>
+                <p>Add New Experience</p>
+              </button>
+            </div>
           )}
         </div>
       </div>
 
       <ModalView
-        name="Experiences"
         show={modalShow}
-        onHide={() => {
-          setModalShow(false);
-          setSelectedExperience(null);
-        }}
-        initialData={selectedExperience}
-        title={selectedExperience ? "Edit Experience" : "Add Experience"}
-        onSuccess={() => {
-          setModalShow(false);
-          setSelectedExperience(null);
-        }}
+        onHide={() => setModalShow(false)}
+        title="Experience"
+        data={selectedExperience}
+        collectionName="Experiences"
       />
     </section>
   );

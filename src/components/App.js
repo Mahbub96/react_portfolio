@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import DataContextProvider from "../contexts/useAllContext";
 import "./../App.css";
 import Home from "./Home";

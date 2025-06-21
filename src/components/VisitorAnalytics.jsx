@@ -1,272 +1,241 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { db } from "../DB/DB_init";
-import { FaChartBar } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
+import {
+  FaChartBar,
+  FaEye,
+  FaGlobe,
+  FaClock,
+  FaDesktop,
+  FaMobile,
+  FaTablet,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaUsers,
+} from "react-icons/fa";
 import styles from "./visitorAnalytics.module.css";
-import { useDataContex } from "../contexts/useAllContext";
-import { v4 as uuidv4 } from "uuid";
+
 const VisitorAnalytics = () => {
-  const { auth } = useDataContex(); // Get auth status
-  const [isOpen, setIsOpen] = useState(false);
-  const [visitorStats, setVisitorStats] = useState({
-    totalCount: 0,
-    browserStats: {},
-    deviceStats: {},
-    languageStats: {},
-    timeStats: {
-      hourly: {},
-      daily: {},
-      monthly: {},
-    },
-    screenSizes: {},
-    pathStats: {},
-    referrerStats: {},
-    ipStats: {},
-    recentVisits: [],
-  });
-  const [visitsToShow, setVisitsToShow] = useState(3);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      fetchVisitorStats();
-    }
-  }, [isOpen]);
+    fetchStats();
+  }, []);
 
-  const fetchVisitorStats = async () => {
+  const fetchStats = async () => {
     try {
-      const visitorCountDoc = await getDoc(doc(db, "analytics", "visitors"));
-      const totalCount = visitorCountDoc.data()?.count || 0;
-
-      const visitsCollection = collection(
-        db,
-        "analytics",
-        "visitors",
-        "details"
-      );
-      const visitsSnapshot = await getDocs(visitsCollection);
-
-      const stats = {
-        browserStats: {},
-        deviceStats: {},
-        languageStats: {},
-        timeStats: {
-          hourly: {},
-          daily: {},
-          monthly: {},
-        },
-        screenSizes: {},
-        pathStats: {},
-        referrerStats: {},
-        ipStats: {},
-        recentVisits: [],
-      };
-
-      visitsSnapshot.forEach((doc) => {
-        const visit = doc.data();
-        const visitDate = new Date(visit.timestamp);
-
-        // Browser stats
-        const browser =
-          visit.userAgent.match(/(chrome|safari|firefox|edge|opera)/i)?.[0] ||
-          "other";
-        stats.browserStats[browser.toLowerCase()] =
-          (stats.browserStats[browser.toLowerCase()] || 0) + 1;
-
-        // Device stats
-        stats.deviceStats[visit.platform] =
-          (stats.deviceStats[visit.platform] || 0) + 1;
-
-        // Language stats
-        stats.languageStats[visit.language] =
-          (stats.languageStats[visit.language] || 0) + 1;
-
-        // Screen size stats
-        stats.screenSizes[visit.screenResolution] =
-          (stats.screenSizes[visit.screenResolution] || 0) + 1;
-
-        // Path stats
-        stats.pathStats[visit.pathname] =
-          (stats.pathStats[visit.pathname] || 0) + 1;
-
-        // Referrer stats
-        stats.referrerStats[visit.referrer] =
-          (stats.referrerStats[visit.referrer] || 0) + 1;
-
-        // IP stats
-        if (visit.ip) {
-          stats.ipStats[visit.ip] = (stats.ipStats[visit.ip] || 0) + 1;
-        }
-
-        // Time stats
-        const hour = visitDate.getHours();
-        const day = visitDate.toLocaleDateString("en-US", { weekday: "long" });
-        const month = visitDate.toLocaleDateString("en-US", { month: "long" });
-
-        stats.timeStats.hourly[hour] = (stats.timeStats.hourly[hour] || 0) + 1;
-        stats.timeStats.daily[day] = (stats.timeStats.daily[day] || 0) + 1;
-        stats.timeStats.monthly[month] =
-          (stats.timeStats.monthly[month] || 0) + 1;
-
-        // Recent visits
-        stats.recentVisits.push({
-          timestamp: visit.timestamp,
-          path: visit.pathname,
-          referrer: visit.referrer,
-          browser: browser.toLowerCase(),
-          platform: visit.platform,
-          language: visit.language,
-          screenSize: visit.screenResolution,
-          ip: visit.ip,
-        });
-      });
-
-      setVisitorStats({
-        totalCount,
-        ...stats,
-        recentVisits: stats.recentVisits
-          .toSorted((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-          .slice(0, 10),
-      });
+      const response = await fetch("/api/visitors");
+      const data = await response.json();
+      setStats(data);
     } catch (error) {
-      console.error("Error fetching visitor stats:", error);
+      console.error("Error fetching analytics:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const renderStatSection = (
-    title,
-    data,
-    formatter = (key, value) => `${key}: ${value}`
-  ) => (
-    <div className={styles.statsSection}>
-      <h3>{title}</h3>
-      <ul>
-        {Object.entries(data)
-          .sort(([, a], [, b]) => b - a)
-          .map(([key, value]) => (
-            <li key={key}>{formatter(key, value)}</li>
-          ))}
-      </ul>
-    </div>
-  );
+  // Sample data for demonstration (remove this in production)
+  const sampleStats = {
+    totalVisitors: 1247,
+    todayVisitors: 23,
+    thisWeekVisitors: 156,
+    thisMonthVisitors: 892,
+    pageStats: [
+      { _id: "/", count: 456 },
+      { _id: "/projects", count: 234 },
+      { _id: "/skills", count: 189 },
+      { _id: "/contact", count: 123 },
+      { _id: "/about", count: 98 },
+    ],
+    deviceStats: [
+      { device: "Desktop", count: 789 },
+      { device: "Mobile", count: 345 },
+      { device: "Tablet", count: 113 },
+    ],
+    countryStats: [
+      { country: "United States", count: 234 },
+      { country: "Bangladesh", count: 189 },
+      { country: "United Kingdom", count: 156 },
+      { country: "Canada", count: 98 },
+      { country: "Germany", count: 67 },
+    ],
+    hourlyStats: [
+      { hour: "00:00", count: 12 },
+      { hour: "06:00", count: 8 },
+      { hour: "12:00", count: 45 },
+      { hour: "18:00", count: 67 },
+      { hour: "23:00", count: 23 },
+    ],
+  };
 
-  // If not authenticated, don't render anything
-  if (!auth) return null;
+  const displayStats = stats || sampleStats;
+
+  if (loading) {
+    return (
+      <div className={styles.analyticsContainer}>
+        <div className={styles.loadingSpinner}>
+          <FaChartBar className={styles.spinnerIcon} />
+          <span>Loading analytics...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
+      {/* Floating Analytics Button */}
       <button
         className={styles.analyticsFloatBtn}
-        onClick={() => setIsOpen(true)}
+        onClick={() => setShowModal(true)}
         title="View Analytics"
       >
-        <FaChartBar size={24} />
+        <FaChartBar size={20} />
       </button>
 
-      {isOpen && (
-        <div className={styles.analyticsModalOverlay}>
-          <div className={styles.analyticsModal}>
+      {/* Analytics Modal */}
+      {showModal && (
+        <div
+          className={styles.analyticsModalOverlay}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className={styles.analyticsModal}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.analyticsModalHeader}>
               <h2>
-                <span className={styles.sectionNumber}>07.</span> Visitor
-                Analytics
+                <span className={styles.sectionNumber}>📊</span>
+                Visitor Analytics
               </h2>
               <button
                 className={styles.closeBtn}
-                onClick={() => setIsOpen(false)}
+                onClick={() => setShowModal(false)}
               >
-                <IoMdClose size={24} />
+                ×
               </button>
             </div>
 
             <div className={styles.analyticsModalContent}>
-              <div className={`${styles.statsSection} ${styles.totalVisitors}`}>
-                <h3>Total Visitors: {visitorStats.totalCount}</h3>
+              {/* Overview Cards */}
+              <div className={styles.overviewGrid}>
+                <div className={`${styles.statsCard} ${styles.totalVisitors}`}>
+                  <FaEye size={24} />
+                  <h3>{displayStats.totalVisitors?.toLocaleString()}</h3>
+                  <p>Total Visitors</p>
+                </div>
+
+                <div className={`${styles.statsCard} ${styles.todayVisitors}`}>
+                  <FaClock size={24} />
+                  <h3>{displayStats.todayVisitors}</h3>
+                  <p>Today</p>
+                </div>
+
+                <div className={`${styles.statsCard} ${styles.weekVisitors}`}>
+                  <FaCalendarAlt size={24} />
+                  <h3>{displayStats.thisWeekVisitors}</h3>
+                  <p>This Week</p>
+                </div>
+
+                <div className={`${styles.statsCard} ${styles.monthVisitors}`}>
+                  <FaUsers size={24} />
+                  <h3>{displayStats.thisMonthVisitors}</h3>
+                  <p>This Month</p>
+                </div>
               </div>
 
-              <div className={`${styles.statsSection} ${styles.ipStats}`}>
-                <h3>IP Distribution</h3>
-                <ul>
-                  {Object.entries(visitorStats.ipStats || {})
-                    .sort(([, a], [, b]) => b - a)
-                    .map(([ip, count]) => (
-                      <li key={ip} className={styles.ipStatItem}>
-                        <div className={styles.ipInfo}>
-                          <span className={styles.ip}>{ip}</span>
-                          <span className={styles.visitCount}>
-                            {count} visits
-                          </span>
-                        </div>
-                      </li>
+              {/* Detailed Analytics */}
+              <div className={styles.analyticsGrid}>
+                {/* Top Pages */}
+                <div className={styles.analyticsSection}>
+                  <h3>
+                    <FaGlobe size={16} />
+                    Top Pages
+                  </h3>
+                  <div className={styles.pageStatsList}>
+                    {displayStats.pageStats?.slice(0, 5).map((page, index) => (
+                      <div key={page._id} className={styles.pageStatItem}>
+                        <span className={styles.pageRank}>#{index + 1}</span>
+                        <span className={styles.pageName}>{page._id}</span>
+                        <span className={styles.pageCount}>{page.count}</span>
+                      </div>
                     ))}
-                </ul>
-              </div>
+                  </div>
+                </div>
 
-              {renderStatSection("Most Visited Pages", visitorStats.pathStats)}
+                {/* Device Types */}
+                <div className={styles.analyticsSection}>
+                  <h3>
+                    <FaDesktop size={16} />
+                    Device Types
+                  </h3>
+                  <div className={styles.deviceStatsList}>
+                    {displayStats.deviceStats?.map((device) => (
+                      <div
+                        key={device.device}
+                        className={styles.deviceStatItem}
+                      >
+                        <span className={styles.deviceIcon}>
+                          {device.device === "Desktop" && (
+                            <FaDesktop size={14} />
+                          )}
+                          {device.device === "Mobile" && <FaMobile size={14} />}
+                          {device.device === "Tablet" && <FaTablet size={14} />}
+                        </span>
+                        <span className={styles.deviceName}>
+                          {device.device}
+                        </span>
+                        <span className={styles.deviceCount}>
+                          {device.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              {renderStatSection(
-                "Browser Distribution",
-                visitorStats.browserStats,
-                (browser, count) =>
-                  `${
-                    browser.charAt(0).toUpperCase() + browser.slice(1)
-                  }: ${count}`
-              )}
+                {/* Top Countries */}
+                <div className={styles.analyticsSection}>
+                  <h3>
+                    <FaMapMarkerAlt size={16} />
+                    Top Countries
+                  </h3>
+                  <div className={styles.countryStatsList}>
+                    {displayStats.countryStats?.slice(0, 5).map((country) => (
+                      <div
+                        key={country.country}
+                        className={styles.countryStatItem}
+                      >
+                        <span className={styles.countryName}>
+                          {country.country}
+                        </span>
+                        <span className={styles.countryCount}>
+                          {country.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              {renderStatSection("Device Types", visitorStats.deviceStats)}
-
-              {renderStatSection("Languages", visitorStats.languageStats)}
-
-              {renderStatSection(
-                "Screen Resolutions",
-                visitorStats.screenSizes
-              )}
-
-              {renderStatSection("Traffic Sources", visitorStats.referrerStats)}
-
-              {renderStatSection(
-                "Visits by Hour",
-                visitorStats.timeStats.hourly,
-                (hour, count) => `${hour}:00 - ${hour}:59: ${count} visits`
-              )}
-
-              {renderStatSection("Visits by Day", visitorStats.timeStats.daily)}
-
-              {renderStatSection(
-                "Visits by Month",
-                visitorStats.timeStats.monthly
-              )}
-
-              <div className={styles.statsSection}>
-                <h3>Recent Visits</h3>
-                <div className={styles.recentVisitsContainer}>
-                  <ul>
-                    {visitorStats.recentVisits
-                      .slice(0, visitsToShow)
-                      .map((visit, index) => (
-                        <li key={uuidv4()} className={styles.recentVisitItem}>
-                          <div className={styles.visitTimestamp}>
-                            {new Date(visit.timestamp).toLocaleString()}
-                          </div>
-                          <div className={styles.visitDetails}>
-                            <span>IP: {visit.ip}</span>
-                            <span>Page: {visit.path}</span>
-                            <span>From: {visit.referrer || "Direct"}</span>
-                            <span>Browser: {visit.browser}</span>
-                            <span>Device: {visit.platform}</span>
-                            <span>Screen: {visit.screenSize}</span>
-                          </div>
-                        </li>
-                      ))}
-                  </ul>
-                  {visitorStats.recentVisits.length > visitsToShow && (
-                    <button
-                      className={styles.seeMoreButton}
-                      onClick={() => setVisitsToShow((prev) => prev + 3)}
-                    >
-                      Load More <i className="fa fa-angle-down"></i>
-                    </button>
-                  )}
+                {/* Hourly Activity */}
+                <div className={styles.analyticsSection}>
+                  <h3>
+                    <FaClock size={16} />
+                    Hourly Activity
+                  </h3>
+                  <div className={styles.hourlyStatsList}>
+                    {displayStats.hourlyStats?.map((hour) => (
+                      <div key={hour.hour} className={styles.hourlyStatItem}>
+                        <span className={styles.hourTime}>{hour.hour}</span>
+                        <div className={styles.hourlyBar}>
+                          <div
+                            className={styles.hourlyBarFill}
+                            style={{ width: `${(hour.count / 67) * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className={styles.hourlyCount}>{hour.count}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

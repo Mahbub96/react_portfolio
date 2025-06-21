@@ -63,13 +63,11 @@
       "name": "Assembly Language",
       "src": "/assets/img/asm.png"
     },
-    ,
     {
       "id": 115,
       "name": "SQlite3",
       "src": "/assets/img/sqlite3.png"
     },
-    ,
     {
       "id": 117,
       "name": "Swings",
@@ -157,59 +155,68 @@
   "projects": [
     {
       "id": 1,
-      "name": "React Project",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "Node Js", "axios", "Vue JS", "Bootstarp"]
+      "name": "Test-Buddy",
+      "src": "/assets/img/testbuddy.png",
+      "desc": "Software Engineering Demo Project for University Course. A React-based application for managing and conducting tests/exams with a modern user interface.",
+      "lang": ["React JS", "HTML", "CSS", "JavaScript"],
+      "githubUrl": "https://github.com/Mahbub96/Test-Buddy",
+      "liveUrl": "",
+      "downloadUrl": ""
     },
     {
       "id": 2,
-      "name": "React Project 1",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "axios", "Bootstarp"]
+      "name": "Blood Donation Management System",
+      "src": "/assets/img/blood.png",
+      "desc": "A comprehensive Java-based desktop application for managing blood donation records, donor information, and blood bank operations with SQLite database.",
+      "lang": ["Java", "SQLite3", "Swing"],
+      "githubUrl": "https://github.com/Mahbub96/BloodDonationManagementSystem",
+      "liveUrl": "",
+      "downloadUrl": ""
     },
     {
       "id": 3,
-      "name": "React Project 2",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["Node Js", "MY SQL"]
+      "name": "Dot Matrix Display",
+      "src": "/assets/img/assembly.png",
+      "desc": "An interactive dot matrix display project built with HTML, CSS, and JavaScript. Features dynamic pattern creation and visual effects.",
+      "lang": ["HTML", "CSS", "JavaScript"],
+      "githubUrl": "https://github.com/Mahbub96/dot_matrix",
+      "liveUrl": "",
+      "downloadUrl": ""
     },
     {
       "id": 4,
-      "name": "React Project 3",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["React JS", "Bootstarp"]
+      "name": "Chat Application",
+      "src": "/assets/img/chat.png",
+      "desc": "Real-time chat application with modern UI and instant messaging capabilities. Built with modern web technologies for seamless communication.",
+      "lang": ["React JS", "Node Js", "Socket.io", "CSS"],
+      "githubUrl": "https://github.com/Mahbub96/chat-application",
+      "liveUrl": "",
+      "downloadUrl": ""
     },
     {
       "id": 5,
-      "name": "React Project 4",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["C"]
+      "name": "Speech Emotion Recognition",
+      "src": "/assets/img/python.png",
+      "desc": "Machine Learning project for detecting emotions from speech patterns. Uses advanced audio processing and ML algorithms to classify emotional states.",
+      "lang": [
+        "Python",
+        "Machine Learning",
+        "Audio Processing",
+        "Data Science"
+      ],
+      "githubUrl": "https://github.com/Mahbub96/speech-emotion-recognition",
+      "liveUrl": "",
+      "downloadUrl": ""
     },
     {
       "id": 6,
-      "name": "React Project 5",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["C Plus Plus", "STL"]
-    },
-    {
-      "id": 7,
-      "name": "React Project 6",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["HTML", "CSS", "python", "PHP"]
-    },
-    {
-      "id": 8,
-      "name": "React Project 7",
-      "src": "./../../assets/img/projects.png",
-      "desc": "Some quick example text to build on the card title and make up the bulk of the card's content.",
-      "lang": ["Assembly Language", "javascript", "html", "CSS", "jQuery"]
+      "name": "React Portfolio",
+      "src": "/assets/img/react.png",
+      "desc": "Personal portfolio website built with React, featuring modern design, responsive layout, and interactive components to showcase projects and skills.",
+      "lang": ["React JS", "CSS", "JavaScript", "Firebase"],
+      "githubUrl": "https://github.com/Mahbub96/react_portfolio",
+      "liveUrl": "",
+      "downloadUrl": ""
     }
   ],
   "feetback": []

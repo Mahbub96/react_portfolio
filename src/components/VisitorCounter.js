@@ -1,78 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../DB/DB_init";
-import { FaEye, FaUserClock } from "react-icons/fa";
-import styles from "./visitorCounter.module.css";
-import { useDataContex } from "../contexts/useAllContext";
+"use client";
+import { useEffect } from "react";
 
 const VisitorCounter = () => {
-  const { auth } = useDataContex();
-  const [visitorStats, setVisitorStats] = useState({
-    total: 0,
-    today: 0,
-  });
-
   useEffect(() => {
-    const fetchVisitorStats = async () => {
+    const trackVisit = async () => {
       try {
-        // Get total visitors
-        const visitorRef = doc(db, "analytics", "visitors");
-        const visitorDoc = await getDoc(visitorRef);
-        const total = visitorDoc.data()?.count || 0;
+        // Get visitor info
+        const page = window.location.pathname;
+        const userAgent = navigator.userAgent;
 
-        // Get today's unique visitors
-        const today = new Date().toISOString().split("T")[0];
-        const uniqueVisitorRef = doc(
-          db,
-          "analytics",
-          "unique_visitors",
-          "daily",
-          today
-        );
-        const uniqueVisitorDoc = await getDoc(uniqueVisitorRef);
-        const todayUnique = uniqueVisitorDoc.data()?.count || 0;
+        // Basic IP detection (this is just for demo - in production you'd get this from server)
+        const ip = "unknown"; // In real implementation, this would come from server-side
 
-        setVisitorStats({
-          total,
-          today: todayUnique,
+        // Track the visit
+        await fetch("/api/visitors", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ip,
+            userAgent,
+            page,
+            country: "Unknown",
+            city: "Unknown",
+            region: "Unknown",
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          }),
         });
       } catch (error) {
-        console.error("Error fetching visitor count:", error);
+        console.error("Error tracking visit:", error);
       }
     };
 
-    if (auth) {
-      fetchVisitorStats();
-      const interval = setInterval(fetchVisitorStats, 30000); // Update every 30 seconds
-      return () => clearInterval(interval);
-    }
-  }, [auth]);
+    // Track visit when component mounts
+    trackVisit();
+  }, []);
 
-  if (!auth) return null;
-
-  return (
-    <div className={styles.visitorCounterFloat}>
-      <div className={styles.visitorStat}>
-        <div className={styles.statIcon}>
-          <FaEye />
-        </div>
-        <div className={styles.statContent}>
-          <span className={styles.statLabel}>Total Views</span>
-          <span className={styles.statValue}>{visitorStats.total}</span>
-        </div>
-      </div>
-      <div className={styles.divider} />
-      <div className={styles.visitorStat}>
-        <div className={styles.statIcon}>
-          <FaUserClock />
-        </div>
-        <div className={styles.statContent}>
-          <span className={styles.statLabel}>Today</span>
-          <span className={styles.statValue}>{visitorStats.today}</span>
-        </div>
-      </div>
-    </div>
-  );
+  // This component doesn't render anything visible
+  return null;
 };
 
 export default VisitorCounter;

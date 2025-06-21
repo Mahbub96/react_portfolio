@@ -1,19 +1,28 @@
+"use client";
 import { createContext, useContext, useState, useEffect } from "react";
 
 const DataContext = createContext();
 export const useDataContex = () => useContext(DataContext);
 
 function DataContextProvider(props) {
-  // Initialize auth state from localStorage
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage on initial load
-    const savedAuth = localStorage.getItem("isAuthenticated");
-    return savedAuth === "true";
-  });
+  // Initialize auth state - start with false, then check localStorage on client
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check localStorage on client side only
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedAuth = localStorage.getItem("isAuthenticated");
+      if (savedAuth === "true") {
+        setIsAuthenticated(true);
+      }
+    }
+  }, []);
 
   // Update localStorage whenever auth state changes
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("isAuthenticated", isAuthenticated);
+    }
   }, [isAuthenticated]);
 
   const login = () => {

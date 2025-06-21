@@ -1,5 +1,5 @@
+"use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import styles from "./educations.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
 import useFirestore from "../../hooks/useFirestore";
@@ -31,32 +31,23 @@ function Educations() {
   return (
     <section id="education" className={styles.educationSection}>
       <div className="container">
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
           <h2>
             <span className={styles.sectionNumber}>04.</span> Education
           </h2>
           <div className={styles.headerLine}></div>
-        </motion.div>
+        </div>
 
         <div className={styles.timelineContainer}>
           <div className={styles.verticalLine}></div>
           {Education ? (
             Education.data.map((education, index) => (
-              <motion.div
+              <div
                 key={education.id}
                 className={`${styles.timelineItem} ${
                   index % 2 === 0 ? styles.left : styles.right
-                }`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
+                } ${styles.animateInTimeline}`}
+                style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className={styles.timelineContent}>
                   {auth && (
@@ -87,7 +78,7 @@ function Educations() {
                     <p className={styles.thesis}>Thesis: {education.Thesis}</p>
                   )}
                 </div>
-              </motion.div>
+              </div>
             ))
           ) : (
             <div className={styles.loading}>
@@ -96,37 +87,27 @@ function Educations() {
           )}
 
           {auth && (
-            <motion.button
-              className={styles.addEducation}
-              onClick={() => {
-                setSelectedEducation(null);
-                setModalShow(true);
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className={styles.addIcon}>+</div>
-              <p>Add New Education</p>
-            </motion.button>
+            <div className={`${styles.addEducation} ${styles.animateIn}`}>
+              <button
+                onClick={() => {
+                  setSelectedEducation(null);
+                  setModalShow(true);
+                }}
+              >
+                <div className={styles.addIcon}>+</div>
+                <p>Add New Education</p>
+              </button>
+            </div>
           )}
         </div>
       </div>
 
       <ModalView
-        name="Education"
         show={modalShow}
-        onHide={() => {
-          setModalShow(false);
-          setSelectedEducation(null);
-        }}
-        initialData={selectedEducation}
-        title={selectedEducation ? "Edit Education" : "Add Education"}
-        onSuccess={() => {
-          setModalShow(false);
-          setSelectedEducation(null);
-        }}
+        onHide={() => setModalShow(false)}
+        title="Education"
+        data={selectedEducation}
+        collectionName="Education"
       />
     </section>
   );

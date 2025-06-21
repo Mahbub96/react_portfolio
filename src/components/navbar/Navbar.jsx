@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -98,7 +99,15 @@ function Header() {
                   onClick={toggleTheme}
                   aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
                 >
-                  <i className={`fa fa-${isDarkMode ? "sun-o" : "moon-o"}`}></i>
+                  {isDarkMode ? (
+                    <span style={{ fontSize: "1.2rem", lineHeight: 1 }}>
+                      ☀️
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: "1.2rem", lineHeight: 1 }}>
+                      🌙
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

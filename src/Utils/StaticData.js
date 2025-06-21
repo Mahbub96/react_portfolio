@@ -78,6 +78,21 @@ const formName = {
       placeholder: "",
     },
     {
+      type: "text",
+      name: "liveUrl",
+      placeholder: "Live Demo URL (Optional)",
+    },
+    {
+      type: "text",
+      name: "downloadUrl",
+      placeholder: "Download URL (Optional)",
+    },
+    {
+      type: "text",
+      name: "githubUrl",
+      placeholder: "GitHub Repository URL (Optional)",
+    },
+    {
       type: "select",
     },
   ],
