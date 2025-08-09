@@ -48,7 +48,7 @@ function Experience({ data }) {
       let end = parseDate(endRaw);
       if (!end) end = new Date();
       // Debug log for Safari troubleshooting
-      console.log("Experience date debug:", { startRaw, endRaw, start, end });
+
       // Only use valid dates
       if (
         start instanceof Date &&
@@ -89,7 +89,6 @@ function Experience({ data }) {
     ) {
       try {
         // TODO: Implement delete via API endpoint
-        console.log("Delete experience:", experience.id);
       } catch (error) {
         console.error("Error deleting experience:", error);
       }

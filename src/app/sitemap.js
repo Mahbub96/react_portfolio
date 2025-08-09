@@ -15,7 +15,7 @@ export default async function sitemap() {
       portfolioData.find((item) => item.collectionName === "Projects")?.data ||
       [];
 
-    // Static pages
+    // Static pages with enhanced SEO
     const staticPages = [
       {
         url: baseUrl,
@@ -24,13 +24,25 @@ export default async function sitemap() {
         priority: 1,
       },
       {
-        url: `${baseUrl}/#about`,
+        url: `${baseUrl}/contact`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/projects`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/skills`,
         lastModified: new Date(),
         changeFrequency: "monthly",
         priority: 0.8,
       },
       {
-        url: `${baseUrl}/#skills`,
+        url: `${baseUrl}/#about`,
         lastModified: new Date(),
         changeFrequency: "monthly",
         priority: 0.8,
@@ -48,12 +60,6 @@ export default async function sitemap() {
         priority: 0.8,
       },
       {
-        url: `${baseUrl}/#projects`,
-        lastModified: new Date(),
-        changeFrequency: "weekly",
-        priority: 0.9,
-      },
-      {
         url: `${baseUrl}/#contact`,
         lastModified: new Date(),
         changeFrequency: "monthly",
@@ -61,25 +67,67 @@ export default async function sitemap() {
       },
     ];
 
-    // Dynamic project pages
-    const projectPages = projects.map((project) => ({
+    // Dynamic project pages with enhanced metadata
+    const projectPages = projects.map((project, index) => ({
       url: `${baseUrl}/#projects`,
-      lastModified: new Date(project.updatedAt || project.createdAt),
+      lastModified: new Date(
+        project.updatedAt || project.createdAt || Date.now()
+      ),
       changeFrequency: "monthly",
       priority: 0.7,
     }));
 
-    return [...staticPages, ...projectPages];
+    // Additional SEO-focused URLs
+    const seoPages = [
+      {
+        url: `${baseUrl}/about`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/experience`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/education`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.8,
+      },
+    ];
+
+    return [...staticPages, ...projectPages, ...seoPages];
   } catch (error) {
     console.error("Error generating sitemap:", error);
 
-    // Fallback to static sitemap
+    // Fallback to static sitemap with enhanced URLs
     return [
       {
         url: baseUrl,
         lastModified: new Date(),
         changeFrequency: "weekly",
         priority: 1,
+      },
+      {
+        url: `${baseUrl}/contact`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/projects`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.9,
+      },
+      {
+        url: `${baseUrl}/skills`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.8,
       },
     ];
   }

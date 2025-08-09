@@ -1,5 +1,45 @@
 # https://www.robotstxt.org/robotstxt.html
+# Robots.txt for Mahbub Alam Portfolio Website
+
 User-agent: *
 Allow: /
 
-Sitemap: https://www.mahbub.dev/sitemap.xml
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+Disallow: /temp/
+
+# Allow important pages
+Allow: /contact
+Allow: /projects
+Allow: /skills
+Allow: /about
+Allow: /experience
+Allow: /education
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://mahbub.dev/sitemap.xml

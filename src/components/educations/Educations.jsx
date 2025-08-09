@@ -25,7 +25,6 @@ function Educations({ data }) {
     ) {
       try {
         // TODO: Implement delete via API endpoint
-        console.log("Delete education:", education.id);
       } catch (error) {
         console.error("Error deleting education:", error);
       }

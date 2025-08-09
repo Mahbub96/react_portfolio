@@ -56,12 +56,14 @@ export async function generateMetadata() {
   const profile = portfolioData.profile?.data || {};
 
   return {
-    title: "Mahbub Alam | Full Stack Developer Portfolio",
+    title:
+      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js,Next.js,React Native, PHP Expert",
     description:
       profile.bio ||
-      "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh.",
+      "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
     keywords: [
       "Mahbub Alam",
+      "Mahbub",
       "Full Stack Developer",
       "Web Developer",
       "React Developer",
@@ -78,6 +80,18 @@ export async function generateMetadata() {
       "AWS",
       "Docker",
       "DevSecOps",
+      "admin@mahbub.dev",
+      "support@mahbub.dev",
+      "mahbub@lunetsoft.com",
+      "System Architecture",
+      "Cloud Computing",
+      "Web Applications",
+      "Mobile Development",
+      "React Native",
+      "JavaScript",
+      "TypeScript",
+      "Git",
+      "CI/CD",
     ],
     authors: [{ name: "Mahbub Alam" }],
     creator: "Mahbub Alam",
@@ -92,10 +106,11 @@ export async function generateMetadata() {
       canonical: "/",
     },
     openGraph: {
-      title: "Mahbub Alam | Full Stack Developer Portfolio",
+      title:
+        "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
       description:
         profile.bio ||
-        "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies.",
+        "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
       url: "https://mahbub.dev",
       siteName: "Mahbub Alam Portfolio",
       images: [
@@ -111,12 +126,14 @@ export async function generateMetadata() {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Mahbub Alam | Full Stack Developer Portfolio",
+      title:
+        "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
       description:
         profile.bio ||
-        "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies.",
+        "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
       images: ["/assets/img/profile.png"],
       creator: "@mahbubcse96",
+      site: "@mahbubcse96",
     },
     robots: {
       index: true,
@@ -139,40 +156,81 @@ export default async function HomePage() {
   const portfolioData = await getPortfolioData();
   const profile = portfolioData.profile?.data || {};
 
-  // Structured data for SEO
+  // Enhanced structured data for SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: profile.name || "Mahbub Alam",
+    givenName: "Mahbub",
+    familyName: "Alam",
+    alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
     jobTitle: profile.title || "Full Stack Developer",
     description:
       profile.bio ||
       "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
     url: "https://mahbub.dev",
     image: profile.image || "/assets/img/profile.png",
+    email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
+    telephone: "+880-1XXX-XXXXXX",
     sameAs: [profile.github, profile.linkedin, profile.twitter].filter(Boolean),
     worksFor: {
       "@type": "Organization",
       name: "Brotecs Technologies Ltd",
       url: "https://brotecs.com",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Dhaka",
+        addressCountry: "Bangladesh",
+      },
+    },
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "Stamford University Bangladesh",
+      url: "https://stamforduniversity.edu.bd",
     },
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dhaka",
       addressCountry: "Bangladesh",
+      addressRegion: "Dhaka",
     },
     knowsAbout: [
       "React.js",
       "Node.js",
       "PHP",
       "Laravel",
+      "CodeIgniter",
       "MongoDB",
       "MySQL",
       "AWS",
       "Docker",
       "VoIP Solutions",
       "System Architecture",
+      "DevSecOps",
+      "Cloud Computing",
+      "Web Development",
+      "Mobile Development",
+      "React Native",
+      "JavaScript",
+      "TypeScript",
     ],
+    hasOccupation: {
+      "@type": "Occupation",
+      name: "Full Stack Developer",
+      skills: [
+        "React",
+        "Node.js",
+        "PHP",
+        "Laravel",
+        "AWS",
+        "Docker",
+        "MongoDB",
+        "MySQL",
+        "JavaScript",
+        "TypeScript",
+      ],
+      occupationalCategory: "15-1250 Software Developers and Programmers",
+    },
   };
 
   return (
@@ -193,7 +251,7 @@ export default async function HomePage() {
       <Navbar data={portfolioData} />
 
       <main className="home" role="main">
-        <Banner data={portfolioData.Banner} />
+        {/* <Banner data={portfolioData.Banner} /> */}
         <About data={portfolioData.profile} />
         <Skills data={portfolioData.Skills} />
         <Experience data={portfolioData.Experiences} />

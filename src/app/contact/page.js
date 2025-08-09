@@ -17,26 +17,50 @@ const Footer = dynamic(() => import("@/components/Footer"), {
 });
 
 export const metadata = {
-  title: "Contact",
+  title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
   description:
-    "Get in touch with Mahbub Alam - Full Stack Developer. Available for freelance projects and full-time opportunities in Dhaka, Bangladesh.",
+    "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com. Based in Dhaka, Bangladesh.",
   keywords: [
-    "Contact",
-    "Hire",
-    "Freelance",
+    "Contact Mahbub Alam",
+    "Hire Mahbub Alam",
+    "Freelance Developer",
     "Full Stack Developer",
-    "Mahbub Alam",
-    "Dhaka",
-    "Bangladesh",
+    "Mahbub Alam Contact",
+    "Dhaka Developer",
+    "Bangladesh Developer",
+    "admin@mahbub.dev",
+    "support@mahbub.dev",
+    "mahbub@lunetsoft.com",
+    "React Developer Contact",
+    "PHP Developer Contact",
+    "Node.js Developer Contact",
+    "Web Development Services",
+    "VoIP Solutions Contact",
   ],
   openGraph: {
-    title: "Contact | Mahbub Alam Portfolio",
-    description: "Get in touch with Mahbub Alam - Full Stack Developer.",
+    title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
+    description:
+      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
     url: "https://mahbub.dev/contact",
+    siteName: "Mahbub Alam Portfolio",
+    images: [
+      {
+        url: "/assets/img/profile.png",
+        width: 1200,
+        height: 630,
+        alt: "Contact Mahbub Alam - Full Stack Developer",
+      },
+    ],
   },
   twitter: {
-    title: "Contact | Mahbub Alam Portfolio",
-    description: "Get in touch with Mahbub Alam - Full Stack Developer.",
+    title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
+    description:
+      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities.",
+    images: ["/assets/img/profile.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

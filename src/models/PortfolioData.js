@@ -15,7 +15,6 @@ const PortfolioDataSchema = new mongoose.Schema(
         "About",
         "Contact",
       ],
-      unique: true,
     },
     data: {
       type: mongoose.Schema.Types.Mixed,

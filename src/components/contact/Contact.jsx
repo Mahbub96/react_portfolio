@@ -10,7 +10,7 @@ export default function Contact({ data }) {
   // Default values if no data from database
   const contactInfo = contactData.contactInfo || {
     location: "Dhaka, Bangladesh",
-    email: "mahbubcse96@gmail.com",
+    email: "admin@mahbub.dev",
   };
 
   const message =

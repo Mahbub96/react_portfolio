@@ -27,7 +27,7 @@ function Banner({ data }) {
     bannerData.bio ||
     "As a Junior Software Engineer at Brotecs Technologies Ltd., I specialize in the backend development of web applications and cloud-based VoIP calling solutions. I have hands-on experience with PHP frameworks like CodeIgniter and Laravel, and have also worked with modern JavaScript frameworks such as Node.js and React. Additionally, I am familiar with ASTPP and various UI frameworks including Tailwind, MaterialUI, and Bootstrap.\n\nMy background extends into Python, particularly for deep learning applications, and I am continually exploring new technologies in cloud and DevSecOps to expand my skill set. I am committed to ongoing learning, believing it is key to personal and professional growth.";
   const socialLinks = bannerData.socialLinks || {
-    email: "mahbubcse96@gmail.com",
+    email: "support@mahbub.dev",
     github: "https://github.com/mahbub96",
     facebook: "https://fb.me/MahbubCSE96",
     linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",

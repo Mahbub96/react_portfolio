@@ -1,48 +1,34 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
-const SEOMetaTags = ({
-  data,
+const EnhancedSEO = ({
   title = "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
   description = "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
   keywords = "Mahbub Alam, Mahbub, Full Stack Developer, Web Developer, React Developer, PHP Developer, Node.js Developer, Bangladesh Developer, Dhaka, admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com, Brotecs Technologies, VoIP Solutions, Laravel Developer, CodeIgniter Developer",
   image = "/assets/img/profile.png",
   url = "https://mahbub.dev",
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  author = "Mahbub Alam",
+  section = "Technology",
+  tags = ["Web Development", "Full Stack", "React", "Node.js", "PHP"],
 }) => {
-  // Extract data from database
-  const profile = data?.profile?.data || {};
-  const bannerData = data?.Banner?.data || {};
-  const contactData = data?.Contact?.data || {};
-
-  // Use database data with fallbacks
-  const name = profile.name || bannerData.name || "Mahbub Alam";
-  const jobTitle = profile.title || "Full Stack Developer";
-  const bio = profile.bio || description;
-  const location = contactData.contactInfo?.location || "Dhaka, Bangladesh";
-  const email = contactData.contactInfo?.email || "admin@mahbub.dev";
-  const socialLinks = bannerData.socialLinks || {
-    github: "https://github.com/mahbub96",
-    linkedin: "https://linkedin.com/in/md-mahbub-alam-6b751821b",
-    facebook: "https://fb.me/MahbubCSE96",
-  };
-
-  // Email addresses for better SEO
   const emailAddresses = [
     "admin@mahbub.dev",
     "support@mahbub.dev",
     "mahbub@lunetsoft.com",
-    email,
-  ].filter((email, index, arr) => arr.indexOf(email) === index); // Remove duplicates
+  ];
 
   return (
     <Helmet>
       {/* Basic Meta Tags */}
       <title>{title}</title>
-      <meta name="description" content={bio} />
+      <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta name="author" content={name} />
+      <meta name="author" content={author} />
 
-      {/* Enhanced Meta Tags for Better SEO */}
+      {/* Enhanced Meta Tags */}
       <meta name="subject" content="Full Stack Development Portfolio" />
       <meta
         name="classification"
@@ -53,39 +39,52 @@ const SEOMetaTags = ({
       <meta name="rating" content="General" />
       <meta name="revisit-after" content="7 days" />
       <meta name="target" content="all" />
-
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={url} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={bio} />
-      <meta property="og:image" content={image} />
-      <meta property="og:site_name" content={`${name} Portfolio`} />
-      <meta property="og:locale" content="en_US" />
-      <meta property="og:locale:alternate" content="bn_BD" />
-
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={url} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={bio} />
-      <meta name="twitter:image" content={image} />
-      <meta name="twitter:creator" content="@mahbubcse96" />
-      <meta name="twitter:site" content="@mahbubcse96" />
-
-      {/* Additional SEO Tags */}
       <meta
         name="robots"
         content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
       />
+
+      {/* Language and Region */}
       <meta name="language" content="English" />
       <meta name="geo.region" content="BD" />
       <meta name="geo.placename" content="Dhaka" />
       <meta name="geo.position" content="23.8103;90.4125" />
       <meta name="ICBM" content="23.8103, 90.4125" />
+
+      {/* Links */}
       <link rel="canonical" href={url} />
       <link rel="alternate" hrefLang="en" href={url} />
       <link rel="alternate" hrefLang="bn" href={url} />
+
+      {/* Open Graph */}
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={image} />
+      <meta property="og:site_name" content="Mahbub Alam Portfolio" />
+      <meta property="og:locale" content="en_US" />
+      <meta property="og:locale:alternate" content="bn_BD" />
+      {publishedTime && (
+        <meta property="article:published_time" content={publishedTime} />
+      )}
+      {modifiedTime && (
+        <meta property="article:modified_time" content={modifiedTime} />
+      )}
+      <meta property="article:author" content={author} />
+      <meta property="article:section" content={section} />
+      {tags.map((tag, index) => (
+        <meta key={index} property="article:tag" content={tag} />
+      ))}
+
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
+      <meta name="twitter:creator" content="@mahbubcse96" />
+      <meta name="twitter:site" content="@mahbubcse96" />
 
       {/* Enhanced Person Schema */}
       <script type="application/ld+json">
@@ -93,16 +92,17 @@ const SEOMetaTags = ({
           "@context": "https://schema.org",
           "@type": "Person",
           "@id": url,
-          name: name,
-          givenName: name.split(" ")[0] || "Mahbub",
-          familyName: name.split(" ").slice(1).join(" ") || "Alam",
+          name: "Mahbub Alam",
+          givenName: "Mahbub",
+          familyName: "Alam",
           alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
           url: url,
           image: image,
-          jobTitle: jobTitle,
-          description: bio,
+          jobTitle: "Full Stack Developer",
+          description:
+            "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
           email: emailAddresses,
-          telephone: contactData.contactInfo?.phone || "+880-1XXX-XXXXXX",
+          telephone: "+880-1XXX-XXXXXX",
           worksFor: {
             "@type": "Organization",
             name: "Brotecs Technologies Ltd",
@@ -120,7 +120,7 @@ const SEOMetaTags = ({
           },
           address: {
             "@type": "PostalAddress",
-            addressLocality: location,
+            addressLocality: "Dhaka",
             addressCountry: "Bangladesh",
             addressRegion: "Dhaka",
           },
@@ -142,7 +142,7 @@ const SEOMetaTags = ({
           ],
           hasOccupation: {
             "@type": "Occupation",
-            name: jobTitle,
+            name: "Full Stack Developer",
             skills: [
               "React",
               "Node.js",
@@ -156,27 +156,28 @@ const SEOMetaTags = ({
             occupationalCategory: "15-1250 Software Developers and Programmers",
           },
           sameAs: [
-            socialLinks.github,
-            socialLinks.linkedin,
-            socialLinks.facebook,
-          ].filter(Boolean),
+            "https://github.com/mahbub96",
+            "https://linkedin.com/in/md-mahbub-alam-6b751821b",
+            "https://fb.me/MahbubCSE96",
+          ],
         })}
       </script>
 
-      {/* Local Business Schema for Better Local Search */}
+      {/* Local Business Schema */}
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "@id": `${url}#business`,
-          name: `${name} - ${jobTitle}`,
-          description: bio,
+          name: "Mahbub Alam - Full Stack Developer",
+          description:
+            "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
           url: url,
-          telephone: contactData.contactInfo?.phone || "+880-1XXX-XXXXXX",
+          telephone: "+880-1XXX-XXXXXX",
           email: emailAddresses,
           address: {
             "@type": "PostalAddress",
-            addressLocality: location,
+            addressLocality: "Dhaka",
             addressCountry: "Bangladesh",
             addressRegion: "Dhaka",
           },
@@ -218,46 +219,7 @@ const SEOMetaTags = ({
         })}
       </script>
 
-      {/* Professional Profile Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ProfilePage",
-          mainEntity: {
-            "@type": "Person",
-            name: name,
-            description: bio,
-            knowsAbout: [
-              "Full Stack Development",
-              "React.js",
-              "Node.js",
-              "PHP",
-              "Laravel",
-              "CodeIgniter",
-              "Cloud Computing",
-              "VoIP Solutions",
-              "System Architecture",
-              "DevSecOps",
-            ],
-            hasOccupation: {
-              "@type": "Occupation",
-              name: jobTitle,
-              skills: [
-                "React",
-                "Node.js",
-                "PHP",
-                "Laravel",
-                "AWS",
-                "Docker",
-                "MongoDB",
-                "MySQL",
-              ],
-            },
-          },
-        })}
-      </script>
-
-      {/* FAQ Schema for Common Questions */}
+      {/* FAQ Schema */}
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -306,7 +268,7 @@ const SEOMetaTags = ({
             {
               "@type": "ListItem",
               position: 2,
-              name: name,
+              name: "Mahbub Alam",
               item: `${url}#about`,
             },
           ],
@@ -316,4 +278,4 @@ const SEOMetaTags = ({
   );
 };
 
-export default SEOMetaTags;
+export default EnhancedSEO;

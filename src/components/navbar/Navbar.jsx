@@ -47,7 +47,17 @@ function Header({ data }) {
     { id: "education", label: "Education", number: "04" },
     { id: "projects", label: "Projects", number: "05" },
     { id: "contact", label: "Contact", number: "06" },
-    { id: "analytics", label: "Analytics", number: "07", href: "/analytics" },
+    // Only show Analytics link if authenticated and loaded
+    ...(auth && isLoaded
+      ? [
+          {
+            id: "analytics",
+            label: "Analytics",
+            number: "07",
+            href: "/analytics",
+          },
+        ]
+      : []),
   ];
 
   return (

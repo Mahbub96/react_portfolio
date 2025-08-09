@@ -300,6 +300,26 @@
 .errorContainer p {
   color: var(--text-secondary, #888);
   font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  background: var(--accent-primary, #64ffda);
+  color: var(--background-primary, #0a0a0a);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-sans, "Inter", sans-serif);
+}
+
+.backButton:hover {
+  background: var(--accent-secondary, #4cd964);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(100, 255, 218, 0.3);
 }
 
 @keyframes spin {

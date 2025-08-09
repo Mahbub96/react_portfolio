@@ -19,6 +19,7 @@ import {
   FaExternalLinkAlt,
   FaCalendar,
   FaChartLine,
+  FaLock,
 } from "react-icons/fa";
 import styles from "./analytics.module.css";
 
@@ -26,10 +27,23 @@ export default function AnalyticsPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    fetchStats();
+    // Check authentication status
+    if (typeof window !== "undefined") {
+      const savedAuth = localStorage.getItem("isAuthenticated");
+      setIsAuthenticated(savedAuth === "true");
+      setAuthChecked(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (authChecked && isAuthenticated) {
+      fetchStats();
+    }
+  }, [authChecked, isAuthenticated]);
 
   const fetchStats = async () => {
     try {
@@ -42,6 +56,34 @@ export default function AnalyticsPage() {
       setLoading(false);
     }
   };
+
+  // Check if authentication has been checked and user is not authenticated
+  if (authChecked && !isAuthenticated) {
+    return (
+      <div className={styles.analyticsPage}>
+        <div className={styles.header}>
+          <h1>
+            <FaLock />
+            Access Denied
+          </h1>
+          <p>You need to be logged in to view analytics</p>
+        </div>
+        <div className={styles.errorContainer}>
+          <h2>Authentication Required</h2>
+          <p>
+            This page is only accessible to authenticated users. Please log in
+            to view analytics data.
+          </p>
+          <button
+            onClick={() => window.history.back()}
+            className={styles.backButton}
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

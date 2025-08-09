@@ -3,7 +3,6 @@ import styles from "./projects.module.css";
 import Project from "./Project";
 
 function Projects({ data }) {
-  console.log("Projects data:", data);
   const projects = data?.data || [];
 
   return (

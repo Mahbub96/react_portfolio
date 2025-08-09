@@ -23,7 +23,7 @@ const VisitorAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { auth } = useDataContex();
+  const { auth, isLoaded } = useDataContex();
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +31,7 @@ const VisitorAnalytics = () => {
     if (auth) {
       fetchLoginHistory();
     }
-  }, [auth]);
+  }, [auth, isLoaded]);
 
   const fetchStats = async () => {
     try {
@@ -62,6 +62,11 @@ const VisitorAnalytics = () => {
     return null;
   }
 
+  // Don't render anything if not authenticated or not loaded
+  if (!auth || !isLoaded) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div className={styles.analyticsContainer}>
@@ -73,9 +78,14 @@ const VisitorAnalytics = () => {
     );
   }
 
+  // Only render if authenticated and loaded
+  if (!auth || !isLoaded) {
+    return null;
+  }
+
   return (
     <>
-      {/* Floating Analytics Button */}
+      {/* Floating Analytics Button - Only show if authenticated */}
       <button
         className={styles.analyticsFloatBtn}
         onClick={() => setShowModal(true)}

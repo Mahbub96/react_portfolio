@@ -9,7 +9,7 @@ function Footer({ data }) {
   const bannerData = data?.Banner?.data || {};
   const name = profile.name || bannerData.name || "Mahbub Alam";
   const socialLinks = bannerData.socialLinks || {
-    email: "mahbubcse96@gmail.com",
+    email: "admin@mahbub.dev",
     github: "https://github.com/mahbub96",
     facebook: "https://fb.me/MahbubCSE96",
     linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",

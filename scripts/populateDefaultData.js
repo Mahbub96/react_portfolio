@@ -57,7 +57,7 @@ const defaultData = {
       1500,
     ],
     socialLinks: {
-      email: "mahbubcse96@gmail.com",
+      email: "admin@mahbub.dev",
       github: "https://github.com/mahbub96",
       facebook: "https://fb.me/MahbubCSE96",
       linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
@@ -113,7 +113,7 @@ const defaultData = {
   Contact: {
     contactInfo: {
       location: "Dhaka, Bangladesh",
-      email: "mahbubcse96@gmail.com",
+      email: "admin@mahbub.dev",
     },
     message:
       "I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!",

@@ -16,8 +16,8 @@ function LoginModal({ show, onHide }) {
     setIsLoading(true);
 
     try {
-      // Simple authentication with admin/admin credentials
-      if (username === "admin" && password === "admin") {
+      // Simple authentication with admin/admin1234 credentials
+      if (username === "admin" && password === "admin1234") {
         // Store authentication in database for tracking
         await fetch("/api/auth/login", {
           method: "POST",
@@ -40,7 +40,7 @@ function LoginModal({ show, onHide }) {
         setUsername("");
         setPassword("");
       } else {
-        setError("Invalid credentials. Use admin/admin");
+        setError("Invalid credentials. Use admin/admin1234");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -95,7 +95,7 @@ function LoginModal({ show, onHide }) {
             {isLoading ? "Logging in..." : "Login"}
           </button>
           <div className={styles.helpText}>
-            <small>Default credentials: admin/admin</small>
+            <small>Default credentials: admin/admin1234</small>
           </div>
         </form>
       </div>
