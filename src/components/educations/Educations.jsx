@@ -4,6 +4,7 @@ import styles from "./educations.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
 import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function Educations({ data }) {
   const [modalShow, setModalShow] = useState(false);
@@ -60,14 +61,14 @@ function Educations({ data }) {
                         onClick={() => handleEdit(education)}
                         title="Edit Education"
                       >
-                        <i className="fa fa-edit"></i>
+                        <FaEdit />
                       </button>
                       <button
                         className={`${styles.actionButton} ${styles.deleteButton}`}
                         onClick={() => handleDelete(education)}
                         title="Delete Education"
                       >
-                        <i className="fa fa-trash"></i>
+                        <FaTrash />
                       </button>
                     </div>
                   )}

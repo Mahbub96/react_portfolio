@@ -251,7 +251,7 @@ export default async function HomePage() {
       <Navbar data={portfolioData} />
 
       <main className="home" role="main">
-        {/* <Banner data={portfolioData.Banner} /> */}
+        <Banner data={portfolioData.Banner} />
         <About data={portfolioData.profile} />
         <Skills data={portfolioData.Skills} />
         <Experience data={portfolioData.Experiences} />

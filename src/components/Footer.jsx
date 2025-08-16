@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  FaGithub,
+  FaEnvelope,
+  FaFacebook,
+  FaLinkedin,
+  FaHeart,
+} from "react-icons/fa";
 import styles from "./footer.module.css";
 
 function Footer({ data }) {
@@ -18,25 +25,25 @@ function Footer({ data }) {
   const footerSocialLinks = [
     {
       name: "GitHub",
-      icon: "fa fa-github",
+      icon: FaGithub,
       url: socialLinks.github,
       title: "GitHub Profile",
     },
     {
       name: "Email",
-      icon: "fa fa-google",
+      icon: FaEnvelope,
       url: `mailto:${socialLinks.email}`,
       title: "Email me",
     },
     {
       name: "Facebook",
-      icon: "fa fa-facebook",
+      icon: FaFacebook,
       url: socialLinks.facebook,
       title: "Facebook Profile",
     },
     {
       name: "LinkedIn",
-      icon: "fa fa-linkedin",
+      icon: FaLinkedin,
       url: socialLinks.linkedin,
       title: "LinkedIn Profile",
     },
@@ -55,7 +62,7 @@ function Footer({ data }) {
               title={link.title}
               className={styles.socialLink}
             >
-              <i className={link.icon}></i>
+              <link.icon />
             </a>
           ))}
         </div>
@@ -63,7 +70,7 @@ function Footer({ data }) {
         <div className={styles.footerInfo}>
           <div className={styles.builtWith}>
             <span>Built with</span>
-            <i className="fa fa-heart"></i>
+            <FaHeart />
             <span>using React</span>
           </div>
           <div className={styles.copyright}>

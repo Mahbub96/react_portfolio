@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./navbar.module.css";
@@ -39,6 +39,23 @@ function Header({ data }) {
   const handleLogout = () => {
     logout(); // Call the logout function from context
   };
+
+  // Add scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const header = document.querySelector(`.${styles.header}`);
+      if (header) {
+        if (window.scrollY > 50) {
+          header.classList.add(styles.scrolled);
+        } else {
+          header.classList.remove(styles.scrolled);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navItems = [
     { id: "about", label: "About", number: "01" },

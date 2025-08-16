@@ -32,15 +32,15 @@ export function ThemeProvider({ children }) {
         // Dark theme with beautiful Teal colors
         document.documentElement.style.setProperty(
           "--background-primary",
-          "#0f1419"
+          "#0a0f1a"
         );
         document.documentElement.style.setProperty(
           "--background-secondary",
-          "#1a1f2e"
+          "#141a2a"
         );
         document.documentElement.style.setProperty(
           "--background-tertiary",
-          "#2a2f3e"
+          "#1e2535"
         );
         document.documentElement.style.setProperty(
           "--background-card",
@@ -67,6 +67,10 @@ export function ThemeProvider({ children }) {
         document.documentElement.style.setProperty(
           "--border-muted",
           "rgba(255, 255, 255, 0.08)"
+        );
+        document.documentElement.style.setProperty(
+          "--border-light",
+          "rgba(255, 255, 255, 0.1)"
         );
         // Teal accent colors for dark theme
         document.documentElement.style.setProperty(
@@ -118,7 +122,7 @@ export function ThemeProvider({ children }) {
         );
         document.documentElement.style.setProperty(
           "--background-tertiary",
-          "#e9ecef"
+          "#f1f5f9"
         );
         document.documentElement.style.setProperty(
           "--background-card",
@@ -145,6 +149,10 @@ export function ThemeProvider({ children }) {
         document.documentElement.style.setProperty(
           "--border-muted",
           "rgba(0, 0, 0, 0.08)"
+        );
+        document.documentElement.style.setProperty(
+          "--border-light",
+          "rgba(0, 0, 0, 0.1)"
         );
         // Teal accent colors for light theme
         document.documentElement.style.setProperty(

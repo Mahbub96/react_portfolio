@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styles from "./experience.module.css";
 import { useDataContex } from "../../contexts/useAllContext";
 import ModalView from "../ModalView";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import ThreeDots from "../ThreeDots";
 
 function Experience({ data }) {
@@ -146,14 +147,14 @@ function Experience({ data }) {
                         onClick={() => handleEdit(experience)}
                         title="Edit Experience"
                       >
-                        <i className="fa fa-edit"></i>
+                        <FaEdit />
                       </button>
                       <button
                         className={`${styles.actionButton} ${styles.deleteButton}`}
                         onClick={() => handleDelete(experience)}
                         title="Delete Experience"
                       >
-                        <i className="fa fa-trash"></i>
+                        <FaTrash />
                       </button>
                     </div>
                   )}

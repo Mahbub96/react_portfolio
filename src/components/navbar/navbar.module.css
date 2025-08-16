@@ -5,7 +5,7 @@
 /* The navigation bar */
 .nav {
   overflow: hidden;
-  background-color: #333;
+  background-color: var(--background-primary);
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
@@ -17,24 +17,24 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(30, 30, 36, 0.8);
+  background: var(--background-primary);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-secondary);
   transition: var(--transition-normal);
 }
 
 .header:hover {
-  background: rgba(30, 30, 36, 0.95);
+  background: var(--background-secondary);
   border-bottom-color: var(--border-accent);
 }
 
 /* Light theme styles */
 [data-theme="light"] .header {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--background-primary);
 }
 
 [data-theme="light"] .header:hover {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--background-secondary);
 }
 
 .navbar {
@@ -303,6 +303,10 @@
     background: rgba(255, 255, 255, 0.98);
   }
 
+  [data-theme="light"] .navContent.show {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
   .navContent.show {
     right: 0;
   }
@@ -402,7 +406,12 @@
 
 /* Scroll effect */
 .header.scrolled {
-  background: rgba(10, 10, 15, 0.95);
+  background: rgba(10, 15, 25, 0.95);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme="light"] .header.scrolled {
+  background: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-lg);
 }
 

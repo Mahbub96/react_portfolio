@@ -1,39 +1,37 @@
 {
-  "short_name": "Mahbub Portfolio",
   "name": "Mahbub Alam - Full Stack Developer Portfolio",
-  "description": "Portfolio of Mahbub Alam - Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
-    }
-  ],
-  "start_url": ".",
+  "short_name": "Mahbub Portfolio",
+  "description": "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh.",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0a192f",
-  "background_color": "#ffffff",
+  "background_color": "#0a192f",
+  "theme_color": "#64ffda",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
   "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/assets/img/profile.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/img/profile.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
   "screenshots": [
     {
-      "src": "logo512.png",
-      "sizes": "512x512",
+      "src": "/assets/img/profile.png",
+      "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"
     }
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }

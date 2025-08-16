@@ -1,5 +1,5 @@
 .footer {
-  background: var(--bg_color);
+  background: var(--background-primary);
   padding: 3rem 0;
   position: relative;
 }
@@ -19,6 +19,16 @@
   );
 }
 
+/* Light theme footer adjustments */
+[data-theme="light"] .footer::before {
+  background: linear-gradient(
+    to right,
+    rgba(13, 148, 136, 0),
+    rgba(13, 148, 136, 0.3),
+    rgba(13, 148, 136, 0)
+  );
+}
+
 .footerContent {
   max-width: 1200px;
   margin: 0 auto;
@@ -35,7 +45,7 @@
 }
 
 .socialLink {
-  color: var(--text_color);
+  color: var(--text-secondary);
   font-size: 1.5rem;
   transition: all 0.3s ease;
   width: 45px;
@@ -43,16 +53,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border_color);
+  border: 1px solid var(--border-secondary);
   border-radius: 50%;
-  background: var(--card_bg);
+  background: var(--background-card);
+}
+
+.socialLink svg {
+  font-size: 1rem;
+  z-index: 1;
 }
 
 .socialLink:hover {
-  color: var(--accent_color);
+  color: var(--accent-primary);
   transform: translateY(-3px);
-  border-color: var(--accent_color);
+  border-color: var(--accent-primary);
   background: rgba(32, 201, 151, 0.1);
+}
+
+/* Light theme social link adjustments */
+[data-theme="light"] .socialLink:hover {
+  background: rgba(13, 148, 136, 0.1);
 }
 
 .footerInfo {
@@ -65,14 +85,14 @@
 
 .builtWith {
   color: var(--text-secondary);
-  font-family: "Fira Code", monospace;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.builtWith i {
+.builtWith svg {
   color: var(--accent-tertiary);
   font-size: 1rem;
 }
@@ -85,9 +105,9 @@
 }
 
 .githubLink {
-  color: var(--accent_color);
+  color: var(--accent-primary);
   text-decoration: none;
-  font-family: "Fira Code", monospace;
+  font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 500;
   transition: color 0.3s ease;
@@ -99,13 +119,13 @@
 }
 
 .bracket {
-  color: var(--text_color);
+  color: var(--text-secondary);
   opacity: 0.8;
 }
 
 .copyrightText {
-  color: var(--text_color);
-  font-family: "Fira Code", monospace;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
   font-size: 0.9rem;
 }
 

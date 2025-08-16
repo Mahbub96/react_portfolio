@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDataContex } from "../../contexts/useAllContext";
 import usePortfolioData from "../../hooks/usePortfolioData";
 import ModalView from "../ModalView";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import styles from "./skills.module.css";
 
 function SkillsClient({ skills }) {
@@ -44,14 +45,14 @@ function SkillsClient({ skills }) {
             onClick={() => handleEdit(skill)}
             title="Edit Skill"
           >
-            <i className="fa fa-edit"></i>
+            <FaEdit />
           </button>
           <button
             className={`${styles.actionButton} ${styles.deleteButton}`}
             onClick={() => handleDelete(skill)}
             title="Delete Skill"
           >
-            <i className="fa fa-trash"></i>
+            <FaTrash />
           </button>
         </div>
       ))}
@@ -65,7 +66,7 @@ function SkillsClient({ skills }) {
         }}
       >
         <div className={styles.addContent}>
-          <i className="fa fa-plus"></i>
+          <FaPlus />
           <p>Add New Skill</p>
         </div>
       </div>

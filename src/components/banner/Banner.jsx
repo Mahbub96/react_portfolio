@@ -2,6 +2,14 @@
 
 import React from "react";
 import { TypeAnimation } from "react-type-animation";
+import {
+  FaMapMarkerAlt,
+  FaCode,
+  FaEnvelope,
+  FaGithub,
+  FaFacebook,
+  FaLinkedin,
+} from "react-icons/fa";
 import styles from "./banner.module.css";
 
 function Banner({ data }) {
@@ -66,7 +74,7 @@ function Banner({ data }) {
           </div>
 
           <div className={styles.location_container}>
-            <i className="fa fa-map-marker"></i>
+            <FaMapMarkerAlt />
             <span>{location}</span>
           </div>
 
@@ -79,7 +87,7 @@ function Banner({ data }) {
           </div>
 
           <button className={styles.cta_button}>
-            <i className="fa fa-code"></i>
+            <FaCode />
             <span>Get in Touch</span>
           </button>
         </div>
@@ -92,7 +100,7 @@ function Banner({ data }) {
             rel="noopener noreferrer"
             className={styles.social_link}
           >
-            <i className="fa fa-envelope"></i>
+            <FaEnvelope />
           </a>
           <a
             href={socialLinks.github}
@@ -101,7 +109,7 @@ function Banner({ data }) {
             rel="noopener noreferrer"
             className={styles.social_link}
           >
-            <i className="fa fa-github"></i>
+            <FaGithub />
           </a>
           <a
             href={socialLinks.facebook}
@@ -110,7 +118,7 @@ function Banner({ data }) {
             rel="noopener noreferrer"
             className={styles.social_link}
           >
-            <i className="fa fa-facebook"></i>
+            <FaFacebook />
           </a>
           <a
             href={socialLinks.linkedin}
@@ -119,7 +127,7 @@ function Banner({ data }) {
             rel="noopener noreferrer"
             className={styles.social_link}
           >
-            <i className="fa fa-linkedin"></i>
+            <FaLinkedin />
           </a>
         </div>
       </div>

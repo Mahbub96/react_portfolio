@@ -17,7 +17,7 @@ function LoginModal({ show, onHide }) {
 
     try {
       // Simple authentication with admin/admin1234 credentials
-      if (username === "admin" && password === "admin1234") {
+      if (username === "mahbub" && password === "mahbub1230") {
         // Store authentication in database for tracking
         await fetch("/api/auth/login", {
           method: "POST",
@@ -40,7 +40,7 @@ function LoginModal({ show, onHide }) {
         setUsername("");
         setPassword("");
       } else {
-        setError("Invalid credentials. Use admin/admin1234");
+        setError("Invalid credentials.");
       }
     } catch (error) {
       console.error("Login error:", error);

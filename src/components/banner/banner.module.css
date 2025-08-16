@@ -6,7 +6,7 @@
   justify-content: center;
   position: relative;
   padding: 1rem;
-  background: var(--bg_color);
+  background: var(--background-primary);
   overflow: hidden;
   margin-top: 80px;
 }
@@ -30,6 +30,20 @@
     );
   animation: float 20s ease-in-out infinite;
   z-index: 0;
+}
+
+/* Light theme background adjustments */
+[data-theme="light"] .tech_background {
+  background: radial-gradient(
+      circle at 20% 30%,
+      rgba(13, 148, 136, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(8, 145, 178, 0.025) 0%,
+      transparent 50%
+    );
 }
 
 @keyframes float {
@@ -75,7 +89,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border: 3px solid var(--accent_color);
+  border: 3px solid var(--accent-primary);
   box-shadow: 0 0 15px rgba(32, 201, 151, 0.1), 0 3px 10px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   position: relative;
@@ -94,7 +108,11 @@
   right: -6px;
   bottom: -6px;
   border-radius: 50%;
-  background: linear-gradient(45deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    45deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   opacity: 0.08;
   filter: blur(12px);
   animation: pulse 3s ease-in-out infinite;
@@ -117,7 +135,7 @@
 .name {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 700;
-  color: var(--heading_color);
+  color: var(--text-primary);
   margin: 0;
   font-family: "Times New Roman", Times, serif;
   letter-spacing: 3px;
@@ -136,7 +154,11 @@
   transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    90deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   border-radius: 1px;
   transition: width 0.5s ease;
 }
@@ -146,7 +168,7 @@
 }
 
 .cursor {
-  color: var(--accent_color);
+  color: var(--accent-primary);
   animation: blink 1.5s infinite;
   font-weight: 400;
 }
@@ -184,13 +206,13 @@
 .animated_text {
   font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   font-weight: 600;
-  color: var(--accent_color);
+  color: var(--accent-primary);
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  background: var(--card_bg);
+  background: var(--background-card);
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  border: 1px solid var(--border_color);
+  border: 1px solid var(--border-secondary);
   position: relative;
   text-shadow: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -198,7 +220,7 @@
 
 .animated_text::after {
   content: "|";
-  color: var(--accent_color);
+  color: var(--accent-primary);
   animation: blink 1s infinite;
   margin-left: 2px;
 }
@@ -210,14 +232,14 @@
   justify-content: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: var(--text_color);
+  color: var(--text-secondary);
   opacity: 0.9;
   font-weight: 500;
   text-shadow: none;
 }
 
-.location_container i {
-  color: var(--accent_color);
+.location_container svg {
+  color: var(--accent-primary);
   font-size: 1rem;
 }
 
@@ -230,7 +252,7 @@
 .bio_text {
   font-size: 0.9rem;
   line-height: 1.6;
-  color: var(--text_color);
+  color: var(--text-secondary);
   margin: 0 0 0.5rem 0;
   opacity: 0.95;
   font-weight: 400;
@@ -250,7 +272,11 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   border: none;
   border-radius: 25px;
   cursor: pointer;
@@ -287,7 +313,7 @@
   left: 100%;
 }
 
-.cta_button i {
+.cta_button svg {
   font-size: 1rem;
 }
 
@@ -307,11 +333,11 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background: var(--card_bg);
-  color: var(--accent_color);
+  background: var(--background-card);
+  color: var(--accent-primary);
   text-decoration: none;
   transition: all 0.3s ease;
-  border: 1px solid var(--border_color);
+  border: 1px solid var(--border-secondary);
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -324,7 +350,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   border-radius: 50%;
   transform: scale(0);
   transition: transform 0.3s ease;
@@ -335,14 +365,14 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 3px 10px rgba(32, 201, 151, 0.2);
-  border-color: var(--accent_color);
+  border-color: var(--accent-primary);
 }
 
 .social_link:hover::before {
   transform: scale(1);
 }
 
-.social_link i {
+.social_link svg {
   font-size: 1rem;
   z-index: 1;
 }
@@ -409,28 +439,49 @@
 
 /* Light theme adjustments */
 [data-theme="light"] .banner_section {
-  background: var(--bg_color);
+  background: var(--background-primary);
+}
+
+[data-theme="light"] .tech_background {
+  background: radial-gradient(
+      circle at 20% 30%,
+      rgba(13, 148, 136, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(8, 145, 178, 0.025) 0%,
+      transparent 50%
+    );
 }
 
 [data-theme="light"] .profile_image {
-  border-color: var(--accent_color);
+  border-color: var(--accent-primary);
   box-shadow: 0 0 15px rgba(13, 148, 136, 0.1), 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .profile_glow {
-  background: linear-gradient(45deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    45deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   opacity: 0.06;
 }
 
 [data-theme="light"] .social_link {
-  background: var(--card_bg);
-  color: var(--accent_color);
-  border-color: var(--border_color);
+  background: var(--background-card);
+  color: var(--accent-primary);
+  border-color: var(--border-secondary);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .social_link::before {
-  background: linear-gradient(135deg, var(--accent_color), var(--blue));
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
 }
 
 [data-theme="light"] .animated_text {
