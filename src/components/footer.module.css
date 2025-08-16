@@ -1,7 +1,9 @@
+/* Enhanced Footer CSS with improved animations and responsive design */
 .footer {
   background: var(--background-primary);
   padding: 3rem 0;
   position: relative;
+  overflow: hidden;
 }
 
 .footer::before {
@@ -17,6 +19,7 @@
     rgba(32, 201, 151, 0.3),
     rgba(32, 201, 151, 0)
   );
+  animation: shimmer 3s infinite;
 }
 
 /* Light theme footer adjustments */
@@ -37,11 +40,14 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .socialLinks {
   display: flex;
   gap: 1.5rem;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .socialLink {
@@ -56,23 +62,51 @@
   border: 1px solid var(--border-secondary);
   border-radius: 50%;
   background: var(--background-card);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.socialLink::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: all 0.3s ease;
+  z-index: -1;
+  opacity: 0;
 }
 
 .socialLink svg {
   font-size: 1rem;
   z-index: 1;
+  transition: transform 0.3s ease;
 }
 
 .socialLink:hover {
-  color: var(--accent-primary);
-  transform: translateY(-3px);
+  color: var(--background-primary);
+  transform: translateY(-3px) scale(1.1);
   border-color: var(--accent-primary);
-  background: rgba(32, 201, 151, 0.1);
+  box-shadow: 0 8px 25px rgba(32, 201, 151, 0.3);
+}
+
+.socialLink:hover::before {
+  left: 0;
+  opacity: 1;
+}
+
+.socialLink:hover svg {
+  transform: rotate(360deg);
 }
 
 /* Light theme social link adjustments */
 [data-theme="light"] .socialLink:hover {
   background: rgba(13, 148, 136, 0.1);
+  box-shadow: 0 8px 25px rgba(13, 148, 136, 0.2);
 }
 
 .footerInfo {
@@ -81,6 +115,7 @@
   align-items: center;
   gap: 1rem;
   text-align: center;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
 .builtWith {
@@ -90,11 +125,28 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--background-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-muted);
+  transition: all 0.3s ease;
+}
+
+.builtWith:hover {
+  border-color: var(--border-accent);
+  background: rgba(100, 255, 218, 0.05);
+  transform: translateY(-2px);
 }
 
 .builtWith svg {
   color: var(--accent-tertiary);
   font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.builtWith:hover svg {
+  transform: scale(1.2);
+  color: var(--accent-primary);
 }
 
 .copyright {
@@ -110,25 +162,58 @@
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.githubLink::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(100, 255, 218, 0.1);
+  transition: left 0.3s ease;
+  z-index: -1;
 }
 
 .githubLink:hover {
   color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.githubLink:hover::before {
+  left: 0;
 }
 
 .bracket {
   color: var(--text-secondary);
   opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.githubLink:hover .bracket {
+  color: var(--accent-primary);
+  opacity: 1;
 }
 
 .copyrightText {
   color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 0.9rem;
+  transition: color 0.3s ease;
 }
 
+.githubLink:hover + .copyrightText {
+  color: var(--text-primary);
+}
+
+/* Enhanced responsive design */
 @media (max-width: 768px) {
   .footer {
     padding: 2rem 0;
@@ -141,6 +226,8 @@
 
   .socialLinks {
     gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .socialLink {
@@ -156,4 +243,211 @@
   .copyrightText {
     font-size: 0.8rem;
   }
+
+  .builtWith {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1.5rem 0;
+  }
+
+  .footerContent {
+    gap: 1rem;
+  }
+
+  .socialLinks {
+    gap: 0.8rem;
+  }
+
+  .socialLink {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+  }
+
+  .builtWith {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .githubLink {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .copyrightText {
+    font-size: 0.75rem;
+  }
+}
+
+/* Large screen enhancements */
+@media (min-width: 1200px) {
+  .footerContent {
+    max-width: 1400px;
+  }
+
+  .socialLink {
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+
+  .builtWith {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .githubLink {
+    font-size: 1.2rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .copyrightText {
+    font-size: 1rem;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Enhanced hover effects */
+.socialLink:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.socialLink:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.socialLink:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.socialLink:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Focus styles for accessibility */
+.socialLink:focus,
+.githubLink:focus,
+.builtWith:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+.footer::selection,
+.footerContent::selection {
+  background: var(--accent-primary);
+  color: var(--background-primary);
+}
+
+.footer::-moz-selection,
+.footerContent::-moz-selection {
+  background: var(--accent-primary);
+  color: var(--background-primary);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .footer::before {
+    height: 2px;
+  }
+
+  .socialLink,
+  .builtWith,
+  .githubLink {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .footer::before,
+  .socialLink,
+  .socialLink svg,
+  .builtWith,
+  .builtWith svg,
+  .githubLink,
+  .bracket {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+
+  .fadeInUp {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .footer {
+    background: white;
+    color: black;
+    border-top: 1px solid #ccc;
+  }
+
+  .socialLinks {
+    display: none;
+  }
+
+  .builtWith {
+    background: white;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background: var(--background-primary);
+  }
+}
+
+/* Light mode enhancements */
+@media (prefers-color-scheme: light) {
+  .footer {
+    background: var(--background-primary);
+  }
+}
+
+/* Hover state for entire footer */
+.footer:hover::before {
+  background: linear-gradient(
+    to right,
+    rgba(32, 201, 151, 0.1),
+    rgba(32, 201, 151, 0.4),
+    rgba(32, 201, 151, 0.1)
+  );
+}
+
+[data-theme="light"] .footer:hover::before {
+  background: linear-gradient(
+    to right,
+    rgba(13, 148, 136, 0.1),
+    rgba(13, 148, 136, 0.4),
+    rgba(13, 148, 136, 0.1)
+  );
 }

@@ -103,7 +103,7 @@ export async function generateMetadata() {
     },
     metadataBase: new URL("https://mahbub.dev"),
     alternates: {
-      canonical: "/",
+      canonical: "https://mahbub.dev/",
     },
     openGraph: {
       title:
@@ -115,7 +115,7 @@ export async function generateMetadata() {
       siteName: "Mahbub Alam Portfolio",
       images: [
         {
-          url: "/assets/img/profile.png",
+          url: "https://mahbub.dev/assets/img/profile.png",
           width: 1200,
           height: 630,
           alt: "Mahbub Alam - Full Stack Developer",
@@ -131,7 +131,7 @@ export async function generateMetadata() {
       description:
         profile.bio ||
         "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
-      images: ["/assets/img/profile.png"],
+      images: ["https://mahbub.dev/assets/img/profile.png"],
       creator: "@mahbubcse96",
       site: "@mahbubcse96",
     },
@@ -169,7 +169,7 @@ export default async function HomePage() {
       profile.bio ||
       "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
     url: "https://mahbub.dev",
-    image: profile.image || "/assets/img/profile.png",
+    image: profile.image || "https://mahbub.dev/assets/img/profile.png",
     email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
     telephone: "+880-1XXX-XXXXXX",
     sameAs: [profile.github, profile.linkedin, profile.twitter].filter(Boolean),

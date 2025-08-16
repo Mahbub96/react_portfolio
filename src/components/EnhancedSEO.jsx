@@ -4,8 +4,8 @@ import { Helmet } from "react-helmet-async";
 const EnhancedSEO = ({
   title = "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
   description = "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
-  keywords = "Mahbub Alam, Mahbub, Full Stack Developer, Web Developer, React Developer, PHP Developer, Node.js Developer, Bangladesh Developer, Dhaka, admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com, Brotecs Technologies, VoIP Solutions, Laravel Developer, CodeIgniter Developer",
-  image = "/assets/img/profile.png",
+  keywords = "Mahbub Alam, Mahbub, Full Stack Developer, Web Developer, React Developer, PHP Developer, Node.js Developer, Bangladesh Developer, Dhaka, admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com, VoIP Solutions, Laravel Developer, CodeIgniter Developer",
+  image = "https://mahbub.dev/assets/img/profile.png",
   url = "https://mahbub.dev",
   type = "website",
   publishedTime,
@@ -106,7 +106,8 @@ const EnhancedSEO = ({
           worksFor: {
             "@type": "Organization",
             name: "Brotecs Technologies Ltd",
-            url: "https://brotecs.com",
+            description:
+              "Technology company specializing in VoIP solutions and software development",
             address: {
               "@type": "PostalAddress",
               addressLocality: "Dhaka",

@@ -374,27 +374,13 @@ export const metadata = {
     "GitUp",
     "Fork",
     "GitAhead",
-    "GitKraken",
-    "SourceTree",
-    "SmartGit",
-    "TortoiseGit",
-    "Git Extensions",
-    "Git Cola",
-    "Gitg",
-    "Giggle",
-    "QGit",
-    "GitNub",
-    "GitBox",
-    "GitUp",
-    "Fork",
-    "GitAhead",
   ],
   authors: [{ name: "Mahbub Alam" }],
   creator: "Mahbub Alam",
   publisher: "Mahbub Alam",
   metadataBase: new URL("https://mahbub.dev"),
   alternates: {
-    canonical: "/",
+    canonical: "https://mahbub.dev/",
   },
   robots: {
     index: true,
@@ -423,7 +409,7 @@ export const metadata = {
     siteName: "Mahbub Alam Portfolio",
     images: [
       {
-        url: "/assets/img/profile.png",
+        url: "https://mahbub.dev/assets/img/profile.png",
         width: 1200,
         height: 630,
         alt: "Mahbub Alam - Full Stack Developer Portfolio",
@@ -436,7 +422,7 @@ export const metadata = {
       "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
     description:
       "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbub@lunetsoft.com, mahbubcse96@gmail.com",
-    images: ["/assets/img/profile.png"],
+    images: ["https://mahbub.dev/assets/img/profile.png"],
     creator: "@mahbubcse96",
     site: "@mahbubcse96",
   },
@@ -461,9 +447,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/logo192.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="https://mahbub.dev/favicon.ico" />
+        <link rel="apple-touch-icon" href="https://mahbub.dev/logo192.png" />
+        <link rel="manifest" href="https://mahbub.dev/manifest.json" />
         <meta name="theme-color" content="#0a192f" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="format-detection" content="telephone=no" />

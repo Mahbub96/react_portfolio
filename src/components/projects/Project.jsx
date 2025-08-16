@@ -23,20 +23,26 @@ function Project({ project, idx }) {
       ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
       : src;
 
+  // Enhanced image URL for production
+  const imageUrl = normalizedSrc?.startsWith("http") 
+    ? normalizedSrc 
+    : `https://mahbub.dev${normalizedSrc}`;
+
+  // Server-side safe event handlers
   const handleRunProject = () => {
-    if (typeof window !== "undefined" && liveUrl) {
+    if (liveUrl) {
       window.open(liveUrl, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleDownloadProject = () => {
-    if (typeof window !== "undefined" && downloadUrl) {
+    if (downloadUrl) {
       window.open(downloadUrl, "_blank", "noopener,noreferrer");
     }
   };
 
   const handleViewCode = () => {
-    if (typeof window !== "undefined" && githubUrl) {
+    if (githubUrl) {
       window.open(githubUrl, "_blank", "noopener,noreferrer");
     }
   };
@@ -49,23 +55,21 @@ function Project({ project, idx }) {
       style={{
         animationDelay: `${idx * 0.1}s`,
       }}
+      aria-labelledby={`project-${id || idx}-title`}
     >
       {/* Project Image */}
       <div className={styles.projectImage}>
         <img
-          src={normalizedSrc}
-          alt={name}
+          src={imageUrl}
+          alt={`${name} - ${desc}`}
           itemProp="image"
           loading="lazy"
-          onError={(e) => {
-            e.target.src = `https://via.placeholder.com/400x250/20c997/0f1419?text=${encodeURIComponent(
-              name
-            )}`;
-          }}
+          width="400"
+          height="250"
         />
         <div className={styles.imageOverlay}>
           <div className={styles.overlayContent}>
-            <h3>{name}</h3>
+            <h3 id={`project-${id || idx}-title`}>{name}</h3>
             <p>{desc}</p>
           </div>
         </div>
@@ -73,26 +77,43 @@ function Project({ project, idx }) {
 
       {/* Project Content */}
       <div className={styles.projectContent}>
-        <h3 itemProp="name">{name}</h3>
+        <h3 itemProp="name" id={`project-${id || idx}-title`}>{name}</h3>
         <p itemProp="description">{desc}</p>
-        <div className={styles.techStack}>
+        
+        {/* Technologies Stack */}
+        <div className={styles.techStack} aria-label="Technologies used">
           {technologies.map((tech, index) => (
-            <span key={index} className={styles.techTag}>
+            <span 
+              key={index} 
+              className={styles.techTag}
+              itemProp="programmingLanguage"
+            >
               {tech.trim()}
             </span>
           ))}
         </div>
 
+        {/* Project Metadata */}
+        <div className={styles.projectMetadata}>
+          <meta itemProp="applicationCategory" content="Web Application" />
+          <meta itemProp="operatingSystem" content="Web Browser" />
+          <meta itemProp="softwareVersion" content="1.0.0" />
+          <meta itemProp="dateCreated" content={project.createdAt || new Date().toISOString()} />
+          <meta itemProp="dateModified" content={project.updatedAt || new Date().toISOString()} />
+        </div>
+
         {/* Project Action Buttons */}
-        <div className={styles.projectActions}>
+        <div className={styles.projectActions} aria-label="Project actions">
           {liveUrl && (
             <button
               className={`${styles.projectButton} ${styles.runButton}`}
               onClick={handleRunProject}
               title="View Live Demo"
               aria-label={`View ${name} live demo`}
+              itemProp="url"
             >
-              <HiOutlineExternalLink className={styles.buttonIcon} />
+              <HiOutlineExternalLink className={styles.buttonIcon} aria-hidden="true" />
+              <span>Live Demo</span>
             </button>
           )}
 
@@ -103,7 +124,8 @@ function Project({ project, idx }) {
               title="Download Project"
               aria-label={`Download ${name} project`}
             >
-              <HiOutlineDownload className={styles.buttonIcon} />
+              <HiOutlineDownload className={styles.buttonIcon} aria-hidden="true" />
+              <span>Download</span>
             </button>
           )}
 
@@ -114,10 +136,28 @@ function Project({ project, idx }) {
               title="View Source Code"
               aria-label={`View ${name} source code`}
             >
-              <HiOutlineCode className={styles.buttonIcon} />
+              <HiOutlineCode className={styles.buttonIcon} aria-hidden="true" />
+              <span>Source Code</span>
             </button>
           )}
+
+          {/* Fallback for projects without actions */}
+          {!liveUrl && !downloadUrl && !githubUrl && (
+            <div className={styles.noActions}>
+              <span className={styles.noActionsText}>Project Details</span>
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* Additional Schema.org markup */}
+      <div className={styles.schemaData} style={{ display: 'none' }}>
+        <meta itemProp="author" content="Mahbub Alam" />
+        <meta itemProp="creator" content="Mahbub Alam" />
+        <meta itemProp="publisher" content="Mahbub Alam" />
+        <meta itemProp="inLanguage" content="en" />
+        <meta itemProp="isAccessibleForFree" content="true" />
+        <meta itemProp="offers" content="Free to use" />
       </div>
     </article>
   );

@@ -1,24 +1,65 @@
 {
   "name": "Mahbub Alam - Full Stack Developer Portfolio",
   "short_name": "Mahbub Portfolio",
-  "description": "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh.",
-  "start_url": "/",
+  "description": "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Expert in VoIP solutions, system architecture, and cloud computing.",
+  "start_url": "https://mahbub.dev/",
   "display": "standalone",
   "background_color": "#0a192f",
   "theme_color": "#64ffda",
   "orientation": "portrait-primary",
-  "scope": "/",
-  "lang": "en",
-  "categories": ["business", "productivity", "utilities"],
+  "scope": "https://mahbub.dev/",
+  "categories": [
+    "business",
+    "productivity",
+    "utilities",
+    "developer",
+    "portfolio"
+  ],
   "icons": [
     {
-      "src": "/assets/img/profile.png",
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/img/profile.png",
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -26,12 +67,105 @@
   ],
   "screenshots": [
     {
-      "src": "/assets/img/profile.png",
+      "src": "https://mahbub.dev/assets/img/profile.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "Portfolio Homepage"
+    },
+    {
+      "src": "https://mahbub.dev/assets/img/profile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Portfolio View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "About",
+      "short_name": "About",
+      "description": "Learn more about Mahbub Alam",
+      "url": "https://mahbub.dev/#about",
+      "icons": [
+        {
+          "src": "https://mahbub.dev/assets/img/profile.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "description": "View portfolio projects",
+      "url": "https://mahbub.dev/#projects",
+      "icons": [
+        {
+          "src": "https://mahbub.dev/assets/img/profile.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Get in touch",
+      "url": "https://mahbub.dev/#contact",
+      "icons": [
+        {
+          "src": "https://mahbub.dev/assets/img/profile.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false
+
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "https://mahbub.dev/contact?email=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "https://mahbub.dev/",
+      "accept": {
+        "text/*": [
+          ".txt",
+          ".md",
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx",
+          ".html",
+          ".css",
+          ".json"
+        ]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "https://mahbub.dev/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "permissions": ["notifications"],
+  "display_override": ["standalone", "minimal-ui"],
+  "prefer_related_applications": false,
+  "iarc_rating_id": "",
+  "lang": "en-US",
+  "dir": "ltr"
 }

@@ -1,38 +1,223 @@
 # https://www.robotstxt.org/robotstxt.html
-# Robots.txt for Mahbub Alam Portfolio Website
+# Enhanced Robots.txt for Mahbub Alam Portfolio Website - mahbub.dev
+# Last updated: 2024
 
+# Global rules for all user agents
 User-agent: *
 Allow: /
 
-# Disallow admin and API routes
+# Disallow admin and API routes for security
 Disallow: /api/
 Disallow: /admin/
 Disallow: /_next/
 Disallow: /private/
+Disallow: /analytics/
+Disallow: /login/
+Disallow: /logout/
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /internal/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /logs/
+Disallow: /backup/
+Disallow: /config/
+Disallow: /database/
+Disallow: /test/
+Disallow: /dev/
+Disallow: /staging/
+Disallow: /beta/
 
-# Allow important pages
+# Allow important public pages
 Allow: /contact
 Allow: /projects
 Allow: /skills
 Allow: /about
 Allow: /experience
 Allow: /education
+Allow: /resume
+Allow: /portfolio
+Allow: /blog
+Allow: /services
+Allow: /pricing
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /humans.txt
+Allow: /manifest.json
 
-# Sitemap location
+# Allow static assets
+Allow: /assets/
+Allow: /images/
+Allow: /css/
+Allow: /js/
+Allow: /fonts/
+Allow: /icons/
+Allow: /favicon.ico
+Allow: /logo*.png
+Allow: /apple-touch-icon*.png
+
+# Sitemap location for mahbub.dev
 Sitemap: https://mahbub.dev/sitemap.xml
 
-# Crawl delay (optional)
+# Crawl delay for better server performance
 Crawl-delay: 1
 
 # Specific rules for major search engines
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: Googlebot-Image
+Allow: /assets/
+Allow: /images/
+Allow: /logo*.png
+Allow: /favicon.ico
+Disallow: /api/
+Disallow: /admin/
 
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
 
 User-agent: Slurp
 Allow: /
 Crawl-delay: 1
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 2
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 1
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: Twitterbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: LinkedInBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# AI and research crawlers
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Archive and research crawlers
+User-agent: ia_archiver
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: archive.org_bot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Performance and monitoring crawlers
+User-agent: Pingdom
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+User-agent: UptimeRobot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Security and vulnerability scanners
+User-agent: SecurityScan
+Disallow: /
+
+User-agent: VulnerabilityScanner
+Disallow: /
+
+User-agent: SecurityBot
+Disallow: /
+
+# Block known bad bots
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: Screaming
+Disallow: /
+
+User-agent: Screaming Frog SEO Spider
+Disallow: /
+
+# Rate limiting for aggressive crawlers
+User-agent: *
+Crawl-delay: 2
+
+# Additional SEO directives for mahbub.dev
+# Allow search engines to index and follow all public content
+# Block access to sensitive areas and API endpoints
+# Optimize crawl efficiency for better indexing
+# Focus on production domain: https://mahbub.dev

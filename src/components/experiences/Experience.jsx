@@ -1,54 +1,52 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import styles from "./experience.module.css";
-import { useDataContex } from "../../contexts/useAllContext";
-import ModalView from "../ModalView";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import ThreeDots from "../ThreeDots";
 
 function Experience({ data }) {
-  const [modalShow, setModalShow] = useState(false);
-  const { auth } = useDataContex();
-  const [selectedExperience, setSelectedExperience] = useState(null);
-
   // Use server data for rendering
   const experiences = data?.data || [];
 
   // Helper to get total experience in years and months or decimal years
   const getTotalExperienceDisplay = () => {
     if (!experiences || experiences.length === 0) return null;
+    
     // Find the earliest start and latest end (or today if any are present)
     let minStart = null;
     let maxEnd = null;
+    
     experiences.forEach((exp) => {
       // Parse start
       let startRaw = exp.startDate || exp.time?.split("-")[0] || exp.time;
       let endRaw = exp.endDate || exp.time?.split("-")[1] || exp.time;
+      
       // Helper to parse YYYY-MM or YYYY/MM or YYYY
       function parseDate(str) {
         if (!str) return null;
         str = str.trim();
         if (/present/i.test(str)) return new Date();
+        
         // Try YYYY-MM or YYYY/MM
         let match = str.match(/^(\d{4})[-/](\d{1,2})$/);
         if (match) {
           // Month is 0-based in JS Date
           return new Date(Number(match[1]), Number(match[2]) - 1);
         }
+        
         // Try YYYY
         match = str.match(/^(\d{4})$/);
         if (match) {
           return new Date(Number(match[1]), 0);
         }
+        
         // Fallback to Date constructor
         let d = new Date(str);
         if (!isNaN(d)) return d;
         return null;
       }
+      
       let start = parseDate(startRaw);
       let end = parseDate(endRaw);
       if (!end) end = new Date();
-      // Debug log for Safari troubleshooting
 
       // Only use valid dates
       if (
@@ -61,140 +59,243 @@ function Experience({ data }) {
         if (!maxEnd || end > maxEnd) maxEnd = end;
       }
     });
+    
     if (!minStart || !maxEnd) return null;
+    
     let years = maxEnd.getFullYear() - minStart.getFullYear();
     let months = maxEnd.getMonth() - minStart.getMonth();
+    
     if (months < 0) {
       years--;
       months += 12;
     }
+    
     const decimalYears = (years + months / 12).toFixed(1);
     const fullText = `${years} year${years !== 1 ? "s" : ""} ${months} month${
       months !== 1 ? "s" : ""
     }`;
+    
     return {
       decimal: `${decimalYears} year${decimalYears !== "1.0" ? "s" : ""}`,
       full: fullText,
     };
   };
 
-  const handleEdit = (experience) => {
-    setSelectedExperience(experience);
-    setModalShow(true);
-  };
-
-  const handleDelete = async (experience) => {
-    if (
-      typeof window !== "undefined" &&
-      window.confirm("Are you sure you want to delete this experience?")
-    ) {
-      try {
-        // TODO: Implement delete via API endpoint
-      } catch (error) {
-        console.error("Error deleting experience:", error);
-      }
-    }
+  // Enhanced structured data for experience section
+  const experienceStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": "https://mahbub.dev#experience",
+    name: "Mahbub Alam Work Experience",
+    description: "Professional work experience in software development and technology",
+    numberOfItems: experiences.length,
+    itemListElement: experiences.map((experience, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "JobPosting",
+        "@id": `https://mahbub.dev#job-${experience.id || index}`,
+        title: experience.name,
+        description: experience.how,
+        datePosted: experience.startDate || experience.time?.split("-")[0] || experience.time,
+        validThrough: experience.endDate || experience.time?.split("-")[1] || "Present",
+        employmentType: "FULL_TIME",
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Dhaka",
+            addressCountry: "Bangladesh",
+          },
+        },
+        hiringOrganization: {
+          "@type": "Organization",
+          name: experience.company || "Technology Company",
+          url: experience.companyUrl || "https://mahbub.dev",
+        },
+        applicantLocationRequirements: {
+          "@type": "Country",
+          name: "Bangladesh",
+        },
+        jobBenefits: [
+          "Professional Development",
+          "Technology Exposure",
+          "Team Collaboration",
+        ],
+      },
+    })),
   };
 
   return (
-    <section id="experience" className={styles.experienceSection}>
-      <div className="container">
-        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <h2>
-            <span className={styles.sectionNumber}>03.</span> Where I've Worked
-          </h2>
-          <div className={styles.headerLine}></div>
-          {/* Show total experience */}
-          {experiences.length > 0 && getTotalExperienceDisplay() && (
-            <div
-              className="w-full max-w-full text-center break-words px-6 py-3 rounded-md font-bold text-base mt-4 mb-4 shadow-sm border-0 inline-block sm:text-base sm:px-4 sm:py-2 sm:mt-2 sm:mb-2 bg-white/90 dark:bg-neutral-900/90"
-              style={{
-                color: styles.date ? undefined : "var(--heading_color)",
-                transition: "background 0.3s, color 0.3s",
-              }}
-            >
-              {/* Only show one format at a time based on screen size */}
-              <span className={styles.showOnMobile}>
-                <span className={styles.date}>
-                  {getTotalExperienceDisplay()?.decimal}
-                </span>
-              </span>
-              <span className={styles.showOnDesktop}>
-                <span className={styles.date}>
-                  Total Experience: {getTotalExperienceDisplay()?.full}
-                </span>
-              </span>
-            </div>
-          )}
-        </div>
+    <>
+      {/* Structured Data for Experience */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(experienceStructuredData),
+        }}
+      />
 
-        <div className={styles.timelineContainer}>
-          <div className={styles.verticalLine}></div>
-          {experiences.length > 0 ? (
-            experiences.map((experience, index) => (
+      <section 
+        id="experience" 
+        className={styles.experienceSection}
+        itemScope
+        itemType="https://schema.org/ItemList"
+        aria-labelledby="experience-heading"
+      >
+        <div className="container">
+          <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
+            <h2 id="experience-heading">
+              <span className={styles.sectionNumber} aria-label="Section 3">03.</span> 
+              Where I've Worked
+              <span className={styles.experienceCount} aria-label={`${experiences.length} experiences`}>
+                ({experiences.length})
+              </span>
+            </h2>
+            <div className={styles.headerLine} aria-hidden="true"></div>
+            
+            {/* Show total experience */}
+            {experiences.length > 0 && getTotalExperienceDisplay() && (
               <div
-                key={experience.id || `experience-${index}`}
-                className={`${styles.timelineItem} ${
-                  index % 2 === 0 ? styles.left : styles.right
-                } ${styles.animateInTimeline}`}
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className={styles.timelineContent}>
-                  {auth && (
-                    <div className={styles.cardActions}>
-                      <button
-                        className={`${styles.actionButton} ${styles.editButton}`}
-                        onClick={() => handleEdit(experience)}
-                        title="Edit Experience"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                        onClick={() => handleDelete(experience)}
-                        title="Delete Experience"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  )}
-                  <div className={styles.timelineDot}></div>
-                  <span className={styles.date}>{experience.time}</span>
-                  <h3 className={styles.title}>{experience.name}</h3>
-                  <p className={styles.description}>{experience.how}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className={styles.loading}>
-              <ThreeDots />
-            </div>
-          )}
-
-          {auth && (
-            <div className={`${styles.addExperience} ${styles.animateIn}`}>
-              <button
-                onClick={() => {
-                  setSelectedExperience(null);
-                  setModalShow(true);
+                className={styles.totalExperience}
+                style={{
+                  color: "var(--heading_color)",
+                  transition: "background 0.3s, color 0.3s",
                 }}
               >
-                <div className={styles.addIcon}>+</div>
-                <p>Add New Experience</p>
-              </button>
-            </div>
+                <span className={styles.showOnMobile}>
+                  <span className={styles.date}>
+                    {getTotalExperienceDisplay()?.decimal}
+                  </span>
+                </span>
+                <span className={styles.showOnDesktop}>
+                  <span className={styles.date}>
+                    Total Experience: {getTotalExperienceDisplay()?.full}
+                  </span>
+                </span>
+              </div>
+            )}
+          </header>
+
+          <div className={styles.timelineContainer}>
+            <div className={styles.verticalLine} aria-hidden="true"></div>
+            
+            {experiences.length > 0 ? (
+              experiences.map((experience, index) => (
+                <div
+                  key={experience.id || `experience-${index}`}
+                  className={`${styles.timelineItem} ${
+                    index % 2 === 0 ? styles.left : styles.right
+                  } ${styles.animateInTimeline}`}
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                  itemScope
+                  itemType="https://schema.org/JobPosting"
+                >
+                  <div className={styles.timelineContent}>
+                    <div className={styles.timelineDot} aria-hidden="true"></div>
+                    
+                    {/* Experience Date */}
+                    <time 
+                      className={styles.date}
+                      itemProp="datePosted"
+                      dateTime={experience.startDate || experience.time?.split("-")[0] || experience.time}
+                    >
+                      {experience.time}
+                    </time>
+                    
+                    {/* Job Title */}
+                    <h3 
+                      className={styles.title}
+                      itemProp="title"
+                      id={`experience-${experience.id || index}-title`}
+                    >
+                      {experience.name}
+                    </h3>
+                    
+                    {/* Job Description */}
+                    <p 
+                      className={styles.description}
+                      itemProp="description"
+                    >
+                      {experience.how}
+                    </p>
+
+                    {/* Company Information */}
+                    {experience.company && (
+                      <div className={styles.companyInfo}>
+                        <span 
+                          className={styles.companyName}
+                          itemProp="hiringOrganization"
+                        >
+                          {experience.company}
+                        </span>
+                        {experience.companyUrl && (
+                          <a 
+                            href={experience.companyUrl}
+                            className={styles.companyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Visit ${experience.company} website`}
+                          >
+                            Company Website
+                          </a>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Additional Metadata */}
+                    <div className={styles.experienceMetadata} style={{ display: 'none' }}>
+                      <meta itemProp="employmentType" content="FULL_TIME" />
+                      <meta itemProp="jobLocation" content="Dhaka, Bangladesh" />
+                      <meta itemProp="applicantLocationRequirements" content="Bangladesh" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={styles.noExperience}>
+                <div className={styles.noExperienceIcon}>💼</div>
+                <h3>Experience Coming Soon</h3>
+                <p>I'm building my professional experience. Check back soon!</p>
+                <div className={styles.placeholderExperience}>
+                  <div className={styles.placeholderTimeline}>
+                    <div className={styles.placeholderDot}></div>
+                    <div className={styles.placeholderContent}>
+                      <div className={styles.placeholderTitle}></div>
+                      <div className={styles.placeholderDesc}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Experience Summary */}
+          {experiences.length > 0 && (
+            <footer className={styles.experienceFooter}>
+              <div className={styles.experienceStats}>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>{experiences.length}</span>
+                  <span className={styles.statLabel}>Total Positions</span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>
+                    {experiences.filter(exp => exp.company).length}
+                  </span>
+                  <span className={styles.statLabel}>Companies</span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>
+                    {getTotalExperienceDisplay()?.decimal || "0 years"}
+                  </span>
+                  <span className={styles.statLabel}>Total Experience</span>
+                </div>
+              </div>
+            </footer>
           )}
         </div>
-      </div>
-
-      <ModalView
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        title="Experience"
-        data={selectedExperience}
-        collectionName="Experiences"
-      />
-    </section>
+      </section>
+    </>
   );
 }
 

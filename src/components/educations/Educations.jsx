@@ -1,119 +1,246 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import styles from "./educations.module.css";
-import { useDataContex } from "../../contexts/useAllContext";
-import ModalView from "../ModalView";
 import ThreeDots from "../ThreeDots";
-import { FaEdit, FaTrash } from "react-icons/fa";
 
 function Educations({ data }) {
-  const [modalShow, setModalShow] = useState(false);
-  const { auth } = useDataContex();
-  const [selectedEducation, setSelectedEducation] = useState(null);
-
   // Use server data for rendering
   const education = data?.data || [];
 
-  const handleEdit = (education) => {
-    setSelectedEducation(education);
-    setModalShow(true);
-  };
-
-  const handleDelete = async (education) => {
-    if (
-      typeof window !== "undefined" &&
-      window.confirm("Are you sure you want to delete this education?")
-    ) {
-      try {
-        // TODO: Implement delete via API endpoint
-      } catch (error) {
-        console.error("Error deleting education:", error);
-      }
-    }
+  // Enhanced structured data for education section
+  const educationStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": "https://mahbub.dev#education",
+    name: "Mahbub Alam Education",
+    description: "Academic background and educational qualifications",
+    numberOfItems: education.length,
+    itemListElement: education.map((edu, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "EducationalOccupationalCredential",
+        "@id": `https://mahbub.dev#education-${edu.id || index}`,
+        name: edu.degName,
+        description: edu.name,
+        credentialCategory: "Degree",
+        educationalLevel: "Bachelor's Degree",
+        recognizedBy: {
+          "@type": "CollegeOrUniversity",
+          name: edu.name,
+          url: "https://stamforduniversity.edu.bd",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Dhaka",
+            addressCountry: "Bangladesh",
+          },
+        },
+        dateIssued: edu.time,
+        validIn: {
+          "@type": "Country",
+          name: "Bangladesh",
+        },
+        credentialCategory: "Degree",
+        educationalLevel: "Bachelor's Degree",
+        ...(edu.cgpa && {
+          credentialCategory: "Academic Degree",
+          educationalLevel: "Bachelor's Degree",
+          additionalProperty: {
+            "@type": "PropertyValue",
+            name: "CGPA",
+            value: edu.cgpa,
+          },
+        }),
+        ...(edu.Department && {
+          educationalProgramMode: "Full-time",
+          educationalProgramType: "Bachelor's Program",
+          educationalProgramName: edu.Department,
+        }),
+        ...(edu.Thesis && {
+          educationalProgramMode: "Full-time",
+          educationalProgramType: "Bachelor's Program",
+          educationalProgramName: edu.Department,
+          additionalProperty: {
+            "@type": "PropertyValue",
+            name: "Thesis",
+            value: edu.Thesis,
+          },
+        }),
+      },
+    })),
   };
 
   return (
-    <section id="education" className={styles.educationSection}>
-      <div className="container">
-        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <h2>
-            <span className={styles.sectionNumber}>04.</span> Education
-          </h2>
-          <div className={styles.headerLine}></div>
-        </div>
+    <>
+      {/* Structured Data for Education */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(educationStructuredData),
+        }}
+      />
 
-        <div className={styles.timelineContainer}>
-          <div className={styles.verticalLine}></div>
-          {education.length > 0 ? (
-            education.map((education, index) => (
-              <div
-                key={education.id}
-                className={`${styles.timelineItem} ${
-                  index % 2 === 0 ? styles.left : styles.right
-                } ${styles.animateInTimeline}`}
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className={styles.timelineContent}>
-                  {auth && (
-                    <div className={styles.cardActions}>
-                      <button
-                        className={`${styles.actionButton} ${styles.editButton}`}
-                        onClick={() => handleEdit(education)}
-                        title="Edit Education"
+      <section 
+        id="education" 
+        className={styles.educationSection}
+        itemScope
+        itemType="https://schema.org/ItemList"
+        aria-labelledby="education-heading"
+      >
+        <div className="container">
+          <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
+            <h2 id="education-heading">
+              <span className={styles.sectionNumber} aria-label="Section 4">04.</span> 
+              Education
+              <span className={styles.educationCount} aria-label={`${education.length} degrees`}>
+                ({education.length})
+              </span>
+            </h2>
+            <div className={styles.headerLine} aria-hidden="true"></div>
+            <p className={styles.sectionDescription}>
+              Academic background and qualifications in Computer Science and Engineering
+            </p>
+          </header>
+
+          <div className={styles.timelineContainer}>
+            <div className={styles.verticalLine} aria-hidden="true"></div>
+            
+            {education.length > 0 ? (
+              education.map((edu, index) => (
+                <div
+                  key={edu.id || `education-${index}`}
+                  className={`${styles.timelineItem} ${
+                    index % 2 === 0 ? styles.left : styles.right
+                  } ${styles.animateInTimeline}`}
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                  itemScope
+                  itemType="https://schema.org/EducationalOccupationalCredential"
+                >
+                  <div className={styles.timelineContent}>
+                    <div className={styles.timelineDot} aria-hidden="true"></div>
+                    
+                    {/* Education Date */}
+                    <time 
+                      className={styles.date}
+                      itemProp="dateIssued"
+                      dateTime={edu.time}
+                    >
+                      {edu.time}
+                    </time>
+                    
+                    {/* Institution Name */}
+                    <h3 
+                      className={styles.title}
+                      itemProp="recognizedBy"
+                      id={`education-${edu.id || index}-title`}
+                    >
+                      {edu.name}
+                    </h3>
+                    
+                    {/* Degree Name */}
+                    <p 
+                      className={styles.degree}
+                      itemProp="name"
+                    >
+                      {edu.degName}
+                    </p>
+                    
+                    {/* Department */}
+                    {edu.Department && (
+                      <p 
+                        className={styles.department}
+                        itemProp="educationalProgramName"
                       >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                        onClick={() => handleDelete(education)}
-                        title="Delete Education"
+                        {edu.Department}
+                      </p>
+                    )}
+                    
+                    {/* CGPA */}
+                    {edu.cgpa && (
+                      <p className={styles.cgpa}>
+                        <span className={styles.cgpaLabel}>CGPA:</span> 
+                        <span className={styles.cgpaValue} itemProp="additionalProperty">
+                          {edu.cgpa}
+                        </span>
+                      </p>
+                    )}
+                    
+                    {/* Thesis */}
+                    {edu.Thesis && (
+                      <p className={styles.thesis}>
+                        <span className={styles.thesisLabel}>Thesis:</span> 
+                        <span className={styles.thesisValue} itemProp="additionalProperty">
+                          {edu.Thesis}
+                        </span>
+                      </p>
+                    )}
+
+                    {/* Institution Details */}
+                    <div className={styles.institutionDetails}>
+                      <a 
+                        href="https://stamforduniversity.edu.bd"
+                        className={styles.institutionUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Visit Stamford University Bangladesh website"
                       >
-                        <FaTrash />
-                      </button>
+                        University Website
+                      </a>
                     </div>
-                  )}
-                  <div className={styles.timelineDot}></div>
-                  <span className={styles.date}>{education.time}</span>
-                  <h3 className={styles.title}>{education.name}</h3>
-                  <p className={styles.degree}>{education.degName}</p>
-                  <p className={styles.department}>{education.Department}</p>
-                  <p className={styles.cgpa}>CGPA: {education.cgpa}</p>
-                  {education.Thesis && (
-                    <p className={styles.thesis}>Thesis: {education.Thesis}</p>
-                  )}
+
+                    {/* Additional Metadata */}
+                    <div className={styles.educationMetadata} style={{ display: 'none' }}>
+                      <meta itemProp="credentialCategory" content="Degree" />
+                      <meta itemProp="educationalLevel" content="Bachelor's Degree" />
+                      <meta itemProp="validIn" content="Bangladesh" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={styles.noEducation}>
+                <div className={styles.noEducationIcon}>🎓</div>
+                <h3>Education Details Coming Soon</h3>
+                <p>I'm updating my educational background. Check back soon!</p>
+                <div className={styles.placeholderEducation}>
+                  <div className={styles.placeholderTimeline}>
+                    <div className={styles.placeholderDot}></div>
+                    <div className={styles.placeholderContent}>
+                      <div className={styles.placeholderTitle}></div>
+                      <div className={styles.placeholderDegree}></div>
+                      <div className={styles.placeholderDepartment}></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className={styles.loading}>
-              <ThreeDots />
-            </div>
-          )}
+            )}
+          </div>
 
-          {auth && (
-            <div className={`${styles.addEducation} ${styles.animateIn}`}>
-              <button
-                onClick={() => {
-                  setSelectedEducation(null);
-                  setModalShow(true);
-                }}
-              >
-                <div className={styles.addIcon}>+</div>
-                <p>Add New Education</p>
-              </button>
-            </div>
+          {/* Education Summary */}
+          {education.length > 0 && (
+            <footer className={styles.educationFooter}>
+              <div className={styles.educationStats}>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>{education.length}</span>
+                  <span className={styles.statLabel}>Total Degrees</span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>
+                    {education.filter(edu => edu.cgpa).length}
+                  </span>
+                  <span className={styles.statLabel}>With CGPA</span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statNumber}>
+                    {education.filter(edu => edu.Thesis).length}
+                  </span>
+                  <span className={styles.statLabel}>With Thesis</span>
+                </div>
+              </div>
+            </footer>
           )}
         </div>
-      </div>
-
-      <ModalView
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        title="Education"
-        data={selectedEducation}
-        collectionName="Education"
-      />
-    </section>
+      </section>
+    </>
   );
 }
 
