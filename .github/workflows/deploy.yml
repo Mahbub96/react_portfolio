@@ -25,7 +25,7 @@ jobs:
           cache: "npm"
 
       - name: Archive full project
-        run: tar -czf build.tar.gz package.json package-lock.json next.config.js public src
+        run: tar -czf build.tar.gz package.json package-lock.json next.config.js public src scripts
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -57,6 +57,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         env:
           RUN_SEED: ${{ secrets.RUN_SEED }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
