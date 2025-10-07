@@ -71,11 +71,21 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Ensure NVM and Node 18 are available
+            # Load NVM and Node
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install 18
             nvm use 18
+
+            # Absolute paths
+            export PATH="$HOME/.nvm/versions/node/$(nvm version)/bin:$PATH"
+            NODE_BIN=$(which node)
+            NPM_BIN=$(which npm)
+            PM2_BIN=$(which pm2 || $NPM_BIN bin -g)/pm2
+
+            echo "Node: $NODE_BIN"
+            echo "NPM: $NPM_BIN"
+            echo "PM2: $PM2_BIN"
 
             cd /var/www/html/mahbub.dev || exit 1
 
@@ -88,22 +98,22 @@ jobs:
             tar -xzf build.tar.gz
             rm build.tar.gz
 
-            # Install production dependencies (deterministic)
-            npm ci --production
+            # Install production dependencies
+            $NPM_BIN ci --production
 
             # Optional: run seed script only if RUN_SEED env is set to "true"
             if [ "$RUN_SEED" = "true" ]; then
               echo "Running seed script as requested (RUN_SEED=true)"
-              npm run seed || echo "Seed script failed (non-fatal)"
+              $NPM_BIN run seed || echo "Seed script failed (non-fatal)"
             else
               echo "Skipping seed (set RUN_SEED=true in GitHub Secrets to enable)"
             fi
 
-            # Start or restart Next.js app with PM2 (ensure pm2 is installed on the VPS)
-            pm2 restart next-app || pm2 start npm --name "next-app" -- start
-            pm2 save
+            # Start or restart Next.js app with PM2
+            $PM2_BIN restart next-app || $PM2_BIN start $NPM_BIN --name "next-app" -- start
+            $PM2_BIN save
 
-            # restart nginx to apply any new configurations
+            # Restart nginx to apply any new configurations
             sudo systemctl restart nginx
             sudo systemctl status nginx --no-pager
             sudo systemctl enable nginx
