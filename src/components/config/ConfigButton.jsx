@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { useDataContex } from "../../contexts/useAllContext";
+import { useDataContext } from "../../contexts/useAllContext";
 import styles from "./configButton.module.css";
 
 function ConfigButton() {
   const [showModal, setShowModal] = useState(false);
-  const { auth, setAuth } = useDataContex();
+  const { auth, logout } = useDataContext();
 
   const handleLogout = () => {
-    setAuth(false);
+    logout();
     setShowModal(false);
   };
 

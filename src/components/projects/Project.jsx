@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   HiOutlineExternalLink,
   HiOutlineDownload,
@@ -10,6 +10,7 @@ import styles from "./projects.module.css";
 
 function Project({ project, idx }) {
   const { name, desc, src, lang, to, id } = project;
+  const [imageError, setImageError] = useState(false);
 
   // Handle different data structures
   const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
@@ -17,16 +18,45 @@ function Project({ project, idx }) {
   const githubUrl = null; // Your real projects don't have GitHub URLs
   const downloadUrl = null; // Your real projects don't have download URLs
 
-  // Fix image path if it's relative
-  const normalizedSrc =
-    src?.startsWith("./") || src?.startsWith("../")
-      ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
-      : src;
+  // Enhanced image path normalization
+  const normalizeImagePath = (imageSrc) => {
+    if (!imageSrc) return null;
 
-  // Enhanced image URL for production
-  const imageUrl = normalizedSrc?.startsWith("http") 
-    ? normalizedSrc 
-    : `https://mahbub.dev${normalizedSrc}`;
+    // If it's already a full URL, return as is
+    if (imageSrc.startsWith("http://") || imageSrc.startsWith("https://")) {
+      return imageSrc;
+    }
+
+    // Handle relative paths
+    if (imageSrc.startsWith("./") || imageSrc.startsWith("../")) {
+      // Remove the relative path prefixes and normalize
+      const cleanPath = imageSrc
+        .replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
+        .replace(/^\.\/assets\/img\//, "/assets/img/")
+        .replace(/^\.\.\/assets\/img\//, "/assets/img/");
+
+      return cleanPath;
+    }
+
+    // If it's a path starting with /, it's already absolute
+    if (imageSrc.startsWith("/")) {
+      return imageSrc;
+    }
+
+    // Default fallback
+    return `/assets/img/${imageSrc}`;
+  };
+
+  // Get the normalized image source
+  const normalizedSrc = normalizeImagePath(src);
+
+  // Enhanced image URL for production with fallback
+  const imageUrl = normalizedSrc || "/assets/img/default-project.jpg";
+
+  // Handle image load error
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   // Server-side safe event handlers
   const handleRunProject = () => {
@@ -57,34 +87,49 @@ function Project({ project, idx }) {
       }}
       aria-labelledby={`project-${id || idx}-title`}
     >
-      {/* Project Image */}
+      {/* Project Image with Error Handling */}
       <div className={styles.projectImage}>
-        <img
-          src={imageUrl}
-          alt={`${name} - ${desc}`}
-          itemProp="image"
-          loading="lazy"
-          width="400"
-          height="250"
-        />
+        {!imageError ? (
+          <img
+            src={imageUrl}
+            alt={`${name} - ${desc}`}
+            itemProp="image"
+            loading="lazy"
+            width="400"
+            height="250"
+            onError={handleImageError}
+            onLoad={() => setImageError(false)}
+          />
+        ) : (
+          <div className={styles.imageFallback}>
+            <div className={styles.fallbackIcon}>
+              <HiOutlineCode />
+            </div>
+            <span className={styles.fallbackText}>{name}</span>
+          </div>
+        )}
         <div className={styles.imageOverlay}>
           <div className={styles.overlayContent}>
             <h3 id={`project-${id || idx}-title`}>{name}</h3>
-            <p>{desc}</p>
+            <p className={styles.overlayDescription}>{desc}</p>
           </div>
         </div>
       </div>
 
       {/* Project Content */}
       <div className={styles.projectContent}>
-        <h3 itemProp="name" id={`project-${id || idx}-title`}>{name}</h3>
-        <p itemProp="description">{desc}</p>
-        
+        <h3 itemProp="name" id={`project-${id || idx}-title`}>
+          {name}
+        </h3>
+        <p className={styles.bodyDescription} itemProp="description">
+          {desc}
+        </p>
+
         {/* Technologies Stack */}
         <div className={styles.techStack} aria-label="Technologies used">
           {technologies.map((tech, index) => (
-            <span 
-              key={index} 
+            <span
+              key={index}
               className={styles.techTag}
               itemProp="programmingLanguage"
             >
@@ -98,60 +143,69 @@ function Project({ project, idx }) {
           <meta itemProp="applicationCategory" content="Web Application" />
           <meta itemProp="operatingSystem" content="Web Browser" />
           <meta itemProp="softwareVersion" content="1.0.0" />
-          <meta itemProp="dateCreated" content={project.createdAt || new Date().toISOString()} />
-          <meta itemProp="dateModified" content={project.updatedAt || new Date().toISOString()} />
-        </div>
-
-        {/* Project Action Buttons */}
-        <div className={styles.projectActions} aria-label="Project actions">
-          {liveUrl && (
-            <button
-              className={`${styles.projectButton} ${styles.runButton}`}
-              onClick={handleRunProject}
-              title="View Live Demo"
-              aria-label={`View ${name} live demo`}
-              itemProp="url"
-            >
-              <HiOutlineExternalLink className={styles.buttonIcon} aria-hidden="true" />
-              <span>Live Demo</span>
-            </button>
-          )}
-
-          {downloadUrl && (
-            <button
-              className={`${styles.projectButton} ${styles.downloadButton}`}
-              onClick={handleDownloadProject}
-              title="Download Project"
-              aria-label={`Download ${name} project`}
-            >
-              <HiOutlineDownload className={styles.buttonIcon} aria-hidden="true" />
-              <span>Download</span>
-            </button>
-          )}
-
-          {githubUrl && (
-            <button
-              className={`${styles.projectButton} ${styles.codeButton}`}
-              onClick={handleViewCode}
-              title="View Source Code"
-              aria-label={`View ${name} source code`}
-            >
-              <HiOutlineCode className={styles.buttonIcon} aria-hidden="true" />
-              <span>Source Code</span>
-            </button>
-          )}
-
-          {/* Fallback for projects without actions */}
-          {!liveUrl && !downloadUrl && !githubUrl && (
-            <div className={styles.noActions}>
-              <span className={styles.noActionsText}>Project Details</span>
-            </div>
-          )}
+          <meta
+            itemProp="dateCreated"
+            content={project.createdAt || new Date().toISOString()}
+          />
+          <meta
+            itemProp="dateModified"
+            content={project.updatedAt || new Date().toISOString()}
+          />
         </div>
       </div>
 
+      {/* Action Buttons Container - Appears in the gap on hover */}
+      <div className={styles.actionButtonsContainer}>
+        {liveUrl && (
+          <button
+            className={`${styles.projectButton} ${styles.runButton}`}
+            onClick={handleRunProject}
+            title="View Live Demo"
+            aria-label={`View ${name} live demo`}
+            itemProp="url"
+          >
+            <HiOutlineExternalLink
+              className={styles.buttonIcon}
+              aria-hidden="true"
+            />
+          </button>
+        )}
+
+        {downloadUrl && (
+          <button
+            className={`${styles.projectButton} ${styles.downloadButton}`}
+            onClick={handleDownloadProject}
+            title="Download Project"
+            aria-label={`Download ${name} project`}
+          >
+            <HiOutlineDownload
+              className={styles.buttonIcon}
+              aria-hidden="true"
+            />
+          </button>
+        )}
+
+        {githubUrl && (
+          <button
+            className={`${styles.projectButton} ${styles.codeButton}`}
+            onClick={handleViewCode}
+            title="View Source Code"
+            aria-label={`View ${name} source code`}
+          >
+            <HiOutlineCode className={styles.buttonIcon} aria-hidden="true" />
+          </button>
+        )}
+
+        {/* Fallback for projects without actions */}
+        {!liveUrl && !downloadUrl && !githubUrl && (
+          <div className={styles.noActions}>
+            <span className={styles.noActionsText}>No Actions Available</span>
+          </div>
+        )}
+      </div>
+
       {/* Additional Schema.org markup */}
-      <div className={styles.schemaData} style={{ display: 'none' }}>
+      <div className={styles.schemaData} style={{ display: "none" }}>
         <meta itemProp="author" content="Mahbub Alam" />
         <meta itemProp="creator" content="Mahbub Alam" />
         <meta itemProp="publisher" content="Mahbub Alam" />

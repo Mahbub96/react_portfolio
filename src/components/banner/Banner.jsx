@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { TypeAnimation } from "react-type-animation";
 import {
   FaMapMarkerAlt,
@@ -9,11 +9,29 @@ import {
   FaGithub,
   FaFacebook,
   FaLinkedin,
+  FaCamera,
 } from "react-icons/fa";
+import { useDataContext } from "../../contexts/useAllContext";
 import styles from "./banner.module.css";
 
 function Banner({ data }) {
   const bannerData = data?.data || {};
+  const { auth, profileImage } = useDataContext();
+
+  // Profile image management state
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const [seoData, setSeoData] = useState({
+    altText: "",
+    title: "",
+    description: "",
+    keywords: "",
+    caption: "",
+  });
+
+  const fileInputRef = useRef(null);
 
   // Default values if no data from database
   const roles = bannerData.roles || [
@@ -41,20 +59,140 @@ function Banner({ data }) {
     linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
   };
 
+  // Profile image click handler
+  const handleProfileImageClick = useCallback(() => {
+    if (auth) {
+      setShowUploadModal(true);
+    }
+  }, [auth]);
+
+  // File selection handler
+  const handleFileSelect = useCallback(
+    (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      // Basic validation
+      if (!file.type.startsWith("image/")) {
+        setUploadError("Please select an image file");
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        // 2MB limit
+        setUploadError("Image size should be less than 2MB");
+        return;
+      }
+
+      setSelectedFile(file);
+      setUploadError(null);
+
+      // Auto-fill SEO data based on file
+      setSeoData({
+        altText: `${name} - Full Stack Developer Professional Headshot`,
+        title: `${name} - Full Stack Developer Portfolio`,
+        description: `Professional headshot of ${name}, a Full Stack Developer based in ${location}`,
+        keywords: `${name}, Full Stack Developer, Web Developer, React Developer, Node.js Developer, ${location}`,
+        caption: `${name} - Full Stack Developer Professional Headshot`,
+      });
+    },
+    [name, location]
+  );
+
+  // Upload handler
+  const handleUpload = useCallback(async () => {
+    if (!selectedFile) return;
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      formData.append("collectionName", "profile");
+      formData.append("documentId", "profile");
+      formData.append("seoData", JSON.stringify(seoData));
+
+      const response = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to upload image");
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.image) {
+        // Close modal and reset state
+        setShowUploadModal(false);
+        setSelectedFile(null);
+        setSeoData({
+          altText: "",
+          title: "",
+          description: "",
+          keywords: "",
+          caption: "",
+        });
+        setUploadError(null);
+      } else {
+        throw new Error("Upload failed");
+      }
+    } catch (error) {
+      console.error("Image upload error:", error);
+      setUploadError("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  }, [selectedFile, seoData]);
+
+  // Cancel upload
+  const handleCancel = useCallback(() => {
+    setShowUploadModal(false);
+    setSelectedFile(null);
+    setUploadError(null);
+    setSeoData({
+      altText: "",
+      title: "",
+      description: "",
+      keywords: "",
+      caption: "",
+    });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
+
   return (
     <section className={styles.banner_section}>
       <div className={styles.tech_background}></div>
       <div className={styles.banner_container}>
         <div className={styles.profile_section}>
-          <div className={styles.profile_image_container}>
+          <div
+            className={styles.profile_image_container}
+            onClick={handleProfileImageClick}
+            style={{ cursor: auth ? "pointer" : "default" }}
+            title={auth ? "Click to change profile picture" : ""}
+          >
             <div
               className={styles.profile_image}
               style={{
-                backgroundImage: "url('/assets/img/profile.png')",
+                backgroundImage: `url('${
+                  profileImage || "/assets/img/profile.png"
+                }')`,
               }}
               aria-label={`Profile photo of ${name}`}
             />
             <div className={styles.profile_glow}></div>
+
+            {/* Camera icon overlay for admins */}
+            {auth && (
+              <div className={styles.camera_overlay}>
+                <FaCamera />
+              </div>
+            )}
           </div>
           <h1 className={styles.name}>
             {name}
@@ -131,6 +269,162 @@ function Banner({ data }) {
           </a>
         </div>
       </div>
+
+      {/* Profile Image Upload Modal */}
+      {showUploadModal && (
+        <div className={styles.modal_overlay} onClick={handleCancel}>
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modal_header}>
+              <h3>Update Profile Picture</h3>
+              <button
+                className={styles.close_button}
+                onClick={handleCancel}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.modal_body}>
+              {/* File Selection */}
+              <div className={styles.file_section}>
+                <label className={styles.file_label}>
+                  <span className={styles.file_button}>Choose Image</span>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    style={{ display: "none" }}
+                  />
+                </label>
+                {selectedFile && (
+                  <div className={styles.file_info}>
+                    <span>Selected: {selectedFile.name}</span>
+                    <span>
+                      Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* SEO Metadata Fields */}
+              {selectedFile && (
+                <div className={styles.seo_section}>
+                  <h4>SEO & Image Metadata</h4>
+
+                  <div className={styles.seo_field}>
+                    <label htmlFor="altText">Alt Text *</label>
+                    <input
+                      id="altText"
+                      type="text"
+                      value={seoData.altText}
+                      onChange={(e) =>
+                        setSeoData((prev) => ({
+                          ...prev,
+                          altText: e.target.value,
+                        }))
+                      }
+                      placeholder="Descriptive alt text for accessibility and SEO"
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.seo_field}>
+                    <label htmlFor="title">Image Title</label>
+                    <input
+                      id="title"
+                      type="text"
+                      value={seoData.title}
+                      onChange={(e) =>
+                        setSeoData((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
+                      placeholder="Title for the image"
+                    />
+                  </div>
+
+                  <div className={styles.seo_field}>
+                    <label htmlFor="description">Description</label>
+                    <textarea
+                      id="description"
+                      value={seoData.description}
+                      onChange={(e) =>
+                        setSeoData((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
+                      placeholder="Detailed description of the image"
+                      rows="3"
+                    />
+                  </div>
+
+                  <div className={styles.seo_field}>
+                    <label htmlFor="keywords">Keywords</label>
+                    <input
+                      id="keywords"
+                      type="text"
+                      value={seoData.keywords}
+                      onChange={(e) =>
+                        setSeoData((prev) => ({
+                          ...prev,
+                          keywords: e.target.value,
+                        }))
+                      }
+                      placeholder="Comma-separated keywords for SEO"
+                    />
+                  </div>
+
+                  <div className={styles.seo_field}>
+                    <label htmlFor="caption">Caption</label>
+                    <input
+                      id="caption"
+                      type="text"
+                      value={seoData.caption}
+                      onChange={(e) =>
+                        setSeoData((prev) => ({
+                          ...prev,
+                          caption: e.target.value,
+                        }))
+                      }
+                      placeholder="Caption text for the image"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Error Display */}
+              {uploadError && (
+                <div className={styles.error_message}>{uploadError}</div>
+              )}
+            </div>
+
+            {/* Modal Footer with Action Buttons */}
+            <div className={styles.modal_footer}>
+              <button
+                className={styles.cancel_button_modal}
+                onClick={handleCancel}
+                disabled={isUploading}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.upload_button}
+                onClick={handleUpload}
+                disabled={!selectedFile || isUploading}
+              >
+                {isUploading ? "Uploading..." : "Upload & Update"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

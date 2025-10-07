@@ -410,9 +410,27 @@ export const metadata = {
     images: [
       {
         url: "https://mahbub.dev/assets/img/profile.png",
+        width: 400,
+        height: 400,
+        alt: "Mahbub Alam - Full Stack Developer Professional Headshot",
+        type: "image/png",
+        secureUrl: "https://mahbub.dev/assets/img/profile.png",
+      },
+      {
+        url: "https://mahbub.dev/assets/img/profile-og.png",
         width: 1200,
         height: 630,
-        alt: "Mahbub Alam - Full Stack Developer Portfolio",
+        alt: "Mahbub Alam - Full Stack Developer Portfolio Banner",
+        type: "image/png",
+        secureUrl: "https://mahbub.dev/assets/img/profile-og.png",
+      },
+      {
+        url: "https://mahbub.dev/assets/img/profile-twitter.png",
+        width: 1200,
+        height: 600,
+        alt: "Mahbub Alam - Full Stack Developer Twitter Card",
+        type: "image/png",
+        secureUrl: "https://mahbub.dev/assets/img/profile-twitter.png",
       },
     ],
   },
@@ -422,9 +440,19 @@ export const metadata = {
       "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
     description:
       "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbub@lunetsoft.com, mahbubcse96@gmail.com",
-    images: ["https://mahbub.dev/assets/img/profile.png"],
+    images: [
+      {
+        url: "https://mahbub.dev/assets/img/profile.png",
+        alt: "Mahbub Alam - Full Stack Developer Professional Headshot",
+      },
+      {
+        url: "https://mahbub.dev/assets/img/profile-twitter.png",
+        alt: "Mahbub Alam - Full Stack Developer Twitter Card",
+      },
+    ],
     creator: "@mahbubcse96",
     site: "@mahbubcse96",
+    imageAlt: "Mahbub Alam - Full Stack Developer Professional Headshot",
   },
   other: {
     "google-site-verification": "your-google-verification-code-here",
@@ -454,6 +482,35 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="format-detection" content="telephone=no" />
 
+        {/* Enhanced Image SEO Meta Tags */}
+        <meta name="image" content="https://mahbub.dev/assets/img/profile.png" />
+        <meta name="image:width" content="400" />
+        <meta name="image:height" content="400" />
+        <meta name="image:alt" content="Mahbub Alam - Full Stack Developer Professional Headshot" />
+        <meta name="image:type" content="image/png" />
+        <meta name="image:secure_url" content="https://mahbub.dev/assets/img/profile.png" />
+        
+        {/* Google Image Search Optimization */}
+        <meta name="google-site-verification" content="your-google-verification-code-here" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        
+        {/* Image Sitemap and Indexing */}
+        <meta name="image:license" content="https://mahbub.dev/licenses/profile-image" />
+        <meta name="image:credit" content="Mahbub Alam" />
+        <meta name="image:caption" content="Mahbub Alam - Full Stack Developer Professional Headshot" />
+        
+        {/* Additional Image Formats for Better Indexing */}
+        <link rel="image_src" href="https://mahbub.dev/assets/img/profile.png" />
+        <link rel="image_src" href="https://mahbub.dev/assets/img/profile-og.png" />
+        <link rel="image_src" href="https://mahbub.dev/assets/img/profile-twitter.png" />
+        
+        {/* Preload Critical Images */}
+        <link rel="preload" as="image" href="https://mahbub.dev/assets/img/profile.png" />
+        <link rel="preload" as="image" href="https://mahbub.dev/assets/img/profile-og.png" />
+        
+        {/* DNS Prefetch for Image CDN */}
+        <link rel="dns-prefetch" href="https://mahbub.dev" />
+
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -479,7 +536,35 @@ export default function RootLayout({ children }) {
               familyName: "Alam",
               alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
               url: "https://mahbub.dev",
-              image: "https://mahbub.dev/assets/img/profile.png",
+              image: {
+                "@type": "ImageObject",
+                "@id": "https://mahbub.dev#profile-image",
+                url: "https://mahbub.dev/assets/img/profile.png",
+                contentUrl: "https://mahbub.dev/assets/img/profile.png",
+                width: 400,
+                height: 400,
+                caption: "Mahbub Alam - Full Stack Developer Professional Headshot",
+                description: "Professional headshot of Mahbub Alam, a Full Stack Developer based in Dhaka, Bangladesh",
+                encodingFormat: "image/png",
+                uploadDate: "2024-01-01",
+                thumbnailUrl: "https://mahbub.dev/assets/img/profile-thumbnail.png",
+                representativeOfPage: true,
+                inLanguage: "en",
+                contentSize: "150KB",
+                license: "https://mahbub.dev/licenses/profile-image",
+                acquireLicensePage: "https://mahbub.dev/contact",
+                creditText: "Mahbub Alam",
+                creator: {
+                  "@type": "Person",
+                  name: "Mahbub Alam",
+                  url: "https://mahbub.dev"
+                },
+                publisher: {
+                  "@type": "Person",
+                  name: "Mahbub Alam",
+                  url: "https://mahbub.dev"
+                }
+              },
               jobTitle: "Full Stack Developer",
               description:
                 "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
@@ -492,7 +577,7 @@ export default function RootLayout({ children }) {
               worksFor: {
                 "@type": "Organization",
                 name: "Brotecs Technologies Ltd",
-                url: "https://brotecs.com",
+                description: "Technology company specializing in VoIP solutions and software development",
                 address: {
                   "@type": "PostalAddress",
                   addressLocality: "Dhaka",
@@ -547,6 +632,56 @@ export default function RootLayout({ children }) {
                 "https://linkedin.com/in/md-mahbub-alam-6b751821b",
                 "https://fb.me/MahbubCSE96",
               ],
+            }),
+          }}
+        />
+
+        {/* Additional Profile Image Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ImageObject",
+              "@id": "https://mahbub.dev#profile-image-detailed",
+              name: "Mahbub Alam Professional Headshot",
+              description: "Professional headshot of Mahbub Alam, Full Stack Developer and Software Engineer based in Dhaka, Bangladesh. High-quality professional portrait for portfolio and business use.",
+              url: "https://mahbub.dev/assets/img/profile.png",
+              contentUrl: "https://mahbub.dev/assets/img/profile.png",
+              width: 400,
+              height: 400,
+              caption: "Mahbub Alam - Full Stack Developer Professional Headshot",
+              encodingFormat: "image/png",
+              uploadDate: "2024-01-01",
+              thumbnailUrl: "https://mahbub.dev/assets/img/profile-thumbnail.png",
+              representativeOfPage: true,
+              inLanguage: "en",
+              contentSize: "150KB",
+              license: "https://mahbub.dev/licenses/profile-image",
+              acquireLicensePage: "https://mahbub.dev/contact",
+              creditText: "Mahbub Alam",
+              creator: {
+                "@type": "Person",
+                name: "Mahbub Alam",
+                url: "https://mahbub.dev"
+              },
+              publisher: {
+                "@type": "Person",
+                name: "Mahbub Alam",
+                url: "https://mahbub.dev"
+              },
+              subjectOf: {
+                "@type": "WebPage",
+                "@id": "https://mahbub.dev#about",
+                name: "About Mahbub Alam",
+                url: "https://mahbub.dev#about"
+              },
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": "https://mahbub.dev",
+                name: "Mahbub Alam Portfolio",
+                url: "https://mahbub.dev"
+              }
             }),
           }}
         />

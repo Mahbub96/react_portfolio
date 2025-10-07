@@ -1,20 +1,67 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useDataContex } from "../../contexts/useAllContext";
+import React, { useState, useEffect, useRef } from "react";
+import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./navbar.module.css";
 import LoginModal from "../auth/LoginModal";
 
 function Header({ data }) {
-  const { auth, login, logout, isLoaded } = useDataContex();
+  const { auth, login, logout, isLoaded } = useDataContext();
   const { isDarkMode, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const menuRef = useRef(null);
 
   // Extract name from database data
   const profile = data?.profile?.data || {};
   const bannerData = data?.Banner?.data || {};
   const name = profile.name || bannerData.name || "Mahbub Alam";
+
+  // Check screen size for responsive behavior
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsTablet(window.innerWidth >= 769 && window.innerWidth <= 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  // Close menu on escape key
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isMenuOpen]);
 
   const handleNavClick = (e, sectionId) => {
     e.preventDefault();
@@ -53,8 +100,8 @@ function Header({ data }) {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
@@ -78,7 +125,7 @@ function Header({ data }) {
   ];
 
   return (
-    <div id="home">
+    <>
       <header className={styles.header}>
         <nav className={styles.navbar}>
           <div className={styles.container}>
@@ -94,6 +141,7 @@ function Header({ data }) {
               }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle navigation"
+              aria-expanded={isMenuOpen}
             >
               <span></span>
               <span></span>
@@ -101,6 +149,7 @@ function Header({ data }) {
             </button>
 
             <div
+              ref={menuRef}
               className={`${styles.navContent} ${
                 isMenuOpen ? styles.show : ""
               }`}
@@ -168,7 +217,7 @@ function Header({ data }) {
         show={showLoginModal}
         onHide={() => setShowLoginModal(false)}
       />
-    </div>
+    </>
   );
 }
 

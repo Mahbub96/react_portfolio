@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useDataContex } from "../../contexts/useAllContext";
+import { useDataContext } from "../../contexts/useAllContext";
 import usePortfolioData from "../../hooks/usePortfolioData";
 import ModalView from "../ModalView";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
@@ -8,7 +8,7 @@ import styles from "./skills.module.css";
 
 function SkillsClient({ skills }) {
   const [modalShow, setModalShow] = useState(false);
-  const { auth } = useDataContex();
+  const { auth } = useDataContext();
   const { deleteDocument } = usePortfolioData();
   const [selectedSkill, setSelectedSkill] = useState(null);
 

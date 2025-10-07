@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Visitor from "@/models/Visitor";
+import { authenticateToken, secureResponse } from "@/lib/auth";
 
 export async function POST(request) {
   try {
@@ -34,18 +35,27 @@ export async function POST(request) {
 
     await visitor.save();
 
-    return NextResponse.json({ success: true });
+    return secureResponse({ success: true });
   } catch (error) {
     console.error("Error tracking visitor:", error);
-    return NextResponse.json(
+    return secureResponse(
       { error: "Failed to track visitor" },
-      { status: 500 }
+      500
     );
   }
 }
 
-export async function GET() {
+export async function GET(request) {
   try {
+    // Authenticate user for analytics access
+    const authResult = authenticateToken(request);
+    if (!authResult.valid) {
+      return secureResponse(
+        { error: "Authentication required to access analytics" },
+        401
+      );
+    }
+
     await connectDB();
 
     const now = new Date();
@@ -530,7 +540,7 @@ export async function GET() {
       count: stat.count,
     }));
 
-    return NextResponse.json({
+    return secureResponse({
       totalVisitors,
       todayVisitors,
       thisWeekVisitors,
@@ -550,9 +560,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching visitor stats:", error);
-    return NextResponse.json(
+    return secureResponse(
       { error: "Failed to fetch visitor statistics" },
-      { status: 500 }
+      500
     );
   }
 }

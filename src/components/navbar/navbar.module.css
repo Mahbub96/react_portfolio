@@ -1,49 +1,96 @@
 /* Enhanced Navbar CSS with improved animations and responsive design */
+
+/* CRITICAL: Ensure navbar is always sticky */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(10, 15, 25, 0.6);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 100% !important;
+  isolation: isolate;
+  /* Debug: Add a visible background to test */
+}
+
+/* Navigation container */
 .nav {
+  overflow: hidden;
+  background-color: transparent;
   padding: 0 !important;
 }
 
-/* The navigation bar */
-.nav {
-  overflow: hidden;
-  background-color: var(--background-primary);
-  position: fixed;
-  top: 0;
-  width: 100%;
+/* Responsive header */
+@media (max-width: 1200px) {
+  .header {
+    backdrop-filter: blur(15px);
+  }
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: var(--background-primary);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-secondary);
-  transition: var(--transition-normal);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+@media (max-width: 1024px) {
+  .header {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    backdrop-filter: blur(20px);
+  }
 }
 
 .header:hover {
-  background: var(--background-secondary);
-  border-bottom-color: var(--border-accent);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  background: rgba(10, 15, 25, 0.75);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Light theme styles */
 [data-theme="light"] .header {
-  background: var(--background-primary);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .header:hover {
-  background: var(--background-secondary);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .navbar {
   padding: var(--spacing-md) 0;
+  transition: var(--transition-normal);
+}
+
+/* Responsive navbar */
+@media (max-width: 1200px) {
+  .navbar {
+    padding: var(--spacing-md) 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar {
+    padding: var(--spacing-sm) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: var(--spacing-md) 0;
+  }
 }
 
 .container {
@@ -53,6 +100,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: var(--transition-normal);
+}
+
+/* Responsive container adjustments */
+@media (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-xl);
+  }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
 }
 
 .logo {
@@ -68,6 +142,32 @@
   position: relative;
   white-space: nowrap;
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 1200px) {
+  .logo {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .logo {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.1rem;
+  }
 }
 
 .logo::after {
@@ -106,6 +206,26 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-2xl);
+  transition: var(--transition-normal);
+}
+
+/* Ensure proper base responsive behavior */
+@media (max-width: 1200px) {
+  .navContent {
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 1024px) {
+  .navContent {
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .navContent {
+    gap: 0;
+  }
 }
 
 .navLinks {
@@ -114,6 +234,26 @@
   gap: var(--spacing-xl);
   margin: 0;
   padding: 0;
+  transition: var(--transition-normal);
+}
+
+/* Responsive navigation links */
+@media (max-width: 1200px) {
+  .navLinks {
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 1024px) {
+  .navLinks {
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    gap: var(--spacing-lg);
+  }
 }
 
 .navLinks li a {
@@ -129,6 +269,30 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
   cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-normal);
+}
+
+/* Responsive navigation link items */
+@media (max-width: 1200px) {
+  .navLinks li a {
+    font-size: 0.9rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+@media (max-width: 1024px) {
+  .navLinks li a {
+    font-size: 0.85rem;
+    padding: var(--spacing-sm) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks li a {
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
 }
 
 .navLinks li a::before {
@@ -180,6 +344,25 @@
   transition: var(--transition-normal);
 }
 
+/* Responsive navigation numbers */
+@media (max-width: 1200px) {
+  .navNumber {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navNumber {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navNumber {
+    font-size: 0.8rem;
+  }
+}
+
 .navLinks li a:hover .navNumber {
   opacity: 1;
   transform: scale(1.1);
@@ -189,6 +372,26 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  transition: var(--transition-normal);
+}
+
+/* Responsive navigation buttons */
+@media (max-width: 1200px) {
+  .navButtons {
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 1024px) {
+  .navButtons {
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .navButtons {
+    gap: var(--spacing-lg);
+  }
 }
 
 .authButton {
@@ -205,6 +408,29 @@
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+/* Responsive auth button */
+@media (max-width: 1200px) {
+  .authButton {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .authButton {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .authButton {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 0.9rem;
+  }
 }
 
 .authButton::before {
@@ -250,6 +476,29 @@
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+/* Responsive theme button */
+@media (max-width: 1200px) {
+  .themeButton {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .themeButton {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .themeButton {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .themeButton::before {
@@ -329,141 +578,6 @@
   transform: rotate(-45deg);
 }
 
-/* Enhanced Mobile Responsive Design */
-@media (max-width: 768px) {
-  .navContent {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 100%;
-    height: 100vh;
-    background: rgba(30, 30, 36, 0.98);
-    backdrop-filter: blur(20px);
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--spacing-3xl);
-    transition: var(--transition-normal);
-    padding: var(--spacing-2xl);
-    z-index: 999;
-  }
-
-  /* Light theme mobile menu */
-  [data-theme="light"] .navContent {
-    background: rgba(255, 255, 255, 0.98);
-  }
-
-  [data-theme="light"] .navContent.show {
-    background: rgba(255, 255, 255, 0.98);
-  }
-
-  .navContent.show {
-    right: 0;
-    animation: slideInRight 0.3s ease-out;
-  }
-
-  .navLinks {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    align-items: center;
-  }
-
-  .navLinks li a {
-    font-size: 1.1rem;
-    padding: var(--spacing-md) var(--spacing-lg);
-    width: 200px;
-    justify-content: center;
-  }
-
-  .navButtons {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-
-  .authButton {
-    width: 200px;
-    justify-content: center;
-  }
-
-  .themeButton {
-    width: 50px;
-    height: 50px;
-  }
-
-  .menuButton {
-    display: flex;
-  }
-
-  .container {
-    padding: 0 var(--spacing-md);
-  }
-
-  /* Mobile menu animations */
-  .navLinks li {
-    opacity: 0;
-    transform: translateX(30px);
-    transition: var(--transition-normal);
-  }
-
-  .navContent.show .navLinks li {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .navContent.show .navLinks li:nth-child(1) {
-    transition-delay: 0.1s;
-  }
-  .navContent.show .navLinks li:nth-child(2) {
-    transition-delay: 0.2s;
-  }
-  .navContent.show .navLinks li:nth-child(3) {
-    transition-delay: 0.3s;
-  }
-  .navContent.show .navLinks li:nth-child(4) {
-    transition-delay: 0.4s;
-  }
-  .navContent.show .navLinks li:nth-child(5) {
-    transition-delay: 0.5s;
-  }
-  .navContent.show .navLinks li:nth-child(6) {
-    transition-delay: 0.6s;
-  }
-  .navContent.show .navLinks li:nth-child(7) {
-    transition-delay: 0.7s;
-  }
-}
-
-/* Tablet Responsive Design */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .navLinks {
-    gap: var(--spacing-lg);
-  }
-
-  .navLinks li a {
-    font-size: 0.9rem;
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-
-  .container {
-    padding: 0 var(--spacing-lg);
-  }
-}
-
-/* Large Screen Enhancements */
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1400px;
-  }
-
-  .navLinks li a {
-    font-size: 1rem;
-    padding: var(--spacing-md) var(--spacing-lg);
-  }
-
-  .logo {
-    font-size: 1.75rem;
-  }
-}
-
 /* Focus styles for accessibility */
 .logo:focus,
 .navLinks li a:focus,
@@ -524,15 +638,22 @@
 
 /* Enhanced scroll effect */
 .header.scrolled {
-  background: rgba(10, 15, 25, 0.95);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(30px);
+  background: rgba(10, 15, 25, 0.85);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  /* Ensure sticky positioning is maintained */
+  position: fixed !important;
+  top: 0 !important;
 }
 
 [data-theme="light"] .header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 /* Selection styles */
@@ -620,5 +741,890 @@
 
   .navButtons {
     display: none;
+  }
+}
+
+/* Ensure proper responsive behavior across all screen sizes */
+@media (max-width: 1200px) {
+  .navContent {
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks {
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks li {
+    flex-shrink: 0;
+  }
+
+  .navButtons {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* Critical tablet breakpoint fix */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .navContent {
+    position: static;
+    width: auto;
+    height: auto;
+    background: transparent;
+    backdrop-filter: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    gap: var(--spacing-lg);
+  }
+
+  .navLinks {
+    flex-direction: row;
+    gap: var(--spacing-md);
+    align-items: center;
+  }
+
+  .navLinks li a {
+    font-size: 0.85rem;
+    padding: var(--spacing-sm) var(--spacing-sm);
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  .navButtons {
+    flex-direction: row;
+    gap: var(--spacing-sm);
+  }
+
+  .authButton {
+    width: auto;
+    justify-content: center;
+  }
+
+  .themeButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Ensure logo doesn't interfere */
+  .logo {
+    flex-shrink: 0;
+  }
+
+  /* Better container management */
+  .container {
+    gap: var(--spacing-md);
+    justify-content: space-between;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Mobile First - Base styles for small screens */
+@media (max-width: 767px) {
+  .menuButton {
+    display: flex;
+  }
+
+  .navContent {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100vh;
+    background: rgba(30, 30, 36, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-3xl);
+    transition: var(--transition-normal);
+    padding: var(--spacing-2xl);
+    z-index: 999;
+  }
+
+  /* Light theme mobile menu */
+  [data-theme="light"] .navContent {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  [data-theme="light"] .navContent.show {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  .navContent.show {
+    right: 0;
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  .navLinks {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: center;
+  }
+
+  .navLinks li a {
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+    width: 200px;
+    justify-content: center;
+  }
+
+  .navButtons {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .authButton {
+    width: 200px;
+    justify-content: center;
+  }
+
+  .themeButton {
+    width: 50px;
+    height: 50px;
+  }
+
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  /* Mobile menu animations */
+  .navLinks li {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: var(--transition-normal);
+  }
+
+  .navContent.show .navLinks li {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .navContent.show .navLinks li:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  .navContent.show .navLinks li:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+  .navContent.show .navLinks li:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  .navContent.show .navLinks li:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+  .navContent.show .navLinks li:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+  .navContent.show .navLinks li:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+  .navContent.show .navLinks li:nth-child(7) {
+    transition-delay: 0.7s;
+  }
+}
+
+/* Medium Mobile Devices */
+@media (min-width: 481px) and (max-width: 767px) {
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  .navContent.show {
+    padding: var(--spacing-xl);
+    gap: var(--spacing-2xl);
+  }
+
+  .navLinks li a {
+    width: 180px;
+    font-size: 1rem;
+  }
+
+  .authButton {
+    width: 180px;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .navContent.show {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-xl);
+  }
+
+  .navLinks li a {
+    width: 160px;
+    font-size: 0.95rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .authButton {
+    width: 160px;
+    font-size: 0.9rem;
+  }
+
+  .navButtons {
+    gap: var(--spacing-md);
+  }
+}
+
+/* Landscape Mobile Devices */
+@media (max-width: 767px) and (orientation: landscape) {
+  .navContent.show {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-xl);
+  }
+
+  .navLinks {
+    gap: var(--spacing-md);
+  }
+
+  .navLinks li a {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .navButtons {
+    gap: var(--spacing-md);
+  }
+}
+
+/* Tablet Devices - Critical for fixing visibility issues */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .menuButton {
+    display: none !important; /* Hide hamburger on tablet */
+  }
+
+  .navContent {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 !important;
+    gap: var(--spacing-lg);
+    z-index: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    right: auto !important;
+    top: auto !important;
+  }
+
+  .navLinks {
+    flex-direction: row !important;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: visible;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navLinks li {
+    flex-shrink: 0;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navLinks li a {
+    font-size: 0.85rem;
+    padding: var(--spacing-sm) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    width: auto !important;
+    justify-content: flex-start !important;
+    min-width: fit-content;
+    overflow: visible;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navNumber {
+    font-size: 0.75rem;
+    display: inline !important;
+  }
+
+  .navButtons {
+    flex-direction: row !important;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: fit-content;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .authButton {
+    width: auto !important;
+    justify-content: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.85rem;
+    display: inline-flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .themeButton {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .container {
+    padding: 0 var(--spacing-lg);
+    max-width: 100%;
+    gap: var(--spacing-md);
+    justify-content: space-between;
+    display: flex !important;
+  }
+
+  .navbar {
+    padding: var(--spacing-sm) 0;
+    display: block !important;
+  }
+
+  /* Force visibility for all elements */
+  .header {
+    display: block !important;
+  }
+
+  /* Ensure no mobile menu styles interfere */
+  .navContent.show {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+  }
+}
+
+/* Specific fix for 790px and similar breakpoints */
+@media (min-width: 785px) and (max-width: 800px) {
+  .navContent {
+    gap: var(--spacing-md) !important;
+  }
+
+  .navLinks {
+    gap: var(--spacing-sm) !important;
+  }
+
+  .navLinks li a {
+    font-size: 0.8rem !important;
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+  }
+
+  .container {
+    gap: var(--spacing-sm) !important;
+  }
+}
+
+/* Tablet Portrait Specific */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .navContent {
+    gap: var(--spacing-lg);
+  }
+
+  .navLinks {
+    gap: var(--spacing-sm);
+  }
+
+  .navLinks li a {
+    font-size: 0.8rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}
+
+/* Tablet Landscape Specific */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .navContent {
+    gap: var(--spacing-2xl);
+  }
+
+  .navLinks {
+    gap: var(--spacing-lg);
+  }
+
+  .navLinks li a {
+    font-size: 0.9rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+/* Small Laptop Devices */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-xl);
+  }
+
+  .navContent {
+    gap: var(--spacing-xl);
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks {
+    gap: var(--spacing-lg);
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks li {
+    flex-shrink: 0;
+  }
+
+  .navLinks li a {
+    font-size: 0.9rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .navButtons {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+  }
+}
+
+/* Large Screen Devices */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  .navLinks li a {
+    font-size: 1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .logo {
+    font-size: 1.75rem;
+  }
+}
+
+/* Ensure proper responsive behavior across all screen sizes */
+@media (max-width: 1200px) {
+  .navContent {
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks {
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .navLinks li {
+    flex-shrink: 0;
+  }
+
+  .navButtons {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .navLinks li a {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .logo {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Ensure mobile menu styles don't interfere with tablet */
+@media (min-width: 768px) {
+  .navContent {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+
+  .navContent.show {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+
+  .navLinks {
+    flex-direction: row !important;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: visible;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navLinks li {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navLinks li a {
+    width: auto !important;
+    justify-content: flex-start !important;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .navButtons {
+    flex-direction: row !important;
+    gap: var(--spacing-sm);
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .menuButton {
+    display: none !important;
+  }
+}
+
+/* Additional breakpoint fixes */
+@media (min-width: 768px) and (max-width: 900px) {
+  .navContent {
+    gap: var(--spacing-md) !important;
+  }
+
+  .navLinks {
+    gap: var(--spacing-sm) !important;
+  }
+
+  .navLinks li a {
+    font-size: 0.8rem !important;
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+  }
+
+  .container {
+    gap: var(--spacing-sm) !important;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1024px) {
+  .navContent {
+    gap: var(--spacing-lg) !important;
+  }
+
+  .navLinks {
+    gap: var(--spacing-md) !important;
+  }
+
+  .navLinks li a {
+    font-size: 0.85rem !important;
+    padding: var(--spacing-sm) var(--spacing-sm) !important;
+  }
+
+  .container {
+    gap: var(--spacing-md) !important;
+  }
+}
+
+/* Debug and ensure visibility at all tablet breakpoints */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Force all elements to be visible */
+  .header,
+  .navbar,
+  .container,
+  .navContent,
+  .navLinks,
+  .navLinks li,
+  .navLinks li a,
+  .navButtons,
+  .authButton,
+  .themeButton,
+  .logo {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  /* Specific overrides for flex elements */
+  .header,
+  .navbar,
+  .container,
+  .navContent,
+  .navLinks,
+  .navButtons {
+    display: flex !important;
+  }
+
+  .navLinks li {
+    display: block !important;
+  }
+
+  .navLinks li a,
+  .authButton,
+  .themeButton,
+  .logo {
+    display: flex !important;
+  }
+
+  /* Ensure proper layout */
+  .navContent {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: var(--spacing-lg) !important;
+  }
+
+  .navLinks {
+    flex-direction: row !important;
+    gap: var(--spacing-md) !important;
+    align-items: center !important;
+  }
+
+  .navButtons {
+    flex-direction: row !important;
+    gap: var(--spacing-sm) !important;
+    align-items: center !important;
+  }
+
+  /* Remove any mobile menu interference */
+  .navContent.show {
+    all: unset !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: var(--spacing-lg) !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+}
+
+/* Specific fix for problematic breakpoints around 790px */
+@media (min-width: 780px) and (max-width: 820px) {
+  .navContent {
+    gap: var(--spacing-md) !important;
+  }
+
+  .navLinks {
+    gap: var(--spacing-sm) !important;
+  }
+
+  .navLinks li a {
+    font-size: 0.8rem !important;
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+  }
+
+  .container {
+    gap: var(--spacing-sm) !important;
+    padding: 0 var(--spacing-md) !important;
+  }
+
+  .logo {
+    font-size: 1.3rem !important;
+  }
+}
+
+/* Critical override to prevent mobile menu interference on tablet */
+@media (min-width: 768px) {
+  /* Completely reset mobile menu styles */
+  .navContent,
+  .navContent.show {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    z-index: auto !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Ensure proper tablet layout */
+  .navContent {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: var(--spacing-lg) !important;
+  }
+
+  /* Force navigation links to be visible */
+  .navLinks {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: var(--spacing-md) !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+
+  .navLinks li {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .navLinks li a {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--spacing-xs) !important;
+    padding: var(--spacing-sm) var(--spacing-sm) !important;
+    width: auto !important;
+    min-width: fit-content !important;
+    justify-content: flex-start !important;
+    text-decoration: none !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    border-radius: var(--radius-md) !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    transition: var(--transition-normal) !important;
+    animation: none !important;
+  }
+
+  /* Force navigation buttons to be visible */
+  .navButtons {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: var(--spacing-sm) !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .authButton {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: fit-content !important;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    font-size: 0.85rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .themeButton {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  /* Hide mobile menu button */
+  .menuButton {
+    display: none !important;
   }
 }

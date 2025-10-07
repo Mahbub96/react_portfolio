@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { sanitizeInput, validateEmail, secureResponse } from "@/lib/auth";
 
 // Rate limiting storage (in production, use Redis or similar)
 const rateLimit = new Map();
@@ -36,7 +37,7 @@ export async function POST(request) {
 
     // Enhanced validation
     if (!name || !email || !subject || !message) {
-      return NextResponse.json(
+      return secureResponse(
         {
           error: "All fields are required",
           details: {
@@ -46,59 +47,90 @@ export async function POST(request) {
             message: !message ? "Message is required" : null,
           },
         },
-        { status: 400 }
+        400
       );
     }
 
-    // Validate name length
+    // Validate name length and content
     if (name.trim().length < 2 || name.trim().length > 100) {
-      return NextResponse.json(
+      return secureResponse(
         { error: "Name must be between 2 and 100 characters" },
-        { status: 400 }
+        400
       );
+    }
+
+    // Check for suspicious content in name
+    if (/[<>]|javascript:|on\w+=/i.test(name)) {
+      return secureResponse({ error: "Name contains invalid characters" }, 400);
     }
 
     // Enhanced email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
+    if (!validateEmail(email)) {
+      return secureResponse({ error: "Invalid email format" }, 400);
+    }
+
+    // Check for disposable email domains (basic check)
+    const disposableDomains = [
+      "tempmail.org",
+      "10minutemail.com",
+      "guerrillamail.com",
+    ];
+    const emailDomain = email.split("@")[1];
+    if (disposableDomains.includes(emailDomain)) {
+      return secureResponse(
+        { error: "Disposable email addresses are not allowed" },
+        400
       );
     }
 
-    // Validate subject length
+    // Validate subject length and content
     if (subject.trim().length < 5 || subject.trim().length > 200) {
-      return NextResponse.json(
+      return secureResponse(
         { error: "Subject must be between 5 and 200 characters" },
-        { status: 400 }
+        400
       );
     }
 
-    // Validate message length
+    // Check for suspicious content in subject
+    if (/[<>]|javascript:|on\w+=/i.test(subject)) {
+      return secureResponse(
+        { error: "Subject contains invalid characters" },
+        400
+      );
+    }
+
+    // Validate message length and content
     if (message.trim().length < 10 || message.trim().length > 2000) {
-      return NextResponse.json(
+      return secureResponse(
         { error: "Message must be between 10 and 2000 characters" },
-        { status: 400 }
+        400
+      );
+    }
+
+    // Check for suspicious content in message
+    if (/[<>]|javascript:|on\w+=/i.test(message)) {
+      return secureResponse(
+        { error: "Message contains invalid characters" },
+        400
       );
     }
 
     // Check rate limiting
     if (!checkRateLimit(email)) {
-      return NextResponse.json(
+      return secureResponse(
         {
           error:
             "Too many requests. Please wait before sending another message.",
           retryAfter: "15 minutes",
         },
-        { status: 429 }
+        429
       );
     }
 
-    // Sanitize inputs
-    const sanitizedName = name.trim().replace(/[<>]/g, "");
-    const sanitizedSubject = subject.trim().replace(/[<>]/g, "");
-    const sanitizedMessage = message.trim().replace(/[<>]/g, "");
+    // Sanitize inputs using the secure function
+    const sanitizedName = sanitizeInput(name.trim());
+    const sanitizedSubject = sanitizeInput(subject.trim());
+    const sanitizedMessage = sanitizeInput(message.trim());
 
     // Create transporter using SMTP
     const transporter = nodemailer.createTransporter({
@@ -240,19 +272,16 @@ Sent from portfolio contact form at ${new Date().toLocaleString()}
     // Send email
     await transporter.sendMail(mailOptions);
 
-    // Log successful submission
+    // Log successful submission (without sensitive data)
     console.log(
-      `✅ Contact form submitted by ${sanitizedName} (${email}) at ${new Date().toISOString()}`
+      `✅ Contact form submitted by ${sanitizedName} at ${new Date().toISOString()}`
     );
 
     // Return success response
-    return NextResponse.json(
-      {
-        message: "Email sent successfully! I'll get back to you soon.",
-        timestamp: new Date().toISOString(),
-      },
-      { status: 200 }
-    );
+    return secureResponse({
+      message: "Email sent successfully! I'll get back to you soon.",
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error("❌ Error sending email:", error);
 
@@ -270,26 +299,19 @@ Sent from portfolio contact form at ${new Date().toLocaleString()}
     }
 
     // Return user-friendly error message
-    return NextResponse.json(
+    return secureResponse(
       {
         error:
           "Failed to send email. Please try again later or contact me directly.",
         details:
           process.env.NODE_ENV === "development" ? error.message : undefined,
       },
-      { status: 500 }
+      500
     );
   }
 }
 
 // Add OPTIONS method for CORS preflight
 export async function OPTIONS(request) {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
+  return secureResponse(null, 200);
 }

@@ -188,7 +188,7 @@
   filter: brightness(1.2) contrast(1.2);
 }
 
-.skillCard h3 {
+.skillName {
   color: var(--text-primary);
   font-size: 1.1rem;
   margin: 0;
@@ -197,8 +197,28 @@
   transition: var(--transition-normal);
 }
 
-.skillCard:hover h3 {
+.skillCard:hover .skillName {
   color: var(--accent-primary);
+}
+
+/* Simple Skill Level Styles */
+.skillLevel {
+  margin-top: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.levelIndicator {
+  background: var(--accent-primary);
+  color: var(--background-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .cardActions {
@@ -403,7 +423,7 @@
   color: var(--background-primary);
 }
 
-/* Animation classes to replace framer-motion */
+/* Animation classes */
 .animateIn {
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -412,16 +432,4 @@
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
   transform: translateY(20px);
-}
-
-/* Enhanced fadeInUp animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

@@ -3,18 +3,17 @@ import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
 import LoadingScreen from "@/components/LoadingScreen";
 
-// Import components directly for better SSR
+// Import server-side components for better SEO
 import Navbar from "@/components/navbar/Navbar";
-import Banner from "@/components/banner/Banner";
-import About from "@/components/about/About";
-import Skills from "@/components/skills/Skills";
+import BannerServer from "@/components/banner/BannerServer";
+import SkillsServer from "@/components/skills/SkillsServer";
 import Experience from "@/components/experiences/Experience";
 import Educations from "@/components/educations/Educations";
-import Projects from "@/components/projects/Projects";
+import ProjectsServer from "@/components/projects/ProjectsServer";
 import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
 
-// Client-side only components (for analytics and tracking)
+// Client-side only components (for analytics, tracking, and interactive features)
 import dynamic from "next/dynamic";
 
 const VisitorAnalytics = dynamic(
@@ -27,6 +26,14 @@ const VisitorAnalytics = dynamic(
 const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
 });
+
+// Client-side components for interactive features
+const BannerAnimation = dynamic(
+  () => import("@/components/banner/BannerAnimation"),
+  {
+    ssr: false, // Client-side only for typing animation
+  }
+);
 
 // Server-side data fetching with caching
 async function getPortfolioData() {
@@ -57,7 +64,7 @@ export async function generateMetadata() {
 
   return {
     title:
-      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js,Next.js,React Native, PHP Expert",
+      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
     description:
       profile.bio ||
       "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
@@ -153,117 +160,142 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const portfolioData = await getPortfolioData();
-  const profile = portfolioData.profile?.data || {};
+  try {
+    const portfolioData = await getPortfolioData();
+    const profile = portfolioData.profile?.data || {};
 
-  // Enhanced structured data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: profile.name || "Mahbub Alam",
-    givenName: "Mahbub",
-    familyName: "Alam",
-    alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
-    jobTitle: profile.title || "Full Stack Developer",
-    description:
-      profile.bio ||
-      "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
-    url: "https://mahbub.dev",
-    image: profile.image || "https://mahbub.dev/assets/img/profile.png",
-    email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
-    telephone: "+880-1XXX-XXXXXX",
-    sameAs: [profile.github, profile.linkedin, profile.twitter].filter(Boolean),
-    worksFor: {
-      "@type": "Organization",
-      name: "Brotecs Technologies Ltd",
-      url: "https://brotecs.com",
+    // Enhanced structured data for SEO
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: profile.name || "Mahbub Alam",
+      givenName: "Mahbub",
+      familyName: "Alam",
+      alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
+      jobTitle: profile.title || "Full Stack Developer",
+      description:
+        profile.bio ||
+        "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
+      url: "https://mahbub.dev",
+      image: profile.image || "https://mahbub.dev/assets/img/profile.png",
+      email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
+      telephone: "+880-1XXX-XXXXXX",
+      sameAs: [profile.github, profile.linkedin, profile.twitter].filter(
+        Boolean
+      ),
+      worksFor: {
+        "@type": "Organization",
+        name: "Brotecs Technologies Ltd",
+        url: "https://brotecs.com",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Dhaka",
+          addressCountry: "Bangladesh",
+        },
+      },
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: "Stamford University Bangladesh",
+        url: "https://stamforduniversity.edu.bd",
+      },
       address: {
         "@type": "PostalAddress",
         addressLocality: "Dhaka",
         addressCountry: "Bangladesh",
+        addressRegion: "Dhaka",
       },
-    },
-    alumniOf: {
-      "@type": "CollegeOrUniversity",
-      name: "Stamford University Bangladesh",
-      url: "https://stamforduniversity.edu.bd",
-    },
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Dhaka",
-      addressCountry: "Bangladesh",
-      addressRegion: "Dhaka",
-    },
-    knowsAbout: [
-      "React.js",
-      "Node.js",
-      "PHP",
-      "Laravel",
-      "CodeIgniter",
-      "MongoDB",
-      "MySQL",
-      "AWS",
-      "Docker",
-      "VoIP Solutions",
-      "System Architecture",
-      "DevSecOps",
-      "Cloud Computing",
-      "Web Development",
-      "Mobile Development",
-      "React Native",
-      "JavaScript",
-      "TypeScript",
-    ],
-    hasOccupation: {
-      "@type": "Occupation",
-      name: "Full Stack Developer",
-      skills: [
-        "React",
+      knowsAbout: [
+        "React.js",
         "Node.js",
         "PHP",
         "Laravel",
-        "AWS",
-        "Docker",
+        "CodeIgniter",
         "MongoDB",
         "MySQL",
+        "AWS",
+        "Docker",
+        "VoIP Solutions",
+        "System Architecture",
+        "DevSecOps",
+        "Cloud Computing",
+        "Web Development",
+        "Mobile Development",
+        "React Native",
         "JavaScript",
         "TypeScript",
       ],
-      occupationalCategory: "15-1250 Software Developers and Programmers",
-    },
-  };
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Full Stack Developer",
+        skills: [
+          "React",
+          "Node.js",
+          "PHP",
+          "Laravel",
+          "AWS",
+          "Docker",
+          "MongoDB",
+          "MySQL",
+          "JavaScript",
+          "TypeScript",
+        ],
+        occupationalCategory: "15-1250 Software Developers and Programmers",
+      },
+    };
 
-  return (
-    <>
-      {/* Skip to content link for accessibility */}
-      <a href="#about" className="skip-link">
-        Skip to main content
-      </a>
+    return (
+      <>
+        {/* Skip to content link for accessibility */}
+        <a href="#about" className="skip-link">
+          Skip to main content
+        </a>
 
-      {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
 
-      <Navbar data={portfolioData} />
+        <Navbar data={portfolioData} />
 
-      <main className="home" role="main">
-        <Banner data={portfolioData.Banner} />
-        <About data={portfolioData.profile} />
-        <Skills data={portfolioData.Skills} />
-        <Experience data={portfolioData.Experiences} />
-        <Educations data={portfolioData.Education} />
-        <Projects data={portfolioData.projectsData} />
-        <Contact data={portfolioData} />
-        <Footer data={portfolioData} />
-      </main>
+        <main className="home" role="main">
+          {/* Server-side Banner with client-side animation overlay */}
+          <BannerServer
+            data={portfolioData.Banner}
+            profileImage={profile.image}
+            profile={portfolioData.profile}
+            experiences={portfolioData.Experiences?.data}
+            projects={portfolioData.Projects?.data}
+          />
 
-      {/* Client-side only components */}
-      <VisitorAnalytics />
-      <VisitorCounter />
-    </>
-  );
+          {/* Server-side Skills section */}
+          <SkillsServer data={portfolioData.Skills} />
+
+          {/* Server-side Experience section */}
+          <Experience data={portfolioData.Experiences} />
+
+          {/* Server-side Education section */}
+          <Educations data={portfolioData.Educations} />
+
+          {/* Server-side Projects section */}
+          <ProjectsServer data={portfolioData.Projects} />
+
+          {/* Server-side Contact section */}
+          <Contact data={portfolioData} />
+
+          {/* Server-side Footer */}
+          <Footer data={portfolioData} />
+        </main>
+
+        {/* Client-side only components */}
+        <VisitorAnalytics />
+        <VisitorCounter />
+      </>
+    );
+  } catch (error) {
+    console.error("Error rendering home page:", error);
+    return <LoadingScreen />;
+  }
 }

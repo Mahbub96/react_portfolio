@@ -623,3 +623,8 @@ a:hover {
     transform: translateY(0);
   }
 }
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

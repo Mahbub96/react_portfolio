@@ -2,9 +2,10 @@ import React from "react";
 import styles from "./educations.module.css";
 import ThreeDots from "../ThreeDots";
 
+// Server-side Educations component for better SEO
 function Educations({ data }) {
   // Use server data for rendering
-  const education = data?.data || [];
+  const education = Array.isArray(data?.data) ? [...data.data].reverse() : [];
 
   // Enhanced structured data for education section
   const educationStructuredData = {
@@ -79,8 +80,8 @@ function Educations({ data }) {
         }}
       />
 
-      <section 
-        id="education" 
+      <section
+        id="education"
         className={styles.educationSection}
         itemScope
         itemType="https://schema.org/ItemList"
@@ -89,21 +90,20 @@ function Educations({ data }) {
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
             <h2 id="education-heading">
-              <span className={styles.sectionNumber} aria-label="Section 4">04.</span> 
               Education
-              <span className={styles.educationCount} aria-label={`${education.length} degrees`}>
+              <span
+                className={styles.educationCount}
+                aria-label={`${education.length} degrees`}
+              >
                 ({education.length})
               </span>
             </h2>
             <div className={styles.headerLine} aria-hidden="true"></div>
-            <p className={styles.sectionDescription}>
-              Academic background and qualifications in Computer Science and Engineering
-            </p>
           </header>
 
           <div className={styles.timelineContainer}>
             <div className={styles.verticalLine} aria-hidden="true"></div>
-            
+
             {education.length > 0 ? (
               education.map((edu, index) => (
                 <div
@@ -116,59 +116,65 @@ function Educations({ data }) {
                   itemType="https://schema.org/EducationalOccupationalCredential"
                 >
                   <div className={styles.timelineContent}>
-                    <div className={styles.timelineDot} aria-hidden="true"></div>
-                    
+                    <div
+                      className={styles.timelineDot}
+                      aria-hidden="true"
+                    ></div>
+
                     {/* Education Date */}
-                    <time 
+                    <time
                       className={styles.date}
                       itemProp="dateIssued"
                       dateTime={edu.time}
                     >
                       {edu.time}
                     </time>
-                    
+
                     {/* Institution Name */}
-                    <h3 
+                    <h3
                       className={styles.title}
                       itemProp="recognizedBy"
                       id={`education-${edu.id || index}-title`}
                     >
                       {edu.name}
                     </h3>
-                    
+
                     {/* Degree Name */}
-                    <p 
-                      className={styles.degree}
-                      itemProp="name"
-                    >
+                    <p className={styles.degree} itemProp="name">
                       {edu.degName}
                     </p>
-                    
+
                     {/* Department */}
                     {edu.Department && (
-                      <p 
+                      <p
                         className={styles.department}
                         itemProp="educationalProgramName"
                       >
                         {edu.Department}
                       </p>
                     )}
-                    
+
                     {/* CGPA */}
                     {edu.cgpa && (
                       <p className={styles.cgpa}>
-                        <span className={styles.cgpaLabel}>CGPA:</span> 
-                        <span className={styles.cgpaValue} itemProp="additionalProperty">
+                        <span className={styles.cgpaLabel}>CGPA:</span>
+                        <span
+                          className={styles.cgpaValue}
+                          itemProp="additionalProperty"
+                        >
                           {edu.cgpa}
                         </span>
                       </p>
                     )}
-                    
+
                     {/* Thesis */}
                     {edu.Thesis && (
                       <p className={styles.thesis}>
-                        <span className={styles.thesisLabel}>Thesis:</span> 
-                        <span className={styles.thesisValue} itemProp="additionalProperty">
+                        <span className={styles.thesisLabel}>Thesis:</span>
+                        <span
+                          className={styles.thesisValue}
+                          itemProp="additionalProperty"
+                        >
                           {edu.Thesis}
                         </span>
                       </p>
@@ -176,21 +182,27 @@ function Educations({ data }) {
 
                     {/* Institution Details */}
                     <div className={styles.institutionDetails}>
-                      <a 
-                        href="https://stamforduniversity.edu.bd"
+                      <a
+                        href={edu.url}
                         className={styles.institutionUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Visit Stamford University Bangladesh website"
                       >
-                        University Website
+                        {edu.url}
                       </a>
                     </div>
 
                     {/* Additional Metadata */}
-                    <div className={styles.educationMetadata} style={{ display: 'none' }}>
+                    <div
+                      className={styles.educationMetadata}
+                      style={{ display: "none" }}
+                    >
                       <meta itemProp="credentialCategory" content="Degree" />
-                      <meta itemProp="educationalLevel" content="Bachelor's Degree" />
+                      <meta
+                        itemProp="educationalLevel"
+                        content="Bachelor's Degree"
+                      />
                       <meta itemProp="validIn" content="Bangladesh" />
                     </div>
                   </div>
@@ -214,30 +226,6 @@ function Educations({ data }) {
               </div>
             )}
           </div>
-
-          {/* Education Summary */}
-          {education.length > 0 && (
-            <footer className={styles.educationFooter}>
-              <div className={styles.educationStats}>
-                <div className={styles.stat}>
-                  <span className={styles.statNumber}>{education.length}</span>
-                  <span className={styles.statLabel}>Total Degrees</span>
-                </div>
-                <div className={styles.stat}>
-                  <span className={styles.statNumber}>
-                    {education.filter(edu => edu.cgpa).length}
-                  </span>
-                  <span className={styles.statLabel}>With CGPA</span>
-                </div>
-                <div className={styles.stat}>
-                  <span className={styles.statNumber}>
-                    {education.filter(edu => edu.Thesis).length}
-                  </span>
-                  <span className={styles.statLabel}>With Thesis</span>
-                </div>
-              </div>
-            </footer>
-          )}
         </div>
       </section>
     </>

@@ -16,10 +16,12 @@ function Footer({ data }) {
   const bannerData = data?.Banner?.data || {};
   const name = profile.name || bannerData.name || "Mahbub Alam";
   const socialLinks = bannerData.socialLinks || {
-    email: "admin@mahbub.dev",
-    github: "https://github.com/mahbub96",
-    facebook: "https://fb.me/MahbubCSE96",
-    linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
+    email: process.env.EMAIL || "admin@mahbub.dev",
+    github: process.env.GITHUB_URL || "https://github.com/mahbub96",
+    facebook: process.env.FACEBOOK_URL || "https://fb.me/MahbubCSE96",
+    linkedin:
+      process.env.LINKEDIN_URL ||
+      "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
   };
 
   const footerSocialLinks = [

@@ -28,10 +28,7 @@ function Skills({ data }) {
     >
       <div className="container">
         <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <h2>
-            <span className={styles.sectionNumber}>02.</span> Skills &
-            Technologies
-          </h2>
+          <h2>Skills & Technologies</h2>
           <div className={styles.headerLine}></div>
         </div>
 

@@ -17,7 +17,7 @@ export default function Contact({ data }) {
   const contactInfo = contactData.contactInfo || {
     location: "Dhaka, Bangladesh",
     email: "admin@mahbub.dev",
-    phone: "+880 1234-567890",
+    phone: "+880 1784 310 996",
     website: "https://mahbub.dev",
   };
 
@@ -157,9 +157,6 @@ export default function Contact({ data }) {
         <div className="container">
           <header className={styles.sectionHeader}>
             <h1 id="contact-heading" className={styles.sectionTitle}>
-              <span className={styles.sectionNumber} aria-label="Section 6">
-                06.
-              </span>
               Get In Touch
             </h1>
             <div className={styles.headerLine} aria-hidden="true"></div>

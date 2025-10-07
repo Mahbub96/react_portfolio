@@ -57,7 +57,7 @@ const nextConfig = {
       {
         source: "/(.*)",
         headers: [
-          // Security headers
+          // Critical Security Headers
           {
             key: "X-Frame-Options",
             value: "DENY",
@@ -68,7 +68,7 @@ const nextConfig = {
           },
           {
             key: "Referrer-Policy",
-            value: "origin-when-cross-origin",
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "X-XSS-Protection",
@@ -90,18 +90,10 @@ const nextConfig = {
             key: "X-Requested-With",
             value: "XMLHttpRequest",
           },
-
-          // Performance headers
           {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=()",
           },
-          {
-            key: "Vary",
-            value: "Accept-Encoding",
-          },
-
-          // PWA headers
           {
             key: "Cross-Origin-Embedder-Policy",
             value: "require-corp",
@@ -114,6 +106,24 @@ const nextConfig = {
             key: "Cross-Origin-Resource-Policy",
             value: "same-origin",
           },
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
+
+          // Performance headers
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Vary",
+            value: "Accept-Encoding",
+          },
         ],
       },
 
@@ -124,6 +134,10 @@ const nextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
           },
         ],
       },
@@ -144,6 +158,45 @@ const nextConfig = {
             key: "Expires",
             value: "0",
           },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+        ],
+      },
+
+      // Headers for authentication routes
+      {
+        source: "/api/auth/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate, private",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
         ],
       },
 
@@ -154,6 +207,21 @@ const nextConfig = {
           {
             key: "Content-Type",
             value: "application/xml",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400",
+          },
+        ],
+      },
+
+      // Headers for robots.txt
+      {
+        source: "/robots.txt",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain",
           },
           {
             key: "Cache-Control",
