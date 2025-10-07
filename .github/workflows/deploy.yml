@@ -5,6 +5,10 @@ on:
     branches:
       - deploy
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build App
@@ -46,6 +50,9 @@ jobs:
         with:
           name: site-build
 
+      - name: Show workspace files (debug)
+        run: ls -la
+
       - name: Copy build files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -57,32 +64,43 @@ jobs:
 
       - name: SSH into VPS and Deploy
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          RUN_SEED: ${{ secrets.RUN_SEED }}
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Load NVM
+            # Ensure NVM and Node 18 are available
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install 18
+            nvm use 18
 
-            cd /var/www/html/mahbub.dev
+            cd /var/www/html/mahbub.dev || exit 1
 
-            # Extract new build
+            # Verify artifact and extract
+            if [ ! -f build.tar.gz ]; then
+              echo "build.tar.gz not found in deployment directory"
+              ls -la
+              exit 1
+            fi
             tar -xzf build.tar.gz
             rm build.tar.gz
 
-            # Install production dependencies
-            npm install --production
+            # Install production dependencies (deterministic)
+            npm ci --production
 
-            # Drop the database (replace 'portfolio' with your actual DB name)
-            mongosh portfolio --eval "db.dropDatabase()"
+            # Optional: run seed script only if RUN_SEED env is set to "true"
+            if [ "$RUN_SEED" = "true" ]; then
+              echo "Running seed script as requested (RUN_SEED=true)"
+              npm run seed || echo "Seed script failed (non-fatal)"
+            else
+              echo "Skipping seed (set RUN_SEED=true in GitHub Secrets to enable)"
+            fi
 
-            # Seed the database
-            npm run seed
-
-            # Start or restart Next.js app with PM2
-            pm2 restart next-app || pm2 start npm --name "next-app" -- run start
+            # Start or restart Next.js app with PM2 (ensure pm2 is installed on the VPS)
+            pm2 restart next-app || pm2 start npm --name "next-app" -- start
             pm2 save
 
             # restart nginx to apply any new configurations
