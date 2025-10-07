@@ -1,6 +1,5 @@
-name: Build on deploy branch
+name: Build and Deploy to VPS
 
-# Trigger the workflow when code is pushed to the `deploy` branch
 on:
   push:
     branches:
@@ -8,10 +7,8 @@ on:
 
 jobs:
   build:
-    name: Install & Build
+    name: Build App
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout repository
@@ -20,30 +17,53 @@ jobs:
       - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (next build)
+      - name: Build Next.js app
         run: npm run build
 
-      - name: Attempt static export (optional)
-        # next export only works when your app is compatible with static export.
-        # We run it as best-effort so CI will still succeed if export fails.
-        run: |
-          set -e
-          if npm -v >/dev/null 2>&1; then
-            echo "Trying next export to create a static 'out' directory (if supported)..."
-            npx next export -o out || echo "next export failed or not compatible; skipping"
-          fi
+      - name: Archive build files
+        run: tar -czf build.tar.gz .next package.json next.config.js public
 
-      - name: Upload build artifacts
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: site-build
-          path: |
-            out
-            .next
-            public
+          path: build.tar.gz
+
+  deploy:
+    name: Deploy to VPS
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build
+
+      - name: Copy build files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_VPS }}
+          source: "build.tar.gz"
+          target: "~/app"
+
+      - name: SSH into VPS and Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_VPS }}
+          script: |
+            cd ~/app
+            tar -xzf build.tar.gz
+            rm build.tar.gz
+            npm install --production
+            pm2 restart next-app || pm2 start npm --name "next-app" -- run start
