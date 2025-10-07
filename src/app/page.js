@@ -38,8 +38,16 @@ const BannerAnimation = dynamic(
 // Server-side data fetching with caching
 async function getPortfolioData() {
   try {
-    await connectDB();
-    const portfolioData = await PortfolioData.find({}).lean();
+    const db = await connectDB();
+    let portfolioData = [];
+    if (db) {
+      const data = await PortfolioData.find({}).lean();
+      portfolioData = data;
+    } else {
+      // No DB available (CI/static export). Return empty structure to allow
+      // the app to render with fallbacks during build.
+      portfolioData = [];
+    }
 
     // Transform data to match the expected structure
     const transformedData = {};

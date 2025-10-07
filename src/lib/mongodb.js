@@ -1,11 +1,17 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
+// Only use an explicit MONGODB_URI when provided. During CI/build we
+// intentionally avoid defaulting to a local MongoDB instance so the
+// build/export won't attempt to connect to localhost:27017 and fail.
+const MONGODB_URI = process.env.MONGODB_URI || null;
 
 if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+  // Do not throw here — allow the app to run in environments without a DB
+  // (for example CI or static export). Callers should handle a missing DB
+  // and provide fallbacks where appropriate.
+  // eslint-disable-next-line no-console
+  console.warn(
+    "MONGODB_URI is not defined — database connections will be skipped."
   );
 }
 
@@ -16,6 +22,11 @@ if (!cached) {
 }
 
 async function connectDB() {
+  if (!MONGODB_URI) {
+    // Skip attempting to connect when no URI is provided.
+    return null;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }

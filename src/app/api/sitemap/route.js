@@ -23,8 +23,11 @@ async function generateMainSitemap() {
   const baseUrl = "https://mahbub.dev";
 
   try {
-    await connectDB();
-    const portfolioData = await PortfolioData.find({}).lean();
+    const db = await connectDB();
+    let portfolioData = [];
+    if (db) {
+      portfolioData = await PortfolioData.find({}).lean();
+    }
 
     const projects =
       portfolioData.find((item) => item.collectionName === "Projects")?.data ||

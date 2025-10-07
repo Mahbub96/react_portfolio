@@ -5,10 +5,12 @@ export default async function sitemap() {
   const baseUrl = "https://mahbub.dev";
 
   try {
-    await connectDB();
-
-    // Get portfolio data for dynamic routes
-    const portfolioData = await PortfolioData.find({}).lean();
+    const db = await connectDB();
+    let portfolioData = [];
+    if (db) {
+      // Get portfolio data for dynamic routes
+      portfolioData = await PortfolioData.find({}).lean();
+    }
 
     // Transform data to get project slugs
     const projects =
