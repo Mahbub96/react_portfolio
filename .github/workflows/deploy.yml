@@ -61,22 +61,23 @@ jobs:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
+          docker: false
           script: |
-            # Go to app directory
             cd /var/www/html/mahbub.dev
 
-            # Extract build
+            # Extract new build
             tar -xzf build.tar.gz
             rm build.tar.gz
 
-            # Optional: export PATH if needed (uncomment if GitHub Actions can't find npm/pm2)
-            # export PATH=$PATH:/usr/bin:/usr/local/bin
-
             # Install production dependencies
-            /usr/bin/npm install --production
+            npm install --production
+
+            # Drop the database (replace 'mydb' with your DB name)
+            mongo mydb --eval "db.dropDatabase()"
+
+            # Seed the database
+            npm run seed
 
             # Start or restart Next.js app with PM2
-            /usr/local/bin/pm2 restart next-app || /usr/local/bin/pm2 start npm --name "next-app" -- run start
-
-            # Save PM2 process list and startup
-            /usr/local/bin/pm2 save
+            pm2 restart next-app || pm2 start npm --name "next-app" -- run start
+            pm2 save
