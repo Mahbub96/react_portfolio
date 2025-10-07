@@ -84,3 +84,8 @@ jobs:
             # Start or restart Next.js app with PM2
             pm2 restart next-app || pm2 start npm --name "next-app" -- run start
             pm2 save
+
+            # restart nginx to apply any new configurations
+            sudo systemctl restart nginx
+            sudo systemctl status nginx --no-pager
+            sudo systemctl enable nginx
