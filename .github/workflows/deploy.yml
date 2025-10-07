@@ -62,8 +62,21 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
+            # Go to app directory
             cd /var/www/html/mahbub.dev
+
+            # Extract build
             tar -xzf build.tar.gz
             rm build.tar.gz
-            npm install --production
-            pm2 restart next-app || pm2 start npm --name "next-app" -- run start
+
+            # Optional: export PATH if needed (uncomment if GitHub Actions can't find npm/pm2)
+            # export PATH=$PATH:/usr/bin:/usr/local/bin
+
+            # Install production dependencies
+            /usr/bin/npm install --production
+
+            # Start or restart Next.js app with PM2
+            /usr/local/bin/pm2 restart next-app || /usr/local/bin/pm2 start npm --name "next-app" -- run start
+
+            # Save PM2 process list and startup
+            /usr/local/bin/pm2 save
