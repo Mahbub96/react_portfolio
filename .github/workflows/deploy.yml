@@ -61,8 +61,11 @@ jobs:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
-          docker: false
           script: |
+            # Load NVM
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
             cd /var/www/html/mahbub.dev
 
             # Extract new build
@@ -72,7 +75,7 @@ jobs:
             # Install production dependencies
             npm install --production
 
-            # Drop the database (replace 'mydb' with your DB name)
+            # Drop the database (replace 'mydb' with your actual DB name)
             mongo mydb --eval "db.dropDatabase()"
 
             # Seed the database
