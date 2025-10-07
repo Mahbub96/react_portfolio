@@ -24,14 +24,8 @@ jobs:
           node-version: "18"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Next.js app
-        run: npm run build
-
-      - name: Archive build files
-        run: tar -czf build.tar.gz .next package.json next.config.js public
+      - name: Archive full project
+        run: tar -czf build.tar.gz package.json package-lock.json next.config.js public src
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -49,9 +43,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: site-build
-
-      - name: Show workspace files (debug)
-        run: ls -la
 
       - name: Copy build files to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -71,27 +62,17 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Load NVM and Node
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 18
-            nvm use 18
+            # Absolute paths for Node & npm
+            NODE_BIN="/home/ubuntu/.nvm/versions/node/v18.20.8/bin"
+            export PATH="$NODE_BIN:$PATH"
 
-            # Absolute paths
-            export PATH="$HOME/.nvm/versions/node/$(nvm version)/bin:$PATH"
-            NODE_BIN=$(which node)
-            NPM_BIN=$(which npm)
-            PM2_BIN=$(which pm2 || $NPM_BIN bin -g)/pm2
-
-            echo "Node: $NODE_BIN"
-            echo "NPM: $NPM_BIN"
-            echo "PM2: $PM2_BIN"
+            PM2_BIN="/home/ubuntu/.nvm/versions/node/v18.20.8/bin/pm2"
 
             cd /var/www/html/mahbub.dev || exit 1
 
-            # Verify artifact and extract
+            # Extract uploaded source
             if [ ! -f build.tar.gz ]; then
-              echo "build.tar.gz not found in deployment directory"
+              echo "build.tar.gz not found"
               ls -la
               exit 1
             fi
@@ -99,21 +80,21 @@ jobs:
             rm build.tar.gz
 
             # Install production dependencies
-            $NPM_BIN ci --production
+            npm ci --production
 
-            # Optional: run seed script only if RUN_SEED env is set to "true"
+            # Optional seed script
             if [ "$RUN_SEED" = "true" ]; then
-              echo "Running seed script as requested (RUN_SEED=true)"
-              $NPM_BIN run seed || echo "Seed script failed (non-fatal)"
+              echo "Running seed script"
+              npm run seed || echo "Seed script failed"
             else
-              echo "Skipping seed (set RUN_SEED=true in GitHub Secrets to enable)"
+              echo "Skipping seed"
             fi
 
-            # Start or restart Next.js app with PM2
-            $PM2_BIN restart next-app || $PM2_BIN start $NPM_BIN --name "next-app" -- start
+            # Start or restart app using PM2
+            $PM2_BIN restart next-app || $PM2_BIN start npm --name "next-app" -- start
             $PM2_BIN save
 
-            # Restart nginx to apply any new configurations
+            # Restart nginx
             sudo systemctl restart nginx
             sudo systemctl status nginx --no-pager
             sudo systemctl enable nginx
