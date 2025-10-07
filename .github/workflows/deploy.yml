@@ -75,8 +75,8 @@ jobs:
             # Install production dependencies
             npm install --production
 
-            # Drop the database (replace 'mydb' with your actual DB name)
-            mongosh mydb --eval "db.dropDatabase()"
+            # Drop the database (replace 'portfolio' with your actual DB name)
+            mongosh portfolio --eval "db.dropDatabase()"
 
             # Seed the database
             npm run seed
