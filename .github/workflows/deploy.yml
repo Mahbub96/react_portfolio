@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           source: "build.tar.gz"
-          target: "~/app"
+          target: "/var/www/html/mahbub.dev"
 
       - name: SSH into VPS and Deploy
         uses: appleboy/ssh-action@v1.2.0
@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            cd ~/app
+            cd /var/www/html/mahbub.dev
             tar -xzf build.tar.gz
             rm build.tar.gz
             npm install --production
