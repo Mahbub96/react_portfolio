@@ -10,10 +10,7 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaLock,
-  FaArrowUp,
-  FaArrowDown,
-  FaRefresh,
-  FaDesktopAlt,
+  FaSync,
   FaLanguage,
 } from "react-icons/fa";
 import { useDataContext } from "../../contexts/useAllContext";
@@ -181,7 +178,7 @@ export default function AnalyticsPage() {
               className="p-3 text-slate-300 hover:text-teal-400 hover:bg-slate-700/50 rounded-lg transition-colors duration-200"
               title="Refresh data"
             >
-              <FaRefresh className="text-lg" />
+              <FaSync className="text-lg" />
             </button>
           </div>
         </div>
@@ -310,7 +307,7 @@ export default function AnalyticsPage() {
               <div className="space-y-6">
                 <div className="bg-slate-700/50 rounded-xl p-6">
                   <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                    <FaDesktopAlt className="text-purple-400" />
+                    <FaDesktop className="text-purple-400" />
                     Browser Distribution
                   </h3>
                   <div className="space-y-3">
@@ -455,7 +452,7 @@ export default function AnalyticsPage() {
 
               <div className="bg-slate-700/50 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                  <FaDesktopAlt className="text-purple-400" />
+                  <FaDesktop className="text-purple-400" />
                   Screen Resolutions
                 </h3>
                 <div className="space-y-3">

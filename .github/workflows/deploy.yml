@@ -1,0 +1,49 @@
+name: Build on deploy branch
+
+# Trigger the workflow when code is pushed to the `deploy` branch
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  build:
+    name: Install & Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (next build)
+        run: npm run build
+
+      - name: Attempt static export (optional)
+        # next export only works when your app is compatible with static export.
+        # We run it as best-effort so CI will still succeed if export fails.
+        run: |
+          set -e
+          if npm -v >/dev/null 2>&1; then
+            echo "Trying next export to create a static 'out' directory (if supported)..."
+            npx next export -o out || echo "next export failed or not compatible; skipping"
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: |
+            out
+            .next
+            public
