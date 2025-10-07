@@ -76,7 +76,7 @@ jobs:
             npm install --production
 
             # Drop the database (replace 'mydb' with your actual DB name)
-            mongo mydb --eval "db.dropDatabase()"
+            mongosh mydb --eval "db.dropDatabase()"
 
             # Seed the database
             npm run seed
