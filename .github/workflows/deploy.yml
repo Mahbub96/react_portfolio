@@ -25,7 +25,7 @@ jobs:
           cache: "npm"
 
       - name: Archive full project
-        run: tar -czf build.tar.gz package.json package-lock.json next.config.js public src scripts
+        run: tar -czf build.tar.gz package.json package-lock.json next.config.js tsconfig.json next-env.d.ts public src scripts
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -95,7 +95,7 @@ jobs:
             $PM2_BIN restart next-app || $PM2_BIN start npm --name "next-app" -- start
             $PM2_BIN save
 
-            # Restart nginx
+            # Restart nginx to pick up any changes
             sudo systemctl restart nginx
             sudo systemctl status nginx --no-pager
             sudo systemctl enable nginx
