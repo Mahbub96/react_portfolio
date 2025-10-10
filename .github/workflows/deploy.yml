@@ -38,7 +38,8 @@ jobs:
             public \
             package.json \
             yarn.lock \
-            next.config.js
+            next.config.js \
+            src
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
