@@ -13,7 +13,8 @@ jobs:
   build:
     name: Build App
     runs-on: ubuntu-latest
-
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,15 +31,17 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Archive production-ready files
+      - name: Archive build output + source
         run: |
           tar -czf build.tar.gz \
             .next \
-            node_modules \
-            package.json \
-            package-lock.json \
+            package.json package-lock.json \
             public \
-            next.config.js
+            scripts \
+            src \
+            tsconfig.json \
+            next.config.js \
+            node_modules
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -50,7 +53,6 @@ jobs:
     name: Deploy to VPS
     needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -66,40 +68,32 @@ jobs:
           source: "build.tar.gz"
           target: "/var/www/html/mahbub.dev"
 
-      - name: SSH into VPS and Deploy
+      - name: SSH into VPS and deploy
         uses: appleboy/ssh-action@v1.2.0
         env:
-          RUN_SEED: ${{ secrets.RUN_SEED }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          RUN_SEED: ${{ secrets.RUN_SEED }}
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Load NVM if using Node via NVM
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            # Use Node version where PM2 is installed
             nvm use 22 || true
-
             PM2_BIN=$(which pm2)
             echo "PM2 found at: $PM2_BIN"
 
             cd /var/www/html/mahbub.dev || exit 1
 
-            # Extract uploaded source
-            if [ ! -f build.tar.gz ]; then
-              echo "build.tar.gz not found"
-              ls -la
-              exit 1
-            fi
+            # Remove old files except .env and logs
+            find . -mindepth 1 ! -name ".env" ! -name "logs" -exec rm -rf {} +
+
+            # Extract uploaded build
             tar -xzf build.tar.gz
             rm build.tar.gz
-
-            # Install production dependencies (optional if already in tar)
-            npm ci --production
 
             # Optional seed script
             if [ "$RUN_SEED" = "true" ]; then
@@ -109,7 +103,7 @@ jobs:
               echo "Skipping seed"
             fi
 
-            # Start or restart app using PM2 (idempotent)
+            # Start or restart app with PM2
             if $PM2_BIN describe next-app > /dev/null 2>&1; then
               echo "Restarting existing PM2 process..."
               $PM2_BIN restart next-app
@@ -118,10 +112,8 @@ jobs:
               $PM2_BIN start npm --name "next-app" -- start
             fi
 
-            # Save current PM2 process list
             $PM2_BIN save
 
-            # Restart nginx to pick up any changes
+            # Restart nginx
             sudo systemctl restart nginx
             sudo systemctl enable nginx
-            sudo systemctl status nginx --no-pager
