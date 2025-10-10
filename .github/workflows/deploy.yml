@@ -64,10 +64,10 @@ jobs:
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
             # Absolute paths for Node & npm
-            NODE_BIN="/home/ubuntu/.nvm/versions/node/v18.20.8/bin"
+            NODE_BIN="/home/ubuntu/.nvm/versions/node/v22.14.0/bin"
             export PATH="$NODE_BIN:$PATH"
 
-            PM2_BIN="/home/ubuntu/.nvm/versions/node/v18.20.8/bin/pm2"
+            PM2_BIN="/home/ubuntu/.nvm/versions/node/v22.14.0/bin/pm2"
 
             cd /var/www/html/mahbub.dev || exit 1
 
