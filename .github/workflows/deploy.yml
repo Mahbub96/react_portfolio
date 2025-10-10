@@ -31,17 +31,14 @@ jobs:
       - name: Build Next.js app
         run: yarn build
 
-      - name: Archive build + source
+      - name: Archive build output + essential files
         run: |
           tar -czf build.tar.gz \
             .next \
-            package.json yarn.lock \
             public \
-            scripts \
-            src \
-            tsconfig.json \
-            next.config.js \
-            node_modules
+            package.json \
+            yarn.lock \
+            next.config.js
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -82,7 +79,6 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            # Use Node 18
             nvm use 18 || true
             PM2_BIN=$(which pm2)
             echo "PM2 found at: $PM2_BIN"
@@ -110,7 +106,7 @@ jobs:
               $PM2_BIN restart next-app
             else
               echo "Starting new PM2 process..."
-              $PM2_BIN start yarn --name "next-app" -- start
+              $PM2_BIN start npm --name "next-app" -- start
             fi
 
             $PM2_BIN save
