@@ -19,14 +19,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js 18
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (prod only)
+        run: npm ci --omit=dev
 
       - name: Build Next.js app
         run: npm run build
@@ -82,31 +82,31 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            nvm use 22 || true
+            nvm use 22 || nvm install 22
             PM2_BIN=$(which pm2)
             echo "PM2 found at: $PM2_BIN"
 
             cd /var/www/html/mahbub.dev || exit 1
 
-            # Remove old files except .env and logs
+            # Clean old files except .env and logs
             find . -mindepth 1 ! -name ".env" ! -name "logs" -exec rm -rf {} +
 
-            # Extract uploaded build
+            # Extract build safely
             tar -xzf build.tar.gz
             rm build.tar.gz
 
-            # Optional seed script
+            # Optional seed
             if [ "$RUN_SEED" = "true" ]; then
               echo "Running seed script"
-              npm run seed || echo "Seed script failed"
+              npm run seed || echo "Seed failed"
             else
               echo "Skipping seed"
             fi
 
-            # Start or restart app with PM2
-            if $PM2_BIN describe next-app > /dev/null 2>&1; then
+            # Start/restart PM2 app safely
+            if $PM2_BIN list | grep -q "next-app"; then
               echo "Restarting existing PM2 process..."
-              $PM2_BIN restart next-app
+              $PM2_BIN restart next-app --update-env
             else
               echo "Starting new PM2 process..."
               $PM2_BIN start npm --name "next-app" -- start
