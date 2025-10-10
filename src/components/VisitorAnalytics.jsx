@@ -132,7 +132,7 @@ const VisitorAnalytics = () => {
                 </div>
                 <div className={styles.headerText}>
                   <h2>Analytics Dashboard</h2>
-                  <p>Real-time visitor insights and performance metrics</p>
+                  <p>Real-time visitor insights and performance metrics.</p>
                 </div>
               </div>
               <button
