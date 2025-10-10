@@ -18,7 +18,17 @@ const VisitorCounter = () => {
         const referrer = document.referrer || "direct";
 
         // Basic IP detection (this is just for demo - in production you'd get this from server)
-        const ip = "unknown"; // In real implementation, this would come from server-side
+        // Fetch IP address from a public API (client-side)
+        let ip = "unknown";
+        try {
+          const res = await fetch("https://api.ipify.org?format=json");
+          if (res.ok) {
+            const data = await res.json();
+            ip = data.ip || "unknown";
+          }
+        } catch (e) {
+          // Ignore errors, keep ip as "unknown"
+        }
 
         // Track the visit
         await fetch("/api/visitors", {

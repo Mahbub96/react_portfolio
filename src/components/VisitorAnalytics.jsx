@@ -29,7 +29,7 @@ const VisitorAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { auth, isLoaded } = useDataContext();
+  const { auth, isLoaded, makeAuthenticatedRequest } = useDataContext();
 
   useEffect(() => {
     setIsMounted(true);
@@ -41,8 +41,22 @@ const VisitorAnalytics = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("/api/visitors");
-      const data = await response.json();
+      const response = await makeAuthenticatedRequest("/api/visitors");
+      if (response.error) {
+        if (response.status === 401) {
+          const refreshed = refreshAuth();
+          if (refreshed) {
+            setTimeout(() => fetchStats(), 100);
+            return;
+          }
+          setError("Authentication failed. Please try logging in again.");
+        } else {
+          setError(response.error || "An unexpected error occurred.");
+        }
+        return;
+      }
+
+      const data = await response.response.json();
       setStats(data);
     } catch (error) {
       console.error("Error fetching analytics:", error);
