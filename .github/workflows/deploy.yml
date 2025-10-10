@@ -23,25 +23,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
+          cache: "yarn"
 
-      - name: Install dependencies (prod only)
-        run: npm ci --omit=dev
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build Next.js app
-        run: npm run build
+        run: yarn build
 
       - name: Archive build output + source
         run: |
           tar -czf build.tar.gz \
             .next \
-            package.json package-lock.json \
+            node_modules \
+            package.json \
+            yarn.lock \
             public \
             scripts \
             src \
             tsconfig.json \
-            next.config.js \
-            node_modules
+            next.config.js
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -82,34 +83,34 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            nvm use 22 || nvm install 22
+            nvm use 22 || true
             PM2_BIN=$(which pm2)
             echo "PM2 found at: $PM2_BIN"
 
             cd /var/www/html/mahbub.dev || exit 1
 
-            # Clean old files except .env and logs
+            # Remove old files except .env and logs
             find . -mindepth 1 ! -name ".env" ! -name "logs" -exec rm -rf {} +
 
-            # Extract build safely
+            # Extract uploaded build
             tar -xzf build.tar.gz
             rm build.tar.gz
 
-            # Optional seed
+            # Optional seed script
             if [ "$RUN_SEED" = "true" ]; then
               echo "Running seed script"
-              npm run seed || echo "Seed failed"
+              yarn seed || echo "Seed script failed"
             else
               echo "Skipping seed"
             fi
 
-            # Start/restart PM2 app safely
-            if $PM2_BIN list | grep -q "next-app"; then
+            # Start or restart app with PM2
+            if $PM2_BIN describe next-app > /dev/null 2>&1; then
               echo "Restarting existing PM2 process..."
-              $PM2_BIN restart next-app --update-env
+              $PM2_BIN restart next-app
             else
               echo "Starting new PM2 process..."
-              $PM2_BIN start npm --name "next-app" -- start
+              $PM2_BIN start yarn --name "next-app" -- start
             fi
 
             $PM2_BIN save
