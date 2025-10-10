@@ -87,7 +87,7 @@ jobs:
             cd /var/www/html/mahbub.dev || exit 1
 
             # Remove old files except .env and logs
-            find . -mindepth 1 ! -name ".env" ! -name "logs" -exec rm -rf {} +
+            # find . -mindepth 1 ! -name ".env" ! -name "logs" -exec rm -rf {} +
 
             # Extract uploaded build
             tar -xzf build.tar.gz
