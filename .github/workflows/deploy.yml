@@ -19,10 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js 22
+      - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "18"
           cache: "yarn"
 
       - name: Install dependencies
@@ -31,18 +31,17 @@ jobs:
       - name: Build Next.js app
         run: yarn build
 
-      - name: Archive build output + source
+      - name: Archive build + source
         run: |
           tar -czf build.tar.gz \
             .next \
-            node_modules \
-            package.json \
-            yarn.lock \
+            package.json yarn.lock \
             public \
             scripts \
             src \
             tsconfig.json \
-            next.config.js
+            next.config.js \
+            node_modules
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -83,7 +82,8 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            nvm use 22 || true
+            # Use Node 18
+            nvm use 18 || true
             PM2_BIN=$(which pm2)
             echo "PM2 found at: $PM2_BIN"
 
