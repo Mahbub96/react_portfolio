@@ -63,11 +63,17 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Absolute paths for Node & npm
-            NODE_BIN="/home/ubuntu/.nvm/versions/node/v22.14.0/bin"
-            export PATH="$NODE_BIN:$PATH"
+            # Load NVM (if using Node via NVM)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-            PM2_BIN="/home/ubuntu/.nvm/versions/node/v22.14.0/bin/pm2"
+            # Use Node version where PM2 is installed
+            nvm use 22 || true
+
+            # Use global PM2
+            PM2_BIN=$(which pm2)
+            echo "PM2 found at: $PM2_BIN"
 
             cd /var/www/html/mahbub.dev || exit 1
 
@@ -91,8 +97,16 @@ jobs:
               echo "Skipping seed"
             fi
 
-            # Start or restart app using PM2
-            $PM2_BIN restart next-app || $PM2_BIN start npm --name "next-app" -- start
+            # Start or restart app using PM2 (idempotent)
+            if $PM2_BIN describe next-app > /dev/null 2>&1; then
+              echo "Restarting existing PM2 process..."
+              $PM2_BIN restart next-app
+            else
+              echo "Starting new PM2 process..."
+              $PM2_BIN start npm --name "next-app" -- start
+            fi
+
+            # Save current PM2 process list
             $PM2_BIN save
 
             # Restart nginx to pick up any changes
