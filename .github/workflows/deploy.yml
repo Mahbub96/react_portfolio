@@ -90,7 +90,7 @@ jobs:
 
             # Extract uploaded build
             tar -xzf build.tar.gz
-            rm build.tar.gz
+            # rm build.tar.gz
 
             # Optional seed script
             if [ "$RUN_SEED" = "true" ]; then
