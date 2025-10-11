@@ -1,83 +1,64 @@
-name: Build and Deploy to Test Server
+name: Build and Deploy Test Server
 
 on:
   push:
     branches:
-      - deploy # Trigger when pushing to 'deploy' branch
+      - test
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js (local runner, just for build)
-      - name: Setup Node.js
+      - name: Setup Node.js (for build)
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3️⃣ Install dependencies
-      - name: Install Dependencies
+      - name: Install Dependencies (for build)
         run: yarn install --frozen-lockfile
 
-      # 4️⃣ Build Next.js app
       - name: Build Next.js App
         run: yarn build
 
-      # 5️⃣ Prepare deployment folder
       - name: Prepare Deployment Package
         run: |
-          mkdir -p deploy
-          cp -r .next public src ecosystem.config.js package.json yarn.lock deploy/
-          cp env.prod deploy/.env.local || true
-          echo "✅ Files copied to deploy directory"
-          ls -la deploy
+          mkdir deploy
+          cp -r .next public ecosystem.config.js package.json yarn.lock src scripts deploy/
+          cp -r .env.local deploy/.env.local || true
 
-      # 6️⃣ Ensure remote directory exists and correct permissions
-      - name: Ensure Remote Directory
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.IP }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.PRIVATE_SSH_VPS }}
-          script: |
-            sudo mkdir -p /var/www/html/test.mahbub.dev
-            sudo chown -R ${{ secrets.USER }}:${{ secrets.USER }} /var/www/html/test.mahbub.dev
-            sudo rm -rf /var/www/html/test.mahbub.dev/*  # Optional cleanup
-
-      # 7️⃣ Upload files to VPS
       - name: Deploy to VPS (Test)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
-          source: "./deploy/*"
+          source: "deploy/*"
           target: "/var/www/html/test.mahbub.dev"
           strip_components: 1
 
-      # 8️⃣ Install dependencies & restart PM2 with NVM
-      - name: Install dependencies and restart PM2
+      - name: Run Seeder & Restart Test App
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
-            # Load NVM so yarn & pm2 are available
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
             cd /var/www/html/test.mahbub.dev
 
-            # Install production dependencies
-            yarn install --production --frozen-lockfile
+            # Load NVM and use correct Node version
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 22.14.0
 
-            # Restart PM2 app for test domain
+            # Install dependencies (optional if already installed)
+            yarn install --frozen-lockfile
+
+            # Run database seeder
+            yarn seed
+
+            # Restart or start PM2 test app
             pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --only test.mahbub.dev
-            pm2 save
