@@ -10,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # 1️⃣ Checkout code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # Step 3: Install dependencies
+      # 3️⃣ Install dependencies
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      # Step 4: Build Next.js app
+      # 4️⃣ Build Next.js app
       - name: Build Next.js App
         run: yarn build
 
-      # Step 5: Prepare deployment folder
+      # 5️⃣ Prepare deployment folder
       - name: Prepare Deployment Package
         run: |
           mkdir -p deploy
@@ -37,38 +37,38 @@ jobs:
           echo "✅ Files copied to deploy directory"
           ls -la deploy
 
-      # Step 6: Ensure remote folder exists & correct permissions
+      # 6️⃣ Ensure remote folder exists and correct permissions
       - name: Ensure Remote Directory
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
             sudo mkdir -p /var/www/html/test.mahbub.dev
-            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /var/www/html/test.mahbub.dev
-            sudo rm -rf /var/www/html/test.mahbub.dev/*   # Optional cleanup
+            sudo chown -R ${{ secrets.USER }}:${{ secrets.USER }} /var/www/html/test.mahbub.dev
+            sudo rm -rf /var/www/html/test.mahbub.dev/*  # Optional cleanup
 
-      # Step 7: Upload files to VPS
+      # 7️⃣ Upload files to VPS
       - name: Deploy to VPS (Test)
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_VPS }}
           source: "./deploy/*"
           target: "/var/www/html/test.mahbub.dev"
           strip_components: 1
 
-      # Step 8: Install production dependencies & restart PM2
+      # 8️⃣ Install dependencies & restart PM2
       - name: Install dependencies and restart PM2
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
             cd /var/www/html/test.mahbub.dev
             yarn install --production --frozen-lockfile
-            pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --name test.mahbub.dev
+            pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --only test.mahbub.dev
             pm2 save
