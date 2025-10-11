@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
+      # 2️⃣ Setup Node.js (local runner, just for build)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -37,7 +37,7 @@ jobs:
           echo "✅ Files copied to deploy directory"
           ls -la deploy
 
-      # 6️⃣ Ensure remote folder exists and correct permissions
+      # 6️⃣ Ensure remote directory exists and correct permissions
       - name: Ensure Remote Directory
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -60,7 +60,7 @@ jobs:
           target: "/var/www/html/test.mahbub.dev"
           strip_components: 1
 
-      # 8️⃣ Install dependencies & restart PM2
+      # 8️⃣ Install dependencies & restart PM2 with NVM
       - name: Install dependencies and restart PM2
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -68,7 +68,16 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           script: |
+            # Load NVM so yarn & pm2 are available
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
             cd /var/www/html/test.mahbub.dev
+
+            # Install production dependencies
             yarn install --production --frozen-lockfile
+
+            # Restart PM2 app for test domain
             pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --only test.mahbub.dev
             pm2 save
