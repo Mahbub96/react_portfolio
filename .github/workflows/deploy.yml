@@ -1,52 +1,70 @@
-name: Deploy to VPS
+name: Build and Deploy to VPS
 
+# Trigger deployment on push to the deploy branch
 on:
   push:
     branches:
       - deploy
 
 jobs:
-  deploy:
+  build-and-deploy:
+    name: Build and Deploy Next.js
     runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout repo
-      - name: Checkout code
-        uses: actions/checkout@v4
+    env:
+      # Environment variables from GitHub Secrets
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
 
-      # Step 2: Setup Node.js
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: "yarn"
 
       # Step 3: Install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      # Step 4: Build Next.js project
+      # Step 4: Build the Next.js project
       - name: Build Next.js
         run: yarn build
 
-      # Step 5: Copy build files to VPS
+      # Step 5: Verify build output
+      - name: List build output
+        run: |
+          echo "Root directory contents:"
+          ls -la
+          echo ".next directory contents:"
+          ls -la .next
+          echo "public directory contents:"
+          ls -la public
+
+      # Step 6: Copy build files to VPS via SCP
       - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.3
         with:
-          host: ${{ secrets.IP }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.PRIVATE_SSH_VPS }}
-          port: 22
+          host: ${{ secrets.IP }} # VPS IP
+          username: ${{ secrets.USER }} # VPS username
+          key: ${{ secrets.PRIVATE_SSH_VPS }} # SSH private key
+          port: 22 # SSH port
           source: |
             .next/**
             public/**
             ecosystem.config.js
             package.json
             yarn.lock
-          target: /var/www/html/mahbub.dev
+          target: /var/www/html/mahbub.dev # Target folder on VPS
 
-      # Step 6: Restart PM2 on VPS
-      - name: Restart PM2
-        uses: appleboy/ssh-action@v0.1.8
+      # Step 7: SSH into VPS and restart PM2 app
+      - name: Restart PM2 on VPS
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USER }}
@@ -54,5 +72,8 @@ jobs:
           port: 22
           script: |
             cd /var/www/html/mahbub.dev
-            pm2 restart mahbub.dev || pm2 start ecosystem.config.js
+            yarn install --frozen-lockfile
+            pm2 stop mahbub.dev || true
+            pm2 start ecosystem.config.js
             pm2 save
+            pm2 status
