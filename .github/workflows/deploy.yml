@@ -8,13 +8,14 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     env:
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,10 +35,15 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build Next.js app
-        run: yarn build
+      - name: Build Next.js
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+        run: |
+          echo "Skipping MongoDB connection for build if needed"
+          yarn build
 
-      - name: Archive build artifacts
+      - name: Archive production build
         run: |
           tar -czf deploy.tar.gz \
             .next \
@@ -45,10 +51,7 @@ jobs:
             package.json \
             yarn.lock \
             next.config.js \
-            ecosystem.config.js \
-            app \
-            components \
-            pages
+            ecosystem.config.js
 
       - name: Upload build to VPS
         uses: appleboy/scp-action@v0.1.3
@@ -60,7 +63,7 @@ jobs:
           source: "deploy.tar.gz"
           target: "/var/www/html/mahbub.dev/"
 
-      - name: Deploy on VPS and restart PM2
+      - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -69,12 +72,11 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             cd /var/www/html/mahbub.dev
-            echo "Extracting new build..."
-            rm -rf .next || true
+            rm -rf .next public package.json yarn.lock next.config.js || true
             tar -xzf deploy.tar.gz
             rm deploy.tar.gz
-            echo "Restarting PM2 app..."
+            yarn install --production
             pm2 stop next-app || true
             pm2 start ecosystem.config.js --env production
             pm2 save
-            echo "✅ Deployment complete!"
+            echo "✅ Deployment completed successfully!"
