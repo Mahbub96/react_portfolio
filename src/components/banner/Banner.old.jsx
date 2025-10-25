@@ -10,6 +10,7 @@ import {
   FaFacebook,
   FaLinkedin,
   FaCamera,
+  FaFileDownload,
 } from "react-icons/fa";
 import { useDataContext } from "../../contexts/useAllContext";
 import styles from "./banner.module.css";
@@ -165,6 +166,13 @@ function Banner({ data }) {
     }
   }, []);
 
+  const handleDownloadResume = useCallback(() => {
+    // download resume from the server public folder
+    fetch("/api/download-resume", {
+      method: "GET",
+    });
+  }, []);
+
   return (
     <section className={styles.banner_section}>
       <div className={styles.tech_background}></div>
@@ -224,9 +232,9 @@ function Banner({ data }) {
             ))}
           </div>
 
-          <button className={styles.cta_button}>
-            <FaCode />
-            <span>Get in Touch</span>
+          <button className={styles.cta_button} onClick={handleDownloadResume}>
+            <FaFileDownload />
+            <span>Download Resume</span>
           </button>
         </div>
 

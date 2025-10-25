@@ -10,6 +10,7 @@ import {
   FaBuilding,
   FaBriefcase,
   FaStar,
+  FaFileDownload,
 } from "react-icons/fa";
 import BannerAnimation from "./BannerAnimation";
 
@@ -243,10 +244,15 @@ const BannerServer = ({
             </div>
 
             {/* CTA Button */}
-            <button className={styles.ctaButton}>
-              <FaCode />
-              <span>Get in Touch</span>
-            </button>
+            <a
+              href="/resume/Mahbub_Alam_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaButton}
+            >
+              <FaFileDownload />
+              <span>Download Resume</span>
+            </a>
           </div>
 
           {/* Social Links */}

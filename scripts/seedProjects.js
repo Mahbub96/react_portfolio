@@ -244,8 +244,23 @@ async function seedDatabase() {
     await mongoose.connect(MONGODB_URI);
     console.log("✅ Connected to MongoDB successfully!");
 
-    // Clear existing data
-    console.log("🧹 Clearing existing data...");
+    // Drop the collection to remove any conflicting indexes
+    console.log(
+      "🧹 Dropping existing collection to remove conflicting indexes..."
+    );
+    try {
+      await mongoose.connection.db.collection("portfoliodatas").drop();
+      console.log("✅ Collection dropped successfully");
+    } catch (dropError) {
+      if (dropError.code === 26) {
+        console.log("ℹ️ Collection doesn't exist, creating new one");
+      } else {
+        console.log("⚠️ Error dropping collection:", dropError.message);
+      }
+    }
+
+    // Clear any existing data (in case collection wasn't dropped)
+    console.log("🧹 Clearing any remaining data...");
     await PortfolioData.deleteMany({});
     console.log("✅ Existing data cleared");
 
@@ -282,6 +297,13 @@ async function seedDatabase() {
     console.log("🚀 Your portfolio should now display all projects and data.");
   } catch (error) {
     console.error("❌ Error seeding database:", error);
+    console.error("Error details:", {
+      name: error.name,
+      code: error.code,
+      message: error.message,
+      keyPattern: error.keyPattern,
+      keyValue: error.keyValue,
+    });
     process.exit(1);
   } finally {
     await mongoose.disconnect();
