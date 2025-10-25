@@ -3,7 +3,7 @@ name: Build and Deploy Test Server
 on:
   push:
     branches:
-      - test
+      - cicd
 
 jobs:
   build-and-deploy:
