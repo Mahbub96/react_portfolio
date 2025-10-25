@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir deploy
           cp -r .next public ecosystem.config.js package.json yarn.lock src scripts deploy/
-          cp -r .env.local deploy/.env.local || true
+          cp -r .env deploy/.env || true
 
       - name: Deploy to VPS (Test)
         uses: appleboy/scp-action@v0.1.7
