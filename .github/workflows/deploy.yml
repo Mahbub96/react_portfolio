@@ -83,7 +83,7 @@ jobs:
               echo "⚠️ Seeder file not found, skipping..."
             fi
 
-            # Restart or start PM2 app
+            # Restart or start PM2 app on port 4000
             export PORT=4000
             pm2 delete test.mahbub.dev || true
             pm2 start npm --name "test.mahbub.dev" -- start --update-env
