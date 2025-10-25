@@ -79,7 +79,7 @@ jobs:
             # Set PORT environment variable for PM2
             export PORT=4000
 
-            # Restart or start PM2 process on port 4000
+            # Restart or start PM2 process on port 4000 with updated env
             pm2 delete test.mahbub.dev || true
-            pm2 start npm --name "test.mahbub.dev" -- start
+            pm2 start npm --name "test.mahbub.dev" -- start --update-env
             pm2 save
