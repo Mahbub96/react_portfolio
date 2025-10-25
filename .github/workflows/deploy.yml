@@ -29,11 +29,11 @@ jobs:
       - name: Build Next.js App
         run: yarn build
 
-      # ✅ Step 5: Prepare deployment package
+      # ✅ Step 5: Prepare deployment package (including seeder)
       - name: Prepare Deployment Package
         run: |
           mkdir deploy
-          cp -r .next public ecosystem.config.js package.json yarn.lock deploy/
+          cp -r .next public ecosystem.config.js package.json yarn.lock scripts deploy/
           cp .env deploy/.env || true
 
       # ✅ Step 6: Deploy built files to your VPS
@@ -46,8 +46,8 @@ jobs:
           source: "deploy/*"
           target: "/var/www/html/test.mahbub.dev"
 
-      # ✅ Step 7: Install dependencies, run seeder & restart app via PM2 on port 4000
-      - name: Run Seeder & Restart Test App on Port 4000
+      # ✅ Step 7: Install dependencies, run seeder & restart Test app via PM2
+      - name: Run Seeder & Restart Test App
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.IP }}
@@ -73,13 +73,9 @@ jobs:
             # Install dependencies
             yarn install --frozen-lockfile --production=false
 
-            # Run database seeder if defined
-            yarn seed || echo "No seed script found, skipping..."
+            # Run database seeder
+            node scripts/seedProjects.js || echo "Seeder script failed or not found, skipping..."
 
-            # Set PORT environment variable for PM2
-            export PORT=4000
-
-            # Restart or start PM2 process on port 4000 with updated env
-            pm2 delete test.mahbub.dev || true
-            pm2 start npm --name "test.mahbub.dev" -- start --update-env
+            # Restart or start Test app via PM2 using ecosystem.config.js
+            pm2 reload ecosystem.config.js --only test.mahbub.dev --update-env
             pm2 save
