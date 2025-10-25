@@ -56,11 +56,19 @@ jobs:
           script: |
             cd /var/www/html/test.mahbub.dev
 
-            # Load NVM & use correct Node version
+            # Load NVM & Node
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 22
             nvm use 22
+
+            # Add NVM binaries to PATH for non-interactive shell
+            export PATH="$NVM_DIR/versions/node/v22.14.0/bin:$PATH"
+
+            # Verify versions
+            node -v
+            npm -v
+            yarn -v
+            pm2 -v || npm install -g pm2
 
             # Install dependencies
             yarn install --frozen-lockfile --production=false
