@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ✅ Step 2: Setup Node.js (match your server Node version)
+      # ✅ Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,18 +25,23 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      # ✅ Step 4: Build Next.js app
+      # ✅ Step 4: Create environment file
+      - name: Create Environment File
+        run: |
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+
+      # ✅ Step 5: Build Next.js app
       - name: Build Next.js App
         run: yarn build
 
-      # ✅ Step 5: Prepare deployment package (including seeder)
+      # ✅ Step 6: Prepare deployment package (including scripts)
       - name: Prepare Deployment Package
         run: |
           mkdir deploy
-          cp -r .next public ecosystem.config.js package.json yarn.lock scripts deploy/
+          cp -r .next public scripts ecosystem.config.js package.json yarn.lock deploy/
           cp .env deploy/.env || true
 
-      # ✅ Step 6: Deploy built files to your VPS
+      # ✅ Step 7: Deploy built files to VPS
       - name: Deploy to VPS (Test)
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -46,8 +51,8 @@ jobs:
           source: "deploy/*"
           target: "/var/www/html/test.mahbub.dev"
 
-      # ✅ Step 7: Install dependencies, run seeder & restart Test app via PM2
-      - name: Run Seeder & Restart Test App
+      # ✅ Step 8: Install dependencies, run seeder & restart app
+      - name: Run Seeder & Restart Test App on Port 4000
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.IP }}
@@ -56,26 +61,30 @@ jobs:
           script: |
             cd /var/www/html/test.mahbub.dev
 
-            # Load NVM & Node
+            # Load Node
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 22
-
-            # Add NVM binaries to PATH for non-interactive shell
             export PATH="$NVM_DIR/versions/node/v22.14.0/bin:$PATH"
 
-            # Verify versions
+            # Check versions
             node -v
-            npm -v
             yarn -v
             pm2 -v || npm install -g pm2
 
             # Install dependencies
             yarn install --frozen-lockfile --production=false
 
-            # Run database seeder
-            node scripts/seedProjects.js || echo "Seeder script failed or not found, skipping..."
+            # Run database seeder (if exists)
+            if [ -f scripts/seedProjects.js ]; then
+              echo "🚀 Running Seeder..."
+              node scripts/seedProjects.js
+            else
+              echo "⚠️ Seeder file not found, skipping..."
+            fi
 
-            # Restart or start Test app via PM2 using ecosystem.config.js
-            pm2 reload ecosystem.config.js --only test.mahbub.dev --update-env
+            # Restart or start PM2 app
+            export PORT=4000
+            pm2 delete test.mahbub.dev || true
+            pm2 start npm --name "test.mahbub.dev" -- start --update-env
             pm2 save
