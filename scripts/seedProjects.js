@@ -1,17 +1,19 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
-const fs = require("fs");
-const path = require("path");
 
 // MongoDB connection string
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
 
-// Portfolio Data Schema
+console.log("MONGODB_URI", MONGODB_URI);
+
+// Define PortfolioData schema
 const PortfolioDataSchema = new mongoose.Schema(
   {
     collectionName: {
       type: String,
       required: true,
+      unique: true,
       enum: [
         "profile",
         "Skills",
@@ -32,19 +34,14 @@ const PortfolioDataSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
-
-// Create index for collectionName (unique)
-PortfolioDataSchema.index({ collectionName: 1 }, { unique: true });
 
 const PortfolioData =
   mongoose.models.PortfolioData ||
   mongoose.model("PortfolioData", PortfolioDataSchema);
 
-// Sample data from db.json
+// ---- SAMPLE DATA ---- //
 const sampleData = {
   profile: {
     name: "Mahbub Alam",
@@ -122,7 +119,6 @@ const sampleData = {
       cgpa: "4.44 out of 5.00",
       group: "Science",
       Thesis: "No",
-      Department: "",
     },
     {
       id: 2,
@@ -130,7 +126,6 @@ const sampleData = {
       name: "BAF SHAHEEN COLLEGE,JESSORE",
       degName: "Higher Secondary Certificate (HSC)",
       cgpa: "4.00 out of 5.00",
-      Department: "",
       group: "Science",
       Thesis: "No",
     },
@@ -141,7 +136,6 @@ const sampleData = {
       degName: "Bachelor Of Science",
       cgpa: "3.75 out of 4.00",
       Department: "Computer Science and Engineering",
-      group: "Science",
       Thesis: "Speech to Emotion Detection Using Deep Learning",
     },
   ],
@@ -150,61 +144,55 @@ const sampleData = {
       id: 1,
       name: "Test-Buddy",
       src: "/assets/img/testbuddy.png",
-      desc: "Software Engineering Demo Project for University Course. A React-based application for managing and conducting tests/exams with a modern user interface.",
+      desc: "Software Engineering Demo Project for University Course. A React-based application for managing and conducting tests/exams with a modern UI.",
       lang: ["React JS", "HTML", "CSS", "JavaScript"],
       githubUrl: "https://github.com/Mahbub96/Test-Buddy",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://test-buddy.mahbub.dev",
     },
     {
       id: 2,
       name: "Blood Donation Management System",
       src: "/assets/img/blood.png",
-      desc: "A comprehensive Java-based desktop application for managing blood donation records, donor information, and blood bank operations with SQLite database.",
+      desc: "A Java desktop application for managing blood donation and donor information with SQLite database.",
       lang: ["Java", "SQLite3", "Swing"],
       githubUrl: "https://github.com/Mahbub96/BloodDonationManagementSystem",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://blood.mahbub.dev",
     },
     {
       id: 3,
       name: "Dot Matrix Display",
       src: "/assets/img/assembly.png",
-      desc: "An interactive dot matrix display project built with HTML, CSS, and JavaScript. Features dynamic pattern creation and visual effects.",
+      desc: "Interactive dot matrix display built with HTML, CSS, and JavaScript.",
       lang: ["HTML", "CSS", "JavaScript"],
       githubUrl: "https://github.com/Mahbub96/dot_matrix",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://dot-matrix.mahbub.dev",
     },
     {
       id: 4,
       name: "Chat Application",
       src: "/assets/img/chat.png",
-      desc: "Real-time chat application with modern UI and instant messaging capabilities. Built with modern web technologies for seamless communication.",
-      lang: ["React JS", "Node Js", "Socket.io", "CSS"],
+      desc: "Real-time chat app using React, Node.js, and Socket.io.",
+      lang: ["React JS", "Node Js", "Socket.io"],
       githubUrl: "https://github.com/Mahbub96/chat-application",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://chat.mahbub.dev",
     },
     {
       id: 5,
       name: "Speech Emotion Recognition",
       src: "/assets/img/python.png",
-      desc: "Machine Learning project for detecting emotions from speech patterns. Uses advanced audio processing and ML algorithms to classify emotional states.",
-      lang: ["Python", "Machine Learning", "Audio Processing", "Data Science"],
+      desc: "Detect emotions from speech using deep learning (Python).",
+      lang: ["Python", "Machine Learning"],
       githubUrl: "https://github.com/Mahbub96/speech-emotion-recognition",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://speech-emotion.mahbub.dev",
     },
     {
       id: 6,
       name: "Next Portfolio",
       src: "/assets/img/react.png",
-      desc: "Personal portfolio website built with React, featuring modern design, responsive layout, and interactive components to showcase projects and skills.",
-      lang: ["React JS", "CSS", "JavaScript", "Firebase"],
+      desc: "Personal portfolio built with React & Firebase.",
+      lang: ["React JS", "Firebase"],
       githubUrl: "https://github.com/Mahbub96/react_portfolio",
-      liveUrl: "",
-      downloadUrl: "",
+      liveUrl: "https://portfolio.mahbub.dev",
     },
   ],
   Banner: {
@@ -220,96 +208,46 @@ const sampleData = {
     description:
       "I'm a passionate Full Stack Developer with expertise in modern web technologies. I love creating user-friendly applications and solving complex problems through code.",
     skills: ["React", "Node.js", "PHP", "MongoDB", "MySQL", "AWS", "Docker"],
-    experience: "5+ years",
-    projects: "20+ completed",
   },
   Contact: {
     title: "Get In Touch",
     description:
-      "I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!",
+      "I'm open to new opportunities. Whether you have a question or want to say hi, I'll reply soon!",
     email: "admin@mahbub.dev",
     phone: "+880-1XXX-XXXXXX",
     location: "Dhaka, Bangladesh",
-    social: {
-      github: "https://github.com/mahbub96",
-      linkedin: "https://linkedin.com/in/md-mahbub-alam-6b751821b",
-      twitter: "https://twitter.com/mahbubcse96",
-    },
   },
 };
 
+// ---- SEED FUNCTION ---- //
 async function seedDatabase() {
   try {
     console.log("🔌 Connecting to MongoDB...");
     await mongoose.connect(MONGODB_URI);
-    console.log("✅ Connected to MongoDB successfully!");
+    console.log("✅ Connected to MongoDB");
 
-    // Drop the collection to remove any conflicting indexes
-    console.log(
-      "🧹 Dropping existing collection to remove conflicting indexes..."
-    );
-    try {
-      await mongoose.connection.db.collection("portfoliodatas").drop();
-      console.log("✅ Collection dropped successfully");
-    } catch (dropError) {
-      if (dropError.code === 26) {
-        console.log("ℹ️ Collection doesn't exist, creating new one");
-      } else {
-        console.log("⚠️ Error dropping collection:", dropError.message);
-      }
+    console.log("🧹 Clearing existing data...");
+    await PortfolioData.deleteMany({});
+
+    console.log("📝 Inserting new data...");
+    for (const [collectionName, data] of Object.entries(sampleData)) {
+      await PortfolioData.create({
+        collectionName,
+        data,
+        lastUpdate: new Date(),
+      });
+      console.log(`✔ Inserted: ${collectionName}`);
     }
 
-    // Clear any existing data (in case collection wasn't dropped)
-    console.log("🧹 Clearing any remaining data...");
-    await PortfolioData.deleteMany({});
-    console.log("✅ Existing data cleared");
-
-    // Insert new data
-    console.log("📝 Inserting portfolio data...");
-    const insertPromises = Object.entries(sampleData).map(
-      async ([collectionName, data]) => {
-        const portfolioItem = new PortfolioData({
-          collectionName,
-          data,
-          lastUpdate: new Date(),
-        });
-        return portfolioItem.save();
-      }
-    );
-
-    await Promise.all(insertPromises);
-    console.log("✅ All portfolio data inserted successfully!");
-
-    // Verify the data
-    console.log("🔍 Verifying inserted data...");
-    const allData = await PortfolioData.find({});
-    console.log(`📊 Total collections: ${allData.length}`);
-
-    allData.forEach((item) => {
-      console.log(
-        `  - ${item.collectionName}: ${
-          Array.isArray(item.data) ? item.data.length : "Object"
-        } items`
-      );
-    });
-
-    console.log("\n🎉 Database seeding completed successfully!");
-    console.log("🚀 Your portfolio should now display all projects and data.");
+    const count = await PortfolioData.countDocuments();
+    console.log(`\n🎉 Seeding complete! Total collections: ${count}`);
   } catch (error) {
-    console.error("❌ Error seeding database:", error);
-    console.error("Error details:", {
-      name: error.name,
-      code: error.code,
-      message: error.message,
-      keyPattern: error.keyPattern,
-      keyValue: error.keyValue,
-    });
-    process.exit(1);
+    console.error("❌ Error seeding database:", error.message);
   } finally {
     await mongoose.disconnect();
     console.log("🔌 Disconnected from MongoDB");
   }
 }
 
-// Run the seeding function
+// Run seeding
 seedDatabase();
