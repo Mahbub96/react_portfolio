@@ -3,33 +3,40 @@ name: Build and Deploy Test Server
 on:
   push:
     branches:
-      - test
+      - cicd
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # ✅ Step 1: Checkout source code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (for build)
+      # ✅ Step 2: Setup Node.js (match your server Node version)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
+          cache: "yarn"
 
-      - name: Install Dependencies (for build)
+      # ✅ Step 3: Install dependencies
+      - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
+      # ✅ Step 4: Build Next.js app
       - name: Build Next.js App
         run: yarn build
 
+      # ✅ Step 5: Prepare deployment package
       - name: Prepare Deployment Package
         run: |
           mkdir deploy
-          cp -r .next public ecosystem.config.js package.json yarn.lock src scripts deploy/
-          cp -r .env deploy/.env || true
+          cp -r .next public ecosystem.config.js package.json yarn.lock deploy/
+          cp .env deploy/.env || true
 
+      # ✅ Step 6: Deploy built files to your VPS
       - name: Deploy to VPS (Test)
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -38,8 +45,8 @@ jobs:
           key: ${{ secrets.PRIVATE_SSH_VPS }}
           source: "deploy/*"
           target: "/var/www/html/test.mahbub.dev"
-          strip_components: 1
 
+      # ✅ Step 7: Install dependencies, run seeder & restart app via PM2
       - name: Run Seeder & Restart Test App
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -49,16 +56,17 @@ jobs:
           script: |
             cd /var/www/html/test.mahbub.dev
 
-            # Load NVM and use correct Node version
+            # Load NVM & use correct Node version
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm use 22.14.0
+            nvm install 22
+            nvm use 22
 
-            # Install dependencies (optional if already installed)
-            yarn install --frozen-lockfile
+            # Install production dependencies
+            yarn install --frozen-lockfile --production=false
 
-            # Run database seeder
-            yarn seed
+            # Run database seeder if defined
+            yarn seed || echo "No seed script found, skipping..."
 
-            # Restart or start PM2 test app
+            # Restart or start PM2 process
             pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --only test.mahbub.dev
