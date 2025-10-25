@@ -46,8 +46,8 @@ jobs:
           source: "deploy/*"
           target: "/var/www/html/test.mahbub.dev"
 
-      # ✅ Step 7: Install dependencies, run seeder & restart app via PM2
-      - name: Run Seeder & Restart Test App
+      # ✅ Step 7: Install dependencies, run seeder & restart app via PM2 on port 4000
+      - name: Run Seeder & Restart Test App on Port 4000
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.IP }}
@@ -62,11 +62,16 @@ jobs:
             nvm install 22
             nvm use 22
 
-            # Install production dependencies
+            # Install dependencies
             yarn install --frozen-lockfile --production=false
 
             # Run database seeder if defined
             yarn seed || echo "No seed script found, skipping..."
 
-            # Restart or start PM2 process
-            pm2 restart test.mahbub.dev || pm2 start ecosystem.config.js --only test.mahbub.dev
+            # Set PORT environment variable for PM2
+            export PORT=4000
+
+            # Restart or start PM2 process on port 4000
+            pm2 delete test.mahbub.dev || true
+            pm2 start npm --name "test.mahbub.dev" -- start
+            pm2 save
