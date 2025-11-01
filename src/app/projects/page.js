@@ -1,19 +1,21 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import NextDynamic from "next/dynamic";
 import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
 
-const Navbar = dynamic(() => import("@/components/navbar/Navbar"), {
+export const dynamic = "force-dynamic";
+
+const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-const Projects = dynamic(() => import("@/components/projects/Projects"), {
+const Projects = NextDynamic(() => import("@/components/projects/Projects"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-const Footer = dynamic(() => import("@/components/Footer"), {
+const Footer = NextDynamic(() => import("@/components/Footer"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });

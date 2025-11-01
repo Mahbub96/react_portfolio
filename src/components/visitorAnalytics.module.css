@@ -1522,3 +1522,399 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Additional Professional Styles */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.deviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.deviceCard {
+  background: var(--background-elevated);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition-normal);
+}
+
+.deviceCard:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.deviceIcon {
+  color: var(--accent-primary);
+}
+
+.deviceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.deviceName {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.deviceStats {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.interactionBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.componentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.componentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.componentItem:hover {
+  border-color: var(--border-accent);
+  transform: translateX(4px);
+}
+
+.componentName {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.componentCount {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.pageList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pageItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.pageItem:hover {
+  background: var(--background-elevated);
+  border-color: var(--border-accent);
+  transform: translateX(4px);
+}
+
+.pageRank {
+  background: var(--accent-primary);
+  color: var(--background-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.pageInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.pageName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.pagePath {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.pageMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+}
+
+.pageTime {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.countryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.countryItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.countryItem:hover {
+  background: var(--background-elevated);
+  border-color: var(--border-accent);
+  transform: translateX(4px);
+}
+
+.countryFlag {
+  font-size: 1.5rem;
+}
+
+.countryInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.countryName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.countryVisits {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.countryTime {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.browserList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.browserItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.browserItem:hover {
+  background: var(--background-elevated);
+  border-color: var(--border-accent);
+  transform: translateX(4px);
+}
+
+.browserIcon {
+  font-size: 1.5rem;
+}
+
+.browserName {
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+}
+
+.browserCount {
+  color: var(--accent-primary);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.hourlyChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 200px;
+  padding: 1rem 0;
+}
+
+.hourlyBar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.barFill {
+  width: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  position: relative;
+  transition: height 0.8s ease;
+  min-height: 20px;
+}
+
+.barValue {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--accent-primary);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.barLabel {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--background-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.activityItem:hover {
+  background: var(--background-elevated);
+  border-color: var(--border-accent);
+  transform: translateX(4px);
+}
+
+.activityIcon {
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activityDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.activityPage {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.activityInfo {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+
+.activityMetrics {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.refreshBtn {
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  color: var(--accent-primary);
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-normal);
+  width: 36px;
+  height: 36px;
+}
+
+.refreshBtn:hover {
+  background: rgba(100, 255, 218, 0.1);
+  border-color: var(--border-accent);
+  transform: rotate(180deg);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-normal);
+  width: 36px;
+  height: 36px;
+}
+
+.closeBtn:hover {
+  color: var(--accent-primary);
+  background: rgba(100, 255, 218, 0.1);
+}

@@ -77,9 +77,9 @@ export default function ModalView(props) {
       }
 
       if (initialData?.id) {
-        // TODO: Replace Firestore logic with MongoDB API integration
+        // MongoDB API integration handled via usePortfolioData hook
       } else {
-        // TODO: Replace Firestore logic with MongoDB API integration
+        // MongoDB API integration handled via usePortfolioData hook
       }
 
       setFormData({});

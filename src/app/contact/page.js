@@ -1,17 +1,19 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import NextDynamic from "next/dynamic";
 
-const Navbar = dynamic(() => import("@/components/navbar/Navbar"), {
+export const dynamic = "force-dynamic";
+
+const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-const Contact = dynamic(() => import("@/components/contact/Contact"), {
+const Contact = NextDynamic(() => import("@/components/contact/Contact"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-const Footer = dynamic(() => import("@/components/Footer"), {
+const Footer = NextDynamic(() => import("@/components/Footer"), {
   loading: () => <div>Loading...</div>,
   ssr: true,
 });

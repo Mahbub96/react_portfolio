@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import DataContextProvider from "@/contexts/useAllContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -833,7 +833,10 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className} suppressHydrationWarning={true}>
         <DataContextProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+            <AnalyticsTracker />
+          </ThemeProvider>
         </DataContextProvider>
       </body>
     </html>

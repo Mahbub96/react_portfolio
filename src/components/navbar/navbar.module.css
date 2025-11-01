@@ -15,7 +15,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   width: 100% !important;
   isolation: isolate;
-  /* Debug: Add a visible background to test */
 }
 
 /* Navigation container */
@@ -1391,7 +1390,7 @@
   }
 }
 
-/* Debug and ensure visibility at all tablet breakpoints */
+/* Ensure visibility at all tablet breakpoints */
 @media (min-width: 768px) and (max-width: 1024px) {
   /* Force all elements to be visible */
   .header,

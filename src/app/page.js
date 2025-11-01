@@ -27,14 +27,6 @@ const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
 });
 
-// Client-side components for interactive features
-const BannerAnimation = dynamic(
-  () => import("@/components/banner/BannerAnimation"),
-  {
-    ssr: false, // Client-side only for typing animation
-  }
-);
-
 // Server-side data fetching with caching
 async function getPortfolioData() {
   try {

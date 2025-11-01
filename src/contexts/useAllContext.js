@@ -82,21 +82,12 @@ function DataContextProvider(props) {
       const token = localStorage.getItem("authToken");
       const role = localStorage.getItem("userRole");
 
-      console.log("Checking stored token:", token ? "exists" : "none");
-      console.log("Stored role:", role);
-
       if (token && role) {
         // Verify token validity using proper JWT decoding
         const payload = decodeJWTPayload(token);
 
-        console.log("Decoded token payload:", payload);
-
         if (payload && isValidTokenStructure(payload)) {
           const currentTime = Math.floor(Date.now() / 1000);
-
-          console.log("Token expiry:", payload.exp);
-          console.log("Current time:", currentTime);
-          console.log("Token valid:", payload.exp > currentTime);
 
           if (payload.exp > currentTime) {
             // Token is valid
@@ -106,24 +97,16 @@ function DataContextProvider(props) {
 
             // Check if token needs refresh
             if (shouldRefreshToken(payload)) {
-              console.log("Token needs refresh, attempting to refresh...");
               // In a real app, you'd call a refresh endpoint here
-              // For now, we'll just log it
             }
           } else {
             // Token expired, clear it
-            console.log("JWT token expired, clearing authentication");
             localStorage.removeItem("authToken");
             localStorage.removeItem("userRole");
             setIsAuthenticated(false);
           }
         } else {
           // Invalid token structure, clear it
-          console.log("Invalid JWT token structure, clearing authentication");
-          console.log(
-            "Expected structure: { exp: number, username: string, role: string }"
-          );
-          console.log("Received:", payload);
           localStorage.removeItem("authToken");
           localStorage.removeItem("userRole");
           setIsAuthenticated(false);
@@ -152,15 +135,12 @@ function DataContextProvider(props) {
 
         if (payload.exp <= currentTime) {
           // Token expired, logout user
-          console.log("Token expired during session, logging out");
           logout();
         } else if (shouldRefreshToken(payload)) {
-          console.log("Token needs refresh, attempting to refresh...");
           // In a real app, you'd call a refresh endpoint here
         }
       } else {
         // Invalid token structure, logout user
-        console.log("Invalid token structure during session, logging out");
         logout();
       }
     }, 300000); // Check every 5 minutes instead of every minute
@@ -296,8 +276,6 @@ function DataContextProvider(props) {
     async (url, options = {}) => {
       try {
         const headers = getAuthHeaders();
-        console.log("Making authenticated request to:", url);
-        console.log("Auth headers:", headers);
 
         const response = await fetch(url, {
           ...options,
@@ -307,40 +285,26 @@ function DataContextProvider(props) {
           },
         });
 
-        console.log("Response status:", response.status);
-
         if (response.status === 401) {
-          console.log("Received 401 response, checking token validity...");
           // Check if token is actually expired or just invalid
           const payload = decodeJWTPayload(authToken);
-          console.log("Token payload on 401:", payload);
 
           if (payload && isValidTokenStructure(payload)) {
             const currentTime = Math.floor(Date.now() / 1000);
-            console.log(
-              "Token expiry:",
-              payload.exp,
-              "Current time:",
-              currentTime
-            );
 
             if (payload.exp <= currentTime) {
               // Token is actually expired, logout user
-              console.log("Token expired, logging out user");
               logout();
               return { error: "Token expired", status: 401 };
             }
           }
           // Token might be invalid but not expired, return error without logout
-          console.log(
-            "Token invalid but not expired, returning error without logout"
-          );
           return { error: "Authentication failed", status: 401 };
         }
 
         return { response, status: response.status };
       } catch (error) {
-        console.error("API request error:", error);
+        // Silent fail in production
         return { error: "Network error", status: 0 };
       }
     },
