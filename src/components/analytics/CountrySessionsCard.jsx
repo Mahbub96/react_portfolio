@@ -40,7 +40,7 @@ export default function CountrySessionsCard({
               <span className={styles.summaryValue}>
                 {formatNumber(totalCountriesSessions)}
               </span>
-              <span className={styles.summaryLabel}>- World</span>
+              <span className={styles.summaryLabel}> - World</span>
             </div>
             <div className={styles.countriesList}>
               {topCountries.map((country, idx) => (
@@ -49,7 +49,7 @@ export default function CountrySessionsCard({
                     {formatCountryName(country.country)}
                   </span>
                   <span className={styles.countryValue}>
-                    {formatNumber(country.sessions)}
+                    {" - " + formatNumber(country.sessions)}
                   </span>
                 </div>
               ))}

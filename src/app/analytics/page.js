@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaChartBar, FaSync } from "react-icons/fa";
 import styles from "./analytics.module.css";
 import { useAnalyticsData } from "@/hooks/useAnalyticsData";
@@ -16,9 +16,13 @@ import AnalyticsCard from "@/components/analytics/AnalyticsCard";
 
 const AnalyticsPage = () => {
   const { stats, loading, error, fetchStats } = useAnalyticsData(14);
-  const worldMapLoaded = useWorldMap();
+  const worldMapLoaded = useWorldMap(); // ✅ fixed — no longer always true
 
-  // Don't render until data is loaded
+  useEffect(() => {
+    console.log("🌍 worldMapLoaded changed:", worldMapLoaded);
+  }, [worldMapLoaded]);
+
+  // --- Loading State ---
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -30,6 +34,7 @@ const AnalyticsPage = () => {
     );
   }
 
+  // --- Error State ---
   if (error) {
     return (
       <div className={styles.errorContainer}>
@@ -45,6 +50,7 @@ const AnalyticsPage = () => {
     );
   }
 
+  // --- Empty Data State ---
   if (!stats) {
     return (
       <div className={styles.errorContainer}>
@@ -60,35 +66,45 @@ const AnalyticsPage = () => {
     );
   }
 
-  // Prepare data for components
+  // --- Prepare Analytics Data ---
   const countriesData = stats.countries || [];
   const dailyData = stats.daily || [];
   const mediumsData = stats.mediums || [];
   const devicesData = stats.devices || [];
   const componentsData = stats.components || [];
 
-  // Format daily data for line charts
+  // --- Format daily data for charts ---
   const sessionsData = dailyData.map((d) => [d.date, d.sessions || 0]);
   const usersData = dailyData.map((d) => [d.date, d.users || 0]);
   const pageviewsData = dailyData.map((d) => [d.date, d.pageViews || 0]);
 
-  // Calculate totals
+  // --- Calculate totals ---
   const totalSessions = stats.dailyTrends?.sessions?.current || 0;
   const totalUsers = stats.dailyTrends?.users?.current || 0;
   const totalPageviews = stats.dailyTrends?.pageViews?.current || 0;
 
+  console.log(
+    "totalSessions, totalUsers, totalPageviews-------<",
+    totalSessions,
+    totalUsers,
+    totalPageviews
+  );
+
   return (
     <div className={styles.analyticsPage}>
+      {/* Header */}
       <AnalyticsHeader onRefresh={fetchStats} />
 
+      {/* Dashboard Layout */}
       <div className={styles.dashboardGrid}>
-        {/* Countries by Sessions Card with Map */}
+        {/* 🌍 Countries by Sessions Card (Map Visualization) */}
+
         <CountrySessionsCard
           countriesData={countriesData}
           worldMapLoaded={worldMapLoaded}
         />
 
-        {/* Countries Table Card */}
+        {/* 🌏 Countries Table */}
         <AnalyticsCard
           title="BY COUNTRIES"
           icon={FaChartBar}
@@ -97,7 +113,7 @@ const AnalyticsPage = () => {
           <CountriesTable countriesData={countriesData} />
         </AnalyticsCard>
 
-        {/* Sessions Chart */}
+        {/* 📈 Sessions Chart */}
         <TimeSeriesChart
           title="SESSIONS"
           data={sessionsData}
@@ -106,7 +122,7 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.sessions?.trend || 0}
         />
 
-        {/* Users Chart */}
+        {/* 👥 Users Chart */}
         <TimeSeriesChart
           title="USERS"
           data={usersData}
@@ -115,7 +131,7 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.users?.trend || 0}
         />
 
-        {/* Pageviews Chart */}
+        {/* 👀 Pageviews Chart */}
         <TimeSeriesChart
           title="PAGEVIEWS"
           data={pageviewsData}
@@ -124,19 +140,19 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.pageViews?.trend || 0}
         />
 
-        {/* Mediums Section (Donut + Table) */}
+        {/* 📊 Mediums Section */}
         <MediumsSection mediumsData={mediumsData} />
 
-        {/* Components Section */}
+        {/* ⚙️ Components Section */}
         <ComponentsSection componentsData={componentsData} />
 
-        {/* Interaction Metrics */}
+        {/* 🖱 Interaction Metrics */}
         <InteractionMetrics
           mouseEvents={stats.mouseEvents}
           keyboardEvents={stats.keyboardEvents}
         />
 
-        {/* Devices Section */}
+        {/* 💻 Devices Section */}
         <DevicesSection devicesData={devicesData} />
       </div>
     </div>

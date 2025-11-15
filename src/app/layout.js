@@ -477,7 +477,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="https://mahbub.dev/favicon.ico" />
         <link rel="apple-touch-icon" href="https://mahbub.dev/logo192.png" />
-        <link rel="manifest" href="https://mahbub.dev/manifest.json" />
+        <link rel="manifest" href={process.env.NEXT_PUBLIC_MANIFEST_URL} />
         <meta name="theme-color" content="#0a192f" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="format-detection" content="telephone=no" />

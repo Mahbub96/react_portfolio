@@ -26,11 +26,8 @@ export default function CountriesMap({
     const checkMap = () => {
       try {
         const registeredMap = echarts.getMap("world");
-        if (
-          registeredMap &&
-          registeredMap.features &&
-          registeredMap.features.length > 0
-        ) {
+
+        if (registeredMap) {
           setMapReady(true);
           setLoadingState("loaded");
           return true;
@@ -41,22 +38,25 @@ export default function CountriesMap({
       return false;
     };
 
-    // Initial check
+    // Always check initially
+    if (checkMap()) {
+      return;
+    }
+
+    // Set initial loading state
     if (worldMapLoaded) {
-      if (checkMap()) {
-        return;
-      }
       setLoadingState("loading");
     } else {
       setLoadingState("waiting");
     }
 
-    // Poll for map availability
+    // Poll for map availability - check continuously even if worldMapLoaded is false initially
     intervalId = setInterval(() => {
       checkCount++;
       if (checkMap()) {
         clearInterval(intervalId);
-      } else if (checkCount >= maxChecks) {
+      } else if (checkCount >= maxChecks * 2) {
+        // Double the checks (20 seconds total)
         clearInterval(intervalId);
         setLoadingState("timeout");
       }
@@ -65,7 +65,7 @@ export default function CountriesMap({
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [worldMapLoaded]);
+  }, [worldMapLoaded]); // Re-check when worldMapLoaded changes from false to true
 
   // Check when countriesData changes
   useEffect(() => {
@@ -78,6 +78,7 @@ export default function CountriesMap({
             registeredMap.features &&
             registeredMap.features.length > 0
           ) {
+            console.log("registeredMap:", registeredMap);
             setMapReady(true);
             setLoadingState("loaded");
             return true;
@@ -131,38 +132,15 @@ export default function CountriesMap({
     );
   }
 
-  // Show timeout message
-  if (loadingState === "timeout") {
-    return (
-      <div className={styles.countriesMapContainer}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            color: "#999",
-            fontSize: "0.85rem",
-            textAlign: "center",
-            padding: "1rem",
-          }}
-        >
-          <div>⚠️ Map data unavailable</div>
-          <div style={{ fontSize: "0.75rem", marginTop: "0.5rem" }}>
-            Using bar chart instead
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // On timeout, render bar chart instead of error message
+  // mapReady is already set to false in useEffect, so chart will render bar chart
 
   return (
     <div className={styles.countriesMapContainer}>
       <ReactECharts
         option={mapOption}
-        style={{ height: "100%", width: "100%", maxWidth: "100%" }}
-        opts={{ renderer: "canvas", locale: "en" }}
+        className={styles.mapContainer} // ← use CSS module
+        opts={{ renderer: "canvas" }}
         notMerge={true}
         lazyUpdate={false}
       />

@@ -57,9 +57,17 @@ export function useAnalyticsData(days = 14) {
       return;
     }
     if (auth && isLoaded) {
+      console.log("Fetching analytics data...123");
       fetchStats();
     }
   }, [auth, isLoaded, router, fetchStats]);
+
+  console.log(
+    "useAnalyticsData stats, loading, error1212",
+    stats,
+    loading,
+    error
+  );
 
   return { stats, loading, error, fetchStats };
 }

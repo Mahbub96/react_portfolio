@@ -180,7 +180,7 @@ export const getDonutChartOption = (data, total, colors = []) => {
 /**
  * Generate world map chart option
  */
-export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
+export const getCountriesMapOption = (countriesData, mapReady) => {
   // Map country names to ECharts-compatible format
   const countryNameMap = {
     "United States": "United States of America",
@@ -222,7 +222,7 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
   const maxValue = Math.max(...mapData.map((d) => d.value), 1);
 
   // Try to show world map if loaded and we have data
-  if (worldMapLoaded && mapData.length > 0) {
+  if (mapReady && mapData.length > 0) {
     return {
       backgroundColor: "transparent",
       tooltip: {
@@ -244,7 +244,7 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
         calculable: true,
         realtime: true,
         inRange: {
-          color: ["#e3f2fd", "#64b5f6", "#1976d2", "#1565c0", "#0d47a1"],
+          color: ["#e3f2fd", "#64b5f6", "RED", "#1565c0", "GREEN"],
         },
         textStyle: {
           color: "#666",
@@ -256,18 +256,18 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
       },
       geo: {
         map: "world",
-        roam: false,
-        zoom: 1.2,
+        roam: true,
+        zoom: 2,
         center: [0, 0],
         itemStyle: {
-          areaColor: "#f5f5f5",
-          borderColor: "#ddd",
+          areaColor: "#ddd", // lighter grey for countries without data
+          borderColor: "#fff", // subtle borders
           borderWidth: 0.5,
         },
         emphasis: {
           itemStyle: {
-            areaColor: "#1976d2",
-            borderColor: "#1565c0",
+            areaColor: "red", // hover color
+            borderColor: "#fff",
             borderWidth: 1.5,
             shadowBlur: 10,
             shadowColor: "rgba(0, 0, 0, 0.3)",
@@ -279,10 +279,9 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
             fontWeight: "bold",
           },
         },
-        label: {
-          show: false,
-        },
+        label: { show: false },
       },
+
       series: [
         {
           name: "Sessions",
@@ -311,10 +310,11 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
           },
           select: {
             itemStyle: {
-              areaColor: "#0d47a1",
-              borderColor: "#fff",
+              areaColor: "#F00", // WHITE SELECTED COLOR
+              borderColor: "#f00",
               borderWidth: 2,
             },
+
             label: {
               show: true,
               fontWeight: "bold",
@@ -324,6 +324,10 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
           itemStyle: {
             borderColor: "#fff",
             borderWidth: 0.5,
+            areaColor: function (params) {
+              // If country has sessions → make it YELLOW
+              return params.value > 0 ? "yellow" : "#f5f5f5";
+            },
           },
         },
       ],
@@ -336,7 +340,7 @@ export const getCountriesMapOption = (countriesData, worldMapLoaded) => {
     .slice(0, 10);
 
   return {
-    backgroundColor: "transparent",
+    backgroundColor: "f5f5f5",
     tooltip: {
       trigger: "axis",
       formatter: "{b}: {c} sessions",

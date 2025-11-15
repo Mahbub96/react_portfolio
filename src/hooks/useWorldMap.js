@@ -1,89 +1,95 @@
 "use client";
 import { useState, useEffect } from "react";
 import * as echarts from "echarts";
+import * as topojson from "topojson-client";
 
 /**
- * Hook to load world map data for ECharts
- * Production-ready version with working map sources
- * @returns {boolean} - Whether the world map is loaded
+ * Hook: useWorldMap
+ * Loads world map data from local public/maps folder or remote source.
+ *
+ * @param {string[]} sources - array of URLs or relative paths to GeoJSON/TopoJSON files
+ * @returns {{ loaded: boolean, error: string | null }}
  */
-export function useWorldMap() {
-  const [worldMapLoaded, setWorldMapLoaded] = useState(false);
+export function useWorldMap(sources = ["/maps/world.geojson"]) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadWorldMap = async () => {
+    let isMounted = true;
+
+    const loadMap = async () => {
       try {
-        // Check if map is already registered
+        // Already registered?
         const existingMap = echarts.getMap("world");
-        if (existingMap && existingMap.features?.length > 0) {
-          setWorldMapLoaded(true);
+
+        console.log("Existing map check:", existingMap);
+        if (existingMap?.features?.length) {
+          if (isMounted) setLoaded(true);
           return;
         }
 
-        // Working map sources - tested and reliable
-        const sources = [
-          // DataV Aliyun (most reliable for world map)
-          "https://geo.datav.aliyun.com/areas_v3/bound/100000.json",
-          // Alternative: Use simplified world GeoJSON
-          "https://datahub.io/core/geo-countries/r/0.geojson",
-          // Backup: Use Natural Earth Data
-          "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
-        ];
+        let lastError = null;
 
         for (const source of sources) {
           try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
-
+            console.log("Fetching map from:", source);
             const response = await fetch(source, {
-              signal: controller.signal,
-              headers: {
-                Accept: "application/json",
-              },
+              headers: { Accept: "application/json" },
             });
 
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-              const worldMap = await response.json();
-
-              // Validate map data structure
-              const hasFeatures =
-                worldMap.features && Array.isArray(worldMap.features);
-              const isFeatureCollection = worldMap.type === "FeatureCollection";
-              const isValidMap = hasFeatures || isFeatureCollection;
-
-              if (isValidMap && worldMap.features?.length > 0) {
-                try {
-                  echarts.registerMap("world", worldMap);
-
-                  // Verify registration
-                  const registered = echarts.getMap("world");
-                  if (registered) {
-                    setWorldMapLoaded(true);
-                    return;
-                  }
-                } catch (regError) {
-                  continue;
-                }
-              }
+            if (!response.ok) {
+              lastError = `Failed to fetch ${source}: ${response.status}`;
+              console.warn(lastError);
+              continue;
             }
-          } catch (e) {
-            continue;
+
+            const mapJson = await response.json();
+            let mapData;
+
+            if (mapJson.type === "Topology" && mapJson.objects) {
+              const key = Object.keys(mapJson.objects)[0];
+              mapData = topojson.feature(mapJson, mapJson.objects[key]);
+            } else if (mapJson.type === "FeatureCollection") {
+              mapData = mapJson;
+            } else {
+              lastError = `Unsupported map format from ${source}: ${mapJson.type}`;
+              console.warn(lastError);
+              continue;
+            }
+
+            if (!Array.isArray(mapData.features) || !mapData.features.length) {
+              lastError = `No features found in map from ${source}`;
+              console.warn(lastError);
+              continue;
+            }
+
+            echarts.registerMap("world", mapData);
+
+            if (isMounted) {
+              console.log("World map loaded successfully!");
+              setLoaded(true);
+              return;
+            }
+          } catch (err) {
+            lastError = `Error loading map from ${source}: ${err.message}`;
+            console.warn(lastError);
           }
         }
 
-        // If all sources fail, register a minimal map using ECharts geo component directly
-        // This ensures the map will render even without external data
-        setWorldMapLoaded(true);
-      } catch (error) {
-        // Silent fail - use fallback
-        setWorldMapLoaded(true);
+        if (isMounted)
+          setError(lastError || "Failed to load world map from all sources");
+      } catch (err) {
+        if (isMounted) setError(err.message);
+        console.error("Unexpected error loading world map:", err);
       }
     };
 
-    loadWorldMap();
-  }, []);
+    loadMap();
 
-  return worldMapLoaded;
+    return () => {
+      isMounted = false;
+    };
+  }, [sources]);
+
+  return { loaded, error };
 }
