@@ -13,7 +13,7 @@ async function getProjectsData() {
       lastUpdated: new Date().toISOString(),
     };
   } catch (error) {
-    console.error("Error fetching projects data:", error);
+    console.log("Error fetching projects data:", error);
     return {
       projects: [],
       totalCount: 0,

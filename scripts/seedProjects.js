@@ -5,8 +5,6 @@ const mongoose = require("mongoose");
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
 
-console.log("MONGODB_URI", MONGODB_URI);
-
 // Define PortfolioData schema
 const PortfolioDataSchema = new mongoose.Schema(
   {
@@ -242,7 +240,7 @@ async function seedDatabase() {
     const count = await PortfolioData.countDocuments();
     console.log(`\n🎉 Seeding complete! Total collections: ${count}`);
   } catch (error) {
-    console.error("❌ Error seeding database:", error.message);
+    console.log("❌ Error seeding database:", error.message);
   } finally {
     await mongoose.disconnect();
     console.log("🔌 Disconnected from MongoDB");

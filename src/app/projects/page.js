@@ -28,7 +28,7 @@ async function getProjectsData() {
     }).lean();
     return projectsDoc?.data || [];
   } catch (error) {
-    console.error("Error fetching projects data:", error);
+    console.log("Error fetching projects data:", error);
     return [];
   }
 }

@@ -86,7 +86,7 @@ export default function ModalView(props) {
       onSuccess();
       onHide();
     } catch (error) {
-      console.error("Error saving document:", error);
+      console.log("Error saving document:", error);
     } finally {
       setIsSubmitting(false);
     }

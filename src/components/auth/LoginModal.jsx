@@ -82,7 +82,7 @@ function LoginModal({ show, onHide }) {
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.log("Login error:", error);
       setError("Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false);

@@ -128,11 +128,6 @@ export function middleware(request) {
     }
   }
 
-  // Log suspicious activity
-  if (pathname.includes('admin') || pathname.includes('login') || pathname.includes('auth')) {
-    console.log(`Auth-related request: ${pathname} from ${clientIP} at ${new Date().toISOString()}`);
-  }
-
   return response;
 }
 

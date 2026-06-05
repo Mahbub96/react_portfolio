@@ -40,12 +40,8 @@ export function verifyToken(token) {
     
     return jwt.verify(token, JWT_SECRET);
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      console.log('JWT token expired');
-    } else if (error.name === 'JsonWebTokenError') {
-      console.log('Invalid JWT token');
-    } else {
-      console.error('JWT verification error:', error.message);
+    if (error.name !== 'TokenExpiredError' && error.name !== 'JsonWebTokenError') {
+      console.log('JWT verification error:', error.message);
     }
     return null;
   }

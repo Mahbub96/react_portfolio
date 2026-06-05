@@ -57,9 +57,9 @@ const VisitorAnalytics = () => {
             setTimeout(() => fetchStats(), 100);
             return;
           }
-          console.error("Authentication failed. Please try logging in again.");
+          console.log("Authentication failed. Please try logging in again.");
         } else {
-          console.error(response.error || "An unexpected error occurred.");
+          console.log(response.error || "An unexpected error occurred.");
         }
         return;
       }
@@ -67,7 +67,7 @@ const VisitorAnalytics = () => {
       const data = await response.response.json();
       setStats(data);
     } catch (error) {
-      console.error("Error fetching analytics:", error);
+      console.log("Error fetching analytics:", error);
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ const VisitorAnalytics = () => {
         setLoginHistory(data.data);
       }
     } catch (error) {
-      console.error("Error fetching login history:", error);
+      console.log("Error fetching login history:", error);
     }
   };
 

@@ -7,21 +7,10 @@ const SkillsServer = ({ data }) => {
   // Validate and normalize skills data
   const validateSkillsData = (skillsData) => {
     if (!skillsData || !Array.isArray(skillsData)) {
-      console.warn(
-        "SkillsServer: Invalid skills data, using empty array",
-        skillsData
-      );
       return [];
     }
 
-    // Ensure each skill has required properties
-    return skillsData.filter((skill) => {
-      if (!skill || typeof skill !== "object") {
-        console.warn("SkillsServer: Invalid skill object:", skill);
-        return false;
-      }
-      return true;
-    });
+    return skillsData.filter((skill) => skill && typeof skill === "object");
   };
 
   const skills = validateSkillsData(data?.data);

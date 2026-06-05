@@ -36,11 +36,11 @@ function decodeJWTPayload(token) {
         return JSON.parse(decoded);
       }
     } catch (decodeError) {
-      console.error("JWT decode error:", decodeError);
+      console.log("JWT decode error:", decodeError);
       return null;
     }
   } catch (error) {
-    console.error("JWT decode error:", error);
+    console.log("JWT decode error:", error);
     return null;
   }
 }
@@ -197,7 +197,7 @@ function DataContextProvider(props) {
         }
       }
     } catch (error) {
-      console.error("Error tracking logout:", error);
+      console.log("Error tracking logout:", error);
     } finally {
       setAuthToken(null);
       setUserRole(null);

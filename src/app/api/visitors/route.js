@@ -37,7 +37,7 @@ export async function POST(request) {
 
     return secureResponse({ success: true });
   } catch (error) {
-    console.error("Error tracking visitor:", error);
+    console.log("Error tracking visitor:", error);
     return secureResponse(
       { error: "Failed to track visitor" },
       500
@@ -559,7 +559,7 @@ export async function GET(request) {
       recentVisits,
     });
   } catch (error) {
-    console.error("Error fetching visitor stats:", error);
+    console.log("Error fetching visitor stats:", error);
     return secureResponse(
       { error: "Failed to fetch visitor statistics" },
       500

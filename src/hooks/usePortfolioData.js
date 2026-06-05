@@ -20,7 +20,7 @@ const usePortfolioData = () => {
       const portfolioData = await response.json();
       setData(portfolioData);
     } catch (err) {
-      console.error("Error fetching portfolio data:", err);
+      console.log("Error fetching portfolio data:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ const usePortfolioData = () => {
 
       return result;
     } catch (error) {
-      console.error(`Error adding item to ${collectionName}:`, error);
+      console.log(`Error adding item to ${collectionName}:`, error);
       throw error;
     }
   };
@@ -75,7 +75,7 @@ const usePortfolioData = () => {
       // Refresh data after updating
       await fetchPortfolioData();
     } catch (error) {
-      console.error(`Error updating document in ${collectionName}:`, error);
+      console.log(`Error updating document in ${collectionName}:`, error);
       throw error;
     }
   };
@@ -97,7 +97,7 @@ const usePortfolioData = () => {
       // Refresh data after deleting
       await fetchPortfolioData();
     } catch (error) {
-      console.error(`Error deleting document from ${collectionName}:`, error);
+      console.log(`Error deleting document from ${collectionName}:`, error);
       throw error;
     }
   };

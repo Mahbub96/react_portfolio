@@ -50,7 +50,7 @@ const VisitorCounter = () => {
           }),
         });
       } catch (error) {
-        console.error("Error tracking visit:", error);
+        console.log("Error tracking visit:", error);
       }
     };
 

@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
-import connectDB from "@/lib/mongodb";
-import PortfolioData from "@/models/PortfolioData";
+import { getPortfolioData } from "@/lib/getPortfolioData";
 import LoadingScreen from "@/components/LoadingScreen";
 
 // Import server-side components for better SEO
@@ -26,36 +25,6 @@ const VisitorAnalytics = dynamic(
 const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
 });
-
-// Server-side data fetching with caching
-async function getPortfolioData() {
-  try {
-    const db = await connectDB();
-    let portfolioData = [];
-    if (db) {
-      const data = await PortfolioData.find({}).lean();
-      portfolioData = data;
-    } else {
-      // No DB available (CI/static export). Return empty structure to allow
-      // the app to render with fallbacks during build.
-      portfolioData = [];
-    }
-
-    // Transform data to match the expected structure
-    const transformedData = {};
-    portfolioData.forEach((item) => {
-      transformedData[item.collectionName] = {
-        data: item.data,
-        lastUpdate: item.lastUpdate,
-      };
-    });
-
-    return transformedData;
-  } catch (error) {
-    console.error("Error fetching portfolio data:", error);
-    return {};
-  }
-}
 
 // Generate metadata for SEO
 export async function generateMetadata() {
@@ -265,7 +234,7 @@ export default async function HomePage() {
           <BannerServer
             data={portfolioData.Banner}
             profileImage={profile.image}
-            profile={portfolioData.profile}
+            profile={profile}
             experiences={portfolioData.Experiences?.data}
             projects={portfolioData.Projects?.data}
           />
@@ -295,7 +264,7 @@ export default async function HomePage() {
       </>
     );
   } catch (error) {
-    console.error("Error rendering home page:", error);
+    console.log("Error rendering home page:", error);
     return <LoadingScreen />;
   }
 }

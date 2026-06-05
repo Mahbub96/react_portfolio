@@ -14,7 +14,7 @@ export async function GET(request) {
 
     return generateMainSitemap();
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.log("Error generating sitemap:", error);
     return new NextResponse("Error generating sitemap", { status: 500 });
   }
 }
@@ -148,7 +148,7 @@ async function generateMainSitemap() {
       },
     });
   } catch (error) {
-    console.error("Error generating main sitemap:", error);
+    console.log("Error generating main sitemap:", error);
 
     // Fallback sitemap
     const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>

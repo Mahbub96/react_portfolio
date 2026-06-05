@@ -272,31 +272,13 @@ Sent from portfolio contact form at ${new Date().toLocaleString()}
     // Send email
     await transporter.sendMail(mailOptions);
 
-    // Log successful submission (without sensitive data)
-    console.log(
-      `✅ Contact form submitted by ${sanitizedName} at ${new Date().toISOString()}`
-    );
-
     // Return success response
     return secureResponse({
       message: "Email sent successfully! I'll get back to you soon.",
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("❌ Error sending email:", error);
-
-    // Enhanced error logging
-    if (error.code === "EAUTH") {
-      console.error(
-        "🔐 Authentication failed - check EMAIL_USER and EMAIL_PASS"
-      );
-    } else if (error.code === "ECONNECTION") {
-      console.error("🔌 Connection failed - check SMTP settings");
-    } else if (error.code === "ETIMEDOUT") {
-      console.error("⏰ Connection timeout - check network/firewall");
-    } else if (error.code === "ENOTFOUND") {
-      console.error("🌐 SMTP host not found - check SMTP_HOST");
-    }
+    console.log("Error sending email:", error.code || error.message);
 
     // Return user-friendly error message
     return secureResponse(

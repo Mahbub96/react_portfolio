@@ -28,7 +28,7 @@ async function getSkillsData() {
     }).lean();
     return skillsDoc?.data || [];
   } catch (error) {
-    console.error("Error fetching skills data:", error);
+    console.log("Error fetching skills data:", error);
     return [];
   }
 }

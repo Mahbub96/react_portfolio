@@ -26,6 +26,7 @@
     "echarts-gl": "^2.0.9",
     "framer-motion": "^12.4.7",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^4.2.1",
     "mongodb": "^6.0.0",
     "mongoose": "^8.0.0",
     "next": "^14.0.0",

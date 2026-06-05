@@ -75,7 +75,7 @@ export async function GET(request) {
       },
     });
   } catch (error) {
-    console.error("Login history API error:", error);
+    console.log("Login history API error:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }

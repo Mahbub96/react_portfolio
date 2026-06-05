@@ -67,7 +67,7 @@ export default function Contact({ data }) {
       }
     } catch (error) {
       setSubmitStatus("error");
-      console.error("Error submitting form:", error);
+      console.log("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }

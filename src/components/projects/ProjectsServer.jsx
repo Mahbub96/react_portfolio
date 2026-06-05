@@ -7,21 +7,12 @@ const ProjectsServer = ({ data }) => {
   // Validate and normalize projects data
   const validateProjectsData = (projectsData) => {
     if (!projectsData || !Array.isArray(projectsData)) {
-      console.warn(
-        "ProjectsServer: Invalid projects data, using empty array",
-        projectsData
-      );
       return [];
     }
 
-    // Ensure each project has required properties
-    return projectsData.filter((project) => {
-      if (!project || typeof project !== "object") {
-        console.warn("ProjectsServer: Invalid project object:", project);
-        return false;
-      }
-      return true;
-    });
+    return projectsData.filter(
+      (project) => project && typeof project === "object"
+    );
   };
 
   const projects = validateProjectsData(data?.data);

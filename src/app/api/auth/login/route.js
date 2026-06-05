@@ -202,7 +202,7 @@ export async function POST(request) {
       );
     }
   } catch (error) {
-    console.error("Login API error:", error);
+    console.log("Login API error:", error);
     
     // Don't expose internal errors to client
     return secureResponse(
@@ -228,7 +228,7 @@ export async function GET() {
     
     return secureResponse({ message: "Cleanup completed" });
   } catch (error) {
-    console.error("Cleanup error:", error);
+    console.log("Cleanup error:", error);
     return secureResponse({ error: "Cleanup failed" }, 500);
   }
 }

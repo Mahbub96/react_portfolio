@@ -25,7 +25,7 @@ function SkillsClient({ skills }) {
       try {
         await deleteDocument("Skills", skill.id);
       } catch (error) {
-        console.error("Error deleting skill:", error);
+        console.log("Error deleting skill:", error);
       }
     }
   };

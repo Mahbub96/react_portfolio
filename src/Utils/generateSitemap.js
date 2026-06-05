@@ -47,9 +47,8 @@ const generateSitemap = async () => {
     const sitemap = await streamToPromise(smStream);
     createWriteStream("./public/sitemap.xml").write(sitemap.toString());
 
-    console.log("Sitemap generated successfully");
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.log("Error generating sitemap:", error);
   }
 };
 

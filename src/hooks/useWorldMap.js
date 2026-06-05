@@ -22,7 +22,6 @@ export function useWorldMap(sources = ["/maps/world.geojson"]) {
         // Already registered?
         const existingMap = echarts.getMap("world");
 
-        console.log("Existing map check:", existingMap);
         if (existingMap?.features?.length) {
           if (isMounted) setLoaded(true);
           return;
@@ -32,14 +31,12 @@ export function useWorldMap(sources = ["/maps/world.geojson"]) {
 
         for (const source of sources) {
           try {
-            console.log("Fetching map from:", source);
             const response = await fetch(source, {
               headers: { Accept: "application/json" },
             });
 
             if (!response.ok) {
               lastError = `Failed to fetch ${source}: ${response.status}`;
-              console.warn(lastError);
               continue;
             }
 
@@ -53,26 +50,22 @@ export function useWorldMap(sources = ["/maps/world.geojson"]) {
               mapData = mapJson;
             } else {
               lastError = `Unsupported map format from ${source}: ${mapJson.type}`;
-              console.warn(lastError);
               continue;
             }
 
             if (!Array.isArray(mapData.features) || !mapData.features.length) {
               lastError = `No features found in map from ${source}`;
-              console.warn(lastError);
               continue;
             }
 
             echarts.registerMap("world", mapData);
 
             if (isMounted) {
-              console.log("World map loaded successfully!");
               setLoaded(true);
               return;
             }
           } catch (err) {
             lastError = `Error loading map from ${source}: ${err.message}`;
-            console.warn(lastError);
           }
         }
 
@@ -80,7 +73,7 @@ export function useWorldMap(sources = ["/maps/world.geojson"]) {
           setError(lastError || "Failed to load world map from all sources");
       } catch (err) {
         if (isMounted) setError(err.message);
-        console.error("Unexpected error loading world map:", err);
+        console.log("Unexpected error loading world map:", err);
       }
     };
 

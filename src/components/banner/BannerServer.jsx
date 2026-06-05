@@ -10,9 +10,10 @@ import {
   FaBuilding,
   FaBriefcase,
   FaStar,
-  FaFileDownload,
 } from "react-icons/fa";
 import BannerAnimation from "./BannerAnimation";
+import DownloadResumeButton from "./DownloadResumeButton";
+import { getResumeConfig } from "@/lib/resumeConfig";
 
 // Server-side Banner + About merged component for better SEO
 const BannerServer = ({
@@ -23,7 +24,7 @@ const BannerServer = ({
   projects,
 }) => {
   const bannerData = data?.data || {};
-  const profileData = profile || {};
+  const profileData = profile?.data || profile || {};
 
   // Calculate real experience years from experiences data
   const calculateExperience = () => {
@@ -68,6 +69,7 @@ const BannerServer = ({
   // Get real calculated values
   const experience = calculateExperience();
   const projectCount = calculateProjectCount();
+  const { mode: resumeMode } = getResumeConfig();
 
   // Default values if no data from database
   const roles = bannerData.roles || [
@@ -243,16 +245,11 @@ const BannerServer = ({
               ))}
             </div>
 
-            {/* CTA Button */}
-            <a
-              href="/resume/Mahbub_Alam_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaButton}
-            >
-              <FaFileDownload />
-              <span>Download Resume</span>
-            </a>
+            {/* CTA Button — generates PDF from live portfolio data */}
+            <DownloadResumeButton
+              resumeMode={resumeMode}
+              fileName={`${name.replace(/[^a-zA-Z0-9_-]/g, "_")}_Resume.pdf`}
+            />
           </div>
 
           {/* Social Links */}

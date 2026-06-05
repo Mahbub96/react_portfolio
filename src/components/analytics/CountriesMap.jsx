@@ -78,7 +78,6 @@ export default function CountriesMap({
             registeredMap.features &&
             registeredMap.features.length > 0
           ) {
-            console.log("registeredMap:", registeredMap);
             setMapReady(true);
             setLoadingState("loaded");
             return true;

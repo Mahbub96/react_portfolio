@@ -201,7 +201,7 @@ export default async function sitemap() {
 
     return [...staticPages, ...projectPages, ...seoPages, ...imagePages];
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.log("Error generating sitemap:", error);
 
     // Fallback to static sitemap with enhanced URLs and images
     return [

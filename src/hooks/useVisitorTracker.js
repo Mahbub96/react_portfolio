@@ -37,7 +37,7 @@ const useVisitorTracker = () => {
           }),
         });
       } catch (error) {
-        console.error("Error tracking visitor:", error);
+        console.log("Error tracking visitor:", error);
       }
     };
 

@@ -32,7 +32,7 @@ export async function GET() {
 
     return response;
   } catch (error) {
-    console.error("Error fetching portfolio data:", error);
+    console.log("Error fetching portfolio data:", error);
     return secureResponse(
       { error: "Failed to fetch portfolio data" },
       500
@@ -144,7 +144,7 @@ export async function POST(request) {
 
     return response;
   } catch (error) {
-    console.error("Error adding item:", error);
+    console.log("Error adding item:", error);
     return secureResponse(
       { error: "Failed to add item" },
       500

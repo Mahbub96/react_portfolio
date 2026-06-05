@@ -116,7 +116,7 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error("Logout API error:", error);
+    console.log("Logout API error:", error);
     
     // Don't expose internal errors to client
     return secureResponse(
@@ -175,7 +175,7 @@ export async function DELETE(request) {
     });
 
   } catch (error) {
-    console.error("Force logout API error:", error);
+    console.log("Force logout API error:", error);
     return secureResponse(
       { success: false, message: "Force logout failed" },
       500

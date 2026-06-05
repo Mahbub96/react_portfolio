@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { FaChartBar, FaSync } from "react-icons/fa";
 import styles from "./analytics.module.css";
 import { useAnalyticsData } from "@/hooks/useAnalyticsData";
@@ -16,11 +16,7 @@ import AnalyticsCard from "@/components/analytics/AnalyticsCard";
 
 const AnalyticsPage = () => {
   const { stats, loading, error, fetchStats } = useAnalyticsData(14);
-  const worldMapLoaded = useWorldMap(); // ✅ fixed — no longer always true
-
-  useEffect(() => {
-    console.log("🌍 worldMapLoaded changed:", worldMapLoaded);
-  }, [worldMapLoaded]);
+  const { loaded: worldMapLoaded } = useWorldMap();
 
   // --- Loading State ---
   if (loading) {
@@ -82,13 +78,6 @@ const AnalyticsPage = () => {
   const totalSessions = stats.dailyTrends?.sessions?.current || 0;
   const totalUsers = stats.dailyTrends?.users?.current || 0;
   const totalPageviews = stats.dailyTrends?.pageViews?.current || 0;
-
-  console.log(
-    "totalSessions, totalUsers, totalPageviews-------<",
-    totalSessions,
-    totalUsers,
-    totalPageviews
-  );
 
   return (
     <div className={styles.analyticsPage}>
