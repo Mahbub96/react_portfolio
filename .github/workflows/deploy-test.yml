@@ -1,0 +1,143 @@
+name: Deploy test.mahbub.dev
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-test-mahbub-dev
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "20"
+  SERVER_HOST: "144.24.142.36"
+  SERVER_USER: "ubuntu"
+  SERVER_DIR: "/var/www/html/test.mahbub.dev"
+  APP_NAME: "my-app-5010"
+  APP_PORT: "5010"
+  PUBLIC_BASE_URL: "https://test.mahbub.dev"
+  ARTIFACT: "test-mahbub-dev-build.tar.gz"
+
+jobs:
+  build-and-deploy:
+    name: Build locally in GitHub Actions and deploy artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.13.1
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js standalone app
+        run: pnpm build
+
+      - name: Create deploy artifact
+        run: |
+          set -euo pipefail
+          test -d .next/standalone
+          test -d .next/static
+          test -d public
+          tar \
+            --exclude='.next/cache' \
+            -czf "/tmp/${ARTIFACT}" \
+            .next \
+            public \
+            package.json \
+            next.config.js \
+            db.json \
+            scripts/updatePortfolioContent.js
+          ls -lh "/tmp/${ARTIFACT}"
+
+      - name: Configure SSH
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.TEST_SERVER_SSH_KEY }}" > ~/.ssh/test_mahbub_dev_key
+          chmod 600 ~/.ssh/test_mahbub_dev_key
+          ssh-keyscan -H "${SERVER_HOST}" >> ~/.ssh/known_hosts
+
+      - name: Upload artifact to server
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/test_mahbub_dev_key \
+            -o BatchMode=yes \
+            "/tmp/${ARTIFACT}" \
+            "${SERVER_USER}@${SERVER_HOST}:/tmp/${ARTIFACT}"
+
+      - name: Extract, update content, and restart PM2
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/test_mahbub_dev_key -o BatchMode=yes "${SERVER_USER}@${SERVER_HOST}" \
+            "SERVER_DIR='${SERVER_DIR}' APP_NAME='${APP_NAME}' APP_PORT='${APP_PORT}' PUBLIC_BASE_URL='${PUBLIC_BASE_URL}' ARTIFACT='${ARTIFACT}' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          export PATH="$HOME/.nvm/versions/node/v22.14.0/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+          command -v node >/dev/null
+          command -v pm2 >/dev/null
+
+          cd "$SERVER_DIR"
+
+          ts=$(date +%Y%m%d%H%M%S)
+          mkdir -p /var/www/html/backups
+          tar --exclude=node_modules --exclude='.next/cache' \
+            -czf "/var/www/html/backups/test.mahbub.dev-before-${ts}.tar.gz" \
+            .next public package.json next.config.js db.json scripts 2>/tmp/test-mahbub-dev-backup-warn.log || true
+
+          rm -rf .next public scripts/updatePortfolioContent.js db.json package.json next.config.js
+          tar -xzf "/tmp/${ARTIFACT}" -C "$SERVER_DIR"
+
+          # Uses the existing server-side .env/.env.production values; no secrets are uploaded from CI.
+          node scripts/updatePortfolioContent.js
+
+          pm2 stop "$APP_NAME" || true
+          pm2 delete "$APP_NAME" || true
+          PORT="$APP_PORT" NODE_ENV=production NEXT_PUBLIC_BASE_URL="$PUBLIC_BASE_URL" \
+            pm2 start "$SERVER_DIR/.next/standalone/server.js" \
+              --name "$APP_NAME" \
+              --cwd "$SERVER_DIR/.next/standalone" \
+              --update-env
+          pm2 save
+          REMOTE
+
+      - name: Verify local server through SSH
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/test_mahbub_dev_key -o BatchMode=yes "${SERVER_USER}@${SERVER_HOST}" \
+            "curl -fsSI --max-time 15 http://127.0.0.1:${APP_PORT}/ | grep -i '^HTTP/'"
+
+      - name: Verify public URL
+        run: |
+          set -euo pipefail
+          curl -fsSI --max-time 20 "${PUBLIC_BASE_URL}/" | grep -i '^HTTP/'
+
+      - name: Verify rendered content
+        run: |
+          set -euo pipefail
+          html=$(mktemp)
+          curl -fsSL --max-time 20 -A 'Mozilla/5.0' "${PUBLIC_BASE_URL}/" > "$html"
+          grep -q 'Software Engineer' "$html"
+          grep -q 'Brotecs' "$html"
+          grep -q '3.70' "$html"
+          ! grep -q 'Bootstarp' "$html"
+          ! grep -q 'No Actions Available' "$html"
+          ! grep -q 'Stitel' "$html"
