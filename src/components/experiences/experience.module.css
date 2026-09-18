@@ -419,3 +419,38 @@
     transform: translateX(0);
   }
 }
+
+/* Light screen premium timeline */
+[data-theme="light"] .experienceSection::before {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(20, 184, 166, 0.12) 0%, transparent 34%),
+    radial-gradient(circle at 82% 70%, rgba(37, 99, 235, 0.08) 0%, transparent 34%);
+}
+
+[data-theme="light"] .timelineContent {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(241, 250, 255, 0.82));
+  border-color: rgba(13, 148, 136, 0.18);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .timelineContent:hover {
+  border-color: rgba(13, 148, 136, 0.38);
+  box-shadow: 0 26px 68px rgba(15, 23, 42, 0.13), 0 0 0 1px rgba(20, 184, 166, 0.08);
+}
+
+[data-theme="light"] .verticalLine {
+  background: linear-gradient(180deg, transparent, rgba(13, 148, 136, 0.42), rgba(37, 99, 235, 0.28), transparent);
+}
+
+[data-theme="light"] .timelineDot {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.12), 0 8px 22px rgba(13, 148, 136, 0.24);
+}
+
+[data-theme="light"] .description,
+[data-theme="light"] .companyName,
+[data-theme="light"] .date,
+[data-theme="light"] .totalExperience .date {
+  text-shadow: none;
+}
