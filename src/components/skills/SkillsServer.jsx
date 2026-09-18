@@ -15,6 +15,44 @@ const SkillsServer = ({ data }) => {
 
   const skills = validateSkillsData(data?.data);
 
+  const getSkillCategory = (skillName = "") => {
+    const name = skillName.toLowerCase();
+
+    if (/(react|javascript|jquery|css|tailwind|bootstrap|vue)/.test(name)) {
+      return "Frontend";
+    }
+
+    if (/(php|node|python|java|c plus|assembly|swing)/.test(name)) {
+      return "Backend & Languages";
+    }
+
+    if (/(mysql|sqlite|mongo|database)/.test(name)) {
+      return "Data";
+    }
+
+    if (/(git|docker|aws|linux|ci|cd)/.test(name)) {
+      return "Tools & Delivery";
+    }
+
+    return "Additional";
+  };
+
+  const skillGroups = skills.reduce((groups, skill) => {
+    const category = getSkillCategory(skill.name);
+    return {
+      ...groups,
+      [category]: [...(groups[category] || []), skill],
+    };
+  }, {});
+
+  const orderedGroups = [
+    "Frontend",
+    "Backend & Languages",
+    "Data",
+    "Tools & Delivery",
+    "Additional",
+  ].filter((category) => skillGroups[category]?.length);
+
   // Helper function to normalize image paths
   const normalizeImagePath = (src) => {
     if (!src) return src;
@@ -44,7 +82,7 @@ const SkillsServer = ({ data }) => {
         } technology and development skill`,
         image: skill.src ? normalizeImagePath(skill.src) : undefined,
         category: "Technical Skill",
-        skillLevel: "Expert",
+        skillLevel: "Professional working proficiency",
         relatedTo: "Software Development",
         creator: {
           "@type": "Person",
@@ -78,42 +116,61 @@ const SkillsServer = ({ data }) => {
             <div className={styles.headerLine} aria-hidden="true"></div>
           </div>
 
-          <div
-            className={styles.skillsGrid}
-            itemProp="itemListElement"
-            role="list"
-            aria-label="Technical skills and technologies grid"
-          >
+          <div className={styles.skillsGroups} itemProp="itemListElement">
             {skills.length > 0 ? (
-              skills.map((skill, index) => (
-                <div
-                  key={skill.id}
-                  className={`${styles.skillCard} ${styles.animateInCard}`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  itemScope
-                  itemType="https://schema.org/Thing"
-                  itemProp="itemListElement"
-                  role="listitem"
-                  aria-label={`${skill.name} skill card`}
+              orderedGroups.map((category) => (
+                <section
+                  key={category}
+                  className={styles.skillGroup}
+                  aria-labelledby={`skills-${category
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")}`}
                 >
-                  <div className={styles.skillIcon}>
-                    <img
-                      src={normalizeImagePath(skill.src)}
-                      alt={`${skill.name} technology icon`}
-                      loading="lazy"
-                      itemProp="image"
-                      width="64"
-                      height="64"
-                      title={`${skill.name} - Technical Skill`}
-                    />
+                  <div className={styles.groupHeader}>
+                    <h3
+                      id={`skills-${category
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")}`}
+                    >
+                      {category}
+                    </h3>
+                    <span>{skillGroups[category].length} technologies</span>
                   </div>
-                  <h3 itemProp="name" className={styles.skillName}>
-                    {skill.name}
-                  </h3>
-                  <div className={styles.skillLevel}>
-                    <span className={styles.levelIndicator}>Expert Level</span>
+
+                  <div
+                    className={styles.skillsGrid}
+                    role="list"
+                    aria-label={`${category} skills`}
+                  >
+                    {skillGroups[category].map((skill, index) => (
+                      <div
+                        key={skill.id || `${category}-${skill.name}`}
+                        className={`${styles.skillCard} ${styles.animateInCard}`}
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                        itemScope
+                        itemType="https://schema.org/Thing"
+                        itemProp="itemListElement"
+                        role="listitem"
+                        aria-label={`${skill.name} skill card`}
+                      >
+                        <div className={styles.skillIcon}>
+                          <img
+                            src={normalizeImagePath(skill.src)}
+                            alt={`${skill.name} technology icon`}
+                            loading="lazy"
+                            itemProp="image"
+                            width="64"
+                            height="64"
+                            title={`${skill.name} - Technical Skill`}
+                          />
+                        </div>
+                        <h4 itemProp="name" className={styles.skillName}>
+                          {skill.name}
+                        </h4>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                </section>
               ))
             ) : (
               <div className={styles.loading}>

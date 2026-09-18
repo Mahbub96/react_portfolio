@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import {
   HiOutlineExternalLink,
   HiOutlineDownload,
@@ -8,15 +9,15 @@ import {
 } from "react-icons/hi";
 import styles from "./projects.module.css";
 
-function Project({ project, idx }) {
+function Project({ project, idx = 0 }) {
   const { name, desc, src, lang, to, id } = project;
   const [imageError, setImageError] = useState(false);
 
-  // Handle different data structures
   const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
-  const liveUrl = to && to !== "#" ? to : null;
-  const githubUrl = null; // Your real projects don't have GitHub URLs
-  const downloadUrl = null; // Your real projects don't have download URLs
+  const liveUrl = project.liveUrl || (to && to !== "#" ? to : null);
+  const githubUrl = project.githubUrl || null;
+  const downloadUrl = project.downloadUrl || null;
+  const primaryTech = technologies.find(Boolean)?.trim() || "Web App";
 
   // Enhanced image path normalization
   const normalizeImagePath = (imageSrc) => {
@@ -58,25 +59,6 @@ function Project({ project, idx }) {
     setImageError(true);
   };
 
-  // Server-side safe event handlers
-  const handleRunProject = () => {
-    if (liveUrl) {
-      window.open(liveUrl, "_blank", "noopener,noreferrer");
-    }
-  };
-
-  const handleDownloadProject = () => {
-    if (downloadUrl) {
-      window.open(downloadUrl, "_blank", "noopener,noreferrer");
-    }
-  };
-
-  const handleViewCode = () => {
-    if (githubUrl) {
-      window.open(githubUrl, "_blank", "noopener,noreferrer");
-    }
-  };
-
   return (
     <article
       className={styles.projectCard}
@@ -90,13 +72,13 @@ function Project({ project, idx }) {
       {/* Project Image with Error Handling */}
       <div className={styles.projectImage}>
         {!imageError ? (
-          <img
+          <Image
             src={imageUrl}
             alt={`${name} - ${desc}`}
             itemProp="image"
-            loading="lazy"
-            width="400"
-            height="250"
+            width={400}
+            height={250}
+            sizes="(max-width: 768px) 100vw, 400px"
             onError={handleImageError}
             onLoad={() => setImageError(false)}
           />
@@ -108,11 +90,8 @@ function Project({ project, idx }) {
             <span className={styles.fallbackText}>{name}</span>
           </div>
         )}
-        <div className={styles.imageOverlay}>
-          <div className={styles.overlayContent}>
-            <h3 id={`project-${id || idx}-title`}>{name}</h3>
-            <p className={styles.overlayDescription}>{desc}</p>
-          </div>
+        <div className={styles.projectBadge}>
+          {primaryTech}
         </div>
       </div>
 
@@ -124,6 +103,11 @@ function Project({ project, idx }) {
         <p className={styles.bodyDescription} itemProp="description">
           {desc}
         </p>
+
+        <div className={styles.projectFacts} aria-label="Project summary">
+          <span>Role: Software engineering</span>
+          <span>Focus: Practical business workflows</span>
+        </div>
 
         {/* Technologies Stack */}
         <div className={styles.techStack} aria-label="Technologies used">
@@ -157,10 +141,12 @@ function Project({ project, idx }) {
       {/* Action Buttons Container - Appears in the gap on hover */}
       <div className={styles.actionButtonsContainer}>
         {liveUrl && (
-          <button
+          <a
             className={`${styles.projectButton} ${styles.runButton}`}
-            onClick={handleRunProject}
-            title="View Live Demo"
+            href={liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View live demo"
             aria-label={`View ${name} live demo`}
             itemProp="url"
           >
@@ -168,13 +154,16 @@ function Project({ project, idx }) {
               className={styles.buttonIcon}
               aria-hidden="true"
             />
-          </button>
+            <span>Live</span>
+          </a>
         )}
 
         {downloadUrl && (
-          <button
+          <a
             className={`${styles.projectButton} ${styles.downloadButton}`}
-            onClick={handleDownloadProject}
+            href={downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             title="Download Project"
             aria-label={`Download ${name} project`}
           >
@@ -182,26 +171,24 @@ function Project({ project, idx }) {
               className={styles.buttonIcon}
               aria-hidden="true"
             />
-          </button>
+            <span>Download</span>
+          </a>
         )}
 
         {githubUrl && (
-          <button
+          <a
             className={`${styles.projectButton} ${styles.codeButton}`}
-            onClick={handleViewCode}
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             title="View Source Code"
             aria-label={`View ${name} source code`}
           >
             <HiOutlineCode className={styles.buttonIcon} aria-hidden="true" />
-          </button>
+            <span>Code</span>
+          </a>
         )}
 
-        {/* Fallback for projects without actions */}
-        {!liveUrl && !downloadUrl && !githubUrl && (
-          <div className={styles.noActions}>
-            <span className={styles.noActionsText}>No Actions Available</span>
-          </div>
-        )}
       </div>
 
       {/* Additional Schema.org markup */}

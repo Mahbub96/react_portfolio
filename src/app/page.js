@@ -33,19 +33,25 @@ export async function generateMetadata() {
 
   return {
     title:
-      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
+      "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
     description:
       profile.bio ||
-      "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
+      "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh.",
     keywords: [
       "Mahbub Alam",
       "Mahbub",
       "Full Stack Developer",
+      "Software Engineer",
+      "Backend Developer",
+      "Applied AI",
       "Web Developer",
       "React Developer",
       "PHP Developer",
       "Node.js Developer",
-      "VoIP Solutions",
+      "Python Developer",
+      "FastAPI",
+      "Machine Learning",
+      "Computer Vision",
       "Bangladesh Developer",
       "Dhaka",
       "Brotecs Technologies",
@@ -56,9 +62,7 @@ export async function generateMetadata() {
       "AWS",
       "Docker",
       "DevSecOps",
-      "admin@mahbub.dev",
-      "support@mahbub.dev",
-      "mahbub@lunetsoft.com",
+      "mahbubcse96@gmail.com",
       "System Architecture",
       "Cloud Computing",
       "Web Applications",
@@ -83,10 +87,10 @@ export async function generateMetadata() {
     },
     openGraph: {
       title:
-        "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
+        "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
       description:
         profile.bio ||
-        "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
+        "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh.",
       url: "https://mahbub.dev",
       siteName: "Mahbub Alam Portfolio",
       images: [
@@ -94,7 +98,7 @@ export async function generateMetadata() {
           url: "https://mahbub.dev/assets/img/profile.png",
           width: 1200,
           height: 630,
-          alt: "Mahbub Alam - Full Stack Developer",
+          alt: "Mahbub Alam - Software Engineer",
         },
       ],
       locale: "en_US",
@@ -103,10 +107,10 @@ export async function generateMetadata() {
     twitter: {
       card: "summary_large_image",
       title:
-        "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, PHP Expert",
+        "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
       description:
         profile.bio ||
-        "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
+        "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh.",
       images: ["https://mahbub.dev/assets/img/profile.png"],
       creator: "@mahbubcse96",
       site: "@mahbubcse96",
@@ -121,9 +125,6 @@ export async function generateMetadata() {
         "max-image-preview": "large",
         "max-snippet": -1,
       },
-    },
-    verification: {
-      google: "your-google-verification-code",
     },
   };
 }
@@ -141,13 +142,13 @@ export default async function HomePage() {
       givenName: "Mahbub",
       familyName: "Alam",
       alternateName: ["Mahbub", "Mahbub Alam", "Md Mahbub Alam"],
-      jobTitle: profile.title || "Full Stack Developer",
+      jobTitle: profile.title || "Software Engineer | Full-Stack, Backend & Applied AI",
       description:
         profile.bio ||
-        "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
+        "Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions",
       url: "https://mahbub.dev",
       image: profile.image || "https://mahbub.dev/assets/img/profile.png",
-      email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
+      email: ["mahbubcse96@gmail.com"],
       telephone: "+880-1XXX-XXXXXX",
       sameAs: [profile.github, profile.linkedin, profile.twitter].filter(
         Boolean
@@ -176,6 +177,9 @@ export default async function HomePage() {
       knowsAbout: [
         "React.js",
         "Node.js",
+        "Next.js",
+        "Python",
+        "FastAPI",
         "PHP",
         "Laravel",
         "CodeIgniter",
@@ -183,7 +187,6 @@ export default async function HomePage() {
         "MySQL",
         "AWS",
         "Docker",
-        "VoIP Solutions",
         "System Architecture",
         "DevSecOps",
         "Cloud Computing",
@@ -192,13 +195,19 @@ export default async function HomePage() {
         "React Native",
         "JavaScript",
         "TypeScript",
+        "Applied AI",
+        "Machine Learning",
+        "Computer Vision",
       ],
       hasOccupation: {
         "@type": "Occupation",
-        name: "Full Stack Developer",
+        name: "Software Engineer",
         skills: [
           "React",
           "Node.js",
+          "Next.js",
+          "Python",
+          "FastAPI",
           "PHP",
           "Laravel",
           "AWS",

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import styles from "./banner.module.css";
 import {
   FaMapMarkerAlt,
@@ -11,7 +12,6 @@ import {
   FaBriefcase,
   FaStar,
 } from "react-icons/fa";
-import BannerAnimation from "./BannerAnimation";
 import DownloadResumeButton from "./DownloadResumeButton";
 import { getResumeConfig } from "@/lib/resumeConfig";
 
@@ -71,23 +71,11 @@ const BannerServer = ({
   const projectCount = calculateProjectCount();
   const { mode: resumeMode } = getResumeConfig();
 
-  // Default values if no data from database
-  const roles = bannerData.roles || [
-    "Full Stack Developer",
-    1500,
-    "Mobile App Developer",
-    1500,
-    "ML Engineer",
-    1500,
-    "Data Scientist",
-    1500,
-    "DevSecOps Engineer",
-    1500,
-  ];
-
   const name = bannerData.name || profileData.name || "Mahbub Alam";
   const jobTitle =
-    bannerData.jobTitle || profileData.title || "Full Stack Developer";
+    bannerData.jobTitle ||
+    profileData.title ||
+    "Software Engineer | Full-Stack, Backend & Applied AI";
   const location =
     bannerData.location || profileData.location || "Dhaka, Bangladesh";
   const company = profileData.company || "Brotecs Technologies Ltd";
@@ -95,8 +83,10 @@ const BannerServer = ({
   const bio =
     bannerData.bio ||
     profileData.description ||
-    "I'm a Software Engineer specializing in scalable web applications and enterprise-level VoIP solutions. With expertise in both frontend and backend development, I focus on creating efficient, maintainable, and high-performance software solutions.";
-
+    "Software Engineer building full-stack, backend, cloud-enabled, and applied AI solutions across enterprise, healthcare, education, and automation-focused systems.";
+  const heroPromise =
+    bannerData.headline ||
+    "I build maintainable web applications, backend APIs, and practical AI-enabled systems for real business workflows.";
   const socialLinks = bannerData.socialLinks || {
     email: "support@mahbub.dev",
     github: "https://github.com/mahbub96",
@@ -133,6 +123,9 @@ const BannerServer = ({
       "Full Stack Development",
       "React.js",
       "Node.js",
+      "Next.js",
+      "Python",
+      "FastAPI",
       "PHP",
       "Laravel",
       "CodeIgniter",
@@ -144,6 +137,11 @@ const BannerServer = ({
       "DevSecOps",
       "Docker",
       "AWS",
+      "Google Cloud Platform",
+      "Oracle Cloud",
+      "Applied AI",
+      "Machine Learning",
+      "Computer Vision",
     ],
   };
 
@@ -157,132 +155,165 @@ const BannerServer = ({
         }}
       />
 
-      <section className={styles.bannerSection} id="about">
+      <section
+        className={styles.bannerSection}
+        id="about"
+        aria-labelledby="hero-heading"
+      >
         {/* Animated background */}
         <div className={styles.techBackground}></div>
 
         <div className={styles.bannerContainer}>
-          {/* Section Header */}
-          <div className={styles.sectionHeader}>
-            <h2 id="about-heading">About Me</h2>
-            <div className={styles.headerLine} aria-hidden="true"></div>
-          </div>
+          <div className={styles.heroContent}>
+            <div className={styles.heroCopy}>
+              <p className={styles.heroEyebrow}>
+                Software Engineering | Backend Systems | Applied AI
+              </p>
 
-          {/* Profile Section */}
-          <div className={styles.profileSection}>
-            <div className={styles.profileImageContainer}>
-              <div
-                className={styles.profileImage}
-                style={{
-                  backgroundImage: `url('${
-                    profileImage || "/assets/img/profile.png"
-                  }')`,
-                }}
-                aria-label={`Profile photo of ${name}`}
-              />
-              <div className={styles.profileGlow}></div>
-            </div>
-
-            <div className={styles.profileInfo}>
-              <h1 className={styles.name}>
+              <h1 id="hero-heading" className={styles.name}>
                 {name}
-                <span className={styles.cursor}>_</span>
               </h1>
+
               <p className={styles.jobTitle}>{jobTitle}</p>
-            </div>
-          </div>
 
-          {/* Main Content */}
-          <div className={styles.contentSection}>
-            {/* Typing Animation */}
-            <div className={styles.animationContainer}>
-              <BannerAnimation roles={roles} />
-            </div>
+              <p className={styles.heroIntro}>{heroPromise}</p>
 
-            {/* Location */}
-            <div className={styles.locationContainer}>
-              <FaMapMarkerAlt className={styles.locationIcon} />
-              <span>{location}</span>
-            </div>
-
-            {/* Bio */}
-            <p className={styles.bioText}>{bio}</p>
-
-            {/* Company Info */}
-            <div className={styles.companySection}>
-              <FaBuilding className={styles.companyIcon} />
-              <span className={styles.companyLabel}>Currently at </span>
-              <a
-                href={companyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.companyLink}
+              <div
+                className={styles.heroHighlights}
+                aria-label="Key career highlights"
               >
-                {company}
-              </a>
-            </div>
-
-            {/* Stats */}
-            <div className={styles.statsSection}>
-              {[
-                {
-                  icon: FaBriefcase,
-                  number: `${experience.years}+`,
-                  label: "Years Experience",
-                },
-                {
-                  icon: FaCode,
-                  number: `${projectCount}+`,
-                  label: "Projects Completed",
-                },
-                { icon: FaStar, number: "100%", label: "Client Satisfaction" },
-              ].map((stat, index) => (
-                <div key={index} className={styles.statItem}>
-                  <stat.icon className={styles.statIcon} />
-                  <div className={styles.statNumber}>{stat.number}</div>
-                  <div className={styles.statLabel}>{stat.label}</div>
+                <div className={styles.highlightItem}>
+                  <FaMapMarkerAlt
+                    className={styles.highlightIcon}
+                    aria-hidden="true"
+                  />
+                  <span>{location}</span>
                 </div>
-              ))}
+                <div className={styles.highlightItem}>
+                  <FaBuilding
+                    className={styles.highlightIcon}
+                    aria-hidden="true"
+                  />
+                  <a
+                    href={companyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {company}
+                  </a>
+                </div>
+                <div className={styles.highlightItem}>
+                  <FaStar className={styles.highlightIcon} aria-hidden="true" />
+                  <span>{experience.years}+ years engineering</span>
+                </div>
+              </div>
+
+              <div className={styles.heroActions}>
+                <DownloadResumeButton
+                  resumeMode={resumeMode}
+                  fileName={`${name.replace(/[^a-zA-Z0-9_-]/g, "_")}_Resume.pdf`}
+                />
+                <a className={styles.secondaryCta} href="#projects">
+                  View Projects
+                </a>
+              </div>
             </div>
 
-            {/* CTA Button — generates PDF from live portfolio data */}
-            <DownloadResumeButton
-              resumeMode={resumeMode}
-              fileName={`${name.replace(/[^a-zA-Z0-9_-]/g, "_")}_Resume.pdf`}
-            />
-          </div>
+            <aside
+              className={styles.profileCard}
+              aria-label={`${name} portfolio snapshot`}
+            >
+              <div className={styles.profileImageContainer}>
+                <Image
+                  className={styles.profileImage}
+                  src={profileImage || "/assets/img/profile.png"}
+                  alt={`${name} - ${jobTitle}`}
+                  width={220}
+                  height={220}
+                  priority
+                />
+                <div className={styles.profileGlow} aria-hidden="true"></div>
+              </div>
 
-          {/* Social Links */}
-          <div className={styles.socialLinks}>
-            {[
-              {
-                icon: FaEnvelope,
-                href: `mailto:${socialLinks.email}`,
-                label: "Email",
-              },
-              { icon: FaGithub, href: socialLinks.github, label: "GitHub" },
-              {
-                icon: FaFacebook,
-                href: socialLinks.facebook,
-                label: "Facebook",
-              },
-              {
-                icon: FaLinkedin,
-                href: socialLinks.linkedin,
-                label: "LinkedIn",
-              },
-            ].map((social, index) => (
-              <a
-                key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                title={social.label}
+              <div className={styles.profileIdentity}>
+                <h2>{name}</h2>
+                <p>{jobTitle}</p>
+              </div>
+
+              <div
+                className={styles.statsSection}
+                aria-label="Portfolio highlights"
               >
-                <social.icon />
-              </a>
-            ))}
+                {[
+                  {
+                    icon: FaBriefcase,
+                    number: `${experience.years}+`,
+                    label: "Years Engineering",
+                  },
+                  {
+                    icon: FaCode,
+                    number: `${projectCount}+`,
+                    label: "Shipped Projects",
+                  },
+                  {
+                    icon: FaBuilding,
+                    number: company,
+                    label: "Currently At",
+                    href: companyUrl,
+                  },
+                ].map((stat) => (
+                  <div key={stat.label} className={styles.statItem}>
+                    <stat.icon className={styles.statIcon} aria-hidden="true" />
+                    {stat.href ? (
+                      <a
+                        href={stat.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.statNumber}
+                      >
+                        {stat.number}
+                      </a>
+                    ) : (
+                      <div className={styles.statNumber}>{stat.number}</div>
+                    )}
+                    <div className={styles.statLabel}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.socialLinks}>
+                {[
+                  {
+                    icon: FaEnvelope,
+                    href: `mailto:${socialLinks.email}`,
+                    label: "Email",
+                  },
+                  { icon: FaGithub, href: socialLinks.github, label: "GitHub" },
+                  {
+                    icon: FaFacebook,
+                    href: socialLinks.facebook,
+                    label: "Facebook",
+                  },
+                  {
+                    icon: FaLinkedin,
+                    href: socialLinks.linkedin,
+                    label: "LinkedIn",
+                  },
+                ].map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialLink}
+                    title={social.label}
+                    aria-label={`${name} on ${social.label}`}
+                  >
+                    <social.icon aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            </aside>
           </div>
         </div>
       </section>

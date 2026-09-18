@@ -12,18 +12,35 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const siteVerification = Object.fromEntries(
+  [
+    ["google", process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION],
+    ["yandex", process.env.NEXT_PUBLIC_YANDEX_VERIFICATION],
+    ["bing", process.env.NEXT_PUBLIC_BING_VERIFICATION],
+  ].filter(([, value]) => Boolean(value))
+);
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0a192f",
+};
+
 export const metadata = {
   title: {
     default:
-      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
+      "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
     template: "%s | Mahbub Alam Portfolio",
   },
   description:
-    "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbub@lunetsoft.com, mahbubcse96@gmail.com",
+    "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh. Contact: mahbubcse96@gmail.com",
   keywords: [
     "Mahbub Alam",
     "Mahbub",
     "Full Stack Developer",
+    "Software Engineer",
+    "Backend Developer",
+    "Applied AI",
     "Web Developer",
     "React Developer",
     "PHP Developer",
@@ -32,12 +49,9 @@ export const metadata = {
     "React Native Developer",
     "Bangladesh Developer",
     "Dhaka Developer",
-    "admin@mahbub.dev",
-    "mahbub@lunetsoft.com",
     "mahbubcse96@gmail.com",
-    "mahbub.alam.sobuz@gmail.com",
     "Brotecs Technologies",
-    "VoIP Solutions",
+    "Backend Systems",
     "Laravel Developer",
     "CodeIgniter Developer",
     "MongoDB Developer",
@@ -393,26 +407,24 @@ export const metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code-here", // Replace with actual Google Search Console verification code
-    yandex: "your-yandex-verification-code-here", // Optional: Yandex verification
-    bing: "your-bing-verification-code-here", // Optional: Bing verification
-  },
+  ...(Object.keys(siteVerification).length > 0
+    ? { verification: siteVerification }
+    : {}),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://mahbub.dev",
     title:
-      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
+      "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
     description:
-      "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbub@lunetsoft.com, mahbubcse96@gmail.com",
+      "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh. Contact: mahbubcse96@gmail.com",
     siteName: "Mahbub Alam Portfolio",
     images: [
       {
         url: "https://mahbub.dev/assets/img/profile.png",
         width: 400,
         height: 400,
-        alt: "Mahbub Alam - Full Stack Developer Professional Headshot",
+        alt: "Mahbub Alam - Software Engineer Professional Headshot",
         type: "image/png",
         secureUrl: "https://mahbub.dev/assets/img/profile.png",
       },
@@ -420,7 +432,7 @@ export const metadata = {
         url: "https://mahbub.dev/assets/img/profile-og.png",
         width: 1200,
         height: 630,
-        alt: "Mahbub Alam - Full Stack Developer Portfolio Banner",
+        alt: "Mahbub Alam - Software Engineer Portfolio Banner",
         type: "image/png",
         secureUrl: "https://mahbub.dev/assets/img/profile-og.png",
       },
@@ -428,7 +440,7 @@ export const metadata = {
         url: "https://mahbub.dev/assets/img/profile-twitter.png",
         width: 1200,
         height: 600,
-        alt: "Mahbub Alam - Full Stack Developer Twitter Card",
+        alt: "Mahbub Alam - Software Engineer Twitter Card",
         type: "image/png",
         secureUrl: "https://mahbub.dev/assets/img/profile-twitter.png",
       },
@@ -437,37 +449,31 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
+      "Mahbub Alam | Software Engineer - Full-Stack, Backend & Applied AI",
     description:
-      "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbub@lunetsoft.com, mahbubcse96@gmail.com",
+      "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh. Contact: mahbubcse96@gmail.com",
     images: [
       {
         url: "https://mahbub.dev/assets/img/profile.png",
-        alt: "Mahbub Alam - Full Stack Developer Professional Headshot",
+        alt: "Mahbub Alam - Software Engineer Professional Headshot",
       },
       {
         url: "https://mahbub.dev/assets/img/profile-twitter.png",
-        alt: "Mahbub Alam - Full Stack Developer Twitter Card",
+        alt: "Mahbub Alam - Software Engineer Twitter Card",
       },
     ],
     creator: "@mahbubcse96",
     site: "@mahbubcse96",
-    imageAlt: "Mahbub Alam - Full Stack Developer Professional Headshot",
+    imageAlt: "Mahbub Alam - Software Engineer Professional Headshot",
   },
   other: {
-    "google-site-verification": "your-google-verification-code-here",
-    "msvalidate.01": "your-bing-verification-code-here",
-    "yandex-verification": "your-yandex-verification-code-here",
-    "theme-color": "#0a192f",
     "msapplication-TileColor": "#0a192f",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
     "apple-mobile-web-app-title": "Mahbub Portfolio",
     "application-name": "Mahbub Portfolio",
     "mobile-web-app-capable": "yes",
-    "format-detection": "telephone=no",
-    "format-detection": "email=no",
-    "format-detection": "address=no",
+    "format-detection": "telephone=no, email=no, address=no",
   },
 };
 
@@ -477,9 +483,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="https://mahbub.dev/favicon.ico" />
         <link rel="apple-touch-icon" href="https://mahbub.dev/logo192.png" />
-        <link rel="manifest" href={process.env.NEXT_PUBLIC_MANIFEST_URL} />
-        <meta name="theme-color" content="#0a192f" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="manifest" href="/manifest.json" />
         <meta name="format-detection" content="telephone=no" />
 
         {/* Enhanced Image SEO Meta Tags */}
@@ -491,7 +495,7 @@ export default function RootLayout({ children }) {
         <meta name="image:height" content="400" />
         <meta
           name="image:alt"
-          content="Mahbub Alam - Full Stack Developer Professional Headshot"
+          content="Mahbub Alam - Software Engineer Professional Headshot"
         />
         <meta name="image:type" content="image/png" />
         <meta
@@ -499,11 +503,6 @@ export default function RootLayout({ children }) {
           content="https://mahbub.dev/assets/img/profile.png"
         />
 
-        {/* Google Image Search Optimization */}
-        <meta
-          name="google-site-verification"
-          content="your-google-verification-code-here"
-        />
         <meta
           name="robots"
           content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
@@ -517,7 +516,7 @@ export default function RootLayout({ children }) {
         <meta name="image:credit" content="Mahbub Alam" />
         <meta
           name="image:caption"
-          content="Mahbub Alam - Full Stack Developer Professional Headshot"
+          content="Mahbub Alam - Software Engineer Professional Headshot"
         />
 
         {/* Additional Image Formats for Better Indexing */}
@@ -582,9 +581,9 @@ export default function RootLayout({ children }) {
                 width: 400,
                 height: 400,
                 caption:
-                  "Mahbub Alam - Full Stack Developer Professional Headshot",
+                  "Mahbub Alam - Software Engineer Professional Headshot",
                 description:
-                  "Professional headshot of Mahbub Alam, a Full Stack Developer based in Dhaka, Bangladesh",
+                  "Professional headshot of Mahbub Alam, a Software Engineer based in Dhaka, Bangladesh",
                 encodingFormat: "image/png",
                 uploadDate: "2024-01-01",
                 thumbnailUrl:
@@ -606,20 +605,16 @@ export default function RootLayout({ children }) {
                   url: "https://mahbub.dev",
                 },
               },
-              jobTitle: "Full Stack Developer",
+              jobTitle: "Software Engineer | Full-Stack, Backend & Applied AI",
               description:
-                "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
-              email: [
-                "admin@mahbub.dev",
-                "support@mahbub.dev",
-                "mahbub@lunetsoft.com",
-              ],
+                "Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions",
+              email: ["mahbubcse96@gmail.com"],
               telephone: "+880-1XXX-XXXXXX",
               worksFor: {
                 "@type": "Organization",
                 name: "Brotecs Technologies Ltd",
                 description:
-                  "Technology company specializing in VoIP solutions and software development",
+                  "Technology company specializing in software development and backend systems",
                 address: {
                   "@type": "PostalAddress",
                   addressLocality: "Dhaka",
@@ -639,26 +634,39 @@ export default function RootLayout({ children }) {
               },
               knowsAbout: [
                 "Full Stack Development",
+                "Software Engineering",
+                "Backend Development",
                 "React.js",
                 "Node.js",
+                "Next.js",
+                "Python",
+                "FastAPI",
                 "PHP",
                 "Laravel",
                 "CodeIgniter",
                 "MongoDB",
                 "MySQL",
                 "Cloud Computing",
-                "VoIP Solutions",
+                "Backend Systems",
                 "System Architecture",
                 "DevSecOps",
                 "Docker",
                 "AWS",
+                "Oracle Cloud",
+                "Google Cloud Platform",
+                "Applied AI",
+                "Machine Learning",
+                "Computer Vision",
               ],
               hasOccupation: {
                 "@type": "Occupation",
-                name: "Full Stack Developer",
+                name: "Software Engineer",
                 skills: [
                   "React",
                   "Node.js",
+                  "Next.js",
+                  "Python",
+                  "FastAPI",
                   "PHP",
                   "Laravel",
                   "AWS",
@@ -688,13 +696,13 @@ export default function RootLayout({ children }) {
               "@id": "https://mahbub.dev#profile-image-detailed",
               name: "Mahbub Alam Professional Headshot",
               description:
-                "Professional headshot of Mahbub Alam, Full Stack Developer and Software Engineer based in Dhaka, Bangladesh. High-quality professional portrait for portfolio and business use.",
+                "Professional headshot of Mahbub Alam, Software Engineer and Software Engineer based in Dhaka, Bangladesh. High-quality professional portrait for portfolio and business use.",
               url: "https://mahbub.dev/assets/img/profile.png",
               contentUrl: "https://mahbub.dev/assets/img/profile.png",
               width: 400,
               height: 400,
               caption:
-                "Mahbub Alam - Full Stack Developer Professional Headshot",
+                "Mahbub Alam - Software Engineer Professional Headshot",
               encodingFormat: "image/png",
               uploadDate: "2024-01-01",
               thumbnailUrl:
@@ -739,16 +747,12 @@ export default function RootLayout({ children }) {
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
               "@id": "https://mahbub.dev#business",
-              name: "Mahbub Alam - Full Stack Developer",
+              name: "Mahbub Alam - Software Engineer",
               description:
-                "Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies",
+                "Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions",
               url: "https://mahbub.dev",
               telephone: "+880-1XXX-XXXXXX",
-              email: [
-                "admin@mahbub.dev",
-                "support@mahbub.dev",
-                "mahbub@lunetsoft.com",
-              ],
+              email: ["mahbubcse96@gmail.com"],
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Dhaka",
@@ -770,22 +774,24 @@ export default function RootLayout({ children }) {
               },
               hasOfferCatalog: {
                 "@type": "OfferCatalog",
-                name: "Web Development Services",
+                name: "Software Engineering Services",
                 itemListElement: [
                   {
                     "@type": "Offer",
                     itemOffered: {
                       "@type": "Service",
-                      name: "Full Stack Web Development",
-                      description: "React, Node.js, PHP development services",
+                      name: "Full-Stack and Backend Development",
+                      description:
+                        "React, Next.js, Node.js, Python, PHP, and Laravel development",
                     },
                   },
                   {
                     "@type": "Offer",
                     itemOffered: {
                       "@type": "Service",
-                      name: "VoIP Solutions",
-                      description: "Voice over IP system development",
+                      name: "Backend Systems",
+                      description:
+                        "Backend APIs, integrations, data workflows, and cloud-enabled systems",
                     },
                   },
                 ],
@@ -807,7 +813,7 @@ export default function RootLayout({ children }) {
                   name: "Who is Mahbub Alam?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Mahbub Alam is a Full Stack Developer based in Dhaka, Bangladesh, specializing in React, Node.js, PHP, and modern web technologies. He works at Brotecs Technologies Ltd and has expertise in VoIP solutions and system architecture.",
+                    text: "Mahbub Alam is a Software Engineer based in Dhaka, Bangladesh, specializing in full-stack development, backend systems, cloud-enabled applications, and applied AI. He works at Brotecs Technologies Ltd.",
                   },
                 },
                 {
@@ -815,7 +821,7 @@ export default function RootLayout({ children }) {
                   name: "What technologies does Mahbub Alam work with?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Mahbub Alam works with React.js, Node.js, PHP, Laravel, CodeIgniter, MongoDB, MySQL, AWS, Docker, and various other modern web technologies for full stack development.",
+                    text: "Mahbub Alam works with React.js, Next.js, Node.js, Python, FastAPI, PHP, Laravel, MongoDB, MySQL, Docker, and modern cloud-enabled development workflows.",
                   },
                 },
                 {
@@ -823,7 +829,7 @@ export default function RootLayout({ children }) {
                   name: "How can I contact Mahbub Alam?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "You can contact Mahbub Alam via email at admin@mahbub.dev, support@mahbub.dev, or mahbub@lunetsoft.com. He is based in Dhaka, Bangladesh and available for freelance projects and full-time opportunities.",
+                    text: "You can contact Mahbub Alam via email at mahbubcse96@gmail.com. He is based in Dhaka, Bangladesh and available for professional technical communication and project discussions.",
                   },
                 },
               ],
