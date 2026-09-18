@@ -41,13 +41,17 @@ const VisitorAnalytics = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    fetchStats();
-    if (auth) {
+    if (auth && isLoaded) {
+      fetchStats();
       fetchLoginHistory();
+    } else if (isLoaded) {
+      setLoading(false);
     }
   }, [auth, isLoaded]);
 
   const fetchStats = async () => {
+    if (!auth || !isLoaded) return;
+
     try {
       const response = await makeAuthenticatedRequest("/api/analytics");
       if (response.error) {

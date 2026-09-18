@@ -143,7 +143,7 @@ const ProjectsServer = ({ data }) => {
               projects.map((project, index) => (
                 <div
                   key={project.id}
-                  className={`${styles.projectCard} ${styles.animateInCard}`}
+                  className={styles.projectListItem}
                   style={{ animationDelay: `${index * 0.1}s` }}
                   role="listitem"
                   aria-label={`${project.name} project card`}

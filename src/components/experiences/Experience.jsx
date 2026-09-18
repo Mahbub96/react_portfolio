@@ -166,10 +166,6 @@ function Experience({ data }) {
             {experiences.length > 0 && getTotalExperienceDisplay() && (
               <div
                 className={styles.totalExperience}
-                style={{
-                  color: "var(--heading_color)",
-                  transition: "background 0.3s, color 0.3s",
-                }}
               >
                 <span className={styles.showOnMobile}>
                   <span className={styles.date}>

@@ -6,12 +6,10 @@ const AnalyticsSchema = new mongoose.Schema(
     sessionId: {
       type: String,
       required: true,
-      index: true,
     },
     ip: {
       type: String,
       required: true,
-      index: true,
     },
     userAgent: {
       type: String,
@@ -20,7 +18,6 @@ const AnalyticsSchema = new mongoose.Schema(
     page: {
       type: String,
       required: true,
-      index: true,
     },
 
     // Geographic Information
@@ -209,7 +206,6 @@ const AnalyticsSchema = new mongoose.Schema(
     timestamp: {
       type: Date,
       default: Date.now,
-      index: true,
     },
   },
   {

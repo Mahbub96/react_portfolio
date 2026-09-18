@@ -3,31 +3,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./navbar.module.css";
-import LoginModal from "../auth/LoginModal";
 
 function Header({ data }) {
-  const { auth, login, logout, isLoaded } = useDataContext();
+  const { auth, logout, isLoaded } = useDataContext();
   const { isDarkMode, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
   const menuRef = useRef(null);
 
   // Extract name from database data
   const profile = data?.profile?.data || {};
   const bannerData = data?.Banner?.data || {};
   const name = profile.name || bannerData.name || "Mahbub Alam";
-
-  // Check screen size for responsive behavior
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsTablet(window.innerWidth >= 769 && window.innerWidth <= 1024);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -77,10 +63,6 @@ function Header({ data }) {
         setIsMenuOpen(false);
       }
     }
-  };
-
-  const handleLogin = () => {
-    login(); // Call the login function from context
   };
 
   const handleLogout = () => {
@@ -183,12 +165,13 @@ function Header({ data }) {
                         Log Out
                       </button>
                     ) : (
-                      <button
+                      <a
+                        href="#contact"
                         className={styles.authButton}
-                        onClick={() => setShowLoginModal(true)}
+                        onClick={(e) => handleNavClick(e, "contact")}
                       >
-                        Login
-                      </button>
+                        Hire Me
+                      </a>
                     )}
                   </>
                 )}
@@ -212,11 +195,6 @@ function Header({ data }) {
           </div>
         </nav>
       </header>
-
-      <LoginModal
-        show={showLoginModal}
-        onHide={() => setShowLoginModal(false)}
-      />
     </>
   );
 }
