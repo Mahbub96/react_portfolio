@@ -70,6 +70,12 @@ const BannerServer = ({
   const experience = calculateExperience();
   const projectCount = calculateProjectCount();
   const { mode: resumeMode } = getResumeConfig();
+  const premiumCapabilities = [
+    "Backend APIs",
+    "Full-stack products",
+    "Cloud deployment",
+    "Applied AI systems",
+  ];
 
   const name = bannerData.name || profileData.name || "Mahbub Alam";
   const jobTitle =
@@ -177,6 +183,12 @@ const BannerServer = ({
               <p className={styles.jobTitle}>{jobTitle}</p>
 
               <p className={styles.heroIntro}>{heroPromise}</p>
+
+              <div className={styles.capabilityPills} aria-label="Core capabilities">
+                {premiumCapabilities.map((capability) => (
+                  <span key={capability}>{capability}</span>
+                ))}
+              </div>
 
               <div
                 className={styles.heroHighlights}

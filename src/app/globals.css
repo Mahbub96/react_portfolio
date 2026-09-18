@@ -1,11 +1,11 @@
 :root {
   /* Beautiful Teal Color Palette - Sophisticated and Modern */
-  --background-primary: #0a0f1a; /* Deeper, richer dark blue-gray */
-  --background-secondary: #141a2a; /* Enhanced dark tone with more depth */
-  --background-tertiary: #1e2535; /* Refined medium dark tone */
-  --background-card: rgba(255, 255, 255, 0.06);
-  --background-glass: rgba(255, 255, 255, 0.12);
-  --background-elevated: rgba(255, 255, 255, 0.1);
+  --background-primary: #050811; /* Premium midnight canvas */
+  --background-secondary: #0b1220; /* Deep glass layer */
+  --background-tertiary: #111827; /* Elevated graphite surface */
+  --background-card: rgba(255, 255, 255, 0.055);
+  --background-glass: rgba(255, 255, 255, 0.095);
+  --background-elevated: rgba(255, 255, 255, 0.085);
 
   /* Text Colors - High Contrast with Cool Undertones */
   --text-primary: #f8fafc; /* Enhanced white with slight blue tint */
@@ -31,7 +31,7 @@
   );
   --gradient-secondary: linear-gradient(135deg, #0891b2 0%, #0f766e 100%);
   --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --gradient-dark: linear-gradient(135deg, #0a0f1a 0%, #141a2a 100%);
+  --gradient-dark: linear-gradient(135deg, #050811 0%, #0b1220 100%);
   --gradient-card: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.1) 0%,
@@ -40,10 +40,14 @@
   --gradient-text: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
   --gradient-background: linear-gradient(
     135deg,
-    #0a0f1a 0%,
-    #141a2a 50%,
-    #1e2535 100%
+    #050811 0%,
+    #08111f 45%,
+    #101827 100%
   );
+  --gradient-premium: radial-gradient(circle at 18% 8%, rgba(45, 212, 191, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.12), transparent 26%),
+    linear-gradient(135deg, #050811 0%, #07111f 52%, #0d1727 100%);
+  --gradient-gloss: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.035));
 
   /* Borders - Enhanced and Professional */
   --border-primary: rgba(32, 201, 151, 0.25);
@@ -61,7 +65,9 @@
   --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.45),
     0 10px 15px -5px rgba(0, 0, 0, 0.25);
   --shadow-glow: 0 0 30px rgba(32, 201, 151, 0.25);
-  --shadow-glow-strong: 0 0 40px rgba(32, 201, 151, 0.35);
+  --shadow-glow-strong: 0 0 55px rgba(32, 201, 151, 0.34);
+  --shadow-premium: 0 24px 80px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
   /* Spacing System */
   --spacing-xs: 0.25rem;
@@ -119,7 +125,8 @@ html {
 
 html,
 body {
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   background: var(--background-primary);
   color: var(--text-primary);
@@ -130,10 +137,36 @@ body {
 }
 
 body {
-  background: var(--gradient-background);
+  background: var(--gradient-premium);
   min-height: 100vh;
   position: relative;
   transition: var(--transition-normal);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: linear-gradient(rgba(255,255,255,0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent 78%);
+}
+
+main,
+section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 body::before {
@@ -397,6 +430,8 @@ a:hover {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
+  width: 100%;
+  min-width: 0;
 }
 
 /* Gradient Text */
@@ -491,7 +526,7 @@ a:hover {
 @media (max-width: 576px) {
   .container {
     max-width: 100%;
-    padding: 0 var(--spacing-sm);
+    padding: 0 var(--spacing-md);
   }
 
   :root {
@@ -505,6 +540,22 @@ a:hover {
     --font-size-xl: 1.25rem;
     --font-size-2xl: 1.75rem;
     --font-size-3xl: 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header,
+  [class*="sectionHeader"] {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .section-line,
+  [class*="headerLine"] {
+    width: 100%;
+    min-width: 0;
+    flex: none;
   }
 }
 

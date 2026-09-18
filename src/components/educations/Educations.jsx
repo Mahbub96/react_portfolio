@@ -5,7 +5,7 @@ import ThreeDots from "../ThreeDots";
 // Server-side Educations component for better SEO
 function Educations({ data }) {
   // Use server data for rendering
-  const education = Array.isArray(data?.data) ? [...data.data].reverse() : [];
+  const education = Array.isArray(data?.data) ? [...data.data] : [];
 
   // Enhanced structured data for education section
   const educationStructuredData = {
