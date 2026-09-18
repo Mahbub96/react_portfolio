@@ -1043,3 +1043,50 @@
   border: 3px solid rgba(255, 255, 255, 0.42);
   box-shadow: 0 24px 80px rgba(0,0,0,0.42), 0 0 0 10px rgba(32,201,151,0.06);
 }
+
+
+/* Mobile premium tuning */
+@media (max-width: 640px) {
+  .bannerSection {
+    padding: 2.15rem var(--spacing-md) 2.5rem !important;
+  }
+
+  .heroContent {
+    gap: 1.25rem;
+  }
+
+  .heroEyebrow {
+    font-size: 0.68rem;
+    line-height: 1.55;
+  }
+
+  .name {
+    font-size: clamp(2.65rem, 12vw, 3.15rem);
+    letter-spacing: -0.085em;
+  }
+
+  .heroIntro {
+    font-size: 0.94rem;
+    line-height: 1.62;
+  }
+
+  .capabilityPills {
+    justify-content: center;
+    gap: 0.45rem;
+  }
+
+  .capabilityPills span {
+    min-height: 32px;
+    padding: 0.42rem 0.64rem;
+    font-size: 0.68rem;
+  }
+
+  .profileCard {
+    max-width: 318px;
+    border-radius: 1.15rem;
+  }
+
+  .heroActions > * {
+    width: min(100%, 310px);
+  }
+}

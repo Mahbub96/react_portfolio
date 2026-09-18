@@ -1313,3 +1313,33 @@
 .projectImage::before {
   background: linear-gradient(135deg, rgba(32, 201, 151, 0.18), rgba(59, 130, 246, 0.08));
 }
+
+
+/* Mobile premium project density */
+@media (max-width: 640px) {
+  .projectsGrid {
+    padding: 0 0.25rem;
+    gap: 1rem;
+  }
+
+  .projectCard {
+    min-height: 0;
+    border-radius: 1.1rem;
+  }
+
+  .projectImage {
+    height: 158px;
+    border-radius: 1.1rem 1.1rem 0 0;
+  }
+
+  .projectContent h3 {
+    font-size: 1.08rem;
+    line-height: 1.25;
+  }
+
+  .bodyDescription {
+    max-height: none;
+    min-height: 0;
+    line-height: 1.5;
+  }
+}
