@@ -583,3 +583,27 @@
     font-size: 0.82rem;
   }
 }
+
+
+/* Premium light theme skills */
+[data-theme="light"] .skillsSection {
+  background: transparent;
+}
+
+[data-theme="light"] .skillGroup,
+[data-theme="light"] .skillCard,
+[data-theme="light"] .skillIcon {
+  background: linear-gradient(145deg, rgba(255,255,255,0.84), rgba(255,255,255,0.56));
+  border-color: rgba(15,23,42,0.1);
+  box-shadow: var(--shadow-premium);
+}
+
+[data-theme="light"] .skillName,
+[data-theme="light"] .groupHeader h3,
+[data-theme="light"] .sectionHeader h2 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .groupHeader span {
+  color: #64748b;
+}

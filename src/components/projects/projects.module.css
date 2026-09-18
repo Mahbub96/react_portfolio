@@ -1343,3 +1343,35 @@
     line-height: 1.5;
   }
 }
+
+
+/* Premium light theme projects */
+[data-theme="light"] .projectsSection {
+  background: transparent;
+}
+
+[data-theme="light"] .projectCard {
+  background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,255,255,0.58));
+  border-color: rgba(15,23,42,0.1);
+  box-shadow: var(--shadow-premium);
+}
+
+[data-theme="light"] .projectCard::after {
+  background: linear-gradient(120deg, rgba(255,255,255,0.52), transparent 30%, rgba(13,148,136,0.08));
+}
+
+[data-theme="light"] .projectContent h3,
+[data-theme="light"] .sectionHeader h2 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .bodyDescription,
+[data-theme="light"] .projectFacts {
+  color: #334155;
+}
+
+[data-theme="light"] .techTag {
+  color: #0f766e;
+  background: rgba(13,148,136,0.09);
+  border-color: rgba(13,148,136,0.18);
+}
