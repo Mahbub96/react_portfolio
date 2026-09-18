@@ -26,37 +26,52 @@ const BannerServer = ({
   const bannerData = data?.data || {};
   const profileData = profile?.data || profile || {};
 
-  // Calculate real experience years from experiences data
+  // Calculate real experience years from structured dates so it auto-increases over time.
   const calculateExperience = () => {
-    if (!experiences || !Array.isArray(experiences))
-      return { years: 0, months: 0 };
+    if (!experiences || !Array.isArray(experiences)) {
+      return { years: "0.0", months: 0 };
+    }
+
+    const parseExperienceDate = (value) => {
+      if (!value) return null;
+      const raw = String(value).trim();
+      if (/present/i.test(raw)) return new Date();
+
+      let match = raw.match(/^(\d{4})[-/](\d{1,2})$/);
+      if (match) return new Date(Number(match[1]), Number(match[2]) - 1, 1);
+
+      match = raw.match(/^([A-Za-z]+)\s+(\d{4})$/);
+      if (match) {
+        const date = new Date(`${match[1]} 1, ${match[2]}`);
+        return Number.isNaN(date.getTime()) ? null : date;
+      }
+
+      match = raw.match(/^(\d{4})$/);
+      if (match) return new Date(Number(match[1]), 0, 1);
+
+      const fallback = new Date(raw);
+      return Number.isNaN(fallback.getTime()) ? null : fallback;
+    };
 
     const now = new Date();
-    let totalMonths = 0;
+    const earliestStartDate = experiences.reduce((earliest, exp) => {
+      const startRaw = exp.startDate || exp.time?.split(" - ")[0] || exp.time;
+      const start = parseExperienceDate(startRaw);
+      if (!start) return earliest;
+      return !earliest || start < earliest ? start : earliest;
+    }, null);
 
-    // Find earliest start date from all experiences
-    let earliestStartDate = now;
-    experiences.forEach((exp) => {
-      if (exp.time) {
-        const startYear = exp.time.split(" - ")[0];
-        if (startYear) {
-          const startDate = new Date(startYear);
-          if (!isNaN(startDate.getTime())) {
-            if (startDate < earliestStartDate) {
-              earliestStartDate = startDate;
-            }
-          }
-        }
-      }
-    });
+    if (!earliestStartDate) return { years: "0.0", months: 0 };
 
-    // Calculate months from earliest job to now
-    totalMonths =
+    const totalMonths = Math.max(
+      0,
       (now.getFullYear() - earliestStartDate.getFullYear()) * 12 +
-      (now.getMonth() - earliestStartDate.getMonth());
+        (now.getMonth() - earliestStartDate.getMonth())
+    );
 
     return {
       years: (totalMonths / 12).toFixed(1),
+      months: totalMonths,
     };
   };
 

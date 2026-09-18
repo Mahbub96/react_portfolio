@@ -156,6 +156,82 @@
   "projects": [
     {
       "id": 1,
+      "name": "LinkLens — Enterprise Link Intelligence Platform",
+      "src": "/assets/img/project-linklens.svg",
+      "desc": "Enterprise-grade smart link and redirect intelligence platform with sub-5ms Redis hot-path routing, ClickHouse forensic analytics, QR generation, RBAC workspaces, webhooks, and self-hosted zero-cost geo/device intelligence.",
+      "lang": [
+        "NestJS",
+        "Next.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Redis",
+        "ClickHouse",
+        "Prisma",
+        "Docker"
+      ],
+      "githubUrl": "https://github.com/Mahbub96/LinkLens",
+      "liveUrl": "",
+      "downloadUrl": ""
+    },
+    {
+      "id": 2,
+      "name": "Bangla & English ASR Studio",
+      "src": "/assets/img/project-bangla-asr.svg",
+      "desc": "End-to-end speech recognition studio for Bangla and English with Whisper inference, live microphone transcription, batch processing, WER/CER benchmarking, dataset validation, and LoRA/QLoRA fine-tuning workflows for GPU training clusters.",
+      "lang": [
+        "Python",
+        "Whisper",
+        "faster-whisper",
+        "Gradio",
+        "Transformers",
+        "LoRA",
+        "Audio Processing",
+        "ML Evaluation"
+      ],
+      "githubUrl": "https://github.com/Mahbub96/bangla-asr-pipeline",
+      "liveUrl": "",
+      "downloadUrl": ""
+    },
+    {
+      "id": 3,
+      "name": "Local Vocal Agent",
+      "src": "/assets/img/project-local-vocal.svg",
+      "desc": "Privacy-first local AI voice workspace with FastAPI, React/Vite, Ollama, SQLite and Chroma memory, Faster Whisper STT, TTS, streaming chat, search tools, file workspace, and permission-aware assistant workflows.",
+      "lang": [
+        "FastAPI",
+        "React",
+        "Ollama",
+        "SQLite",
+        "ChromaDB",
+        "Whisper",
+        "TTS",
+        "RAG"
+      ],
+      "githubUrl": "https://github.com/Mahbub96/Local-vocal-agent",
+      "liveUrl": "",
+      "downloadUrl": ""
+    },
+    {
+      "id": 4,
+      "name": "Advanced Finance Tracker",
+      "src": "/assets/img/project-finance-tracker.svg",
+      "desc": "Production-grade offline-first finance platform with Expo React Native, local SQLite storage, typed money utilities, budgeting, transactions, accounts, goals, recurring flows, analytics, AI insight planning, and a NestJS API foundation.",
+      "lang": [
+        "React Native",
+        "Expo",
+        "TypeScript",
+        "SQLite",
+        "NestJS",
+        "PostgreSQL",
+        "Prisma",
+        "Jest"
+      ],
+      "githubUrl": "https://github.com/Mahbub96/Advance-Finance-Tracker",
+      "liveUrl": "",
+      "downloadUrl": ""
+    },
+    {
+      "id": 5,
       "name": "Healthcare & Medical Applications",
       "src": "/assets/img/projects.png",
       "desc": "Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations.",
@@ -171,7 +247,7 @@
       "downloadUrl": ""
     },
     {
-      "id": 2,
+      "id": 6,
       "name": "Enterprise & School Management Systems",
       "src": "/assets/img/projects.png",
       "desc": "Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features.",
@@ -186,37 +262,7 @@
       "downloadUrl": ""
     },
     {
-      "id": 3,
-      "name": "AI & Automation-Focused Systems",
-      "src": "/assets/img/python.png",
-      "desc": "Applied AI and automation-oriented work involving Python, computer vision concepts, real-time data processing, and backend service optimization.",
-      "lang": [
-        "Python",
-        "OpenCV",
-        "Machine Learning",
-        "Backend Services"
-      ],
-      "githubUrl": "",
-      "liveUrl": "",
-      "downloadUrl": ""
-    },
-    {
-      "id": 4,
-      "name": "Speech Emotion Recognition",
-      "src": "/assets/img/python.png",
-      "desc": "Deep learning project for classifying emotions from speech signals using audio preprocessing, model training, and evaluation workflows.",
-      "lang": [
-        "Python",
-        "Machine Learning",
-        "Audio Processing",
-        "Deep Learning"
-      ],
-      "githubUrl": "https://github.com/Mahbub96/speech-emotion-recognition",
-      "liveUrl": "",
-      "downloadUrl": ""
-    },
-    {
-      "id": 5,
+      "id": 7,
       "name": "Real-Time Chat Application",
       "src": "/assets/img/chat.png",
       "desc": "Real-time chat application with instant messaging, modern UI, and socket-based communication between users.",
@@ -231,7 +277,7 @@
       "downloadUrl": ""
     },
     {
-      "id": 6,
+      "id": 8,
       "name": "React Portfolio",
       "src": "/assets/img/react.png",
       "desc": "Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content.",
@@ -246,7 +292,7 @@
       "downloadUrl": ""
     },
     {
-      "id": 7,
+      "id": 9,
       "name": "Test-Buddy",
       "src": "/assets/img/testbuddy.png",
       "desc": "React-based test and exam management demo application built for a university software engineering course.",
@@ -261,7 +307,7 @@
       "downloadUrl": ""
     },
     {
-      "id": 8,
+      "id": 10,
       "name": "Blood Donation Management System",
       "src": "/assets/img/blood.png",
       "desc": "Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage.",

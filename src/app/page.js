@@ -2,6 +2,9 @@ import React, { Suspense } from "react";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import LoadingScreen from "@/components/LoadingScreen";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // Import server-side components for better SEO
 import Navbar from "@/components/navbar/Navbar";
 import BannerServer from "@/components/banner/BannerServer";
@@ -13,16 +16,16 @@ import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
 
 // Client-side only components (for analytics, tracking, and interactive features)
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 
-const VisitorAnalytics = dynamic(
+const VisitorAnalytics = nextDynamic(
   () => import("@/components/VisitorAnalytics"),
   {
     ssr: false, // Client-side only for analytics
   }
 );
 
-const VisitorCounter = dynamic(() => import("@/components/VisitorCounter"), {
+const VisitorCounter = nextDynamic(() => import("@/components/VisitorCounter"), {
   ssr: false, // Client-side only for tracking
 });
 
