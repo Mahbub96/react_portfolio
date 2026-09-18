@@ -1,8 +1,8 @@
 name: Deploy test.mahbub.dev
 
+# Local deployment is currently preferred: run `pnpm deploy:test` from a trusted machine.
+# Keep this workflow manual-only until GitHub repository secrets are intentionally configured.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:

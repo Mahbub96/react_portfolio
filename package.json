@@ -12,7 +12,8 @@
     "package": "node scripts/build-production.js",
     "package:bash": "bash scripts/build-production.sh",
     "deploy": "DEPLOY=true node scripts/build-production.js",
-    "deploy:bash": "DEPLOY=true bash scripts/build-production.sh"
+    "deploy:bash": "DEPLOY=true bash scripts/build-production.sh",
+    "deploy:test": "bash scripts/deploy-test-local.sh"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
