@@ -10,6 +10,7 @@ import {
 } from "react-icons/hi";
 import styles from "./projects.module.css";
 import ProjectModal from "./ProjectModal";
+import HarmonicChip from "@/components/HarmonicChip";
 
 function Project({ project, idx = 0 }) {
   const { name, desc, src, lang, to, id } = project;
@@ -111,7 +112,7 @@ function Project({ project, idx = 0 }) {
           <span>Quick Preview</span>
         </div>
         <div className={styles.projectBadge}>
-          {primaryTech}
+          <HarmonicChip text={primaryTech} />
         </div>
       </div>
 
@@ -132,7 +133,7 @@ function Project({ project, idx = 0 }) {
               className={styles.techTag}
               itemProp="programmingLanguage"
             >
-              {tech.trim()}
+              <HarmonicChip text={tech.trim()} />
             </span>
           ))}
         </div>

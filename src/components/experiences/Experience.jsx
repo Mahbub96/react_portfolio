@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./experience.module.css";
 import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
+import HarmonicChip from "@/components/HarmonicChip";
 
 // Server-side Experience component for better SEO
 function Experience({ data }) {
@@ -173,12 +174,12 @@ function Experience({ data }) {
               >
                 <span className={styles.showOnMobile}>
                   <span className={styles.date}>
-                    {getTotalExperienceDisplay()?.decimal}
+                    <HarmonicChip text={getTotalExperienceDisplay()?.decimal} />
                   </span>
                 </span>
                 <span className={styles.showOnDesktop}>
                   <span className={styles.date}>
-                    Total Experience: {getTotalExperienceDisplay()?.full}
+                    <HarmonicChip text={`Total Experience: ${getTotalExperienceDisplay()?.full}`} />
                   </span>
                 </span>
               </div>
@@ -215,7 +216,7 @@ function Experience({ data }) {
                         experience.time
                       }
                     >
-                      {experience.time}
+                      <HarmonicChip text={experience.time} />
                     </time>
 
                     {/* Job Title */}
@@ -239,7 +240,7 @@ function Experience({ data }) {
                           className={styles.companyName}
                           itemProp="hiringOrganization"
                         >
-                          {experience.company}
+                          <HarmonicChip text={experience.company} />
                         </span>
                         {experience.companyUrl && (
                           <a
@@ -249,7 +250,7 @@ function Experience({ data }) {
                             rel="noopener noreferrer"
                             aria-label={`Visit ${experience.company} website`}
                           >
-                            Company Website
+                            <HarmonicChip text="Company Website" />
                           </a>
                         )}
                       </div>

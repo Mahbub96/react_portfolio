@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./educations.module.css";
 import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
+import HarmonicChip from "@/components/HarmonicChip";
 
 // Server-side Educations component for better SEO
 function Educations({ data }) {
@@ -131,7 +132,7 @@ function Educations({ data }) {
                       itemProp="dateIssued"
                       dateTime={edu.time}
                     >
-                      {edu.time}
+                      <HarmonicChip text={edu.time} />
                     </time>
 
                     {/* Institution Name */}
@@ -145,7 +146,7 @@ function Educations({ data }) {
 
                     {/* Degree Name */}
                     <p className={styles.degree} itemProp="name">
-                      {edu.degName}
+                      <HarmonicChip text={edu.degName} />
                     </p>
 
                     {/* Department */}
@@ -154,7 +155,7 @@ function Educations({ data }) {
                         className={styles.department}
                         itemProp="educationalProgramName"
                       >
-                        {edu.Department}
+                        <HarmonicChip text={edu.Department} />
                       </p>
                     )}
 
@@ -166,7 +167,7 @@ function Educations({ data }) {
                           className={styles.cgpaValue}
                           itemProp="additionalProperty"
                         >
-                          {edu.cgpa}
+                          <HarmonicChip text={edu.cgpa} />
                         </span>
                       </p>
                     )}
@@ -194,7 +195,7 @@ function Educations({ data }) {
                           rel="noopener noreferrer"
                           aria-label={`Visit ${edu.name} website`}
                         >
-                          {edu.url}
+                          <HarmonicChip text={edu.url} />
                         </a>
                       </div>
                     )}

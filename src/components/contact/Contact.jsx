@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import styles from "./contact.module.css";
 import HarmonicHeading from "../HarmonicHeading";
+import HarmonicChip from "@/components/HarmonicChip";
 
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /contact page
@@ -250,7 +251,7 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     aria-hidden="true"
                   />
                   <span itemProp="address" className={styles.contactText}>
-                    {contactInfo.location}
+                    <HarmonicChip text={contactInfo.location} />
                   </span>
                 </div>
                 <div className={styles.contactItem}>
@@ -264,7 +265,7 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     className={styles.contactLink}
                     aria-label={`Send email to ${contactInfo.email}`}
                   >
-                    {contactInfo.email}
+                    <HarmonicChip text={contactInfo.email} />
                   </a>
                 </div>
                 {contactInfo.phone && (
@@ -279,7 +280,7 @@ export default function Contact({ data, headingLevel = "h2" }) {
                       className={styles.contactLink}
                       aria-label={`Call ${contactInfo.phone}`}
                     >
-                      {contactInfo.phone}
+                      <HarmonicChip text={contactInfo.phone} />
                     </a>
                   </div>
                 )}
@@ -297,7 +298,7 @@ export default function Contact({ data, headingLevel = "h2" }) {
                       rel="noopener noreferrer"
                       aria-label={`Visit website ${contactInfo.website}`}
                     >
-                      {contactInfo.website.replace(/^https?:\/\//, "")}
+                      <HarmonicChip text={contactInfo.website.replace(/^https?:\/\//, "")} />
                     </a>
                   </div>
                 )}

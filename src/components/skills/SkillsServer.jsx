@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./skills.module.css";
 import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
+import HarmonicChip from "@/components/HarmonicChip";
 
 // Server-side Skills component for better SEO
 const SkillsServer = ({ data }) => {
@@ -139,7 +140,9 @@ const SkillsServer = ({ data }) => {
                     >
                       {category}
                     </h3>
-                    <span>{skillGroups[category].length} technologies</span>
+                    <span>
+                      <HarmonicChip text={`${skillGroups[category].length} technologies`} />
+                    </span>
                   </div>
 
                   <div
@@ -170,7 +173,7 @@ const SkillsServer = ({ data }) => {
                           />
                         </div>
                         <h4 itemProp="name" className={styles.skillName}>
-                          {skill.name}
+                          <HarmonicChip text={skill.name} />
                         </h4>
                       </div>
                     ))}

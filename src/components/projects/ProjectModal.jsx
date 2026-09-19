@@ -91,7 +91,9 @@ export default function ProjectModal({
         {/* Details Sidebar */}
         <aside className={styles.detailsSidebar}>
           <div className={styles.sidebarHeader}>
-            <span className={styles.badge}>{primaryTech}</span>
+            <span className={styles.badge}>
+              <HarmonicChip text={primaryTech} />
+            </span>
             <h2 id="modal-project-title" className={styles.projectTitle}>
               {name}
             </h2>

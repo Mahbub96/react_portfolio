@@ -132,7 +132,9 @@ export default function ProfileImageWithModal({
               {/* Details Sidebar */}
               <aside className={modalStyles.detailsSidebar}>
                 <div className={modalStyles.sidebarHeader}>
-                  <span className={modalStyles.badge}>Software Engineer</span>
+                  <span className={modalStyles.badge}>
+                    <HarmonicChip text="Software Engineer" />
+                  </span>
                   <h2 id="profile-modal-title" className={modalStyles.projectTitle}>
                     {name}
                   </h2>
