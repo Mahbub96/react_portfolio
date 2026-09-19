@@ -121,13 +121,28 @@ const nextConfig = {
           },
 
           // Performance headers
+          // NOTE: no long-lived Cache-Control here. This block applies to every
+          // route including HTML documents; an immutable year-long cache meant
+          // returning visitors kept a stale page and never saw new deploys.
+          // Immutable caching is scoped to fingerprinted/static assets below.
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: "public, max-age=0, must-revalidate",
           },
           {
             key: "Vary",
             value: "Accept-Encoding",
+          },
+        ],
+      },
+
+      // Fingerprinted build output is safe to cache forever
+      {
+        source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },
