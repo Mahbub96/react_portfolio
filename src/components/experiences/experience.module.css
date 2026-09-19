@@ -6,7 +6,7 @@
 
 .experienceSection {
   padding: clamp(4.5rem, 8vw, 6rem) 0;
-  background: var(--background-primary);
+  background: transparent;
   min-height: auto;
   position: relative;
   overflow: hidden;

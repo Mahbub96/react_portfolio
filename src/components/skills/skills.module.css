@@ -2,7 +2,7 @@
   padding: clamp(4.5rem, 8vw, 6rem) 0;
   position: relative;
   overflow: hidden;
-  background: var(--background-primary);
+  background: transparent;
   width: 100%;
   max-width: 100%;
 }

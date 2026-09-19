@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import DownloadResumeButton from "./DownloadResumeButton";
 import HarmonicName from "./HarmonicName";
+import ProfileImageWithModal from "./ProfileImageWithModal";
 import { getResumeConfig } from "@/lib/resumeConfig";
 
 // Server-side Banner + About merged component for better SEO
@@ -249,17 +250,25 @@ const BannerServer = ({
               className={styles.profileCard}
               aria-label={`${name} portfolio snapshot`}
             >
-              <div className={styles.profileImageContainer}>
-                <Image
-                  className={styles.profileImage}
-                  src={profileImage || "/assets/img/profile.png"}
-                  alt={`${name} - ${jobTitle}`}
-                  width={220}
-                  height={220}
-                  priority
-                />
-                <div className={styles.profileGlow} aria-hidden="true"></div>
-              </div>
+              <ProfileImageWithModal
+                profileImage={profileImage}
+                name={name}
+                jobTitle={jobTitle}
+                bio={bio}
+                socialLinks={socialLinks}
+                capabilities={[
+                  "Full-Stack Development",
+                  "Backend APIs",
+                  "Applied AI & ML",
+                  "React / Next.js",
+                  "Python / FastAPI",
+                  "Node.js / Express",
+                  "Docker & Cloud",
+                  "Database Architecture",
+                ]}
+                company={company}
+                companyUrl={companyUrl}
+              />
 
               <div className={styles.profileIdentity}>
                 <h2>{name}</h2>

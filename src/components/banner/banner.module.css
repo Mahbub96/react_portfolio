@@ -158,6 +158,14 @@
   justify-content: center;
   width: min(100%, 210px);
   aspect-ratio: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  outline: none;
+}
+
+.profileImageContainer:focus-visible .profileImage {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
 }
 
 .profileImage {
@@ -173,9 +181,38 @@
   z-index: 2;
 }
 
-.profileImage:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-lg);
+.profileImageContainer:hover .profileImage {
+  transform: scale(1.06);
+  border-color: var(--accent-primary);
+  box-shadow: 0 20px 60px rgba(100, 255, 218, 0.3);
+}
+
+.zoomHint {
+  position: absolute;
+  bottom: 22px;
+  right: 22px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(10, 25, 47, 0.88);
+  border: 1px solid rgba(100, 255, 218, 0.4);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 4;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.profileImageContainer:hover .zoomHint {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .profileGlow {

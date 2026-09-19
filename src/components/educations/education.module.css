@@ -9,7 +9,7 @@
 
 .educationSection {
   padding: 100px 0;
-  background: var(--background-primary);
+  background: transparent;
   min-height: 100vh;
   position: relative;
   overflow: hidden;

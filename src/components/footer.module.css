@@ -1,6 +1,6 @@
 /* Enhanced Footer CSS with improved animations and responsive design */
 .footer {
-  background: var(--background-primary);
+  background: transparent;
   padding: 3rem 0;
   position: relative;
   overflow: hidden;
@@ -422,14 +422,14 @@
 /* Dark mode enhancements */
 @media (prefers-color-scheme: dark) {
   .footer {
-    background: var(--background-primary);
+    background: transparent;
   }
 }
 
 /* Light mode enhancements */
 @media (prefers-color-scheme: light) {
   .footer {
-    background: var(--background-primary);
+    background: transparent;
   }
 }
 
