@@ -10,6 +10,7 @@ import {
   HiOutlineDownload,
 } from "react-icons/hi";
 import styles from "./ProjectModal.module.css";
+import HarmonicChip from "../banner/HarmonicChip";
 
 export default function ProjectModal({
   isOpen,
@@ -105,7 +106,7 @@ export default function ProjectModal({
             <div className={styles.techPills}>
               {technologies.map((tech, i) => (
                 <span key={i} className={styles.pill}>
-                  {tech.trim()}
+                  <HarmonicChip text={tech.trim()} />
                 </span>
               ))}
             </div>

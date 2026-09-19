@@ -7,6 +7,7 @@ import { HiOutlineX, HiOutlineArrowsExpand } from "react-icons/hi";
 import { FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
 import modalStyles from "../projects/ProjectModal.module.css";
 import bannerStyles from "./banner.module.css";
+import HarmonicChip from "./HarmonicChip";
 
 export default function ProfileImageWithModal({
   profileImage,
@@ -159,7 +160,7 @@ export default function ProfileImageWithModal({
                   <div className={modalStyles.techPills}>
                     {pills.map((skill, i) => (
                       <span key={i} className={modalStyles.pill}>
-                        {skill}
+                        <HarmonicChip text={skill} />
                       </span>
                     ))}
                   </div>

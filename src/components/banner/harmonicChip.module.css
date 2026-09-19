@@ -1,0 +1,120 @@
+/* harmonicChip.module.css - Simple Harmonic Motion on chip hover */
+
+.harmonicChip {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.harmonicWrapper {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  user-select: none;
+}
+
+.harmonicWord {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.harmonicSpace {
+  display: inline-block;
+  width: 0.28em;
+}
+
+/* Individual character with Simple Harmonic Motion (SHM) physics */
+.harmonicChar {
+  display: inline-block;
+  position: relative;
+  transform-origin: 50% 88%;
+  transition: color 0.22s ease, text-shadow 0.22s ease;
+  will-change: transform;
+}
+
+/* Trigger spin effect when the parent chip is hovered (all characters spin together in harmonic wave) */
+:global([class*="capabilityPills"]) > span:hover .harmonicChar,
+:global([class*="highlightItem"]):hover .harmonicChar,
+:global([class*="statItem"]):hover .harmonicChar,
+:global([class*="pill"]):hover .harmonicChar,
+:global([class*="techTag"]):hover .harmonicChar,
+.harmonicChip:hover .harmonicChar {
+  animation: chipHarmonicMotion 0.88s cubic-bezier(0.2, 0.85, 0.35, 1) forwards;
+  animation-delay: calc(var(--char-index, 0) * 26ms);
+  color: var(--accent-primary, #64ffda);
+  text-shadow: 
+    0 0 10px rgba(100, 255, 218, 0.7),
+    0 0 20px rgba(100, 255, 218, 0.35);
+}
+
+/* Simple Harmonic Motion (SHM) rotation animation */
+@keyframes chipHarmonicMotion {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  14% {
+    /* Peak 1: highest deflection */
+    transform: translateY(-0.25em) rotate(-18deg) scale(1.15);
+    color: var(--accent-primary, #64ffda);
+  }
+  30% {
+    /* Peak 2: counter deflection */
+    transform: translateY(0.12em) rotate(13deg) scale(1.08);
+  }
+  46% {
+    /* Peak 3: reduced deflection */
+    transform: translateY(-0.08em) rotate(-8deg) scale(1.04);
+  }
+  62% {
+    /* Peak 4: minor rebound */
+    transform: translateY(0.04em) rotate(4deg) scale(1.02);
+  }
+  78% {
+    /* Peak 5: subtle settling */
+    transform: translateY(-0.02em) rotate(-2deg) scale(1.01);
+  }
+  90% {
+    /* Peak 6: nearly at rest */
+    transform: translateY(0.01em) rotate(0.8deg) scale(1);
+  }
+  100% {
+    /* Equilibrium */
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Light theme adaptations */
+[data-theme="light"] :global([class*="capabilityPills"]) > span:hover .harmonicChar,
+[data-theme="light"] :global([class*="highlightItem"]):hover .harmonicChar,
+[data-theme="light"] :global([class*="statItem"]):hover .harmonicChar,
+[data-theme="light"] :global([class*="pill"]):hover .harmonicChar,
+[data-theme="light"] :global([class*="techTag"]):hover .harmonicChar,
+[data-theme="light"] .harmonicChip:hover .harmonicChar {
+  color: var(--accent-primary, #0d9488);
+  text-shadow: 0 0 10px rgba(13, 148, 136, 0.45);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  :global([class*="capabilityPills"]) > span:hover .harmonicChar,
+  :global([class*="highlightItem"]):hover .harmonicChar,
+  :global([class*="statItem"]):hover .harmonicChar,
+  :global([class*="pill"]):hover .harmonicChar,
+  :global([class*="techTag"]):hover .harmonicChar,
+  .harmonicChip:hover .harmonicChar {
+    animation: none !important;
+    transform: none !important;
+  }
+}

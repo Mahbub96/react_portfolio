@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import DownloadResumeButton from "./DownloadResumeButton";
 import HarmonicName from "./HarmonicName";
+import HarmonicChip from "./HarmonicChip";
 import ProfileImageWithModal from "./ProfileImageWithModal";
 import { getResumeConfig } from "@/lib/resumeConfig";
 
@@ -201,7 +202,9 @@ const BannerServer = ({
 
               <div className={styles.capabilityPills} aria-label="Core capabilities">
                 {premiumCapabilities.map((capability) => (
-                  <span key={capability}>{capability}</span>
+                  <span key={capability}>
+                    <HarmonicChip text={capability} />
+                  </span>
                 ))}
               </div>
 
@@ -214,7 +217,9 @@ const BannerServer = ({
                     className={styles.highlightIcon}
                     aria-hidden="true"
                   />
-                  <span>{location}</span>
+                  <span>
+                    <HarmonicChip text={location} />
+                  </span>
                 </div>
                 <div className={styles.highlightItem}>
                   <FaBuilding
@@ -226,12 +231,14 @@ const BannerServer = ({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {company}
+                    <HarmonicChip text={company} />
                   </a>
                 </div>
                 <div className={styles.highlightItem}>
                   <FaStar className={styles.highlightIcon} aria-hidden="true" />
-                  <span>{experience.years}+ years engineering</span>
+                  <span>
+                    <HarmonicChip text={`${experience.years}+ years engineering`} />
+                  </span>
                 </div>
               </div>
 

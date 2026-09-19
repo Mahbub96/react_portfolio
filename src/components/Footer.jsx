@@ -69,7 +69,7 @@ function Footer({ data }) {
           ))}
         </div>
 
-        <div className={styles.footerInfo}>
+        {/* <div className={styles.footerInfo}>
           <div className={styles.builtWith}>
             <span>Built with</span>
             <FaHeart />
@@ -90,7 +90,7 @@ function Footer({ data }) {
               © {currentYear}. All Rights Reserved.
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </footer>
   );
