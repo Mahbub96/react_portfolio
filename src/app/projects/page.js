@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
-import connectDB from "@/lib/mongodb";
-import PortfolioData from "@/models/PortfolioData";
+import { getPortfolioData } from "@/lib/getPortfolioData";
 
 export const dynamic = "force-dynamic";
 
@@ -20,21 +19,16 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
   ssr: true,
 });
 
+// Returns the Projects collection in the wrapper shape ({ data, lastUpdate })
+// that the Projects component expects, sharing the homepage's db.json fallback
+// so this page never renders empty when MongoDB is unreachable.
 async function getProjectsData() {
-  try {
-    await connectDB();
-    const projectsDoc = await PortfolioData.findOne({
-      collectionName: "Projects",
-    }).lean();
-    return projectsDoc?.data || [];
-  } catch (error) {
-    console.log("Error fetching projects data:", error);
-    return [];
-  }
+  const portfolioData = await getPortfolioData();
+  return portfolioData?.Projects || { data: [] };
 }
 
 export async function generateMetadata() {
-  const projects = await getProjectsData();
+  const projects = (await getProjectsData())?.data || [];
 
   return {
     title: "Projects by Mahbub Alam | Full Stack Developer Portfolio",

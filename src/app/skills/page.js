@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
-import connectDB from "@/lib/mongodb";
-import PortfolioData from "@/models/PortfolioData";
+import { getPortfolioData } from "@/lib/getPortfolioData";
 
 export const dynamic = "force-dynamic";
 
@@ -20,21 +19,16 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
   ssr: true,
 });
 
+// Returns the Skills collection in the wrapper shape ({ data, lastUpdate })
+// that the Skills component expects, sharing the homepage's db.json fallback
+// so this page never renders empty when MongoDB is unreachable.
 async function getSkillsData() {
-  try {
-    await connectDB();
-    const skillsDoc = await PortfolioData.findOne({
-      collectionName: "Skills",
-    }).lean();
-    return skillsDoc?.data || [];
-  } catch (error) {
-    console.log("Error fetching skills data:", error);
-    return [];
-  }
+  const portfolioData = await getPortfolioData();
+  return portfolioData?.Skills || { data: [] };
 }
 
 export async function generateMetadata() {
-  const skills = await getSkillsData();
+  const skills = (await getSkillsData())?.data || [];
 
   return {
     title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
