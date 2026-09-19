@@ -181,17 +181,19 @@ function Educations({ data }) {
                     )}
 
                     {/* Institution Details */}
-                    <div className={styles.institutionDetails}>
-                      <a
-                        href={edu.url}
-                        className={styles.institutionUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Visit Stamford University Bangladesh website"
-                      >
-                        {edu.url}
-                      </a>
-                    </div>
+                    {edu.url && (
+                      <div className={styles.institutionDetails}>
+                        <a
+                          href={edu.url}
+                          className={styles.institutionUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Visit ${edu.name} website`}
+                        >
+                          {edu.url}
+                        </a>
+                      </div>
+                    )}
 
                     {/* Additional Metadata */}
                     <div
