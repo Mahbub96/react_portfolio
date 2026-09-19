@@ -10,7 +10,11 @@ import {
 } from "react-icons/fa";
 import styles from "./contact.module.css";
 
-export default function Contact({ data }) {
+// headingLevel defaults to h2 because this section also renders on the
+// homepage, which already has its own h1. The standalone /contact page
+// passes "h1" so that page has exactly one top-level heading.
+export default function Contact({ data, headingLevel = "h2" }) {
+  const Heading = headingLevel;
   const contactData = data?.Contact?.data || {};
 
   // Default values if no data from database
@@ -42,6 +46,8 @@ export default function Contact({ data }) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,10 +55,56 @@ export default function Contact({ data }) {
       ...prev,
       [name]: value,
     }));
+    // Clear a field's error as soon as the visitor starts correcting it.
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
+  };
+
+  // Mirrors the server-side rules in /api/contact so the visitor gets
+  // immediate feedback. The server remains authoritative.
+  const validate = (values) => {
+    const errors = {};
+    const name = values.name.trim();
+    const email = values.email.trim();
+    const subject = values.subject.trim();
+    const message = values.message.trim();
+
+    if (!name) errors.name = "Name is required";
+    else if (name.length < 2 || name.length > 100)
+      errors.name = "Name must be between 2 and 100 characters";
+
+    if (!email) errors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      errors.email = "Enter a valid email address";
+
+    if (!subject) errors.subject = "Subject is required";
+    else if (subject.length < 5 || subject.length > 200)
+      errors.subject = "Subject must be between 5 and 200 characters";
+
+    if (!message) errors.message = "Message is required";
+    else if (message.length < 10 || message.length > 2000)
+      errors.message = "Message must be between 10 and 2000 characters";
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const errors = validate(formData);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setSubmitStatus("error");
+      setErrorMessage("Please correct the highlighted fields and try again.");
+      return;
+    }
+
+    setFieldErrors({});
+    setErrorMessage("");
     setIsSubmitting(true);
     setSubmitStatus(null);
 
@@ -64,10 +116,31 @@ export default function Contact({ data }) {
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setSubmitStatus("error");
+        setErrorMessage(
+          "Failed to send message. Please try again or contact me directly via email."
+        );
       }
     } catch (error) {
       setSubmitStatus("error");
-      console.log("Error submitting form:", error);
+      const status = error?.response?.status;
+      const payload = error?.response?.data;
+
+      if (status === 429) {
+        const retryAfter = payload?.retryAfter || "a few minutes";
+        setErrorMessage(
+          `Too many attempts. Please try again in ${retryAfter}, or email me directly.`
+        );
+      } else if (status === 400 && payload?.details) {
+        // Surface the server's per-field validation instead of discarding it.
+        setFieldErrors(payload.details);
+        setErrorMessage("Please correct the highlighted fields and try again.");
+      } else if (payload?.error) {
+        setErrorMessage(payload.error);
+      } else {
+        setErrorMessage(
+          "Failed to send message. Please try again or contact me directly via email."
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -156,9 +229,9 @@ export default function Contact({ data }) {
       >
         <div className="container">
           <header className={styles.sectionHeader}>
-            <h1 id="contact-heading" className={styles.sectionTitle}>
+            <Heading id="contact-heading" className={styles.sectionTitle}>
               Get In Touch
-            </h1>
+            </Heading>
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 
@@ -262,6 +335,7 @@ export default function Contact({ data }) {
                     required
                     aria-required="true"
                     aria-describedby="name-error"
+                    aria-invalid={fieldErrors.name ? "true" : "false"}
                     itemProp="name"
                     className={styles.formInput}
                     autoComplete="name"
@@ -270,7 +344,9 @@ export default function Contact({ data }) {
                     id="name-error"
                     className={styles.errorText}
                     aria-live="polite"
-                  ></div>
+                  >
+                    {fieldErrors.name || ""}
+                  </div>
                 </div>
 
                 <div className={styles.formGroup}>
@@ -290,6 +366,7 @@ export default function Contact({ data }) {
                     required
                     aria-required="true"
                     aria-describedby="email-error"
+                    aria-invalid={fieldErrors.email ? "true" : "false"}
                     itemProp="email"
                     className={styles.formInput}
                     autoComplete="email"
@@ -298,7 +375,9 @@ export default function Contact({ data }) {
                     id="email-error"
                     className={styles.errorText}
                     aria-live="polite"
-                  ></div>
+                  >
+                    {fieldErrors.email || ""}
+                  </div>
                 </div>
 
                 <div className={styles.formGroup}>
@@ -318,6 +397,7 @@ export default function Contact({ data }) {
                     required
                     aria-required="true"
                     aria-describedby="subject-error"
+                    aria-invalid={fieldErrors.subject ? "true" : "false"}
                     itemProp="subject"
                     className={styles.formInput}
                     autoComplete="off"
@@ -326,7 +406,9 @@ export default function Contact({ data }) {
                     id="subject-error"
                     className={styles.errorText}
                     aria-live="polite"
-                  ></div>
+                  >
+                    {fieldErrors.subject || ""}
+                  </div>
                 </div>
 
                 <div className={styles.formGroup}>
@@ -346,6 +428,7 @@ export default function Contact({ data }) {
                     required
                     aria-required="true"
                     aria-describedby="message-error"
+                    aria-invalid={fieldErrors.message ? "true" : "false"}
                     itemProp="message"
                     className={styles.formTextarea}
                     autoComplete="off"
@@ -354,7 +437,9 @@ export default function Contact({ data }) {
                     id="message-error"
                     className={styles.errorText}
                     aria-live="polite"
-                  ></div>
+                  >
+                    {fieldErrors.message || ""}
+                  </div>
                 </div>
 
                 {submitStatus === "success" && (
@@ -376,8 +461,8 @@ export default function Contact({ data }) {
                     aria-atomic="true"
                   >
                     <span className={styles.messageIcon}>⚠</span>
-                    Failed to send message. Please try again or contact me
-                    directly via email.
+                    {errorMessage ||
+                      "Failed to send message. Please try again or contact me directly via email."}
                   </div>
                 )}
 

@@ -47,7 +47,7 @@ export const metadata = {
     siteName: "Mahbub Alam Portfolio",
     images: [
       {
-        url: "/assets/img/profile.png",
+        url: "/assets/img/og-cover.jpg",
         width: 1200,
         height: 630,
         alt: "Contact Mahbub Alam - Full Stack Developer",
@@ -58,7 +58,7 @@ export const metadata = {
     title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
     description:
       "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities.",
-    images: ["/assets/img/profile.png"],
+    images: ["/assets/img/og-cover.jpg"],
   },
   robots: {
     index: true,
@@ -75,7 +75,7 @@ export default function ContactPage() {
 
       <main className="container">
         <Suspense fallback={<div>Loading...</div>}>
-          <Contact />
+          <Contact headingLevel="h1" />
         </Suspense>
       </main>
 
