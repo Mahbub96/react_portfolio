@@ -6,7 +6,14 @@ const rateLimit = new Map();
 // Rate limiting function
 function checkRateLimit(identifier, windowMs = 60000, maxRequests = 100) {
   const now = Date.now();
-  
+
+  // Evict expired entries so this in-process map cannot grow unbounded.
+  if (rateLimit.size > 5000) {
+    for (const [key, entry] of rateLimit) {
+      if (now > entry.resetTime) rateLimit.delete(key);
+    }
+  }
+
   if (!rateLimit.has(identifier)) {
     rateLimit.set(identifier, { count: 1, resetTime: now + windowMs });
     return true;
@@ -62,7 +69,7 @@ export function middleware(request) {
       maxRequests = 10; // 10 requests per 15 minutes
     } else if (pathname.startsWith('/api/contact')) {
       windowMs = 900000; // 15 minutes for contact form
-      maxRequests = 3; // 3 requests per 15 minutes
+      maxRequests = 8; // allow genuine retries after a typo or validation error
     } else if (pathname.startsWith('/api/upload')) {
       windowMs = 60000; // 1 minute for uploads
       maxRequests = 10; // 10 uploads per minute
@@ -89,8 +96,12 @@ export function middleware(request) {
 
   // Block suspicious requests
   const userAgent = request.headers.get('user-agent') || '';
+  // Note: deliberately no generic /bot|crawler|spider/ rule here. User agents
+  // are trivially spoofed, so it never stopped a real attacker — it only
+  // returned 403 to Googlebot, Bingbot and the LinkedIn/Twitter/Slack preview
+  // fetchers, which de-indexed the site. Rate limiting and route auth are the
+  // actual controls.
   const suspiciousPatterns = [
-    /bot|crawler|spider/i,
     /sqlmap|nikto|nmap/i,
     /\.\.\//, // Directory traversal
     /<script|javascript:/i, // XSS attempts
