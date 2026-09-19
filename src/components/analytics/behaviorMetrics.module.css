@@ -1,3 +1,16 @@
+.metricsTwoCol {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .metricsTwoCol {
+    grid-template-columns: 1fr;
+  }
+}
+
 .scrollMilestonesList {
   display: flex;
   flex-direction: column;

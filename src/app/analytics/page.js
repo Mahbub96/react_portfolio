@@ -1,11 +1,17 @@
 "use client";
-import React from "react";
-import { FaChartBar, FaSync, FaGlobeAmericas } from "react-icons/fa";
+import React, { useState } from "react";
+import {
+  FaChartBar,
+  FaSync,
+  FaGlobeAmericas,
+  FaChartLine,
+  FaUsers,
+  FaVideo,
+  FaLayerGroup,
+} from "react-icons/fa";
 import styles from "./analytics.module.css";
 import { useAnalyticsData } from "@/hooks/useAnalyticsData";
-import { useWorldMap } from "@/hooks/useWorldMap";
 import AnalyticsHeader from "@/components/analytics/AnalyticsHeader";
-import CountrySessionsCard from "@/components/analytics/CountrySessionsCard";
 import CountriesTable from "@/components/analytics/CountriesTable";
 import TrafficTrendsHub from "@/components/analytics/TrafficTrendsHub";
 import AudienceTechMatrix from "@/components/analytics/AudienceTechMatrix";
@@ -20,7 +26,7 @@ import Footer from "@/components/Footer";
 
 const AnalyticsPage = () => {
   const { stats, loading, error, fetchStats } = useAnalyticsData(14);
-  const { loaded: worldMapLoaded } = useWorldMap();
+  const [activeView, setActiveView] = useState("all"); // 'all' | 'traffic' | 'behavior' | 'replay'
 
   // --- Loading State ---
   if (loading) {
@@ -83,66 +89,118 @@ const AnalyticsPage = () => {
       {/* 🧭 1. Header with Home Link & Live Status */}
       <AnalyticsHeader onRefresh={fetchStats} />
 
-      {/* 📊 2. High-Impact Dashboard Grid */}
-      <div className={styles.dashboardGrid}>
-        {/* ⚡ Behavioral Command Center Overview */}
-        <InteractionMetrics
-          mouseEvents={stats.mouseEvents}
-          keyboardEvents={stats.keyboardEvents}
-          formEngagement={stats.formEngagement}
-          totalSessions={totalSessions}
-        />
+      <main className={styles.dashboardContainer}>
+        {/* 🎛️ Category Navigation Switcher */}
+        <nav className={styles.viewSwitcher} aria-label="Analytics View Navigation">
+          <button
+            className={`${styles.viewSwitchBtn} ${activeView === "all" ? styles.viewSwitchBtnActive : ""}`}
+            onClick={() => setActiveView("all")}
+          >
+            <FaLayerGroup size={12} />
+            <span>Complete Telemetry</span>
+          </button>
 
-        {/* 🟢 Real-Time Live Activity Feed */}
-        <LiveActivityFeed />
+          <button
+            className={`${styles.viewSwitchBtn} ${activeView === "traffic" ? styles.viewSwitchBtnActive : ""}`}
+            onClick={() => setActiveView("traffic")}
+          >
+            <FaChartLine size={12} />
+            <span>Traffic & Audience</span>
+          </button>
 
-        {/* 🎬 Interactive Session Replay Player Engine (0.5x - 128x) */}
-        <SessionReplayPlayer sessionReplays={stats.sessionReplays} />
+          <button
+            className={`${styles.viewSwitchBtn} ${activeView === "behavior" ? styles.viewSwitchBtnActive : ""}`}
+            onClick={() => setActiveView("behavior")}
+          >
+            <FaUsers size={12} />
+            <span>Behavioral Telemetry</span>
+          </button>
 
-        {/* 🗺️ Visitor Journey Pipeline */}
-        <UserJourneyFlow />
+          <button
+            className={`${styles.viewSwitchBtn} ${activeView === "replay" ? styles.viewSwitchBtnActive : ""}`}
+            onClick={() => setActiveView("replay")}
+          >
+            <FaVideo size={12} />
+            <span>Session Replay & Heatmaps</span>
+          </button>
+        </nav>
 
-        {/* 🔥 Multi-Mode Heatmap Engine (Clicks / Hovers / Movements / Scroll) */}
-        <MultiModeHeatmap initialPoints={stats.heatmapPoints} />
+        {/* 📈 HERO: Traffic Performance Hub (Full Width) */}
+        {(activeView === "all" || activeView === "traffic") && (
+          <section className={styles.fullWidthSection}>
+            <TrafficTrendsHub
+              dailyData={dailyData}
+              dailyTrends={stats.dailyTrends}
+              totalSessions={totalSessions}
+              totalUsers={totalUsers}
+              totalPageviews={totalPageviews}
+            />
+          </section>
+        )}
 
-        {/* 🎯 Behavioral Funnel & Scroll Depth Distribution */}
-        <BehaviorMetricsSection
-          scrollMilestones={stats.scrollMilestones}
-          formEngagement={stats.formEngagement}
-          popularElements={stats.popularElements}
-        />
+        {/* 🌍 & 💻 Geographic Reach + Audience Matrix (Balanced 2-Column Grid) */}
+        {(activeView === "all" || activeView === "traffic") && (
+          <section className={styles.twoColumnGrid}>
+            <AnalyticsCard
+              title="GEOGRAPHIC REACH"
+              icon={FaGlobeAmericas}
+              subtitle="Top Active Visitor Nations"
+            >
+              <CountriesTable countriesData={countriesData} />
+            </AnalyticsCard>
 
-        {/* 📈 Unified Traffic Performance Hub (Replaces 3 redundant charts) */}
-        <TrafficTrendsHub
-          dailyData={dailyData}
-          dailyTrends={stats.dailyTrends}
-          totalSessions={totalSessions}
-          totalUsers={totalUsers}
-          totalPageviews={totalPageviews}
-        />
+            <AudienceTechMatrix
+              devicesData={devicesData}
+              mediumsData={mediumsData}
+              componentsData={componentsData}
+            />
+          </section>
+        )}
 
-        {/* 🌍 Geographic Reach: 3D Map / Globe Visualization */}
-        <CountrySessionsCard
-          countriesData={countriesData}
-          worldMapLoaded={worldMapLoaded}
-        />
+        {/* ⚡ Behavioral Command Center + Real-Time Live Feed (2:1 Grid) */}
+        {(activeView === "all" || activeView === "behavior") && (
+          <section className={styles.commandCenterRow}>
+            <InteractionMetrics
+              mouseEvents={stats.mouseEvents}
+              keyboardEvents={stats.keyboardEvents}
+              formEngagement={stats.formEngagement}
+              totalSessions={totalSessions}
+            />
+            <LiveActivityFeed />
+          </section>
+        )}
 
-        {/* 🌏 Geographic Reach: Modern Leaderboard */}
-        <AnalyticsCard
-          title="GEOGRAPHIC REACH"
-          icon={FaGlobeAmericas}
-          subtitle="Top Active Visitor Nations"
-        >
-          <CountriesTable countriesData={countriesData} />
-        </AnalyticsCard>
+        {/* 🎯 Scroll Depth Distribution + Form Engagement Funnel (Balanced 2-Column Grid) */}
+        {(activeView === "all" || activeView === "behavior") && (
+          <section className={styles.fullWidthSection}>
+            <BehaviorMetricsSection
+              scrollMilestones={stats.scrollMilestones}
+              formEngagement={stats.formEngagement}
+            />
+          </section>
+        )}
 
-        {/* 💻 Audience & Technology Matrix (Devices, Acquisition Channels & Interactive Targets) */}
-        <AudienceTechMatrix
-          devicesData={devicesData}
-          mediumsData={mediumsData}
-          componentsData={componentsData}
-        />
-      </div>
+        {/* 🗺️ Visitor Journey Pipeline (Full Width) */}
+        {(activeView === "all" || activeView === "behavior") && (
+          <section className={styles.fullWidthSection}>
+            <UserJourneyFlow />
+          </section>
+        )}
+
+        {/* 🎬 Interactive Session Replay Player Engine (Full Width) */}
+        {(activeView === "all" || activeView === "replay") && (
+          <section className={styles.fullWidthSection}>
+            <SessionReplayPlayer sessionReplays={stats.sessionReplays} />
+          </section>
+        )}
+
+        {/* 🔥 Multi-Mode Heatmap Engine (Full Width) */}
+        {(activeView === "all" || activeView === "replay") && (
+          <section className={styles.fullWidthSection}>
+            <MultiModeHeatmap initialPoints={stats.heatmapPoints} />
+          </section>
+        )}
+      </main>
 
       {/* ⚓ 3. Portfolio Footer Integration */}
       <Footer />

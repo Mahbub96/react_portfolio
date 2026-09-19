@@ -15,7 +15,6 @@ import styles from "./behaviorMetrics.module.css";
 export default function BehaviorMetricsSection({
   scrollMilestones = [],
   formEngagement = null,
-  popularElements = [],
 }) {
   const milestones = [25, 50, 75, 90, 100];
   const maxEvents = Math.max(
@@ -24,7 +23,7 @@ export default function BehaviorMetricsSection({
   );
 
   return (
-    <>
+    <div className={styles.metricsTwoCol}>
       {/* 📜 Scroll Depth Milestones Card */}
       <AnalyticsCard
         title="SCROLL DEPTH DISTRIBUTION"
@@ -123,44 +122,6 @@ export default function BehaviorMetricsSection({
           </div>
         </div>
       </AnalyticsCard>
-
-      {/* 🎯 Popular Interactive Elements */}
-      <AnalyticsCard
-        title="POPULAR UI ELEMENTS"
-        icon={FaSlidersH}
-        subtitle="Clicks & Hover Attention"
-      >
-        <div className={styles.popularElementsList}>
-          {popularElements.length === 0 ? (
-            <div className={styles.emptyState}>No element interactions recorded yet.</div>
-          ) : (
-            popularElements.slice(0, 7).map((el, idx) => (
-              <div key={idx} className={styles.elementRow}>
-                <div className={styles.elementRank}>#{idx + 1}</div>
-                <div className={styles.elementInfo}>
-                  <div className={styles.elementId} title={el.elementId}>
-                    {el.elementId}
-                  </div>
-                  <div className={styles.elementMetrics}>
-                    <span>{el.clicks} clicks</span>
-                    <span>•</span>
-                    <span>{el.hovers} hovers</span>
-                    {el.avgHoverDurationMs > 0 && (
-                      <>
-                        <span>•</span>
-                        <span>{el.avgHoverDurationMs}ms avg dwell</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.elementTotal}>
-                  {el.totalInteractions}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </AnalyticsCard>
-    </>
+    </div>
   );
 }

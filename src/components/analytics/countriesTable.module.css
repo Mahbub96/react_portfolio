@@ -29,7 +29,7 @@
   align-items: center;
   gap: 0.75rem;
   flex: 1;
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .rankBadge {
@@ -43,6 +43,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: #94a3b8;
+  flex-shrink: 0;
 }
 
 .rankTop {
@@ -55,14 +56,17 @@
   font-size: 0.88rem;
   font-weight: 600;
   color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .barWrapper {
-  flex: 2;
+  flex: 1.5;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  min-width: 100px;
+  min-width: 60px;
 }
 
 .progressBarBg {
@@ -83,13 +87,15 @@
 .rightMetrics {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   text-align: right;
+  flex-shrink: 0;
 }
 
 .metricBlock {
   display: flex;
   flex-direction: column;
+  min-width: 42px;
 }
 
 .metricValue {
@@ -103,6 +109,15 @@
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+@media (max-width: 580px) {
+  .barWrapper {
+    display: none;
+  }
+  .rightMetrics {
+    gap: 0.6rem;
+  }
 }
 
 /* Pagination */

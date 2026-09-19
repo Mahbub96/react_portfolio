@@ -14,6 +14,21 @@ import AnalyticsCard from "./AnalyticsCard";
 import styles from "./audienceTechMatrix.module.css";
 import { formatNumber } from "@/utils/analytics/formatters";
 
+function formatElementName(raw) {
+  if (!raw) return "UI Element";
+  const s = String(raw).trim();
+  if (s === "a[href=/]" || s === "a[href='/']") return "Home Link (/)";
+  if (s.includes("projects > header") || s.includes("projects")) return "Projects Header";
+  if (s.includes("Admin Login") || s.includes("admin")) return "Admin Access";
+  if (s.includes("loginModal") || s.includes("loginForm")) return "Admin Login Form";
+  if (s === "username") return "Username Field";
+  if (s === "password") return "Password Field";
+  if (s.includes("contactForm") || s.includes("submit")) return "Contact Submit";
+  if (s.includes("themeToggle")) return "Theme Switcher";
+  const cleaned = s.replace(/__[a-zA-Z0-9_-]{4,10}/g, "").replace(/^[a-z]+[\.#]/i, "");
+  return cleaned.length > 24 ? cleaned.substring(0, 22) + "..." : cleaned;
+}
+
 /**
  * AudienceTechMatrix Component
  * Modern consolidated module for Device Breakdown, Acquisition Channels, and Interaction Targets
@@ -43,19 +58,19 @@ export default function AudienceTechMatrix({
     const tot = Math.max(1, map.desktop + map.mobile + map.tablet);
     return [
       {
-        name: "Desktop & Laptops",
+        name: "Desktop & PC",
         icon: FaLaptop,
         count: map.desktop,
         pct: Math.round((map.desktop / tot) * 100),
       },
       {
-        name: "Mobile Devices",
+        name: "Mobile Phones",
         icon: FaMobileAlt,
         count: map.mobile,
         pct: Math.round((map.mobile / tot) * 100),
       },
       {
-        name: "Tablets & Touch",
+        name: "Tablets",
         icon: FaTabletAlt,
         count: map.tablet,
         pct: Math.round((map.tablet / tot) * 100),
@@ -87,7 +102,7 @@ export default function AudienceTechMatrix({
       .sort((a, b) => (b.clicks || b.count || 0) - (a.clicks || a.count || 0))
       .slice(0, 6)
       .map((c) => ({
-        name: c.component || c.elementId || "UI Action",
+        name: formatElementName(c.component || c.elementId || "UI Action"),
         count: c.clicks || c.count || 0,
         pct: Math.round(((c.clicks || c.count || 0) / tot) * 100),
       }));
@@ -98,7 +113,6 @@ export default function AudienceTechMatrix({
       title="AUDIENCE & TECHNOLOGY MATRIX"
       icon={FaCompass}
       subtitle="Ecosystem, Acquisition Channels & Interactive Targets"
-      style={{ gridColumn: "span 3" }}
     >
       <div className={styles.matrixContainer}>
         {/* Navigation Tabs */}

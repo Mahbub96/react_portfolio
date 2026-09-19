@@ -164,7 +164,6 @@ export default function TrafficTrendsHub({
       title="TRAFFIC & AUDIENCE PERFORMANCE HUB"
       icon={FaChartLine}
       subtitle="Interactive 14-Day Trajectory"
-      style={{ gridColumn: "span 3" }}
     >
       <div className={styles.hubContainer}>
         {/* Top KPI Cards Grid */}
@@ -215,18 +214,20 @@ export default function TrafficTrendsHub({
           <div
             className={`${styles.kpiCard} ${activeMetric === "all" ? styles.activeKpi : ""}`}
             onClick={() => setActiveMetric("all")}
-            title="Click to show All Combined"
+            title="Click to view all series overlaid"
           >
             <div className={styles.kpiHeader}>
               <span className={styles.kpiLabel}>View Mode</span>
               <span className={styles.trendBadge} style={{ background: "rgba(32,201,151,0.15)", color: "#20c997" }}>
-                Multi-Series
+                {activeMetric === "all" ? "Multi" : "Single"}
               </span>
             </div>
-            <div className={styles.kpiValue} style={{ fontSize: "1.2rem", color: "#20c997" }}>
-              Combined
+            <div className={styles.kpiValue} style={{ fontSize: "1.25rem", color: activeMetric === "all" ? "#20c997" : "#38bdf8" }}>
+              {activeMetric === "all" ? "Combined" : activeMetric.charAt(0).toUpperCase() + activeMetric.slice(1)}
             </div>
-            <div className={styles.kpiSubtext}>Click to reset multi-series</div>
+            <div className={styles.kpiSubtext}>
+              {activeMetric === "all" ? "All series overlaid" : "Click to view all"}
+            </div>
           </div>
         </div>
 
