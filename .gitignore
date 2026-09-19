@@ -158,3 +158,9 @@ test-results.xml
 # Misc
 *.tgz
 *.tar.gz
+
+# QA output
+dogfood-output/
+
+# Build artifacts
+mahbub-portfolio-production-*.zip

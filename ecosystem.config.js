@@ -23,16 +23,16 @@ module.exports = {
     },
 
     {
-      // Test App
-      name: "test.mahbub.dev",
+      // Test App — name and port must match scripts/deploy-local.sh
+      name: "my-app-5010",
       script: "server.js",
       cwd: "/var/www/html/test.mahbub.dev/.next/standalone",
       instances: 1,
       exec_mode: "fork",
       max_memory_restart: "512M",
       env: {
-        NODE_ENV: "test",
-        PORT: 4000, // Make sure test uses a different port
+        NODE_ENV: "production",
+        PORT: 5010,
         NODE_OPTIONS: "--max-old-space-size=512",
         MONGODB_URI: process.env.MONGODB_URI, // Can use same DB or test DB
         NEXT_PUBLIC_BASE_URL: "https://test.mahbub.dev",
