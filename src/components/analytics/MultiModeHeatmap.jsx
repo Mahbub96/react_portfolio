@@ -134,8 +134,13 @@ export default function MultiModeHeatmap({ initialPoints = [] }) {
                 <div
                   key={idx}
                   className={`${styles.heatPoint} ${dotClass}`}
-                  style={{ left: `${pt.normX}%`, top: `${pt.normY}%` }}
-                  title={`${activeMode.toUpperCase()} at (${pt.x}, ${pt.y})`}
+                  style={{
+                    left: `${pt.normX}%`,
+                    top: `${pt.normY}%`,
+                    transform: `translate(-50%, -50%) scale(${Math.min(2.4, 1 + (pt.count || 1) * 0.12)})`,
+                    opacity: Math.min(1, 0.5 + (pt.count || 1) * 0.08),
+                  }}
+                  title={`${activeMode.toUpperCase()} cluster: ${pt.count || 1} events at (${pt.x}, ${pt.y})`}
                 />
               );
             })}

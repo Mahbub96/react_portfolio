@@ -21,6 +21,12 @@ export async function POST(request) {
       return secureResponse({ success: true, insertedCount: 0 });
     }
 
+    // Discard tracking events from logged-in admin users
+    const authHeader = request.headers.get("authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return secureResponse({ success: true, insertedCount: 0, ignored: "authenticated_user" });
+    }
+
     // Cap single ingestion batch to 100 events max
     const limitedEvents = events.slice(0, 100);
 

@@ -1,0 +1,199 @@
+/* Audience & Technology Matrix Styles — Cyber Teal Glassmorphism */
+.matrixContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.tabBar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+}
+
+.activeTab {
+  background: rgba(32, 201, 151, 0.12);
+  border-color: rgba(32, 201, 151, 0.4);
+  color: #20c997;
+}
+
+/* Devices Grid */
+.deviceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.deviceCard {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+}
+
+.deviceCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(32, 201, 151, 0.3);
+  transform: translateY(-2px);
+}
+
+.deviceIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(32, 201, 151, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #20c997;
+  font-size: 20px;
+}
+
+.deviceName {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.devicePct {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+}
+
+.deviceCount {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.deviceBarBg {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.deviceBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #20c997 0%, #38bdf8 100%);
+  border-radius: 9999px;
+}
+
+/* List Views (Channels & Targets) */
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  gap: 1rem;
+}
+
+.listItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(32, 201, 151, 0.3);
+}
+
+.itemLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  flex: 1;
+}
+
+.itemBarWrapper {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.itemBarBg {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.itemBarFill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #38bdf8 0%, #20c997 100%);
+}
+
+.itemMetrics {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 80px;
+  justify-content: flex-end;
+}
+
+.itemValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.itemPct {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  width: 38px;
+  text-align: right;
+}
+
+.emptyState {
+  padding: 2.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 768px) {
+  .deviceGrid {
+    grid-template-columns: 1fr;
+  }
+}

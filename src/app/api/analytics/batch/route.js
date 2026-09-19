@@ -13,6 +13,12 @@ export async function POST(request) {
       return secureResponse({ success: true, insertedCount: 0 });
     }
 
+    // Discard tracking events from logged-in admin users
+    const authHeader = request.headers.get("authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return secureResponse({ success: true, insertedCount: 0, ignored: "authenticated_user" });
+    }
+
     // Protect against payload abuse (max 100 events per batch)
     const limitedEvents = events.slice(0, 100);
 

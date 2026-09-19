@@ -11,6 +11,7 @@ import {
 import styles from "./contact.module.css";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
+import analytics from "@/services/analyticsSdk";
 
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /contact page
@@ -115,16 +116,32 @@ export default function Contact({ data, headingLevel = "h2" }) {
       if (response.status === 200) {
         setSubmitStatus("success");
         setFormData({ name: "", email: "", subject: "", message: "" });
+        analytics.track("form_submit_success", { formId: "contact_form" }, "contact_form");
       } else {
         setSubmitStatus("error");
         setErrorMessage(
           "Failed to send message. Please try again or contact me directly via email."
+        );
+        analytics.track(
+          "form_submit_error",
+          { formId: "contact_form", reason: "non_200_status" },
+          "contact_form"
         );
       }
     } catch (error) {
       setSubmitStatus("error");
       const status = error?.response?.status;
       const payload = error?.response?.data;
+
+      analytics.track(
+        "form_submit_error",
+        {
+          formId: "contact_form",
+          statusCode: status || 500,
+          errorType: status === 429 ? "rate_limit" : status === 400 ? "validation" : "server_error",
+        },
+        "contact_form"
+      );
 
       if (status === 429) {
         const retryAfter = payload?.retryAfter || "a few minutes";

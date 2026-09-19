@@ -1227,7 +1227,7 @@ export async function getSessionReplayData(sessionId) {
  */
 export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit = 400) {
   if (mode === "movement") {
-    // Unwind movement delta segments
+    // Unwind movement delta segments with spatial binning
     const pipeline = [
       {
         $match: {
@@ -1241,25 +1241,54 @@ export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit 
       { $unwind: "$metadata.points" },
       {
         $project: {
-          x: { $arrayElemAt: ["$metadata.points", 0] },
-          y: { $arrayElemAt: ["$metadata.points", 1] },
+          gridX: {
+            $multiply: [
+              { $round: [{ $divide: [{ $arrayElemAt: ["$metadata.points", 0] }, 35] }, 0] },
+              35,
+            ],
+          },
+          gridY: {
+            $multiply: [
+              { $round: [{ $divide: [{ $arrayElemAt: ["$metadata.points", 1] }, 35] }, 0] },
+              35,
+            ],
+          },
           page: 1,
           timestamp: 1,
         },
       },
+      {
+        $group: {
+          _id: { x: "$gridX", y: "$gridY" },
+          x: { $first: "$gridX" },
+          y: { $first: "$gridY" },
+          count: { $sum: 1 },
+          lastTimestamp: { $max: "$timestamp" },
+        },
+      },
+      { $sort: { count: -1 } },
       { $limit: limit },
     ];
     const points = await AnalyticsEvent.aggregate(pipeline);
     return points.map((p) => ({ ...p, eventType: "movement" }));
   }
 
-  let eventFilter = ["click"];
+  let eventFilter = [
+    "click",
+    "card_click",
+    "button_click",
+    "link_click",
+    "tab_change",
+    "modal_open",
+    "rage_click",
+  ];
   if (mode === "hover") {
     eventFilter = ["hover", "long_hover"];
   } else if (mode === "scroll") {
-    eventFilter = ["scroll_milestone"];
+    eventFilter = ["scroll_milestone", "rapid_scroll"];
   }
 
+  // Section 40: Spatial Aggregation into 35px cells to minimize payload and 1-core memory usage
   const pipeline = [
     {
       $match: {
@@ -1269,11 +1298,22 @@ export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit 
         "metadata.y": { $exists: true },
       },
     },
+    { $sort: { timestamp: -1 } },
+    { $limit: limit * 2 },
     {
       $project: {
-        x: "$metadata.x",
-        y: "$metadata.y",
-        scrollY: "$metadata.scrollY",
+        gridX: {
+          $multiply: [
+            { $round: [{ $divide: ["$metadata.x", 35] }, 0] },
+            35,
+          ],
+        },
+        gridY: {
+          $multiply: [
+            { $round: [{ $divide: ["$metadata.y", 35] }, 0] },
+            35,
+          ],
+        },
         eventType: 1,
         elementId: 1,
         page: 1,
@@ -1281,7 +1321,20 @@ export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit 
         durationMs: "$metadata.durationMs",
       },
     },
-    { $sort: { timestamp: -1 } },
+    {
+      $group: {
+        _id: { x: "$gridX", y: "$gridY" },
+        x: { $first: "$gridX" },
+        y: { $first: "$gridY" },
+        count: { $sum: 1 },
+        eventType: { $first: "$eventType" },
+        elementId: { $first: "$elementId" },
+        page: { $first: "$page" },
+        durationMs: { $avg: "$durationMs" },
+        timestamp: { $max: "$timestamp" },
+      },
+    },
+    { $sort: { count: -1 } },
     { $limit: limit },
   ];
 

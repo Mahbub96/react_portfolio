@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
-import { FaChartBar, FaSync } from "react-icons/fa";
+import { FaChartBar, FaSync, FaGlobeAmericas } from "react-icons/fa";
 import styles from "./analytics.module.css";
 import { useAnalyticsData } from "@/hooks/useAnalyticsData";
 import { useWorldMap } from "@/hooks/useWorldMap";
 import AnalyticsHeader from "@/components/analytics/AnalyticsHeader";
 import CountrySessionsCard from "@/components/analytics/CountrySessionsCard";
 import CountriesTable from "@/components/analytics/CountriesTable";
-import TimeSeriesChart from "@/components/analytics/TimeSeriesChart";
-import MediumsSection from "@/components/analytics/MediumsSection";
-import DevicesSection from "@/components/analytics/DevicesSection";
-import ComponentsSection from "@/components/analytics/ComponentsSection";
+import TrafficTrendsHub from "@/components/analytics/TrafficTrendsHub";
+import AudienceTechMatrix from "@/components/analytics/AudienceTechMatrix";
 import InteractionMetrics from "@/components/analytics/InteractionMetrics";
 import AnalyticsCard from "@/components/analytics/AnalyticsCard";
 import BehaviorMetricsSection from "@/components/analytics/BehaviorMetricsSection";
@@ -18,6 +16,7 @@ import SessionReplayPlayer from "@/components/analytics/SessionReplayPlayer";
 import UserJourneyFlow from "@/components/analytics/UserJourneyFlow";
 import MultiModeHeatmap from "@/components/analytics/MultiModeHeatmap";
 import LiveActivityFeed from "@/components/analytics/LiveActivityFeed";
+import Footer from "@/components/Footer";
 
 const AnalyticsPage = () => {
   const { stats, loading, error, fetchStats } = useAnalyticsData(14);
@@ -29,7 +28,7 @@ const AnalyticsPage = () => {
       <div className={styles.loadingContainer}>
         <div className={styles.loadingSpinner}>
           <FaChartBar className={styles.spinnerIcon} />
-          <span>Loading analytics...</span>
+          <span>Loading analytics engine...</span>
         </div>
       </div>
     );
@@ -40,7 +39,7 @@ const AnalyticsPage = () => {
     return (
       <div className={styles.errorContainer}>
         <div className={styles.errorMessage}>
-          <FaChartBar size={48} />
+          <FaChartBar size={48} color="#ef4444" />
           <h3>Error Loading Analytics</h3>
           <p>{error}</p>
           <button className={styles.retryBtn} onClick={fetchStats}>
@@ -56,7 +55,7 @@ const AnalyticsPage = () => {
     return (
       <div className={styles.errorContainer}>
         <div className={styles.errorMessage}>
-          <FaChartBar size={48} />
+          <FaChartBar size={48} color="#20c997" />
           <h3>No Data Available</h3>
           <p>No analytics data has been collected yet.</p>
           <button className={styles.retryBtn} onClick={fetchStats}>
@@ -74,11 +73,6 @@ const AnalyticsPage = () => {
   const devicesData = stats.devices || [];
   const componentsData = stats.components || [];
 
-  // --- Format daily data for charts ---
-  const sessionsData = dailyData.map((d) => [d.date, d.sessions || 0]);
-  const usersData = dailyData.map((d) => [d.date, d.users || 0]);
-  const pageviewsData = dailyData.map((d) => [d.date, d.pageViews || 0]);
-
   // --- Calculate totals ---
   const totalSessions = stats.dailyTrends?.sessions?.current || 0;
   const totalUsers = stats.dailyTrends?.users?.current || 0;
@@ -86,12 +80,12 @@ const AnalyticsPage = () => {
 
   return (
     <div className={styles.analyticsPage}>
-      {/* Header */}
+      {/* 🧭 1. Header with Home Link & Live Status */}
       <AnalyticsHeader onRefresh={fetchStats} />
 
-      {/* Dashboard Layout */}
+      {/* 📊 2. High-Impact Dashboard Grid */}
       <div className={styles.dashboardGrid}>
-        {/* ⚡ 1. Behavioral Command Center Overview */}
+        {/* ⚡ Behavioral Command Center Overview */}
         <InteractionMetrics
           mouseEvents={stats.mouseEvents}
           keyboardEvents={stats.keyboardEvents}
@@ -99,76 +93,59 @@ const AnalyticsPage = () => {
           totalSessions={totalSessions}
         />
 
-        {/* 🟢 2. Live Visitor Activity Feed */}
+        {/* 🟢 Real-Time Live Activity Feed */}
         <LiveActivityFeed />
 
-        {/* 🎬 3. Interactive Session Replay Player Engine */}
+        {/* 🎬 Interactive Session Replay Player Engine (0.5x - 128x) */}
         <SessionReplayPlayer sessionReplays={stats.sessionReplays} />
 
-        {/* 🗺️ 4. Visitor Journey Pipeline */}
+        {/* 🗺️ Visitor Journey Pipeline */}
         <UserJourneyFlow />
 
-        {/* 🔥 5. Multi-Mode Heatmap Engine (Clicks / Hovers / Movements / Scroll) */}
+        {/* 🔥 Multi-Mode Heatmap Engine (Clicks / Hovers / Movements / Scroll) */}
         <MultiModeHeatmap initialPoints={stats.heatmapPoints} />
 
-        {/* 🎯 6. Behavioral Funnel & Scroll Distribution */}
+        {/* 🎯 Behavioral Funnel & Scroll Depth Distribution */}
         <BehaviorMetricsSection
           scrollMilestones={stats.scrollMilestones}
           formEngagement={stats.formEngagement}
           popularElements={stats.popularElements}
         />
 
-        {/* 🌍 7. Countries by Sessions Card (Map Visualization) */}
+        {/* 📈 Unified Traffic Performance Hub (Replaces 3 redundant charts) */}
+        <TrafficTrendsHub
+          dailyData={dailyData}
+          dailyTrends={stats.dailyTrends}
+          totalSessions={totalSessions}
+          totalUsers={totalUsers}
+          totalPageviews={totalPageviews}
+        />
+
+        {/* 🌍 Geographic Reach: 3D Map / Globe Visualization */}
         <CountrySessionsCard
           countriesData={countriesData}
           worldMapLoaded={worldMapLoaded}
         />
 
-        {/* 🌏 8. Countries Table */}
+        {/* 🌏 Geographic Reach: Modern Leaderboard */}
         <AnalyticsCard
-          title="BY COUNTRIES"
-          icon={FaChartBar}
-          subtitle="Last 14 days"
+          title="GEOGRAPHIC REACH"
+          icon={FaGlobeAmericas}
+          subtitle="Top Active Visitor Nations"
         >
           <CountriesTable countriesData={countriesData} />
         </AnalyticsCard>
 
-        {/* 📈 9. Sessions Chart */}
-        <TimeSeriesChart
-          title="SESSIONS"
-          data={sessionsData}
-          color="#3b82f6"
-          total={totalSessions}
-          trend={stats.dailyTrends?.sessions?.trend || 0}
+        {/* 💻 Audience & Technology Matrix (Devices, Acquisition Channels & Interactive Targets) */}
+        <AudienceTechMatrix
+          devicesData={devicesData}
+          mediumsData={mediumsData}
+          componentsData={componentsData}
         />
-
-        {/* 👥 10. Users Chart */}
-        <TimeSeriesChart
-          title="USERS"
-          data={usersData}
-          color="#10b981"
-          total={totalUsers}
-          trend={stats.dailyTrends?.users?.trend || 0}
-        />
-
-        {/* 👀 11. Pageviews Chart */}
-        <TimeSeriesChart
-          title="PAGEVIEWS"
-          data={pageviewsData}
-          color="#f59e0b"
-          total={totalPageviews}
-          trend={stats.dailyTrends?.pageViews?.trend || 0}
-        />
-
-        {/* 📊 12. Mediums Section */}
-        <MediumsSection mediumsData={mediumsData} />
-
-        {/* ⚙️ 13. Components Section */}
-        <ComponentsSection componentsData={componentsData} />
-
-        {/* 💻 14. Devices Section */}
-        <DevicesSection devicesData={devicesData} />
       </div>
+
+      {/* ⚓ 3. Portfolio Footer Integration */}
+      <Footer />
     </div>
   );
 };

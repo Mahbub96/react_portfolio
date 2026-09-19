@@ -1,121 +1,78 @@
 /* ==========================
-   Analytics Page Styles
+   Analytics Page Styles — Portfolio Cyber Teal Theme
    ========================== */
 
 .analyticsPage {
   min-height: 100vh;
-  background: var(--bg_color);
-  padding: var(--spacing-xl);
-  color: var(--text_color);
+  background: radial-gradient(circle at 18% 8%, rgba(45, 212, 191, 0.14), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.1), transparent 28%),
+    linear-gradient(135deg, #050811 0%, #07111f 52%, #0d1727 100%);
+  padding: 2rem 2rem 4rem;
+  color: #f8fafc;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  font-family: var(--font-sans, "Inter", sans-serif);
 }
 
-/* Header */
-.header {
-  background: #424242;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  margin: calc(-1 * var(--spacing-xl)) calc(-1 * var(--spacing-xl))
-    var(--spacing-xl);
-  width: 100%;
-}
-.headerContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
-}
-.title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--heading_color);
-  margin: 0;
-  letter-spacing: 0.05em;
-}
-.headerActions {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-}
-.timeRange {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.85rem;
-}
-
-/* Buttons */
-.refreshBtn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  padding: var(--spacing-sm);
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-normal);
-  width: 36px;
-  height: 36px;
-}
-.refreshBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: rotate(180deg);
-}
-
-/* Grid Layout */
 .dashboardGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-2xl);
+  gap: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto 3rem;
   width: 100%;
 }
+
 .dashboardGrid > * {
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-height: 100px;
 }
+
 .dashboardGrid > div:first-child {
   grid-column: span 2;
 }
 
 /* Card */
 .card {
-  background: var(--card_bg);
-  border: 1px solid var(--border_color);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  transition: var(--transition-normal);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   width: 100%;
   display: flex;
   flex-direction: column;
 }
+
 .card:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border-color: rgba(32, 201, 151, 0.3);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
 }
+
 .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-sm);
-  padding-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--border_color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
 .cardTitle {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--text_color);
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #f1f5f9;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .cardContent {
   display: flex;

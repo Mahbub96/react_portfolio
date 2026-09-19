@@ -10,24 +10,38 @@
  */
 
 const EVENT_PRIORITIES = {
-  // Tier 1: Critical (Never dropped)
+  // Priority 1 — Critical (Never dropped, recorded accurately with exact timestamps)
   session_start: 1,
   session_end: 1,
   page_view: 1,
   page_exit: 1,
+  route_change: 1,
+  card_click: 1,
+  button_click: 1,
+  link_click: 1,
   click: 1,
   rage_click: 1,
   form_submit: 1,
+  form_submit_success: 1,
+  form_submit_error: 1,
+  form_abandon: 1,
   form_error: 1,
+  modal_open: 1,
+  modal_close: 1,
+  tab_change: 1,
+  error: 1,
 
-  // Tier 2: Medium (Dropped only under severe memory pressure)
+  // Priority 2 — Important (Retained unless severe memory pressure)
+  form_view: 2,
+  form_focus: 2,
+  form_blur: 2,
   hover: 2,
   long_hover: 2,
   scroll_milestone: 2,
   input_interaction: 2,
   section_view: 2,
 
-  // Tier 3: Low (First to be dropped in degraded mode or under high load)
+  // Priority 3 — Continuous (Aggressively sampled, simplified, or dropped under load)
   mouse_movement: 3,
   rapid_scroll: 3,
   scroll: 3,
@@ -67,6 +81,28 @@ class AnalyticsSDK {
     this.startSession = this.startSession.bind(this);
     this.endSession = this.endSession.bind(this);
     this.checkDegradedMode = this.checkDegradedMode.bind(this);
+    this.isLoggedIn = this.isLoggedIn.bind(this);
+  }
+
+  /**
+   * Only track user behavior if NOT logged in
+   */
+  isLoggedIn() {
+    if (typeof window === "undefined") return false;
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) return false;
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]));
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          return false;
+        }
+      }
+      return true;
+    } catch {
+      return Boolean(localStorage.getItem("authToken"));
+    }
   }
 
   /**
@@ -125,6 +161,12 @@ class AnalyticsSDK {
         this.isOptedOut = true;
       }
 
+      // Only track users behavior if NOT logged in
+      if (this.isLoggedIn()) {
+        this.queue = [];
+        return this;
+      }
+
       // Check degraded mode for resource constraints (Section 22.11)
       this.checkDegradedMode();
 
@@ -178,7 +220,7 @@ class AnalyticsSDK {
    */
   startSession() {
     try {
-      if (typeof window === "undefined") return null;
+      if (typeof window === "undefined" || this.isLoggedIn()) return null;
 
       let sessionId = sessionStorage.getItem(this.sessionStorageKey);
       if (!sessionId) {
@@ -262,7 +304,7 @@ class AnalyticsSDK {
    */
   track(eventType, metadata = {}, elementId = null) {
     try {
-      if (this.isOptedOut || typeof window === "undefined") return;
+      if (this.isOptedOut || typeof window === "undefined" || this.isLoggedIn()) return;
 
       if (!this.sessionId) {
         this.startSession();
@@ -334,6 +376,11 @@ class AnalyticsSDK {
    * Non-blocking flush
    */
   async flush(useBeacon = false) {
+    if (this.isLoggedIn()) {
+      this.queue = [];
+      return;
+    }
+
     if (this.queue.length === 0 || this.isOptedOut || this.isFlushing) return;
 
     try {

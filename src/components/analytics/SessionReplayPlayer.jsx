@@ -20,7 +20,7 @@ import {
 import AnalyticsCard from "./AnalyticsCard";
 import styles from "./sessionReplayPlayer.module.css";
 
-const SPEEDS = [0.25, 0.5, 1, 2, 4, 8];
+const SPEEDS = [0.5, 1, 2, 4, 8, 16, 32, 64, 128];
 
 export default function SessionReplayPlayer({ sessionReplays = [], initialSessionId = null }) {
   // Session selection
@@ -57,6 +57,30 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
     return Math.max(end - sessionStart, 1000);
   }, [sortedEvents, sessionStart]);
 
+  // Section 32: Periodic checkpoints every 30s for fast timeline seeking
+  const checkpoints = useMemo(() => {
+    if (!sortedEvents || sortedEvents.length === 0) return [];
+    const cp = [];
+    const intervalMs = 30000; // 30s checkpoints
+    for (let t = 0; t <= sessionDuration; t += intervalMs) {
+      const absT = sessionStart + t;
+      let targetIdx = 0;
+      for (let i = 0; i < sortedEvents.length; i++) {
+        if (new Date(sortedEvents[i].timestamp).getTime() <= absT) {
+          targetIdx = i;
+        } else {
+          break;
+        }
+      }
+      cp.push({
+        timeMs: t,
+        eventIndex: targetIdx,
+        event: sortedEvents[targetIdx],
+      });
+    }
+    return cp;
+  }, [sortedEvents, sessionStart, sessionDuration]);
+
   // Player State
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
@@ -88,17 +112,28 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
     }
   }, [selectedId, sortedEvents]);
 
-  // Compute cursor position and state at currentTimeMs
+  // Compute cursor position and state at currentTimeMs using checkpoints and speed adaptation
   const updatePlaybackState = useCallback(
     (timeMs) => {
       const targetAbsTime = sessionStart + timeMs;
+
+      // Section 32: Start search from the closest preceding checkpoint
+      let startIndex = 0;
+      if (checkpoints.length > 0) {
+        for (let i = checkpoints.length - 1; i >= 0; i--) {
+          if (checkpoints[i].timeMs <= timeMs) {
+            startIndex = checkpoints[i].eventIndex;
+            break;
+          }
+        }
+      }
 
       // Find the most recent event up to targetAbsTime
       let currentEvent = null;
       let lastPosEvent = null;
       let nextPosEvent = null;
 
-      for (let i = 0; i < sortedEvents.length; i++) {
+      for (let i = startIndex; i < sortedEvents.length; i++) {
         const ev = sortedEvents[i];
         const evTime = new Date(ev.timestamp).getTime();
 
@@ -111,15 +146,18 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
           if (!nextPosEvent && ev.metadata?.x != null && ev.metadata?.y != null) {
             nextPosEvent = ev;
           }
+          break; // Since sortedEvents is chronologically ordered
         }
       }
 
-      // Smooth cursor interpolation
+      // Section 36 & 37: At extreme speeds (>= 16x up to 128x), snap directly without micro-interpolation
+      const isExtremeSpeed = playbackSpeed >= 16;
+
       if (lastPosEvent) {
         const lastX = (lastPosEvent.metadata.x / 1366) * 100;
         const lastY = (lastPosEvent.metadata.y / 768) * 100;
 
-        if (nextPosEvent) {
+        if (nextPosEvent && !isExtremeSpeed) {
           const t0 = new Date(lastPosEvent.timestamp).getTime();
           const t1 = new Date(nextPosEvent.timestamp).getTime();
           const ratio = t1 > t0 ? Math.min(1, Math.max(0, (targetAbsTime - t0) / (t1 - t0))) : 0;
