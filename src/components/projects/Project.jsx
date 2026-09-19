@@ -94,6 +94,7 @@ function Project({ project, idx = 0 }) {
             width={400}
             height={250}
             sizes="(max-width: 768px) 100vw, 400px"
+            unoptimized
             onError={handleImageError}
             onLoad={() => setImageError(false)}
           />

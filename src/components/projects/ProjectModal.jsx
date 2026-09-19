@@ -81,6 +81,7 @@ export default function ProjectModal({
               fill
               sizes="(max-width: 900px) 100vw, 70vw"
               className={styles.modalImage}
+              unoptimized
               priority
             />
           </div>

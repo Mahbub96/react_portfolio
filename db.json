@@ -249,7 +249,7 @@
     {
       "id": 6,
       "name": "Enterprise & School Management Systems",
-      "src": "/assets/img/projects.png",
+      "src": "/assets/img/project-enterprise-school.png",
       "desc": "Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features.",
       "lang": [
         "Laravel",
