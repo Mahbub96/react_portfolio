@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./projects.module.css";
 import Project from "./Project";
+import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side data fetching function
 async function getProjectsData() {
@@ -102,18 +103,19 @@ function Projects({ data, headingLevel = "h2" }) {
         <div className="absolute inset-0 bg-gradient-radial from-teal-500/5 via-transparent to-blue-500/5 opacity-30 pointer-events-none -z-10"></div>
         <div className="container mx-auto px-4">
           <header className="flex items-center gap-6 mb-16 relative">
-            <Heading
+            <HarmonicHeading
+              as={Heading}
               id="projects-heading"
               className="text-4xl md:text-5xl font-bold text-gray-100 flex items-center gap-6 m-0"
+              text="Projects"
             >
-              Projects
               <span
                 className="text-2xl font-semibold text-teal-400 font-mono relative"
                 aria-label={`${totalCount} projects`}
               >
                 ({totalCount})
               </span>
-            </Heading>
+            </HarmonicHeading>
             <div
               className="h-0.5 flex-grow bg-gradient-to-r from-teal-400 to-blue-500 rounded-full relative overflow-hidden"
               aria-hidden="true"

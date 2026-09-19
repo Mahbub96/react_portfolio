@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./educations.module.css";
 import ThreeDots from "../ThreeDots";
+import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side Educations component for better SEO
 function Educations({ data }) {
@@ -89,15 +90,18 @@ function Educations({ data }) {
       >
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
-            <h2 id="education-heading">
-              Education
+            <HarmonicHeading
+              as="h2"
+              id="education-heading"
+              text="Education"
+            >
               <span
                 className={styles.educationCount}
                 aria-label={`${education.length} degrees`}
               >
                 ({education.length})
               </span>
-            </h2>
+            </HarmonicHeading>
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 

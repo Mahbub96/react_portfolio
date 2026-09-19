@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./experience.module.css";
 import ThreeDots from "../ThreeDots";
+import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side Experience component for better SEO
 function Experience({ data }) {
@@ -151,15 +152,18 @@ function Experience({ data }) {
       >
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
-            <h2 id="experience-heading">
-              Where I've Worked
+            <HarmonicHeading
+              as="h2"
+              id="experience-heading"
+              text="Where I've Worked"
+            >
               <span
                 className={styles.experienceCount}
                 aria-label={`${experiences.length} experiences`}
               >
                 ({experiences.length})
               </span>
-            </h2>
+            </HarmonicHeading>
             <div className={styles.headerLine} aria-hidden="true"></div>
 
             {/* Show total experience */}

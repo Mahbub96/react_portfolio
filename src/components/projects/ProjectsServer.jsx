@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./projects.module.css";
 import Project from "./Project";
+import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side Projects component for better SEO
 const ProjectsServer = ({ data }) => {
@@ -121,15 +122,18 @@ const ProjectsServer = ({ data }) => {
       >
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
-            <h2 id="projects-heading">
-              Projects
+            <HarmonicHeading
+              as="h2"
+              id="projects-heading"
+              text="Projects"
+            >
               <span
                 className={styles.projectCount}
                 aria-label={`${totalCount} projects`}
               >
                 ({totalCount})
               </span>
-            </h2>
+            </HarmonicHeading>
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 

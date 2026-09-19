@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./skills.module.css";
 import ThreeDots from "../ThreeDots";
+import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side Skills component for better SEO
 const SkillsServer = ({ data }) => {
@@ -112,7 +113,11 @@ const SkillsServer = ({ data }) => {
       >
         <div className="container">
           <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-            <h2 id="skills-heading">Skills & Technologies</h2>
+            <HarmonicHeading
+              as="h2"
+              id="skills-heading"
+              text="Skills & Technologies"
+            />
             <div className={styles.headerLine} aria-hidden="true"></div>
           </div>
 

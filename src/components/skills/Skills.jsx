@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./skills.module.css";
 import ThreeDots from "../ThreeDots";
+import HarmonicHeading from "../HarmonicHeading";
 
 import SkillsClient from "./SkillsClient";
 
@@ -28,7 +29,10 @@ function Skills({ data, headingLevel = "h2" }) {
     >
       <div className="container">
         <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <Heading>Skills &amp; Technologies</Heading>
+          <HarmonicHeading
+            as={Heading}
+            text="Skills & Technologies"
+          />
           <div className={styles.headerLine}></div>
         </div>
 

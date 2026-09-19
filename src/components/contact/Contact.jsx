@@ -9,6 +9,7 @@ import {
   FaGlobe,
 } from "react-icons/fa";
 import styles from "./contact.module.css";
+import HarmonicHeading from "../HarmonicHeading";
 
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /contact page
@@ -228,9 +229,12 @@ export default function Contact({ data, headingLevel = "h2" }) {
       >
         <div className="container">
           <header className={styles.sectionHeader}>
-            <Heading id="contact-heading" className={styles.sectionTitle}>
-              Get In Touch
-            </Heading>
+            <HarmonicHeading
+              as={Heading}
+              id="contact-heading"
+              className={styles.sectionTitle}
+              text="Get In Touch"
+            />
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 
