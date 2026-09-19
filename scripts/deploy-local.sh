@@ -98,6 +98,7 @@ test -f "$SSH_KEY"
 chmod 600 "$SSH_KEY"
 
 log "Building locally"
+rm -rf .next
 pnpm build
 
 log "Creating artifact: $ARTIFACT"
