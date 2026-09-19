@@ -1,0 +1,33 @@
+# Mahbub Alam - Software Engineer Portfolio
+
+> Software Engineer specializing in full-stack web applications, scalable backend systems, cloud infrastructure, and applied AI solutions.
+
+- **Name**: Mahbub Alam
+- **Title**: Software Engineer | Full-Stack, Backend & Applied AI
+- **Location**: Dhaka, Bangladesh
+- **Email**: mahbubcse96@gmail.com
+- **Website**: https://mahbub.dev/
+- **GitHub**: https://github.com/mahbub96
+- **LinkedIn**: https://www.linkedin.com/in/mahbubcse96
+
+## Core Competencies & Tech Stack
+- **Frontend**: React.js, Next.js, JavaScript (ES6+), TypeScript, Tailwind CSS, Bootstrap, HTML5, CSS3
+- **Backend**: Node.js, Express.js, Python, FastAPI, PHP, Laravel, CodeIgniter, RESTful APIs, Microservices
+- **Databases**: MongoDB, MySQL, SQLite, PostgreSQL
+- **Cloud & DevOps**: AWS, Docker, Linux Administration, CI/CD Pipelines, Git, DevSecOps
+- **Applied AI**: Machine Learning integrations, Computer Vision workflows, LLM application development
+
+## Professional Experience
+- **Software Engineer** at Brotecs Technologies Ltd. (Dhaka, Bangladesh)
+  - Developing robust backend systems, scalable cloud-enabled architectures, and high-performance web applications.
+
+## Key Portfolio Projects
+- **Brotecs Admin Panel**: Enterprise administrative dashboard with secure authentication and data analytics.
+- **Enterprise VoIP Management**: Telephony and real-time communication platform integration.
+- **Applied AI Workflows**: Image processing, intelligent data parsing, and automated pipelines.
+
+## Canonical Web Pages
+- Homepage & Bio: https://mahbub.dev/
+- Projects Portfolio: https://mahbub.dev/projects/
+- Technical Skills: https://mahbub.dev/skills/
+- Contact & Inquiries: https://mahbub.dev/contact/

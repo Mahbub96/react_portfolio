@@ -251,6 +251,9 @@ export default async function HomePage() {
             projects={portfolioData.Projects?.data}
           />
 
+          {/* Server-side Projects section */}
+          <ProjectsServer data={portfolioData.Projects} />
+
           {/* Server-side Skills section */}
           <SkillsServer data={portfolioData.Skills} />
 
@@ -259,9 +262,6 @@ export default async function HomePage() {
 
           {/* Server-side Education section */}
           <Educations data={portfolioData.Educations} />
-
-          {/* Server-side Projects section */}
-          <ProjectsServer data={portfolioData.Projects} />
 
           {/* Server-side Contact section */}
           <Contact data={portfolioData} />

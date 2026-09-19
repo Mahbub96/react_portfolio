@@ -99,10 +99,10 @@ function Header({ data }) {
 
   const navItems = [
     { id: "about", label: "About", number: "01" },
-    { id: "skills", label: "Skills", number: "02" },
-    { id: "experience", label: "Experience", number: "03" },
-    { id: "education", label: "Education", number: "04" },
-    { id: "projects", label: "Projects", number: "05" },
+    { id: "projects", label: "Projects", number: "02" },
+    { id: "skills", label: "Skills", number: "03" },
+    { id: "experience", label: "Experience", number: "04" },
+    { id: "education", label: "Education", number: "05" },
     { id: "contact", label: "Contact", number: "06" },
     // Only show Analytics link if authenticated and loaded
     ...(auth && isLoaded

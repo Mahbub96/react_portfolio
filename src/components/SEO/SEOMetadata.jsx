@@ -3,7 +3,7 @@ import React from "react";
 // Comprehensive SEO metadata component
 const SEOMetadata = ({
   title = "Mahbub Alam | Full Stack Developer Portfolio - React, Node.js, Next.js, React Native, PHP Expert",
-  description = "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
+  description = "Mahbub Alam is a Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies. Based in Dhaka, Bangladesh. Contact: admin@mahbub.dev, mahbubcse96@gmail.com",
   keywords = "Mahbub Alam, Full Stack Developer, React Developer, Node.js Developer, PHP Developer, Bangladesh Developer, Dhaka, Web Development, Software Engineering",
   image = "https://mahbub.dev/assets/img/profile.png",
   url = "https://mahbub.dev",
@@ -53,7 +53,7 @@ const SEOMetadata = ({
     },
     jobTitle: jobTitle,
     description: bio,
-    email: ["admin@mahbub.dev", "support@mahbub.dev", "mahbub@lunetsoft.com"],
+    email: ["admin@mahbub.dev", "mahbubcse96@gmail.com"],
     telephone: "+880-1XXX-XXXXXX",
     worksFor: {
       "@type": "Organization",
@@ -231,8 +231,7 @@ const SEOMetadata = ({
             telephone: "+880-1XXX-XXXXXX",
             email: [
               "admin@mahbub.dev",
-              "support@mahbub.dev",
-              "mahbub@lunetsoft.com",
+              "mahbubcse96@gmail.com",
             ],
             address: {
               "@type": "PostalAddress",
@@ -308,7 +307,7 @@ const SEOMetadata = ({
                 name: `How can I contact ${name}?`,
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: `You can contact ${name} via email at admin@mahbub.dev, support@mahbub.dev, or mahbub@lunetsoft.com. He is based in ${location} and available for freelance projects and full-time opportunities.`,
+                  text: `You can contact ${name} via email at admin@mahbub.dev or mahbubcse96@gmail.com. He is based in ${location} and available for freelance projects and full-time opportunities.`,
                 },
               },
             ],

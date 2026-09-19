@@ -1,223 +1,72 @@
-# https://www.robotstxt.org/robotstxt.html
-# Enhanced Robots.txt for Mahbub Alam Portfolio Website - mahbub.dev
-# Last updated: 2024
+# Robots.txt for Mahbub Alam Portfolio - https://mahbub.dev
+# Optimized for Google, Bing, AI Crawlers (Perplexity, ChatGPT, Claude, Gemini, Apple), and SEO Audit Tools
 
-# Global rules for all user agents
+# Global rules for all crawlers
 User-agent: *
 Allow: /
-
-# Disallow admin and API routes for security
+Allow: /_next/static/
 Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
 Disallow: /private/
-Disallow: /analytics/
-Disallow: /login/
-Disallow: /logout/
-Disallow: /auth/
-Disallow: /dashboard/
-Disallow: /internal/
-Disallow: /temp/
-Disallow: /cache/
-Disallow: /logs/
-Disallow: /backup/
-Disallow: /config/
-Disallow: /database/
-Disallow: /test/
-Disallow: /dev/
-Disallow: /staging/
-Disallow: /beta/
 
-# Allow important public pages
-Allow: /contact
-Allow: /projects
-Allow: /skills
-Allow: /about
-Allow: /experience
-Allow: /education
-Allow: /resume
-Allow: /portfolio
-Allow: /blog
-Allow: /services
-Allow: /pricing
-Allow: /faq
-Allow: /terms
-Allow: /privacy
-Allow: /sitemap.xml
-Allow: /robots.txt
-Allow: /humans.txt
-Allow: /manifest.json
-
-# Allow static assets
-Allow: /assets/
-Allow: /images/
-Allow: /css/
-Allow: /js/
-Allow: /fonts/
-Allow: /icons/
-Allow: /favicon.ico
-Allow: /logo*.png
-Allow: /apple-touch-icon*.png
-
-# Sitemap location for mahbub.dev
-Sitemap: https://mahbub.dev/sitemap.xml
-
-# Crawl delay for better server performance
-Crawl-delay: 1
-
-# Specific rules for major search engines
+# Search Engine Crawlers
 User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
 User-agent: Googlebot-Image
-Allow: /assets/
-Allow: /images/
-Allow: /logo*.png
-Allow: /favicon.ico
-Disallow: /api/
-Disallow: /admin/
-
 User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
 User-agent: Slurp
-Allow: /
-Crawl-delay: 1
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
 User-agent: DuckDuckBot
-Allow: /
-Crawl-delay: 1
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
 User-agent: Baiduspider
-Allow: /
-Crawl-delay: 2
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
 User-agent: YandexBot
 Allow: /
-Crawl-delay: 1
+Allow: /_next/static/
 Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
+Disallow: /private/
 
-# Social media crawlers
-User-agent: facebookexternalhit
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-User-agent: Twitterbot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-User-agent: LinkedInBot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-# AI and research crawlers
-User-agent: ChatGPT-User
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
+# AI Crawlers & LLM Agents
 User-agent: GPTBot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: Meta-ExternalAgent
+User-agent: Bytespider
+User-agent: Cohere-ai
+User-agent: Diffbot
 User-agent: CCBot
 Allow: /
+Allow: /llms.txt
+Allow: /.well-known/llms.txt
+Allow: /_next/static/
 Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
+Disallow: /private/
 
-# Archive and research crawlers
-User-agent: ia_archiver
+# Social Media Preview Crawlers
+User-agent: facebookexternalhit
+User-agent: Twitterbot
+User-agent: LinkedInBot
+User-agent: Slackbot-LinkExpanding
 Allow: /
+Allow: /assets/
 Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
+Disallow: /private/
 
-User-agent: archive.org_bot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-# Performance and monitoring crawlers
-User-agent: Pingdom
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-User-agent: UptimeRobot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-
-# Security and vulnerability scanners
-User-agent: SecurityScan
-Disallow: /
-
-User-agent: VulnerabilityScanner
-Disallow: /
-
-User-agent: SecurityBot
-Disallow: /
-
-# Block known bad bots
-User-agent: MJ12bot
-Disallow: /
-
+# SEO & Audit Crawlers
 User-agent: AhrefsBot
-Disallow: /
-
 User-agent: SemrushBot
-Disallow: /
+User-agent: Screaming Frog SEO Spider
+Allow: /
+Allow: /_next/static/
+Disallow: /api/
+Disallow: /private/
 
-User-agent: DotBot
-Disallow: /
-
+# Malicious Scraping Bots
+User-agent: MJ12bot
 User-agent: BLEXBot
 Disallow: /
 
-User-agent: Screaming
-Disallow: /
-
-User-agent: Screaming Frog SEO Spider
-Disallow: /
-
-# Rate limiting for aggressive crawlers
-User-agent: *
-Crawl-delay: 2
-
-# Additional SEO directives for mahbub.dev
-# Allow search engines to index and follow all public content
-# Block access to sensitive areas and API endpoints
-# Optimize crawl efficiency for better indexing
-# Focus on production domain: https://mahbub.dev
+# Sitemap Location
+Sitemap: https://mahbub.dev/sitemap.xml
+Host: https://mahbub.dev

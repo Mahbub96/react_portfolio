@@ -21,7 +21,7 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
 export const metadata = {
   title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
   description:
-    "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com. Based in Dhaka, Bangladesh.",
+    "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, mahbubcse96@gmail.com. Based in Dhaka, Bangladesh.",
   keywords: [
     "Contact Mahbub Alam",
     "Hire Mahbub Alam",
@@ -31,18 +31,17 @@ export const metadata = {
     "Dhaka Developer",
     "Bangladesh Developer",
     "admin@mahbub.dev",
-    "support@mahbub.dev",
-    "mahbub@lunetsoft.com",
+    "mahbubcse96@gmail.com",
     "React Developer Contact",
     "PHP Developer Contact",
     "Node.js Developer Contact",
     "Web Development Services",
-    "VoIP Solutions Contact",
+    "Software Engineer Contact",
   ],
   openGraph: {
     title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
     description:
-      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, support@mahbub.dev, mahbub@lunetsoft.com",
+      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, mahbubcse96@gmail.com",
     url: "https://mahbub.dev/contact",
     siteName: "Mahbub Alam Portfolio",
     images: [

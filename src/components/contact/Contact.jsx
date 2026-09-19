@@ -28,7 +28,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
   // All available email addresses for SEO
   const allEmails = [
     "admin@mahbub.dev",
-    "mahbub@lunetsoft.com",
     "mahbubcse96@gmail.com",
     "mahbub.alam.sobuz@gmail.com",
   ];
