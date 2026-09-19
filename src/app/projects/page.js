@@ -61,7 +61,7 @@ export async function generateMetadata() {
       siteName: "Mahbub Alam Portfolio",
       images: [
         {
-          url: "/assets/img/profile.png",
+          url: "/assets/img/og-cover.jpg",
           width: 1200,
           height: 630,
           alt: "Projects by Mahbub Alam - Full Stack Developer",
@@ -71,7 +71,7 @@ export async function generateMetadata() {
     twitter: {
       title: "Projects by Mahbub Alam | Full Stack Developer Portfolio",
       description: `Explore ${projects.length} projects by Mahbub Alam - Full Stack Developer. Web applications, mobile apps, and innovative solutions.`,
-      images: ["/assets/img/profile.png"],
+      images: ["/assets/img/og-cover.jpg"],
     },
     robots: {
       index: true,
@@ -91,7 +91,7 @@ export default async function ProjectsPage() {
 
       <main className="container">
         <Suspense fallback={<div>Loading...</div>}>
-          <Projects data={projectsData} />
+          <Projects data={projectsData} headingLevel="h1" />
         </Suspense>
       </main>
 

@@ -22,8 +22,12 @@ async function getProjectsData() {
   }
 }
 
-function Projects({ data }) {
+// headingLevel defaults to h2 because this section also renders on the
+// homepage, which already has its own h1. The standalone /projects page
+// passes "h1" so that page has exactly one top-level heading.
+function Projects({ data, headingLevel = "h2" }) {
   const projects = data?.data || [];
+  const Heading = headingLevel;
   const totalCount = projects.length;
 
   // Enhanced structured data for projects section
@@ -98,7 +102,7 @@ function Projects({ data }) {
         <div className="absolute inset-0 bg-gradient-radial from-teal-500/5 via-transparent to-blue-500/5 opacity-30 pointer-events-none -z-10"></div>
         <div className="container mx-auto px-4">
           <header className="flex items-center gap-6 mb-16 relative">
-            <h2
+            <Heading
               id="projects-heading"
               className="text-4xl md:text-5xl font-bold text-gray-100 flex items-center gap-6 m-0"
             >
@@ -109,7 +113,7 @@ function Projects({ data }) {
               >
                 ({totalCount})
               </span>
-            </h2>
+            </Heading>
             <div
               className="h-0.5 flex-grow bg-gradient-to-r from-teal-400 to-blue-500 rounded-full relative overflow-hidden"
               aria-hidden="true"

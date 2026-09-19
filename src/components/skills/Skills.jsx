@@ -8,8 +8,12 @@ const SkillsClient = dynamic(() => import("./SkillsClient"), {
   ssr: false,
 });
 
-function Skills({ data }) {
+// headingLevel defaults to h2 because this section also renders on the
+// homepage, which already has its own h1. The standalone /skills page
+// passes "h1" so that page has exactly one top-level heading.
+function Skills({ data, headingLevel = "h2" }) {
   const skills = data?.data || [];
+  const Heading = headingLevel;
 
   // Helper function to normalize image paths
   const normalizeImagePath = (src) => {
@@ -28,7 +32,7 @@ function Skills({ data }) {
     >
       <div className="container">
         <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <h2>Skills & Technologies</h2>
+          <Heading>Skills &amp; Technologies</Heading>
           <div className={styles.headerLine}></div>
         </div>
 

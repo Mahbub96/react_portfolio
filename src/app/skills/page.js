@@ -67,7 +67,7 @@ export async function generateMetadata() {
       siteName: "Mahbub Alam Portfolio",
       images: [
         {
-          url: "/assets/img/profile.png",
+          url: "/assets/img/og-cover.jpg",
           width: 1200,
           height: 630,
           alt: "Skills & Technologies - Mahbub Alam Full Stack Developer",
@@ -77,7 +77,7 @@ export async function generateMetadata() {
     twitter: {
       title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
       description: `Mahbub Alam's technical skills include ${skills.length} technologies. Full Stack Developer expertise in web and mobile development.`,
-      images: ["/assets/img/profile.png"],
+      images: ["/assets/img/og-cover.jpg"],
     },
     robots: {
       index: true,
@@ -97,7 +97,7 @@ export default async function SkillsPage() {
 
       <main className="container">
         <Suspense fallback={<div>Loading...</div>}>
-          <Skills data={skillsData} />
+          <Skills data={skillsData} headingLevel="h1" />
         </Suspense>
       </main>
 
