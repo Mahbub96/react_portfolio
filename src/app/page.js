@@ -15,19 +15,8 @@ import ProjectsServer from "@/components/projects/ProjectsServer";
 import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
 
-// Client-side only components (for analytics, tracking, and interactive features)
-import nextDynamic from "next/dynamic";
-
-const VisitorAnalytics = nextDynamic(
-  () => import("@/components/VisitorAnalytics"),
-  {
-    ssr: false, // Client-side only for analytics
-  }
-);
-
-const VisitorCounter = nextDynamic(() => import("@/components/VisitorCounter"), {
-  ssr: false, // Client-side only for tracking
-});
+import VisitorAnalytics from "@/components/VisitorAnalytics";
+import VisitorCounter from "@/components/VisitorCounter";
 
 // Generate metadata for SEO
 export async function generateMetadata() {

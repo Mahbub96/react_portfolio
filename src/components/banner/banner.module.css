@@ -216,10 +216,116 @@
   font-weight: 800;
   color: var(--text-primary);
   margin: 0;
-  letter-spacing: 0;
-  line-height: 0.94;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
   font-family: var(--font-sans);
   overflow-wrap: anywhere;
+  padding: 6px 0;
+  position: relative;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.harmonicWrapper {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  user-select: none;
+}
+
+.harmonicWord {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.harmonicSpace {
+  display: inline-block;
+  width: 0.28em;
+}
+
+/* Individual character with Simple Harmonic Motion (SHM) physics */
+.harmonicChar {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transform-origin: 50% 88%;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+  will-change: transform;
+  animation: ambientHarmonicWave 4.5s ease-in-out infinite alternate;
+  animation-delay: calc(var(--char-index, 0) * 0.14s);
+}
+
+@keyframes ambientHarmonicWave {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(0.85deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(-0.85deg);
+  }
+}
+
+.harmonicChar:hover,
+.harmonicChar.oscillating {
+  animation: simpleHarmonicMotion 0.95s cubic-bezier(0.2, 0.85, 0.35, 1) forwards;
+  color: var(--accent-primary, #64ffda);
+  text-shadow: 
+    0 0 16px rgba(100, 255, 218, 0.7),
+    0 0 32px rgba(100, 255, 218, 0.35);
+  z-index: 2;
+}
+
+@keyframes simpleHarmonicMotion {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  14% {
+    /* Peak 1: highest deflection */
+    transform: translateY(-8px) rotate(-22deg) scale(1.18);
+    color: var(--accent-primary, #64ffda);
+  }
+  30% {
+    /* Peak 2: counter deflection */
+    transform: translateY(4px) rotate(16deg) scale(1.09);
+  }
+  46% {
+    /* Peak 3: reduced deflection */
+    transform: translateY(-3px) rotate(-10deg) scale(1.04);
+  }
+  62% {
+    /* Peak 4: minor rebound */
+    transform: translateY(1.5px) rotate(6deg) scale(1.02);
+  }
+  78% {
+    /* Peak 5: subtle settling */
+    transform: translateY(-0.8px) rotate(-2.5deg) scale(1.01);
+  }
+  90% {
+    /* Peak 6: nearly at rest */
+    transform: translateY(0.3px) rotate(1deg) scale(1);
+  }
+  100% {
+    /* Equilibrium */
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+[data-theme="light"] .harmonicChar:hover,
+[data-theme="light"] .harmonicChar.oscillating {
+  color: #0d9488;
+  text-shadow: 0 0 14px rgba(13, 148, 136, 0.5);
 }
 
 .profileIdentity {

@@ -13,6 +13,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 import DownloadResumeButton from "./DownloadResumeButton";
+import HarmonicName from "./HarmonicName";
 import { getResumeConfig } from "@/lib/resumeConfig";
 
 // Server-side Banner + About merged component for better SEO
@@ -191,9 +192,7 @@ const BannerServer = ({
                 Software Engineering | Backend Systems | Applied AI
               </p>
 
-              <h1 id="hero-heading" className={styles.name}>
-                {name}
-              </h1>
+              <HarmonicName name={name} />
 
               <p className={styles.jobTitle}>{jobTitle}</p>
 
