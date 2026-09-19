@@ -1,9 +1,14 @@
-require('dotenv').config({ path: '.env.local' });
-require('dotenv').config({ path: '.env.production' });
+if (process.env.NODE_ENV === 'production') {
+  require('dotenv').config({ path: '.env.production' });
+  require('dotenv').config({ path: '.env.local' });
+} else {
+  require('dotenv').config({ path: '.env.local' });
+  require('dotenv').config({ path: '.env.production' });
+}
 const mongoose = require('mongoose');
 const legacyDb = require('../db.json');
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio';
 if (!MONGODB_URI) {
   console.error('MONGODB_URI is not configured.');
   process.exit(1);

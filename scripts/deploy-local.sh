@@ -146,7 +146,7 @@ rm -rf .next public scripts/updatePortfolioContent.js db.json package.json next.
 tar -xzf "$REMOTE_ARTIFACT" -C "$SERVER_DIR"
 
 # Uses existing server-side .env/.env.production values; no secrets are uploaded.
-node scripts/updatePortfolioContent.js
+NODE_ENV=production node scripts/updatePortfolioContent.js
 
 pm2 stop "$APP_NAME" || true
 pm2 delete "$APP_NAME" || true
