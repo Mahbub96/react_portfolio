@@ -2,11 +2,7 @@ import React from "react";
 import styles from "./skills.module.css";
 import ThreeDots from "../ThreeDots";
 
-// Client-side only components
-import dynamic from "next/dynamic";
-const SkillsClient = dynamic(() => import("./SkillsClient"), {
-  ssr: false,
-});
+import SkillsClient from "./SkillsClient";
 
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /skills page

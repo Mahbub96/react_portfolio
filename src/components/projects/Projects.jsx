@@ -126,7 +126,7 @@ function Projects({ data, headingLevel = "h2" }) {
             </p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-6 md:gap-8 lg:gap-8 xl:gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mx-auto">
             {projects.length > 0 ? (
               projects.map((project, idx) => (
                 <Project

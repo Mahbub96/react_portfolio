@@ -1,3 +1,4 @@
+require("dotenv").config({ path: ".env.local" });
 require("dotenv").config();
 const mongoose = require("mongoose");
 const legacyDb = require("../db.json");

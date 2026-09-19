@@ -6,12 +6,15 @@ import {
   HiOutlineExternalLink,
   HiOutlineDownload,
   HiOutlineCode,
+  HiOutlineArrowsExpand,
 } from "react-icons/hi";
 import styles from "./projects.module.css";
+import ProjectModal from "./ProjectModal";
 
 function Project({ project, idx = 0 }) {
   const { name, desc, src, lang, to, id } = project;
   const [imageError, setImageError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
   const liveUrl = project.liveUrl || (to && to !== "#" ? to : null);
@@ -52,7 +55,7 @@ function Project({ project, idx = 0 }) {
   const normalizedSrc = normalizeImagePath(src);
 
   // Enhanced image URL for production with fallback
-  const imageUrl = normalizedSrc || "/assets/img/default-project.jpg";
+  const imageUrl = normalizedSrc || "/assets/img/projects.png";
 
   // Handle image load error
   const handleImageError = () => {
@@ -69,8 +72,20 @@ function Project({ project, idx = 0 }) {
       }}
       aria-labelledby={`project-${id || idx}-title`}
     >
-      {/* Project Image with Error Handling */}
-      <div className={styles.projectImage}>
+      {/* Project Image with Click-to-Modal Preview */}
+      <div
+        className={styles.projectImage}
+        onClick={() => setIsModalOpen(true)}
+        role="button"
+        tabIndex={0}
+        aria-label={`Open full preview and details for ${name}`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsModalOpen(true);
+          }
+        }}
+      >
         {!imageError ? (
           <Image
             src={imageUrl}
@@ -90,6 +105,10 @@ function Project({ project, idx = 0 }) {
             <span className={styles.fallbackText}>{name}</span>
           </div>
         )}
+        <div className={styles.imageZoomOverlay}>
+          <HiOutlineArrowsExpand aria-hidden="true" />
+          <span>Quick Preview</span>
+        </div>
         <div className={styles.projectBadge}>
           {primaryTech}
         </div>
@@ -103,11 +122,6 @@ function Project({ project, idx = 0 }) {
         <p className={styles.bodyDescription} itemProp="description">
           {desc}
         </p>
-
-        <div className={styles.projectFacts} aria-label="Project summary">
-          <span>Role: Software engineering</span>
-          <span>Focus: Practical business workflows</span>
-        </div>
 
         {/* Technologies Stack */}
         <div className={styles.techStack} aria-label="Technologies used">
@@ -200,6 +214,14 @@ function Project({ project, idx = 0 }) {
         <meta itemProp="isAccessibleForFree" content="true" />
         <meta itemProp="offers" content="Free to use" />
       </div>
+
+      {/* Bezel-less theme-aligned project modal */}
+      <ProjectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        project={project}
+        imageUrl={imageUrl}
+      />
     </article>
   );
 }

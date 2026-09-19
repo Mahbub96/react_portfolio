@@ -157,7 +157,7 @@
     {
       "id": 1,
       "name": "LinkLens — Enterprise Link Intelligence Platform",
-      "src": "/assets/img/project-linklens.svg",
+      "src": "/assets/img/project-linklens.png",
       "desc": "Enterprise-grade smart link and redirect intelligence platform with sub-5ms Redis hot-path routing, ClickHouse forensic analytics, QR generation, RBAC workspaces, webhooks, and self-hosted zero-cost geo/device intelligence.",
       "lang": [
         "NestJS",
@@ -176,7 +176,7 @@
     {
       "id": 2,
       "name": "Bangla & English ASR Studio",
-      "src": "/assets/img/project-bangla-asr.svg",
+      "src": "/assets/img/project-bangla-asr.png",
       "desc": "End-to-end speech recognition studio for Bangla and English with Whisper inference, live microphone transcription, batch processing, WER/CER benchmarking, dataset validation, and LoRA/QLoRA fine-tuning workflows for GPU training clusters.",
       "lang": [
         "Python",
@@ -195,7 +195,7 @@
     {
       "id": 3,
       "name": "Local Vocal Agent",
-      "src": "/assets/img/project-local-vocal.svg",
+      "src": "/assets/img/project-local-vocal.png",
       "desc": "Privacy-first local AI voice workspace with FastAPI, React/Vite, Ollama, SQLite and Chroma memory, Faster Whisper STT, TTS, streaming chat, search tools, file workspace, and permission-aware assistant workflows.",
       "lang": [
         "FastAPI",
@@ -214,7 +214,7 @@
     {
       "id": 4,
       "name": "Advanced Finance Tracker",
-      "src": "/assets/img/project-finance-tracker.svg",
+      "src": "/assets/img/project-finance-tracker.png",
       "desc": "Production-grade offline-first finance platform with Expo React Native, local SQLite storage, typed money utilities, budgeting, transactions, accounts, goals, recurring flows, analytics, AI insight planning, and a NestJS API foundation.",
       "lang": [
         "React Native",
@@ -233,7 +233,7 @@
     {
       "id": 5,
       "name": "Healthcare & Medical Applications",
-      "src": "/assets/img/projects.png",
+      "src": "/assets/img/project-healthcare.png",
       "desc": "Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations.",
       "lang": [
         "React.js",
@@ -264,7 +264,7 @@
     {
       "id": 7,
       "name": "Real-Time Chat Application",
-      "src": "/assets/img/chat.png",
+      "src": "/assets/img/project-chat.jpg",
       "desc": "Real-time chat application with instant messaging, modern UI, and socket-based communication between users.",
       "lang": [
         "React.js",
@@ -279,7 +279,7 @@
     {
       "id": 8,
       "name": "React Portfolio",
-      "src": "/assets/img/react.png",
+      "src": "/assets/img/project-portfolio.jpg",
       "desc": "Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content.",
       "lang": [
         "Next.js",
@@ -294,7 +294,7 @@
     {
       "id": 9,
       "name": "Test-Buddy",
-      "src": "/assets/img/testbuddy.png",
+      "src": "/assets/img/project-testbuddy.png",
       "desc": "React-based test and exam management demo application built for a university software engineering course.",
       "lang": [
         "React.js",

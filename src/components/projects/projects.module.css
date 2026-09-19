@@ -188,9 +188,9 @@
 
 .projectsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: var(--spacing-xl);
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: var(--spacing-lg);
+  max-width: 1240px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -237,12 +237,15 @@
 /* Ensure consistent image container sizing */
 .projectImage {
   width: 100%;
-  height: 200px; /* Smaller image height */
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: 180px;
   overflow: hidden;
   position: relative;
   background: var(--background-secondary);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .projectImage::before {
@@ -263,6 +266,31 @@
 }
 
 .projectCard:hover .projectImage::before {
+  opacity: 1;
+}
+
+.imageZoomOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(4, 12, 24, 0.55);
+  backdrop-filter: blur(2px);
+  color: #64ffda;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.projectImage:hover .imageZoomOverlay,
+.projectCard:hover .imageZoomOverlay {
   opacity: 1;
 }
 
@@ -373,18 +401,18 @@
 
 /* Ensure content area maintains structure */
 .projectContent {
-  padding: var(--spacing-lg); /* Reduced padding */
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 120px; /* Smaller minimum height */
+  min-height: auto;
   transition: var(--transition-normal);
 }
 
 .projectContent h3 {
   color: var(--text-primary);
-  font-size: 1.2rem; /* Smaller heading */
-  margin-bottom: var(--spacing-sm);
+  font-size: 1.05rem;
+  margin-bottom: 6px;
   font-family: var(--font-mono);
   font-weight: 600;
   line-height: 1.3;
@@ -403,8 +431,8 @@
 .techStack {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-lg);
+  gap: 4px;
+  margin-bottom: var(--spacing-sm);
 }
 
 .techTag {
@@ -414,9 +442,9 @@
     rgba(23, 162, 184, 0.05) 100%
   );
   color: var(--accent-primary);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 2px 7px;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-family: var(--font-mono);
   border: 1px solid rgba(32, 201, 151, 0.2);
   transition: var(--transition-normal);
@@ -1184,11 +1212,7 @@
 }
 
 .projectFacts {
-  display: grid;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-md);
-  color: var(--text-muted);
-  font-size: 0.82rem;
+  display: none !important;
 }
 
 .projectsGrid .projectCard {
@@ -1200,7 +1224,14 @@
   flex: 0;
   max-height: none;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
 }
 
 .projectsGrid .projectCard:hover .bodyDescription {
@@ -1208,16 +1239,16 @@
   transform: none;
   max-height: none;
   min-height: 0;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .projectsGrid .actionButtonsContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   max-height: none;
-  margin: auto var(--spacing-lg) var(--spacing-lg);
+  margin: auto var(--spacing-md) var(--spacing-md);
   opacity: 1;
   overflow: visible;
   transform: none;
@@ -1232,18 +1263,20 @@
 .projectsGrid .projectButton {
   width: auto;
   min-width: 0;
-  height: 42px;
-  min-height: 42px;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
+  height: 32px;
+  min-height: 32px;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
   color: var(--text-primary);
   text-decoration: none;
+  border-radius: var(--radius-md);
 }
 
 .projectsGrid .buttonIcon {
   width: auto;
   height: auto;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .projectsGrid .runButton,
