@@ -309,7 +309,7 @@
     {
       "id": 10,
       "name": "Blood Donation Management System",
-      "src": "/assets/img/blood.png",
+      "src": "/assets/img/project-blood-donation.png",
       "desc": "Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage.",
       "lang": [
         "Java",
