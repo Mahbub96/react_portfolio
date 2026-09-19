@@ -1,0 +1,218 @@
+.heatmapCardSpan {
+  grid-column: span 2;
+}
+
+.headerToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.modeTabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 3px;
+}
+
+.modeTab {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  color: var(--text_secondary, #9ca3af);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modeTab:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.activeTab {
+  background: #3b82f6 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.pointCountBadge {
+  font-size: 0.72rem;
+  color: var(--text_secondary, #9ca3af);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Canvas */
+.canvasContainer {
+  background: #091124;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvasBrowserBar {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.bUrl {
+  margin-left: 0.4rem;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: monospace;
+}
+
+.canvasContent {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  padding: 0.75rem;
+  overflow: hidden;
+}
+
+/* Wireframe backdrop */
+.pageHero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.heroTextPlaceholder {
+  width: 50%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.heroAvatarPlaceholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.gridCard {
+  height: 90px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+/* Points */
+.heatPoint {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.heatPoint:hover {
+  transform: translate(-50%, -50%) scale(2);
+  z-index: 10;
+}
+
+.clickDot {
+  background: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 0 10px 3px rgba(56, 189, 248, 0.45);
+}
+
+.hoverDot {
+  background: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 12px 4px rgba(245, 158, 11, 0.4);
+}
+
+.movementDot {
+  width: 6px;
+  height: 6px;
+  background: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.35);
+}
+
+/* Scroll Bands */
+.scrollBandsOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  pointer-events: none;
+}
+
+.scrollBand {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+  padding: 0.15rem 0.75rem;
+  font-size: 0.68rem;
+  font-family: monospace;
+  color: var(--text_secondary, #9ca3af);
+}
+
+.band25 {
+  background: rgba(59, 130, 246, 0.05);
+  color: #60a5fa;
+}
+.band50 {
+  background: rgba(16, 185, 129, 0.05);
+  color: #34d399;
+}
+.band75 {
+  background: rgba(245, 158, 11, 0.05);
+  color: #fbbf24;
+}
+.band90 {
+  background: rgba(239, 68, 68, 0.05);
+  color: #f87171;
+}
+.band100 {
+  background: rgba(168, 85, 247, 0.08);
+  color: #c084fc;
+}
+
+.emptyNotice {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text_secondary, #9ca3af);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 992px) {
+  .heatmapCardSpan {
+    grid-column: span 1;
+  }
+}

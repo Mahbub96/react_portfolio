@@ -1,0 +1,569 @@
+.fullSpanCard {
+  grid-column: span 3;
+}
+
+.replayLayout {
+  display: grid;
+  grid-template-columns: 240px 1fr 240px;
+  gap: 0.75rem;
+  min-height: 480px;
+}
+
+/* Sidebar styling */
+.sessionSidebar,
+.eventLogSidebar {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 520px;
+}
+
+.sidebarTitle {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text_secondary, #9ca3af);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sessionListScroll,
+.eventListScroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem;
+  gap: 0.35rem;
+}
+
+.sessionSelectCard {
+  padding: 0.5rem 0.65rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sessionSelectCard:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.selectedCard {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+}
+
+.sessionCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.cardId {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--heading_color, #fff);
+  font-family: monospace;
+}
+
+.cardBadge {
+  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  color: #93c5fd;
+}
+
+.sessionCardBottom {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--text_secondary, #9ca3af);
+  align-items: center;
+}
+
+/* Player Center Column */
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.screenPreviewWrapper {
+  background: #0b1329;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 380px;
+  position: relative;
+}
+
+.browserHeader {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.4rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 10;
+}
+
+.trafficLights {
+  display: flex;
+  gap: 4px;
+}
+
+.dotRed,
+.dotYellow,
+.dotGreen {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dotRed {
+  background: #ef4444;
+}
+.dotYellow {
+  background: #f59e0b;
+}
+.dotGreen {
+  background: #10b981;
+}
+
+.urlBar {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: monospace;
+}
+
+.viewportDimensions {
+  font-size: 0.68rem;
+  color: var(--text_secondary, #9ca3af);
+}
+
+.simulatedPage {
+  position: relative;
+  flex: 1;
+  padding: 1.25rem;
+  transition: transform 0.2s ease-out;
+  overflow: hidden;
+}
+
+/* Alert Banner */
+.alertBanner {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.25s ease;
+}
+
+.rage {
+  background: #dc2626;
+  color: #fff;
+}
+.error {
+  background: #b91c1c;
+  color: #fff;
+}
+.warning {
+  background: #d97706;
+  color: #fff;
+}
+.success {
+  background: #059669;
+  color: #fff;
+}
+.info {
+  background: #2563eb;
+  color: #fff;
+}
+
+@keyframes popIn {
+  0% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Wireframe Elements */
+.wireframeHeroSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0.5rem;
+}
+
+.heroTextPlaceholder {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.heroBadge {
+  width: 90px;
+  height: 12px;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 4px;
+}
+
+.heroHeading {
+  width: 200px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.heroSubtitle {
+  width: 140px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+}
+
+.heroCta {
+  width: 110px;
+  height: 28px;
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.heroAvatarPlaceholder {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wireframeGridSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.wireframeProjectCard {
+  height: 90px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.wireframeContactSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.wireframeInput {
+  height: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.wireframeButton {
+  height: 32px;
+  width: 120px;
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+}
+
+/* Simulated Mouse Cursor */
+.simulatedCursor {
+  position: absolute;
+  transform: translate(-2px, -2px);
+  pointer-events: none;
+  z-index: 100;
+  transition: transform 0.04s linear;
+}
+
+.cursorIcon {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+  font-size: 16px;
+}
+
+.cursorBeacon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.25);
+  transform: translate(-30%, -30%);
+}
+
+/* Click Ripple Effect */
+.clickRippleEffect {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #38bdf8;
+  transform: translate(-50%, -50%);
+  animation: rippleOut 0.4s ease-out forwards;
+  pointer-events: none;
+  z-index: 90;
+}
+
+.rageRipple {
+  border-color: #ef4444;
+  border-width: 3px;
+  background: rgba(239, 68, 68, 0.3);
+}
+
+@keyframes rippleOut {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Control Bar */
+.controlBar {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scrubberWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scrubberMarkers {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  pointer-events: none;
+}
+
+.scrubberDot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  z-index: 2;
+}
+
+.scrubberDot:hover {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+.timelineScrubber {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.timelineScrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6;
+  cursor: pointer;
+}
+
+.controlRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mainControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ctrlBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ctrlBtn:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.timeCounter {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--heading_color, #fff);
+  margin-left: 0.5rem;
+}
+
+.timeSlash {
+  color: var(--text_secondary, #9ca3af);
+  margin: 0 0.3rem;
+}
+
+.speedSelector {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.speedBtn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text_secondary, #9ca3af);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.speedBtn:hover {
+  color: #fff;
+}
+
+.activeSpeed {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Event Log Sidebar */
+.logItem {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.logItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.logItemActive {
+  border-left: 2px solid #38bdf8;
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.logTime {
+  font-family: monospace;
+  font-size: 0.68rem;
+  color: var(--text_secondary, #9ca3af);
+  min-width: 40px;
+}
+
+.logBody {
+  flex: 1;
+  overflow: hidden;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.logTypeBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.logTypeBadge.click {
+  color: #38bdf8;
+}
+.logTypeBadge.rage_click {
+  color: #ef4444;
+}
+.logTypeBadge.form_error {
+  color: #f87171;
+}
+.logTypeBadge.long_hover {
+  color: #f59e0b;
+}
+.logTypeBadge.form_submit {
+  color: #34d399;
+}
+
+.logElement {
+  font-size: 0.65rem;
+  color: var(--text_secondary, #9ca3af);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: monospace;
+}
+
+@media (max-width: 1200px) {
+  .replayLayout {
+    grid-template-columns: 1fr;
+  }
+  .fullSpanCard {
+    grid-column: span 1;
+  }
+}

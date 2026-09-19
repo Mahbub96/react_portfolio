@@ -13,6 +13,11 @@ import DevicesSection from "@/components/analytics/DevicesSection";
 import ComponentsSection from "@/components/analytics/ComponentsSection";
 import InteractionMetrics from "@/components/analytics/InteractionMetrics";
 import AnalyticsCard from "@/components/analytics/AnalyticsCard";
+import BehaviorMetricsSection from "@/components/analytics/BehaviorMetricsSection";
+import SessionReplayPlayer from "@/components/analytics/SessionReplayPlayer";
+import UserJourneyFlow from "@/components/analytics/UserJourneyFlow";
+import MultiModeHeatmap from "@/components/analytics/MultiModeHeatmap";
+import LiveActivityFeed from "@/components/analytics/LiveActivityFeed";
 
 const AnalyticsPage = () => {
   const { stats, loading, error, fetchStats } = useAnalyticsData(14);
@@ -86,14 +91,40 @@ const AnalyticsPage = () => {
 
       {/* Dashboard Layout */}
       <div className={styles.dashboardGrid}>
-        {/* 🌍 Countries by Sessions Card (Map Visualization) */}
+        {/* ⚡ 1. Behavioral Command Center Overview */}
+        <InteractionMetrics
+          mouseEvents={stats.mouseEvents}
+          keyboardEvents={stats.keyboardEvents}
+          formEngagement={stats.formEngagement}
+          totalSessions={totalSessions}
+        />
 
+        {/* 🟢 2. Live Visitor Activity Feed */}
+        <LiveActivityFeed />
+
+        {/* 🎬 3. Interactive Session Replay Player Engine */}
+        <SessionReplayPlayer sessionReplays={stats.sessionReplays} />
+
+        {/* 🗺️ 4. Visitor Journey Pipeline */}
+        <UserJourneyFlow />
+
+        {/* 🔥 5. Multi-Mode Heatmap Engine (Clicks / Hovers / Movements / Scroll) */}
+        <MultiModeHeatmap initialPoints={stats.heatmapPoints} />
+
+        {/* 🎯 6. Behavioral Funnel & Scroll Distribution */}
+        <BehaviorMetricsSection
+          scrollMilestones={stats.scrollMilestones}
+          formEngagement={stats.formEngagement}
+          popularElements={stats.popularElements}
+        />
+
+        {/* 🌍 7. Countries by Sessions Card (Map Visualization) */}
         <CountrySessionsCard
           countriesData={countriesData}
           worldMapLoaded={worldMapLoaded}
         />
 
-        {/* 🌏 Countries Table */}
+        {/* 🌏 8. Countries Table */}
         <AnalyticsCard
           title="BY COUNTRIES"
           icon={FaChartBar}
@@ -102,7 +133,7 @@ const AnalyticsPage = () => {
           <CountriesTable countriesData={countriesData} />
         </AnalyticsCard>
 
-        {/* 📈 Sessions Chart */}
+        {/* 📈 9. Sessions Chart */}
         <TimeSeriesChart
           title="SESSIONS"
           data={sessionsData}
@@ -111,7 +142,7 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.sessions?.trend || 0}
         />
 
-        {/* 👥 Users Chart */}
+        {/* 👥 10. Users Chart */}
         <TimeSeriesChart
           title="USERS"
           data={usersData}
@@ -120,7 +151,7 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.users?.trend || 0}
         />
 
-        {/* 👀 Pageviews Chart */}
+        {/* 👀 11. Pageviews Chart */}
         <TimeSeriesChart
           title="PAGEVIEWS"
           data={pageviewsData}
@@ -129,19 +160,13 @@ const AnalyticsPage = () => {
           trend={stats.dailyTrends?.pageViews?.trend || 0}
         />
 
-        {/* 📊 Mediums Section */}
+        {/* 📊 12. Mediums Section */}
         <MediumsSection mediumsData={mediumsData} />
 
-        {/* ⚙️ Components Section */}
+        {/* ⚙️ 13. Components Section */}
         <ComponentsSection componentsData={componentsData} />
 
-        {/* 🖱 Interaction Metrics */}
-        <InteractionMetrics
-          mouseEvents={stats.mouseEvents}
-          keyboardEvents={stats.keyboardEvents}
-        />
-
-        {/* 💻 Devices Section */}
+        {/* 💻 14. Devices Section */}
         <DevicesSection devicesData={devicesData} />
       </div>
     </div>

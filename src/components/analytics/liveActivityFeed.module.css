@@ -1,0 +1,159 @@
+.liveContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.25rem 0;
+}
+
+.liveTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.liveBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseGreen 1.5s infinite;
+}
+
+@keyframes pulseGreen {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.refreshIconBtn {
+  background: transparent;
+  border: none;
+  color: var(--text_secondary, #9ca3af);
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: color 0.15s ease;
+}
+
+.refreshIconBtn:hover {
+  color: #fff;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.visitorList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.visitorItem {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.visitorItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.visitorStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.activeGreen {
+  color: #10b981;
+}
+
+.idleAmber {
+  color: #f59e0b;
+}
+
+.visitorId {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--heading_color, #fff);
+  font-family: monospace;
+}
+
+.idleTime {
+  font-size: 0.68rem;
+  color: var(--text_secondary, #9ca3af);
+}
+
+.visitorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detailRow,
+.lastActionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--text_secondary, #9ca3af);
+}
+
+.currentRoute {
+  font-family: monospace;
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.deviceBadge {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.actionName {
+  color: #e5e7eb;
+}
+
+.noActive {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text_secondary, #9ca3af);
+  font-size: 0.8rem;
+}

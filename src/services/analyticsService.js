@@ -4,6 +4,7 @@
  */
 
 import Analytics from "@/models/Analytics";
+import AnalyticsEvent from "@/models/AnalyticsEvent";
 
 /**
  * Save or update analytics record
@@ -646,4 +647,698 @@ export async function getRecordCounts() {
     thisWeekRecords: weekCount,
     thisMonthRecords: monthCount,
   };
+}
+
+/**
+ * Save batch events from analytics SDK and update session aggregates
+ */
+export async function saveBatchEvents(events, clientContext = {}) {
+  if (!Array.isArray(events) || events.length === 0) {
+    return { insertedCount: 0 };
+  }
+
+  const {
+    ip = "unknown",
+    country = "Unknown",
+    city = "Unknown",
+    region = "Unknown",
+    deviceType = "unknown",
+    browser = "unknown",
+    os = "unknown",
+    userAgent = "",
+  } = clientContext;
+
+  const validEvents = events
+    .filter((e) => e && e.sessionId && e.eventType && e.page)
+    .map((e) => {
+      const devCtx = e.deviceContext || {};
+      return {
+        sessionId: String(e.sessionId),
+        eventType: String(e.eventType),
+        page: String(e.page),
+        elementId: e.elementId ? String(e.elementId).substring(0, 150) : null,
+        timestamp: e.timestamp ? new Date(e.timestamp) : new Date(),
+        metadata: typeof e.metadata === "object" && e.metadata !== null ? e.metadata : {},
+        deviceType: devCtx.deviceType || deviceType,
+        browser: devCtx.browser || browser,
+        os: devCtx.platform || os,
+        country,
+        city,
+        ip,
+      };
+    });
+
+  if (validEvents.length === 0) {
+    return { insertedCount: 0 };
+  }
+
+  // Insert into granular time-series event store
+  const insertedEvents = await AnalyticsEvent.insertMany(validEvents, {
+    ordered: false,
+  });
+
+  // Group by session and page to update aggregate Analytics documents
+  const sessionPageGroups = {};
+  for (const ev of validEvents) {
+    const key = `${ev.sessionId}:::${ev.page}`;
+    if (!sessionPageGroups[key]) {
+      sessionPageGroups[key] = {
+        sessionId: ev.sessionId,
+        page: ev.page,
+        clicks: 0,
+        moves: 0,
+        scrolls: 0,
+        maxScrollDepth: 0,
+        components: [],
+        clickPositions: [],
+        mousePositions: [],
+        deviceType: ev.deviceType,
+        browser: ev.browser,
+        os: ev.os,
+      };
+    }
+
+    const grp = sessionPageGroups[key];
+    if (ev.eventType === "click") {
+      grp.clicks++;
+      if (ev.metadata?.x != null && ev.metadata?.y != null) {
+        grp.clickPositions.push({
+          x: ev.metadata.x,
+          y: ev.metadata.y,
+          timestamp: ev.timestamp,
+        });
+      }
+      if (ev.elementId) {
+        grp.components.push({
+          component: ev.elementId,
+          interactionType: "click",
+          timestamp: ev.timestamp,
+          metadata: ev.metadata,
+        });
+      }
+    } else if (ev.eventType === "hover") {
+      if (ev.elementId) {
+        grp.components.push({
+          component: ev.elementId,
+          interactionType: "hover",
+          timestamp: ev.timestamp,
+          metadata: ev.metadata,
+        });
+      }
+    } else if (ev.eventType === "scroll" || ev.eventType === "scroll_milestone") {
+      grp.scrolls++;
+      const depth = Number(ev.metadata?.scrollDepth || ev.metadata?.milestone || 0);
+      if (depth > grp.maxScrollDepth) {
+        grp.maxScrollDepth = depth;
+      }
+    }
+  }
+
+  // Upsert session page records in parallel
+  await Promise.allSettled(
+    Object.values(sessionPageGroups).map((grp) => {
+      const incOps = {};
+      if (grp.clicks > 0) {
+        incOps["mouseEvents.clicks"] = grp.clicks;
+        incOps["totalClicksOnPage"] = grp.clicks;
+      }
+      if (grp.scrolls > 0) {
+        incOps["mouseEvents.scrolls"] = grp.scrolls;
+      }
+
+      const updateOp = {
+        $set: {
+          timestamp: new Date(),
+          ip,
+          country,
+          city,
+          region,
+          userAgent,
+          deviceType: grp.deviceType || deviceType,
+          platform: grp.os || os,
+        },
+        $setOnInsert: {
+          entryTimestamp: new Date(),
+        },
+      };
+
+      if (Object.keys(incOps).length > 0) {
+        updateOp.$inc = incOps;
+      }
+
+      if (grp.maxScrollDepth > 0) {
+        updateOp.$max = { maxScrollDepth: grp.maxScrollDepth };
+      }
+
+      const pushOps = {};
+      if (grp.clickPositions.length > 0) {
+        pushOps["clickPositions"] = {
+          $each: grp.clickPositions.slice(0, 10),
+          $slice: -50,
+        };
+      }
+      if (grp.components.length > 0) {
+        pushOps["componentsInteracted"] = {
+          $each: grp.components.slice(0, 20),
+          $slice: -100,
+        };
+      }
+      if (Object.keys(pushOps).length > 0) {
+        updateOp.$push = pushOps;
+      }
+
+      return Analytics.findOneAndUpdate(
+        { sessionId: grp.sessionId, page: grp.page },
+        updateOp,
+        { upsert: true, new: true }
+      );
+    })
+  );
+
+  return { insertedCount: insertedEvents.length };
+}
+
+/**
+ * Get scroll milestone funnel statistics
+ */
+export async function getScrollMilestoneStats(rangeStart) {
+  const pipeline = [
+    {
+      $match: {
+        eventType: "scroll_milestone",
+        timestamp: { $gte: rangeStart },
+      },
+    },
+    {
+      $group: {
+        _id: "$metadata.milestone",
+        count: { $sum: 1 },
+        sessions: { $addToSet: "$sessionId" },
+      },
+    },
+    {
+      $project: {
+        milestone: "$_id",
+        totalEvents: "$count",
+        uniqueVisitors: { $size: "$sessions" },
+      },
+    },
+    { $sort: { milestone: 1 } },
+  ];
+
+  const results = await AnalyticsEvent.aggregate(pipeline);
+  return results.map((r) => ({
+    milestone: Number(r.milestone) || 0,
+    totalEvents: r.totalEvents,
+    uniqueVisitors: r.uniqueVisitors,
+  }));
+}
+
+/**
+ * Get interaction heatmap coordinates (clicks & hover hot spots)
+ */
+export async function getInteractionHeatmap(rangeStart, limit = 200) {
+  const pipeline = [
+    {
+      $match: {
+        eventType: { $in: ["click", "hover"] },
+        timestamp: { $gte: rangeStart },
+        "metadata.x": { $exists: true },
+        "metadata.y": { $exists: true },
+      },
+    },
+    {
+      $project: {
+        x: "$metadata.x",
+        y: "$metadata.y",
+        eventType: 1,
+        elementId: 1,
+        page: 1,
+        timestamp: 1,
+      },
+    },
+    { $sort: { timestamp: -1 } },
+    { $limit: limit },
+  ];
+
+  return await AnalyticsEvent.aggregate(pipeline);
+}
+
+/**
+ * Get form interaction and abandonment funnel
+ */
+export async function getFormEngagementStats(rangeStart) {
+  const pipeline = [
+    {
+      $match: {
+        eventType: {
+          $in: [
+            "form_focus",
+            "form_blur",
+            "input_interaction",
+            "form_error",
+            "form_submit",
+          ],
+        },
+        timestamp: { $gte: rangeStart },
+      },
+    },
+    {
+      $group: {
+        _id: "$eventType",
+        count: { $sum: 1 },
+        uniqueSessions: { $addToSet: "$sessionId" },
+        avgCharsTyped: { $avg: "$metadata.charsTyped" },
+        avgBackspaces: { $avg: "$metadata.backspaces" },
+        avgTypingDuration: { $avg: "$metadata.typingDurationMs" },
+      },
+    },
+    {
+      $project: {
+        eventType: "$_id",
+        count: 1,
+        uniqueSessions: { $size: "$uniqueSessions" },
+        avgCharsTyped: { $round: [{ $ifNull: ["$avgCharsTyped", 0] }, 1] },
+        avgBackspaces: { $round: [{ $ifNull: ["$avgBackspaces", 0] }, 1] },
+        avgTypingDuration: { $round: [{ $ifNull: ["$avgTypingDuration", 0] }, 0] },
+      },
+    },
+  ];
+
+  const results = await AnalyticsEvent.aggregate(pipeline);
+  const map = {};
+  results.forEach((r) => {
+    map[r.eventType] = r;
+  });
+
+  return {
+    formFocus: map["form_focus"] || { count: 0, uniqueSessions: 0 },
+    inputTyping: map["input_interaction"] || {
+      count: 0,
+      uniqueSessions: 0,
+      avgCharsTyped: 0,
+      avgBackspaces: 0,
+      avgTypingDuration: 0,
+    },
+    formError: map["form_error"] || { count: 0, uniqueSessions: 0 },
+    formSubmit: map["form_submit"] || { count: 0, uniqueSessions: 0 },
+  };
+}
+
+/**
+ * Get popular interactive elements by click frequency & hover dwell
+ */
+export async function getPopularElementStats(rangeStart, limit = 15) {
+  const pipeline = [
+    {
+      $match: {
+        elementId: { $ne: null, $exists: true },
+        timestamp: { $gte: rangeStart },
+      },
+    },
+    {
+      $group: {
+        _id: "$elementId",
+        clicks: {
+          $sum: { $cond: [{ $eq: ["$eventType", "click"] }, 1, 0] },
+        },
+        hovers: {
+          $sum: { $cond: [{ $eq: ["$eventType", "hover"] }, 1, 0] },
+        },
+        avgHoverDurationMs: {
+          $avg: {
+            $cond: [
+              { $eq: ["$eventType", "hover"] },
+              "$metadata.durationMs",
+              null,
+            ],
+          },
+        },
+        uniqueUsers: { $addToSet: "$sessionId" },
+      },
+    },
+    {
+      $project: {
+        elementId: "$_id",
+        clicks: 1,
+        hovers: 1,
+        totalInteractions: { $add: ["$clicks", "$hovers"] },
+        avgHoverDurationMs: {
+          $round: [{ $ifNull: ["$avgHoverDurationMs", 0] }, 0],
+        },
+        uniqueUsers: { $size: "$uniqueUsers" },
+      },
+    },
+    { $sort: { totalInteractions: -1 } },
+    { $limit: limit },
+  ];
+
+  return await AnalyticsEvent.aggregate(pipeline);
+}
+
+/**
+ * Get recent session replays / event timeline
+ */
+export async function getRecentSessionReplays(limit = 10) {
+  // Find recent distinct session IDs
+  const recentSessions = await AnalyticsEvent.aggregate([
+    { $sort: { timestamp: -1 } },
+    {
+      $group: {
+        _id: "$sessionId",
+        latestTimestamp: { $first: "$timestamp" },
+        firstTimestamp: { $last: "$timestamp" },
+        page: { $first: "$page" },
+        deviceType: { $first: "$deviceType" },
+        country: { $first: "$country" },
+        eventCount: { $sum: 1 },
+      },
+    },
+    { $sort: { latestTimestamp: -1 } },
+    { $limit: limit },
+  ]);
+
+  if (recentSessions.length === 0) {
+    return [];
+  }
+
+  const sessionIds = recentSessions.map((s) => s._id);
+
+  // Fetch chronological events for these sessions
+  const events = await AnalyticsEvent.find({
+    sessionId: { $in: sessionIds },
+  })
+    .sort({ timestamp: 1 })
+    .select("sessionId eventType page elementId timestamp metadata")
+    .lean();
+
+  const eventsBySession = {};
+  events.forEach((ev) => {
+    if (!eventsBySession[ev.sessionId]) {
+      eventsBySession[ev.sessionId] = [];
+    }
+    eventsBySession[ev.sessionId].push(ev);
+  });
+
+  return recentSessions.map((s) => ({
+    sessionId: s._id,
+    page: s.page,
+    deviceType: s.deviceType,
+    country: s.country,
+    latestTimestamp: s.latestTimestamp,
+    firstTimestamp: s.firstTimestamp,
+    durationMs:
+      new Date(s.latestTimestamp).getTime() -
+      new Date(s.firstTimestamp).getTime(),
+    eventCount: s.eventCount,
+    timeline: eventsBySession[s._id] || [],
+  }));
+}
+
+/**
+ * Get detailed session list with journey summaries and intelligence flags
+ */
+export async function getSessionList(filters = {}) {
+  const { limit = 25, rangeStart } = filters;
+  const matchStage = {};
+  if (rangeStart) {
+    matchStage.timestamp = { $gte: rangeStart };
+  }
+
+  const pipeline = [
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    { $sort: { timestamp: -1 } },
+    {
+      $group: {
+        _id: "$sessionId",
+        firstTimestamp: { $last: "$timestamp" },
+        latestTimestamp: { $first: "$timestamp" },
+        entryPage: { $last: "$page" },
+        exitPage: { $first: "$page" },
+        pages: { $addToSet: "$page" },
+        deviceType: { $first: "$deviceType" },
+        browser: { $first: "$browser" },
+        os: { $first: "$os" },
+        country: { $first: "$country" },
+        city: { $first: "$city" },
+        eventCount: { $sum: 1 },
+        eventTypes: { $addToSet: "$eventType" },
+      },
+    },
+    { $sort: { latestTimestamp: -1 } },
+    { $limit: limit },
+  ];
+
+  const sessions = await AnalyticsEvent.aggregate(pipeline);
+
+  return sessions.map((s) => {
+    const types = s.eventTypes || [];
+    const durationMs =
+      new Date(s.latestTimestamp).getTime() -
+      new Date(s.firstTimestamp).getTime();
+
+    return {
+      sessionId: s._id,
+      entryPage: s.entryPage,
+      exitPage: s.exitPage,
+      pagesVisited: s.pages,
+      pageCount: s.pages.length,
+      deviceType: s.deviceType || "unknown",
+      browser: s.browser || "unknown",
+      os: s.os || "unknown",
+      country: s.country || "Unknown",
+      city: s.city || "Unknown",
+      firstTimestamp: s.firstTimestamp,
+      latestTimestamp: s.latestTimestamp,
+      durationMs,
+      durationFormatted: `${Math.round(durationMs / 1000)}s`,
+      eventCount: s.eventCount,
+      flags: {
+        hasRageClick: types.includes("rage_click"),
+        hasFormError: types.includes("form_error"),
+        hasLongHover: types.includes("long_hover"),
+        hasSubmission: types.includes("form_submit"),
+        hasRapidScroll: types.includes("rapid_scroll"),
+      },
+    };
+  });
+}
+
+/**
+ * Get comprehensive replay data for an individual session
+ */
+export async function getSessionReplayData(sessionId) {
+  if (!sessionId) return null;
+
+  const events = await AnalyticsEvent.find({ sessionId })
+    .sort({ timestamp: 1 })
+    .lean();
+
+  if (!events || events.length === 0) return null;
+
+  const firstEvent = events[0];
+  const lastEvent = events[events.length - 1];
+  const durationMs =
+    new Date(lastEvent.timestamp).getTime() -
+    new Date(firstEvent.timestamp).getTime();
+
+  // Extract journey steps (sequence of pages or key sections visited)
+  const journeySteps = [];
+  let currentStep = null;
+
+  events.forEach((ev) => {
+    if (ev.eventType === "page_view" || ev.eventType === "section_view") {
+      const stepName =
+        ev.eventType === "section_view"
+          ? ev.metadata?.sectionId
+            ? `#${ev.metadata.sectionId}`
+            : ev.page
+          : ev.page;
+
+      if (!currentStep || currentStep.name !== stepName) {
+        if (currentStep) {
+          currentStep.dwellMs =
+            new Date(ev.timestamp).getTime() - currentStep.startTimestamp;
+        }
+        currentStep = {
+          name: stepName,
+          type: ev.eventType,
+          startTimestamp: new Date(ev.timestamp).getTime(),
+          dwellMs: 0,
+          interactions: 0,
+          maxScrollDepth: 0,
+        };
+        journeySteps.push(currentStep);
+      }
+    } else if (currentStep) {
+      currentStep.interactions++;
+      if (
+        ev.eventType === "scroll" ||
+        ev.eventType === "scroll_milestone"
+      ) {
+        const depth = Number(
+          ev.metadata?.scrollDepth || ev.metadata?.milestone || 0
+        );
+        if (depth > currentStep.maxScrollDepth) {
+          currentStep.maxScrollDepth = depth;
+        }
+      }
+    }
+  });
+
+  if (currentStep) {
+    currentStep.dwellMs =
+      new Date(lastEvent.timestamp).getTime() - currentStep.startTimestamp;
+  }
+
+  // Count intelligence tags
+  const eventTypes = events.map((e) => e.eventType);
+  const intelligenceSummary = {
+    rageClicks: eventTypes.filter((t) => t === "rage_click").length,
+    formErrors: eventTypes.filter((t) => t === "form_error").length,
+    longHovers: eventTypes.filter((t) => t === "long_hover").length,
+    formSubmissions: eventTypes.filter((t) => t === "form_submit").length,
+    rapidScrolls: eventTypes.filter((t) => t === "rapid_scroll").length,
+  };
+
+  return {
+    sessionInfo: {
+      sessionId,
+      entryPage: firstEvent.page,
+      exitPage: lastEvent.page,
+      deviceType: firstEvent.deviceType,
+      browser: firstEvent.browser,
+      os: firstEvent.os,
+      country: firstEvent.country,
+      city: firstEvent.city,
+      startTime: firstEvent.timestamp,
+      endTime: lastEvent.timestamp,
+      durationMs,
+      totalEvents: events.length,
+    },
+    events,
+    journeySteps,
+    intelligenceSummary,
+  };
+}
+
+/**
+ * Get multi-mode heatmap data (clicks, hovers, movements, scroll milestones)
+ */
+export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit = 400) {
+  if (mode === "movement") {
+    // Unwind movement delta segments
+    const pipeline = [
+      {
+        $match: {
+          eventType: "mouse_movement",
+          ...(rangeStart ? { timestamp: { $gte: rangeStart } } : {}),
+          "metadata.points": { $exists: true, $ne: [] },
+        },
+      },
+      { $sort: { timestamp: -1 } },
+      { $limit: 40 },
+      { $unwind: "$metadata.points" },
+      {
+        $project: {
+          x: { $arrayElemAt: ["$metadata.points", 0] },
+          y: { $arrayElemAt: ["$metadata.points", 1] },
+          page: 1,
+          timestamp: 1,
+        },
+      },
+      { $limit: limit },
+    ];
+    const points = await AnalyticsEvent.aggregate(pipeline);
+    return points.map((p) => ({ ...p, eventType: "movement" }));
+  }
+
+  let eventFilter = ["click"];
+  if (mode === "hover") {
+    eventFilter = ["hover", "long_hover"];
+  } else if (mode === "scroll") {
+    eventFilter = ["scroll_milestone"];
+  }
+
+  const pipeline = [
+    {
+      $match: {
+        eventType: { $in: eventFilter },
+        ...(rangeStart ? { timestamp: { $gte: rangeStart } } : {}),
+        "metadata.x": { $exists: true },
+        "metadata.y": { $exists: true },
+      },
+    },
+    {
+      $project: {
+        x: "$metadata.x",
+        y: "$metadata.y",
+        scrollY: "$metadata.scrollY",
+        eventType: 1,
+        elementId: 1,
+        page: 1,
+        timestamp: 1,
+        durationMs: "$metadata.durationMs",
+      },
+    },
+    { $sort: { timestamp: -1 } },
+    { $limit: limit },
+  ];
+
+  return await AnalyticsEvent.aggregate(pipeline);
+}
+
+/**
+ * Get live active sessions in the last N minutes
+ */
+export async function getLiveSessions(windowMinutes = 5) {
+  const windowStart = new Date(Date.now() - windowMinutes * 60 * 1000);
+
+  const pipeline = [
+    {
+      $match: {
+        timestamp: { $gte: windowStart },
+      },
+    },
+    { $sort: { timestamp: -1 } },
+    {
+      $group: {
+        _id: "$sessionId",
+        lastActivity: { $first: "$timestamp" },
+        firstActivity: { $last: "$timestamp" },
+        currentPage: { $first: "$page" },
+        lastEventType: { $first: "$eventType" },
+        lastElementId: { $first: "$elementId" },
+        deviceType: { $first: "$deviceType" },
+        country: { $first: "$country" },
+        city: { $first: "$city" },
+        eventCount: { $sum: 1 },
+      },
+    },
+    { $sort: { lastActivity: -1 } },
+    { $limit: 15 },
+  ];
+
+  const results = await AnalyticsEvent.aggregate(pipeline);
+
+  return results.map((s) => {
+    const activeSeconds = Math.round(
+      (new Date(s.lastActivity).getTime() - new Date(s.firstActivity).getTime()) / 1000
+    );
+    const idleSeconds = Math.round((Date.now() - new Date(s.lastActivity).getTime()) / 1000);
+
+    return {
+      sessionId: s._id,
+      currentPage: s.currentPage,
+      lastEventType: s.lastEventType,
+      lastElementId: s.lastElementId,
+      deviceType: s.deviceType || "unknown",
+      country: s.country || "Unknown",
+      city: s.city || "Unknown",
+      activeDuration: `${activeSeconds}s`,
+      idleAgo: `${idleSeconds}s ago`,
+      isLive: idleSeconds < 90,
+      eventCount: s.eventCount,
+    };
+  });
 }

@@ -10,6 +10,11 @@ import {
   getMediumStats,
   getDailyStats,
   getRecordCounts,
+  getScrollMilestoneStats,
+  getInteractionHeatmap,
+  getFormEngagementStats,
+  getPopularElementStats,
+  getRecentSessionReplays,
 } from "@/services/analyticsService";
 
 export async function GET(request) {
@@ -29,6 +34,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const days = parseInt(searchParams.get("days")) || 14;
 
+    const rangeStartDate = new Date(
+      new Date().getTime() - days * 24 * 60 * 60 * 1000
+    );
+
     // Use service functions for all aggregations
     const [
       recordCounts,
@@ -38,24 +47,30 @@ export async function GET(request) {
       deviceStatsData,
       mediumStatsData,
       dailyStatsData,
+      scrollMilestones,
+      heatmapPoints,
+      formEngagement,
+      popularElements,
+      sessionReplays,
     ] = await Promise.all([
       getRecordCounts(),
       getEventStats(),
       getAnalyticsStats(days),
-      getComponentStats(
-        new Date(new Date().getTime() - days * 24 * 60 * 60 * 1000)
-      ),
-      getDeviceStats(
-        new Date(new Date().getTime() - days * 24 * 60 * 60 * 1000)
-      ),
+      getComponentStats(rangeStartDate),
+      getDeviceStats(rangeStartDate),
       getMediumStats(
-        new Date(new Date().getTime() - days * 24 * 60 * 60 * 1000),
+        rangeStartDate,
         new Date(new Date().getTime() - days * 2 * 24 * 60 * 60 * 1000)
       ),
       getDailyStats(
-        new Date(new Date().getTime() - days * 24 * 60 * 60 * 1000),
+        rangeStartDate,
         new Date(new Date().getTime() - days * 2 * 24 * 60 * 60 * 1000)
       ),
+      getScrollMilestoneStats(rangeStartDate),
+      getInteractionHeatmap(rangeStartDate),
+      getFormEngagementStats(rangeStartDate),
+      getPopularElementStats(rangeStartDate),
+      getRecentSessionReplays(10),
     ]);
 
     const { countries, rangeStart, today } = countryStatsData;
@@ -222,6 +237,11 @@ export async function GET(request) {
       },
       sessions: formattedSessionStats,
       recent: recentRecords,
+      scrollMilestones: scrollMilestones || [],
+      heatmapPoints: heatmapPoints || [],
+      formEngagement: formEngagement || null,
+      popularElements: popularElements || [],
+      sessionReplays: sessionReplays || [],
     });
   } catch (error) {
     // In production, log to an error tracking service, but don't expose details

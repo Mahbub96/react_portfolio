@@ -1,0 +1,133 @@
+.commandCenterCard {
+  grid-column: span 3;
+}
+
+.commandGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.kpiBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.kpiBox:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.kpiIconWrapperBlue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiIconWrapperGreen {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiIconWrapperAmber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiIconWrapperEmerald {
+  background: rgba(5, 150, 105, 0.15);
+  color: #10b981;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiIconWrapperRed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiIconWrapperPurple {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpiContent {
+  flex: 1;
+}
+
+.kpiLabel {
+  font-size: 0.75rem;
+  color: var(--text_secondary, #9ca3af);
+  margin-bottom: 0.1rem;
+}
+
+.kpiValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--heading_color, #fff);
+  letter-spacing: -0.02em;
+}
+
+.kpiSub {
+  font-size: 0.7rem;
+  color: var(--text_secondary, #9ca3af);
+  margin-top: 0.15rem;
+}
+
+.kpiMeter {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.meterFill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 3px;
+}
+
+@media (max-width: 992px) {
+  .commandCenterCard {
+    grid-column: span 1;
+  }
+  .commandGrid {
+    grid-template-columns: 1fr;
+  }
+}

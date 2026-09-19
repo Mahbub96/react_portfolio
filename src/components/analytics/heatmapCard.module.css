@@ -1,0 +1,199 @@
+.heatmapCardSpan {
+  grid-column: span 2;
+}
+
+.heatmapControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.filterBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text_secondary, #9ca3af);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.filterActive {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+}
+
+.heatmapLegend {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text_secondary, #9ca3af);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendClickDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.legendHoverDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+/* Simulated Viewport Canvas */
+.viewportCanvas {
+  background: #0d1527;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvasHeader {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.browserDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.canvasUrl {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: monospace;
+}
+
+.canvasArea {
+  position: relative;
+  height: 280px;
+  width: 100%;
+  padding: 0.75rem;
+  overflow: hidden;
+}
+
+/* Background layout wireframes */
+.wireframeNav {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+
+.wireframeHero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+}
+
+.wireframeHeroText {
+  width: 50%;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.wireframeHeroAvatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wireframeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.wireframeCard {
+  height: 80px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+/* Heatmap points */
+.heatDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.heatDot:hover {
+  transform: translate(-50%, -50%) scale(2);
+  z-index: 10;
+}
+
+.clickDot {
+  background: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 10px 3px rgba(56, 189, 248, 0.4);
+}
+
+.hoverDot {
+  background: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.3);
+}
+
+.emptyHeatmap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text_secondary, #9ca3af);
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 992px) {
+  .heatmapCardSpan {
+    grid-column: span 1;
+  }
+}

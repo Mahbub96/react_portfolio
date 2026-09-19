@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import LoginModal from "../auth/LoginModal";
 import styles from "./navbar.module.css";
 
 function Header({ data }) {
   const { auth, logout, isLoaded } = useDataContext();
   const { isDarkMode, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const menuRef = useRef(null);
 
   // Extract name from database data
@@ -186,6 +188,18 @@ function Header({ data }) {
                     )}
                   </>
                 )}
+                {isLoaded && !auth && (
+                  <button
+                    className={styles.themeButton}
+                    onClick={() => setShowLoginModal(true)}
+                    title="Admin Login / Analytics"
+                    aria-label="Admin Login"
+                  >
+                    <span style={{ fontSize: "1.05rem", lineHeight: 1 }}>
+                      🔐
+                    </span>
+                  </button>
+                )}
                 <button
                   className={styles.themeButton}
                   onClick={toggleTheme}
@@ -206,6 +220,12 @@ function Header({ data }) {
           </div>
         </nav>
       </header>
+
+      {/* Admin Login Modal */}
+      <LoginModal
+        show={showLoginModal}
+        onHide={() => setShowLoginModal(false)}
+      />
     </>
   );
 }
