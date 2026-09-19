@@ -144,14 +144,31 @@ export const metadata = {
     "mobile-web-app-capable": "yes",
     "format-detection": "telephone=no, email=no, address=no",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/favicon.svg", color: "#64ffda" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <link rel="icon" href="https://mahbub.dev/favicon.ico" />
-        <link rel="apple-touch-icon" href="https://mahbub.dev/logo192.png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="format-detection" content="telephone=no" />
 

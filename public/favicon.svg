@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2240"/>
+      <stop offset="50%" stop-color="#0a192f"/>
+      <stop offset="100%" stop-color="#020c1b"/>
+    </linearGradient>
+
+    <!-- Glowing Rim Border Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64ffda"/>
+      <stop offset="50%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+
+    <!-- Monogram M Gradient -->
+    <linearGradient id="mGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+
+    <!-- Electric Cyan Gradient for Brackets -->
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64ffda"/>
+      <stop offset="100%" stop-color="#00f5d4"/>
+    </linearGradient>
+
+    <!-- Subtle Neon Glow -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Radial Soft Core Glow -->
+    <radialGradient id="centerBloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#64ffda" stop-opacity="0.14"/>
+      <stop offset="65%" stop-color="#00e5ff" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#0a192f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Squircle Base Canvas -->
+  <rect x="24" y="24" width="464" height="464" rx="116" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="12"/>
+
+  <!-- Inner Subtle Accent Border -->
+  <rect x="36" y="36" width="440" height="440" rx="104" fill="none" stroke="#64ffda" stroke-width="2" stroke-opacity="0.25"/>
+
+  <!-- Radial Soft Glow in Center -->
+  <circle cx="256" cy="256" r="190" fill="url(#centerBloom)"/>
+
+  <!-- Left Code Bracket: < -->
+  <path d="M 130 180 L 76 256 L 130 332" 
+        fill="none" 
+        stroke="url(#cyanGrad)" 
+        stroke-width="32" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#neonGlow)"/>
+
+  <!-- Center Monogram Letter M -->
+  <path d="M 180 332 L 180 180 L 240 260 L 300 180 L 300 332" 
+        fill="none" 
+        stroke="url(#mGrad)" 
+        stroke-width="32" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+
+  <!-- Closing Slash: / -->
+  <path d="M 356 180 L 332 332" 
+        fill="none" 
+        stroke="url(#cyanGrad)" 
+        stroke-width="28" 
+        stroke-linecap="round"
+        filter="url(#neonGlow)"/>
+
+  <!-- Right Code Bracket: > -->
+  <path d="M 382 180 L 436 256 L 382 332" 
+        fill="none" 
+        stroke="url(#cyanGrad)" 
+        stroke-width="32" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#neonGlow)"/>
+</svg>
