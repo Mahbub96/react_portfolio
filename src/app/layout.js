@@ -429,20 +429,20 @@ export const metadata = {
         secureUrl: "https://mahbub.dev/assets/img/profile.png",
       },
       {
-        url: "https://mahbub.dev/assets/img/profile-og.png",
+        url: "https://mahbub.dev/assets/img/og-cover.jpg",
         width: 1200,
         height: 630,
         alt: "Mahbub Alam - Software Engineer Portfolio Banner",
-        type: "image/png",
-        secureUrl: "https://mahbub.dev/assets/img/profile-og.png",
+        type: "image/jpeg",
+        secureUrl: "https://mahbub.dev/assets/img/og-cover.jpg",
       },
       {
-        url: "https://mahbub.dev/assets/img/profile-twitter.png",
+        url: "https://mahbub.dev/assets/img/og-cover.jpg",
         width: 1200,
-        height: 600,
+        height: 630,
         alt: "Mahbub Alam - Software Engineer Twitter Card",
-        type: "image/png",
-        secureUrl: "https://mahbub.dev/assets/img/profile-twitter.png",
+        type: "image/jpeg",
+        secureUrl: "https://mahbub.dev/assets/img/og-cover.jpg",
       },
     ],
   },
@@ -458,7 +458,7 @@ export const metadata = {
         alt: "Mahbub Alam - Software Engineer Professional Headshot",
       },
       {
-        url: "https://mahbub.dev/assets/img/profile-twitter.png",
+        url: "https://mahbub.dev/assets/img/og-cover.jpg",
         alt: "Mahbub Alam - Software Engineer Twitter Card",
       },
     ],
@@ -526,11 +526,11 @@ export default function RootLayout({ children }) {
         />
         <link
           rel="image_src"
-          href="https://mahbub.dev/assets/img/profile-og.png"
+          href="https://mahbub.dev/assets/img/og-cover.jpg"
         />
         <link
           rel="image_src"
-          href="https://mahbub.dev/assets/img/profile-twitter.png"
+          href="https://mahbub.dev/assets/img/og-cover.jpg"
         />
 
         {/* Preload Critical Images */}
@@ -542,7 +542,7 @@ export default function RootLayout({ children }) {
         <link
           rel="preload"
           as="image"
-          href="https://mahbub.dev/assets/img/profile-og.png"
+          href="https://mahbub.dev/assets/img/og-cover.jpg"
         />
 
         {/* DNS Prefetch for Image CDN */}

@@ -98,7 +98,7 @@ export async function generateMetadata() {
       siteName: "Mahbub Alam Portfolio",
       images: [
         {
-          url: "https://mahbub.dev/assets/img/profile.png",
+          url: "https://mahbub.dev/assets/img/og-cover.jpg",
           width: 1200,
           height: 630,
           alt: "Mahbub Alam - Software Engineer",
@@ -114,7 +114,7 @@ export async function generateMetadata() {
       description:
         profile.bio ||
         "Mahbub Alam is a Software Engineer specializing in full-stack, backend, cloud-enabled, and applied AI solutions. Based in Dhaka, Bangladesh.",
-      images: ["https://mahbub.dev/assets/img/profile.png"],
+      images: ["https://mahbub.dev/assets/img/og-cover.jpg"],
       creator: "@mahbubcse96",
       site: "@mahbubcse96",
     },
