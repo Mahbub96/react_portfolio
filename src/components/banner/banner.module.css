@@ -1048,26 +1048,37 @@
 /* Mobile premium tuning */
 @media (max-width: 640px) {
   .bannerSection {
-    padding: 2.15rem var(--spacing-md) 2.5rem !important;
+    padding: calc(1.45rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-left)) 2.35rem max(1rem, env(safe-area-inset-right)) !important;
+    min-height: auto !important;
   }
 
   .heroContent {
     gap: 1.25rem;
   }
 
+  .heroCopy {
+    gap: 0.72rem;
+  }
+
   .heroEyebrow {
-    font-size: 0.68rem;
+    font-size: clamp(0.62rem, 2.8vw, 0.68rem);
     line-height: 1.55;
   }
 
   .name {
-    font-size: clamp(2.65rem, 12vw, 3.15rem);
-    letter-spacing: -0.085em;
+    font-size: clamp(2.25rem, 14vw, 3.05rem);
+    letter-spacing: -0.075em;
+    line-height: 0.94;
+  }
+
+  .jobTitle {
+    font-size: clamp(0.95rem, 4.1vw, 1.12rem);
+    line-height: 1.22;
   }
 
   .heroIntro {
-    font-size: 0.94rem;
-    line-height: 1.62;
+    font-size: 0.92rem;
+    line-height: 1.58;
   }
 
   .capabilityPills {
@@ -1082,12 +1093,32 @@
   }
 
   .profileCard {
-    max-width: 318px;
+    max-width: min(100%, 332px);
     border-radius: 1.15rem;
+    padding: 0.95rem;
   }
 
   .heroActions > * {
     width: min(100%, 310px);
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+  .bannerSection {
+    padding-top: 1.25rem !important;
+  }
+
+  .profileCard {
+    max-width: 100%;
+  }
+
+  .profileImageContainer {
+    width: min(100%, 150px);
+  }
+
+  .profileImage {
+    width: min(76%, 116px);
   }
 }
 

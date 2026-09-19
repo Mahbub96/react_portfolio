@@ -1317,8 +1317,12 @@
 
 /* Mobile premium project density */
 @media (max-width: 640px) {
+  .projectsSection {
+    padding: 3.25rem 0;
+  }
+
   .projectsGrid {
-    padding: 0 0.25rem;
+    padding: 0;
     gap: 1rem;
   }
 
@@ -1328,8 +1332,20 @@
   }
 
   .projectImage {
-    height: 158px;
+    height: clamp(150px, 42vw, 170px);
     border-radius: 1.1rem 1.1rem 0 0;
+  }
+
+  .projectsGrid .actionButtonsContainer {
+    margin: auto 0.85rem 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .projectsGrid .projectButton {
+    min-height: 44px;
+    height: 44px;
+    flex: 1 1 120px;
+    justify-content: center;
   }
 
   .projectContent h3 {

@@ -49,6 +49,17 @@ function Header({ data }) {
     };
   }, [isMenuOpen]);
 
+  // Prevent background scroll while the mobile menu is open.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    document.body.classList.toggle("nav-menu-open", isMenuOpen);
+
+    return () => {
+      document.body.classList.remove("nav-menu-open");
+    };
+  }, [isMenuOpen]);
+
   const handleNavClick = (e, sectionId) => {
     e.preventDefault();
     if (typeof window !== "undefined" && typeof document !== "undefined") {

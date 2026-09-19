@@ -559,8 +559,21 @@
 
 /* Mobile premium density */
 @media (max-width: 640px) {
+  .skillsSection {
+    padding: 3.25rem 0;
+  }
+
+  .skillsGroups {
+    gap: 1rem;
+  }
+
   .skillGroup {
     padding: 0.95rem;
+    border-radius: 1.05rem;
+  }
+
+  .groupHeader {
+    gap: 0.25rem;
   }
 
   .skillsGrid {
@@ -571,6 +584,10 @@
 
   .skillCard {
     padding: 0.85rem 0.65rem;
+    min-height: 116px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .skillIcon {

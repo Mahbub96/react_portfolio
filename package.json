@@ -11,9 +11,11 @@
     "build:prod": "node scripts/build-production.js",
     "package": "node scripts/build-production.js",
     "package:bash": "bash scripts/build-production.sh",
-    "deploy": "DEPLOY=true node scripts/build-production.js",
+    "deploy": "bash scripts/deploy-local.sh mahbub.dev",
     "deploy:bash": "DEPLOY=true bash scripts/build-production.sh",
-    "deploy:test": "bash scripts/deploy-test-local.sh"
+    "deploy:domain": "bash scripts/deploy-local.sh",
+    "deploy:prod": "bash scripts/deploy-local.sh mahbub.dev",
+    "deploy:test": "bash scripts/deploy-local.sh test.mahbub.dev"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",

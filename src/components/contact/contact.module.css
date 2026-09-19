@@ -491,7 +491,7 @@
 
 @media (max-width: 480px) {
   .contactSection {
-    padding: var(--spacing-xl) 0;
+    padding: 3rem 0;
   }
 
   .sectionTitle {
@@ -499,12 +499,13 @@
   }
 
   .contactContent {
-    padding: 0 var(--spacing-sm);
+    padding: 0 0.85rem;
   }
 
   .contactInfo,
   .contactForm {
-    padding: var(--spacing-md);
+    padding: 1rem;
+    border-radius: 1rem;
   }
 
   .contactInfoTitle {
@@ -512,8 +513,9 @@
   }
 
   .contactItem {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: 0.72rem 0.8rem;
     gap: var(--spacing-sm);
+    align-items: flex-start;
   }
 
   .contactIcon {
@@ -527,12 +529,14 @@
 
   .formInput,
   .formTextarea {
-    padding: var(--spacing-sm);
-    font-size: 0.85rem;
+    min-height: 46px;
+    padding: 0.8rem;
+    font-size: 16px;
   }
 
   .submitButton {
-    padding: var(--spacing-sm) var(--spacing-lg);
+    min-height: 48px;
+    padding: 0.8rem var(--spacing-lg);
     font-size: 0.9rem;
   }
 

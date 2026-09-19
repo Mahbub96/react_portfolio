@@ -328,7 +328,7 @@
 
 @media (max-width: 768px) {
   .experienceSection {
-    padding: 4rem 0;
+    padding: 3.25rem 0;
   }
 
   .sectionHeader h2 {
@@ -353,16 +353,16 @@
   }
 
   .timelineContainer {
-    padding: 0 1rem;
+    padding: 0 1rem 0 0.35rem;
   }
 
   .verticalLine {
-    left: 20px;
+    left: 18px;
   }
 
   .timelineItem {
     width: 100%;
-    padding-left: 3rem;
+    padding: 0 0 0 2.35rem;
     margin-bottom: 1rem;
   }
 
@@ -373,8 +373,22 @@
   }
 
   .timelineDot {
-    left: -6px;
+    left: -5px;
     right: auto;
+  }
+
+  .timelineContent {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .title {
+    font-size: 1.05rem;
+  }
+
+  .description {
+    font-size: 0.92rem;
+    line-height: 1.6;
   }
 
   .cardActions {
