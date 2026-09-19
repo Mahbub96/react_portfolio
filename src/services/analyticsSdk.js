@@ -73,9 +73,12 @@ const CRITICAL_EVENTS = new Set([
 class AnalyticsSDK {
   constructor() {
     this.endpoint = "/api/analytics/batch";
-    this.batchInterval = 5000; // 5 seconds (performance-friendly)
+    this.batchInterval = 4000; // 4 seconds adaptive window
     this.maxBatchSize = 25;
-    this.maxQueueSize = 50; // Hard ceiling on memory buffer
+    this.maxBatchBytes = 24 * 1024; // 24 KB target batch size (Section 99)
+    this.maxQueueSize = 50; // Max items ceiling
+    this.maxBufferBytes = 64 * 1024; // 64 KB hard memory buffer ceiling (Section 92)
+    this.bufferBytes = 0; // Live estimate of RAM buffer usage
     this.queue = [];
     this.flushTimer = null; // Event-driven one-shot timer (null when idle)
     this.isFlushing = false;
@@ -86,9 +89,11 @@ class AnalyticsSDK {
     this.initialized = false;
     this.debug = false;
 
-    // Retry & backoff state
-    this.retryDelay = 5000;
+    // Retry & backoff state (Section 97 & 98)
+    this.baseRetryDelay = 3000;
+    this.retryDelay = 3000;
     this.maxRetryDelay = 30000;
+    this.retryAttempts = 0;
     this.isOffline = false;
     this.isDegraded = false; // Section 22.11 Degraded mode flag
 
@@ -105,6 +110,29 @@ class AnalyticsSDK {
     this.endSession = this.endSession.bind(this);
     this.checkDegradedMode = this.checkDegradedMode.bind(this);
     this.isLoggedIn = this.isLoggedIn.bind(this);
+    this.getBufferPressure = this.getBufferPressure.bind(this);
+    this.getGovernorState = this.getGovernorState.bind(this);
+  }
+
+  /**
+   * Section 95 & 139: Adaptive Buffer Pressure Calculation
+   * pressure = currentBufferBytes / maxBufferBytes
+   */
+  getBufferPressure() {
+    return Math.min(1, Math.max(0, this.bufferBytes / this.maxBufferBytes));
+  }
+
+  /**
+   * Section 141: Client-Side Performance Governor
+   * NORMAL (<0.50), PRESSURED (0.50-0.70), DEGRADED (0.70-0.85), MINIMAL (>=0.85)
+   */
+  getGovernorState() {
+    if (this.isDegraded) return "DEGRADED";
+    const p = this.getBufferPressure();
+    if (p >= 0.85) return "MINIMAL";
+    if (p >= 0.7) return "DEGRADED";
+    if (p >= 0.5) return "PRESSURED";
+    return "NORMAL";
   }
 
   /**
@@ -325,6 +353,10 @@ class AnalyticsSDK {
   /**
    * Track event with priority queueing and graceful degradation
    */
+  /**
+   * Track event with priority queueing, memory pressure governor & zero-blocking
+   * Sections 71, 74, 92, 94, 95, 138-141
+   */
   track(eventType, metadata = {}, elementId = null) {
     try {
       if (this.isOptedOut || typeof window === "undefined" || this.isLoggedIn()) return;
@@ -334,20 +366,45 @@ class AnalyticsSDK {
       }
 
       const priority = EVENT_PRIORITIES[eventType] || 2;
+      const governor = this.getGovernorState();
 
-      // Section 22.11: If in degraded mode (low-spec/data-saver), drop Tier 3 events (movement, rapid scroll)
-      if (this.isDegraded && priority >= 3) {
+      // Section 141 Performance Governor:
+      // MINIMAL mode: drop Tier 3 continuous visual movement events
+      if (governor === "MINIMAL" && priority >= 3) {
+        return;
+      }
+      // DEGRADED mode: drop raw movement and high-frequency scroll
+      if (governor === "DEGRADED" && priority >= 3 && eventType !== "mouse_segment") {
         return;
       }
 
-      // Degraded Mode: If queue is over ceiling, drop lowest-priority events (Tier 3)
-      if (this.queue.length >= this.maxQueueSize) {
+      // Fast metadata serialization byte estimate (free microsecond calculation)
+      const metaStr = JSON.stringify(metadata || {});
+      const eventBytes = 90 + metaStr.length + (elementId ? String(elementId).length : 0);
+
+      // Section 92 & 95: Strict bounded buffer enforcement (<64KB)
+      while (
+        (this.bufferBytes + eventBytes > this.maxBufferBytes ||
+          this.queue.length >= this.maxQueueSize) &&
+        this.queue.length > 0
+      ) {
+        // Find and drop lowest-priority item (P3 first)
         const dropIndex = this.queue.findIndex((e) => (e._priority || 2) >= 3);
         if (dropIndex !== -1) {
-          this.queue.splice(dropIndex, 1);
-        } else if (priority >= 3) {
-          // Discard incoming low-priority event
-          return;
+          const dropped = this.queue.splice(dropIndex, 1)[0];
+          this.bufferBytes = Math.max(0, this.bufferBytes - (dropped._bytes || 150));
+        } else {
+          // Drop P2 behavioral event if needed
+          const dropP2Index = this.queue.findIndex((e) => (e._priority || 2) === 2);
+          if (dropP2Index !== -1) {
+            const dropped = this.queue.splice(dropP2Index, 1)[0];
+            this.bufferBytes = Math.max(0, this.bufferBytes - (dropped._bytes || 150));
+          } else if (priority > 1) {
+            // Buffer contains only P1 critical business events: preserve P1, drop incoming non-P1
+            return;
+          } else {
+            break; // Allow bounded queueing for incoming P1 critical event
+          }
         }
       }
 
@@ -358,8 +415,8 @@ class AnalyticsSDK {
         elementId: elementId ? String(elementId).substring(0, 150) : null,
         timestamp: new Date().toISOString(),
         metadata: this.sanitizeMetadata(metadata),
-        deviceContext: this.getDeviceContext(),
         _priority: priority,
+        _bytes: eventBytes,
       };
 
       if (this.userId) {
@@ -367,16 +424,22 @@ class AnalyticsSDK {
       }
 
       this.queue.push(event);
+      this.bufferBytes += eventBytes;
 
-      // Section 64 & 65: Immediate flush override for critical events and full batch ceiling
-      if (CRITICAL_EVENTS.has(eventType) || this.queue.length >= this.maxBatchSize) {
+      // Section 64, 76, 77: Important events schedule early async flush (NEVER synchronous upload in handler)
+      // Buffer byte threshold (24KB) or queue count also triggers early async flush
+      if (
+        CRITICAL_EVENTS.has(eventType) ||
+        this.bufferBytes >= this.maxBatchBytes ||
+        this.queue.length >= this.maxBatchSize
+      ) {
         this.scheduleImmediateFlush();
       } else {
-        // Section 53 & 60: Event-driven scheduling. Only schedules a single-shot timer when activity occurs
-        this.scheduleFlush();
+        // Section 53 & 60: Schedule one-shot timer only when activity exists
+        this.scheduleFlush(this.batchInterval);
       }
     } catch {
-      // Never throw into calling application
+      // Disposable: Never throw into host application
     }
   }
 
@@ -399,11 +462,13 @@ class AnalyticsSDK {
   }
 
   /**
-   * Non-blocking flush
+   * Non-blocking flush with byte-sized batching & session metadata compression
+   * Sections 71, 72, 75, 99, 100, 106
    */
   async flush(useBeacon = false) {
     if (this.isLoggedIn()) {
       this.queue = [];
+      this.bufferBytes = 0;
       return;
     }
 
@@ -417,29 +482,49 @@ class AnalyticsSDK {
       ) {
         this.saveOfflineQueue(this.queue);
         this.queue = [];
+        this.bufferBytes = 0;
         return;
       }
 
-      // Take up to maxBatchSize events
-      const eventsToSend = this.queue.splice(0, this.maxBatchSize);
+      // Section 99: Batch size controlled by bytes (~24KB) as well as count
+      let batchBytes = 0;
+      let batchCount = 0;
+      for (let i = 0; i < this.queue.length; i++) {
+        const itemBytes = this.queue[i]._bytes || 180;
+        if (
+          batchCount >= this.maxBatchSize ||
+          (batchCount > 0 && batchBytes + itemBytes > this.maxBatchBytes)
+        ) {
+          break;
+        }
+        batchBytes += itemBytes;
+        batchCount++;
+      }
 
-      // Strip internal _priority tag before transmission
-      const sanitizedBatch = eventsToSend.map(({ _priority, ...rest }) => rest);
+      const eventsToSend = this.queue.splice(0, Math.max(1, batchCount));
+      this.bufferBytes = Math.max(0, this.bufferBytes - batchBytes);
+
+      // Section 106: Separate session-level metadata from individual events
+      const baseSessionId = this.sessionId;
+      const baseDeviceContext = this.getDeviceContext();
+      const basePage = typeof window !== "undefined" ? window.location.pathname : "/";
+
+      const sanitizedBatch = eventsToSend.map(
+        ({ _priority, _bytes, sessionId, deviceContext, page, ...rest }) => ({
+          ...rest,
+          ...(page && page !== basePage ? { page } : {}),
+        })
+      );
 
       const payload = JSON.stringify({
+        sessionId: baseSessionId,
+        deviceContext: baseDeviceContext,
+        page: basePage,
         events: sanitizedBatch,
         sentAt: new Date().toISOString(),
       });
 
-      // Guard: Ensure payload does not exceed 60KB (64KB browser limit for sendBeacon)
-      if (payload.length > 60000) {
-        // Split in half and re-queue second half
-        const half = Math.ceil(sanitizedBatch.length / 2);
-        this.queue.unshift(...sanitizedBatch.slice(half));
-        sanitizedBatch.splice(half);
-      }
-
-      // 1. Prefer navigator.sendBeacon on exit
+      // Section 101: Prefer navigator.sendBeacon on page unload
       if (
         useBeacon &&
         typeof navigator !== "undefined" &&
@@ -450,7 +535,7 @@ class AnalyticsSDK {
         if (success) return;
       }
 
-      // 2. Asynchronous non-blocking fetch with keepalive
+      // Asynchronous non-blocking HTTP fetch with keepalive
       this.isFlushing = true;
       const response = await fetch(this.endpoint, {
         method: "POST",
@@ -465,16 +550,23 @@ class AnalyticsSDK {
         throw new Error(`HTTP error ${response.status}`);
       }
 
-      // Reset retry delay on success
-      this.retryDelay = 5000;
+      // Section 97 & 98: Reset backoff state on successful delivery
+      this.retryAttempts = 0;
+      this.retryDelay = this.baseRetryDelay;
 
-      // Section 53 & 60: If events remain, schedule next one-shot flush; if empty, remain completely idle
+      // Section 53 & 60: Schedule next one-shot flush if events remain; otherwise remain idle
       if (this.queue.length > 0) {
         this.scheduleFlush(this.batchInterval);
       }
     } catch (error) {
-      // Exponential backoff
-      this.retryDelay = Math.min(this.retryDelay * 1.5, this.maxRetryDelay);
+      // Section 97 & 98: Exponential backoff with random jitter
+      this.retryAttempts++;
+      const jitter = Math.random() * 800;
+      this.retryDelay =
+        Math.min(
+          this.maxRetryDelay,
+          this.baseRetryDelay * Math.pow(1.8, Math.min(6, this.retryAttempts))
+        ) + jitter;
     } finally {
       this.isFlushing = false;
     }

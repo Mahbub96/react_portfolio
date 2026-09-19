@@ -20,7 +20,7 @@ import {
 import AnalyticsCard from "./AnalyticsCard";
 import styles from "./sessionReplayPlayer.module.css";
 
-const SPEEDS = [0.5, 1, 2, 4, 8, 16, 32, 64, 128];
+const SPEEDS = [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128];
 
 export default function SessionReplayPlayer({ sessionReplays = [], initialSessionId = null }) {
   // Session selection
@@ -197,16 +197,28 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
           }
         }
 
-        const delta = Math.max(1, p1[0] - p0[0]);
-        const ratio = Math.min(1, Math.max(0, (elapsed - p0[0]) / delta));
+        // Section 114 & 115: Extreme Replay Speeds (16x, 32x, 64x, 128x)
+        // At 16x-32x, bypass micro-interpolation and snap directly to vertex p0
+        // At 64x-128x, jump directly between key state events
+        const isExtremeSpeed = playbackSpeed >= 16;
+        let interpX, interpY;
+        if (isExtremeSpeed) {
+          const px = p0[1] ?? p0[0];
+          const py = p0[2] ?? p0[1];
+          interpX = (px / 1366) * 100;
+          interpY = (py / 768) * 100;
+        } else {
+          const delta = Math.max(1, p1[0] - p0[0]);
+          const ratio = Math.min(1, Math.max(0, (elapsed - p0[0]) / delta));
 
-        const x0 = p0[1] ?? p0[0];
-        const y0 = p0[2] ?? p0[1];
-        const x1 = p1[1] ?? p1[0];
-        const y1 = p1[2] ?? p1[1];
+          const x0 = p0[1] ?? p0[0];
+          const y0 = p0[2] ?? p0[1];
+          const x1 = p1[1] ?? p1[0];
+          const y1 = p1[2] ?? p1[1];
 
-        const interpX = ((x0 + (x1 - x0) * ratio) / 1366) * 100;
-        const interpY = ((y0 + (y1 - y0) * ratio) / 768) * 100;
+          interpX = ((x0 + (x1 - x0) * ratio) / 1366) * 100;
+          interpY = ((y0 + (y1 - y0) * ratio) / 768) * 100;
+        }
 
         setCurrentCursor({
           x: Math.max(2, Math.min(98, interpX)),

@@ -22,13 +22,25 @@ export async function POST(request) {
     // Protect against payload abuse (max 100 events per batch)
     const limitedEvents = events.slice(0, 100);
 
+    // Section 106: Normalize events with top-level session metadata
+    const baseSessionId = body?.sessionId;
+    const baseDeviceContext = body?.deviceContext;
+    const basePage = body?.page || "/";
+
+    const normalizedEvents = limitedEvents.map((ev) => ({
+      ...ev,
+      sessionId: ev.sessionId || baseSessionId,
+      page: ev.page || basePage,
+      deviceContext: ev.deviceContext || baseDeviceContext,
+    }));
+
     await connectDB();
 
     // Get IP and geolocation using service
     const { ip, country, city, region } = await getIPAndGeolocation(request);
     const userAgent = request.headers.get("user-agent") || "";
 
-    const result = await saveBatchEvents(limitedEvents, {
+    const result = await saveBatchEvents(normalizedEvents, {
       ip,
       country: country || "Unknown",
       city: city || "Unknown",

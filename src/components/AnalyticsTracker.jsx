@@ -11,6 +11,8 @@ function getElementIdentifier(target) {
   if (!target || !(target instanceof Element)) return "unknown";
 
   const idAttr =
+    target.getAttribute("data-replay-id") ||
+    target.getAttribute("data-replay-name") ||
     target.getAttribute("data-analytics-id") ||
     target.getAttribute("data-component") ||
     target.getAttribute("data-testid") ||
@@ -190,7 +192,9 @@ const ActiveTracker = () => {
     if (seg.points.length >= 2) {
       const now = Date.now();
       const duration = now - seg.startTime;
-      const simplified = simplifyTrajectory(seg.points, 2.5);
+      const gov = analytics.getGovernorState ? analytics.getGovernorState() : "NORMAL";
+      const epsilon = gov === "DEGRADED" ? 4.5 : gov === "PRESSURED" ? 3.2 : 2.0;
+      const simplified = simplifyTrajectory(seg.points, epsilon);
 
       analytics.track("mouse_segment", {
         startTime: seg.startTime,
@@ -441,20 +445,45 @@ const ActiveTracker = () => {
           target,
         };
       } else {
-        // MOUSE_ACTIVE: sample meaningful trajectory
+        // MOUSE_ACTIVE: sample meaningful trajectory using distance and curvature filtering (Sections 81, 82, 83)
         const seg = mouseSegmentRef.current;
         const deltaMs = now - seg.lastSampleTime;
-        const dist = Math.hypot(clientX - seg.lastX, clientY - seg.lastY);
+
+        // Section 82: Distance-based filtering using squared distance (avoids Math.sqrt)
+        const dx = clientX - seg.lastX;
+        const dy = clientY - seg.lastY;
+        const distSq = dx * dx + dy * dy;
+
+        const gov = analytics.getGovernorState ? analytics.getGovernorState() : "NORMAL";
+        const minDistanceSq = gov === "DEGRADED" ? 64 : gov === "PRESSURED" ? 36 : 16;
 
         const isNearInteractive =
           target &&
           target.closest &&
           target.closest(
-            "button, a, input, select, textarea, [role='button'], .nav-link, [data-analytics-id]"
+            "button, a, input, select, textarea, [role='button'], .nav-link, [data-analytics-id], [data-replay-id]"
           );
-        const sampleThreshold = isNearInteractive ? 60 : 100;
+        const sampleThreshold = (isNearInteractive ? 60 : 90) * (gov === "DEGRADED" ? 1.5 : 1);
 
-        if (deltaMs >= sampleThreshold && dist >= 5) {
+        if (deltaMs >= sampleThreshold && distSq >= minDistanceSq) {
+          // Section 83: Curvature-based filtering. If moving in a straight line, update vertex instead of piling redundant points
+          if (seg.points.length >= 2) {
+            const pA = seg.points[seg.points.length - 2];
+            const pB = seg.points[seg.points.length - 1];
+            // 2 * Triangle Area cross-product between vector AB and vector AC
+            const cross = Math.abs(
+              (pB[1] - pA[1]) * (clientY - pA[2]) - (clientX - pA[1]) * (pB[2] - pA[2])
+            );
+            if (cross < 25) {
+              // Redundant collinear point: update pB coordinates with new point C
+              seg.points[seg.points.length - 1] = [now - seg.startTime, clientX, clientY, scrollY];
+              seg.lastSampleTime = now;
+              seg.lastX = clientX;
+              seg.lastY = clientY;
+              return;
+            }
+          }
+
           seg.lastSampleTime = now;
           seg.lastX = clientX;
           seg.lastY = clientY;
