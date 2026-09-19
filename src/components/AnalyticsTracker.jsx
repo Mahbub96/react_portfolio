@@ -92,20 +92,20 @@ function simplifyTrajectory(points, epsilon = 2.5) {
   if (!points || points.length <= 2) return points;
 
   function getSqDist(p, p1, p2) {
-    let x = p1[0], y = p1[1];
-    let dx = p2[0] - x, dy = p2[1] - y;
+    let x = p1[1], y = p1[2];
+    let dx = p2[1] - x, dy = p2[2] - y;
     if (dx !== 0 || dy !== 0) {
-      const t = ((p[0] - x) * dx + (p[1] - y) * dy) / (dx * dx + dy * dy);
+      const t = ((p[1] - x) * dx + (p[2] - y) * dy) / (dx * dx + dy * dy);
       if (t > 1) {
-        x = p2[0];
-        y = p2[1];
+        x = p2[1];
+        y = p2[2];
       } else if (t > 0) {
         x += dx * t;
         y += dy * t;
       }
     }
-    dx = p[0] - x;
-    dy = p[1] - y;
+    dx = p[1] - x;
+    dy = p[2] - y;
     return dx * dx + dy * dy;
   }
 
@@ -150,16 +150,18 @@ const ActiveTracker = () => {
   const inputSessionsRef = useRef(new Map());
   const milestonesFiredRef = useRef(new Set());
   const lastScrollTopRef = useRef(0);
-  const lastScrollTimeRef = useRef(Date.now());
   const totalScrollDistanceRef = useRef(0);
   const maxScrollDepthRef = useRef(0);
-  const scrollTimeoutRef = useRef(null);
   const sectionObserversRef = useRef([]);
 
-  // High-fidelity movement delta buffer
-  const movePointsBufferRef = useRef([]);
-  const lastMoveTimeRef = useRef(Date.now());
-  const moveFlushTimerRef = useRef(null);
+  // Section 54-59: Trigger-Activated Mouse Movement Segment State Machine
+  const mouseSegmentRef = useRef(null); // { startTime, points: [], lastSampleTime, lastX, lastY, target }
+  const mouseInactivityTimerRef = useRef(null);
+  const lastRestPosRef = useRef(null);
+
+  // Section 61: Trigger-Activated Scroll Segment State Machine
+  const scrollSegmentRef = useRef(null); // { startTime, startY, lastY, maxDepth, samples: [], lastSampleTime }
+  const scrollInactivityTimerRef = useRef(null);
 
   // Rage click detection buffer
   const recentClicksRef = useRef([]);
@@ -173,18 +175,70 @@ const ActiveTracker = () => {
     });
   }, []);
 
-  // Flush mouse movement segment with RDP compression
-  const flushMovementBuffer = () => {
-    if (movePointsBufferRef.current.length >= 2) {
-      const simplified = simplifyTrajectory(movePointsBufferRef.current, 2.5);
-      analytics.track("mouse_movement", {
-        startTime: Date.now(),
-        rawPoints: movePointsBufferRef.current.length,
+  // Conclude mouse movement segment with RDP compression & return to IDLE (Section 55 & 59)
+  const concludeMouseSegment = () => {
+    if (mouseInactivityTimerRef.current) {
+      clearTimeout(mouseInactivityTimerRef.current);
+      mouseInactivityTimerRef.current = null;
+    }
+    const seg = mouseSegmentRef.current;
+    if (!seg) return;
+    mouseSegmentRef.current = null; // Return to MOUSE_IDLE
+
+    lastRestPosRef.current = { x: seg.lastX, y: seg.lastY };
+
+    if (seg.points.length >= 2) {
+      const now = Date.now();
+      const duration = now - seg.startTime;
+      const simplified = simplifyTrajectory(seg.points, 2.5);
+
+      analytics.track("mouse_segment", {
+        startTime: seg.startTime,
+        duration,
         pointCount: simplified.length,
+        rawCount: seg.points.length,
         points: simplified,
+        endX: seg.lastX,
+        endY: seg.lastY,
       });
     }
-    movePointsBufferRef.current = [];
+  };
+
+  // Conclude scroll segment & return to IDLE (Section 61)
+  const concludeScrollSegment = () => {
+    if (scrollInactivityTimerRef.current) {
+      clearTimeout(scrollInactivityTimerRef.current);
+      scrollInactivityTimerRef.current = null;
+    }
+    const seg = scrollSegmentRef.current;
+    if (!seg) return;
+    scrollSegmentRef.current = null; // Return to SCROLL_IDLE
+
+    const now = Date.now();
+    const duration = now - seg.startTime;
+    const deltaY = Math.abs(seg.lastY - seg.startY);
+
+    // Filter tiny non-movements (<15px)
+    if (deltaY < 15 && duration < 200) return;
+
+    if (deltaY > 1200 && duration < 400) {
+      analytics.track("rapid_scroll", {
+        distancePx: deltaY,
+        durationMs: duration,
+        direction: seg.lastY >= seg.startY ? "down" : "up",
+      });
+    }
+
+    analytics.track("scroll_segment", {
+      startTime: seg.startTime,
+      duration,
+      startY: seg.startY,
+      endY: seg.lastY,
+      deltaY,
+      maxDepth: seg.maxDepth,
+      direction: seg.lastY >= seg.startY ? "down" : "up",
+      samples: seg.samples.slice(0, 30),
+    });
   };
 
   // Track page navigation (Next.js SPA route changes)
@@ -193,7 +247,8 @@ const ActiveTracker = () => {
     lastScrollTopRef.current = 0;
     totalScrollDistanceRef.current = 0;
     maxScrollDepthRef.current = 0;
-    flushMovementBuffer();
+    concludeMouseSegment();
+    concludeScrollSegment();
 
     analytics.page(pathname, {
       title: typeof document !== "undefined" ? document.title : "",
@@ -282,6 +337,10 @@ const ActiveTracker = () => {
 
     // --- 1. Mouse Clicks & Rage Click Detection ---
     const handleClick = (e) => {
+      // Section 64: Conclude active movement and scroll segments immediately before click
+      concludeMouseSegment();
+      concludeScrollSegment();
+
       const now = Date.now();
       const target = e.target;
       const elementId = getElementIdentifier(target);
@@ -291,7 +350,7 @@ const ActiveTracker = () => {
       const clickX = Math.round(e.clientX);
       const clickY = Math.round(e.clientY);
 
-      // Classify high-value interaction events (Section 3)
+      // Classify high-value interaction events (Section 3 & 64)
       const isCard = target.closest && target.closest(".project-card, [data-card], .portfolio-card, [class*='card']");
       const isBtn = target.closest && target.closest("button, [role='button']");
       const isLink = target.closest && target.closest("a, [href]");
@@ -343,11 +402,7 @@ const ActiveTracker = () => {
       }
     };
 
-    // --- 2. Adaptive Mouse Movement Sampling with RAF & Inactivity Optimization ---
-    let lastRecordedX = 0;
-    let lastRecordedY = 0;
-    let isUserInactive = false;
-    let inactiveTimer = null;
+    // --- 2. Trigger-Activated Mouse Movement Segments (Sections 54–59) ---
     let rafPending = false;
     let pendingMoveEvent = null;
 
@@ -355,77 +410,80 @@ const ActiveTracker = () => {
       typeof window !== "undefined" &&
       (window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0);
 
-    const resetInactivity = () => {
-      isUserInactive = false;
-      if (inactiveTimer) clearTimeout(inactiveTimer);
-      inactiveTimer = setTimeout(() => {
-        isUserInactive = true;
-      }, 4000);
-    };
-    resetInactivity();
-
-    const processMouseMove = () => {
+    const processPointerMove = () => {
       rafPending = false;
       if (!pendingMoveEvent) return;
 
       const { clientX, clientY, target } = pendingMoveEvent;
       const now = Date.now();
-      const deltaMs = now - lastMoveTimeRef.current;
+      const scrollY = Math.round(
+        window.pageYOffset || document.documentElement.scrollTop || 0
+      );
 
-      const dist = Math.hypot(clientX - lastRecordedX, clientY - lastRecordedY);
-
-      // Inactivity Pause (Section 22.4): If user was idle, require deliberate movement (>40px)
-      if (isUserInactive) {
-        if (dist < 40) return;
-        resetInactivity();
-      } else {
-        resetInactivity();
-      }
-
-      // Micro-jitter filter (<12px within 200ms)
-      if (dist < 12 && deltaMs < 200) return;
-
-      // Adaptive sampling: 60ms near interactive elements, 120ms elsewhere
-      const isNearInteractive =
-        target &&
-        target.closest &&
-        target.closest(
-          "button, a, input, select, textarea, [role='button'], .nav-link, [data-analytics-id]"
-        );
-      const sampleThreshold = isNearInteractive ? 60 : 120;
-
-      if (deltaMs >= sampleThreshold || movePointsBufferRef.current.length === 0) {
-        lastMoveTimeRef.current = now;
-        lastRecordedX = clientX;
-        lastRecordedY = clientY;
-
-        const currentScrollY = Math.round(
-          window.pageYOffset || document.documentElement.scrollTop || 0
-        );
-
-        // Store compressed point: [x, y, deltaMs, scrollY]
-        movePointsBufferRef.current.push([
-          clientX,
-          clientY,
-          Math.min(deltaMs, 255),
-          currentScrollY,
-        ]);
-
-        // Cap buffer per movement segment
-        if (movePointsBufferRef.current.length >= 20) {
-          flushMovementBuffer();
+      // State check: MOUSE_IDLE -> MOUSE_ACTIVE
+      if (!mouseSegmentRef.current) {
+        // Section 56 & 57: Small threshold window (>4px) before starting segment
+        if (lastRestPosRef.current) {
+          const distFromLast = Math.hypot(
+            clientX - lastRestPosRef.current.x,
+            clientY - lastRestPosRef.current.y
+          );
+          if (distFromLast < 4) return;
         }
 
-        // Idle pause flush timer (if mouse stops moving for 250ms)
-        if (moveFlushTimerRef.current) clearTimeout(moveFlushTimerRef.current);
-        moveFlushTimerRef.current = setTimeout(() => {
-          flushMovementBuffer();
-        }, 250);
+        // Begin movement segment
+        mouseSegmentRef.current = {
+          startTime: now,
+          points: [[0, clientX, clientY, scrollY]],
+          lastSampleTime: now,
+          lastX: clientX,
+          lastY: clientY,
+          target,
+        };
+      } else {
+        // MOUSE_ACTIVE: sample meaningful trajectory
+        const seg = mouseSegmentRef.current;
+        const deltaMs = now - seg.lastSampleTime;
+        const dist = Math.hypot(clientX - seg.lastX, clientY - seg.lastY);
+
+        const isNearInteractive =
+          target &&
+          target.closest &&
+          target.closest(
+            "button, a, input, select, textarea, [role='button'], .nav-link, [data-analytics-id]"
+          );
+        const sampleThreshold = isNearInteractive ? 60 : 100;
+
+        if (deltaMs >= sampleThreshold && dist >= 5) {
+          seg.lastSampleTime = now;
+          seg.lastX = clientX;
+          seg.lastY = clientY;
+          seg.points.push([now - seg.startTime, clientX, clientY, scrollY]);
+
+          // Bounded segment size (max 25 points): roll into next segment seamlessly
+          if (seg.points.length >= 25) {
+            concludeMouseSegment();
+            mouseSegmentRef.current = {
+              startTime: now,
+              points: [[0, clientX, clientY, scrollY]],
+              lastSampleTime: now,
+              lastX: clientX,
+              lastY: clientY,
+              target,
+            };
+          }
+        }
       }
+
+      // Section 59: Short inactivity threshold (280ms) only runs while movement is active
+      if (mouseInactivityTimerRef.current) clearTimeout(mouseInactivityTimerRef.current);
+      mouseInactivityTimerRef.current = setTimeout(() => {
+        concludeMouseSegment();
+      }, 280);
     };
 
     const handleMouseMove = (e) => {
-      // Don't poll mousemove on mobile/touch devices to conserve battery & CPU (Section 22.3)
+      // Don't poll mousemove on mobile/touch devices (Section 22.3)
       if (isTouchDevice) return;
 
       pendingMoveEvent = {
@@ -434,10 +492,9 @@ const ActiveTracker = () => {
         target: e.target,
       };
 
-      // Section 22.5: requestAnimationFrame for coordinated visual sampling (never floods main thread)
       if (!rafPending) {
         rafPending = true;
-        requestAnimationFrame(processMouseMove);
+        requestAnimationFrame(processPointerMove);
       }
     };
 
@@ -509,63 +566,68 @@ const ActiveTracker = () => {
       concludeHover(e);
     };
 
-    // --- 4. Scroll Tracking, Milestones & Rapid Scroll Detection ---
+    // --- 4. Trigger-Activated Scroll Segments (Section 61) ---
     const handleScroll = () => {
-      if (scrollTimeoutRef.current) return;
+      const now = Date.now();
+      const scrollTop = Math.round(
+        window.pageYOffset || document.documentElement.scrollTop || 0
+      );
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
 
-      scrollTimeoutRef.current = setTimeout(() => {
-        scrollTimeoutRef.current = null;
+      if (scrollHeight <= 0) return;
 
-        const now = Date.now();
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        const scrollHeight =
-          document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.min(
+        100,
+        Math.max(0, Math.round((scrollTop / scrollHeight) * 100))
+      );
 
-        if (scrollHeight <= 0) return;
+      // State check: SCROLL_IDLE -> SCROLL_ACTIVE
+      if (!scrollSegmentRef.current) {
+        scrollSegmentRef.current = {
+          startTime: now,
+          startY: scrollTop,
+          lastY: scrollTop,
+          maxDepth: scrollPercent,
+          samples: [[0, scrollTop, scrollPercent]],
+          lastSampleTime: now,
+        };
+      } else {
+        // SCROLL_ACTIVE: sample every ~100ms
+        const seg = scrollSegmentRef.current;
+        if (now - seg.lastSampleTime >= 100) {
+          seg.lastSampleTime = now;
+          seg.lastY = scrollTop;
+          seg.samples.push([now - seg.startTime, scrollTop, scrollPercent]);
+          if (scrollPercent > seg.maxDepth) {
+            seg.maxDepth = scrollPercent;
+          }
+        }
+      }
 
-        const scrollPercent = Math.min(
-          100,
-          Math.max(0, Math.round((scrollTop / scrollHeight) * 100))
-        );
-        const direction =
-          scrollTop >= lastScrollTopRef.current ? "down" : "up";
-        const delta = Math.abs(scrollTop - lastScrollTopRef.current);
-        const timeDelta = now - lastScrollTimeRef.current;
+      if (scrollPercent > maxScrollDepthRef.current) {
+        maxScrollDepthRef.current = scrollPercent;
+      }
 
-        totalScrollDistanceRef.current += delta;
-
-        // Check for rapid scrolling (>1200px in <400ms)
-        if (delta > 1200 && timeDelta < 400) {
-          analytics.track("rapid_scroll", {
-            distancePx: delta,
-            durationMs: timeDelta,
-            direction,
+      // Check milestones (25%, 50%, 75%, 90%, 100%)
+      const milestones = [25, 50, 75, 90, 100];
+      milestones.forEach((m) => {
+        if (scrollPercent >= m && !milestonesFiredRef.current.has(m)) {
+          milestonesFiredRef.current.add(m);
+          analytics.track("scroll_milestone", {
+            milestone: m,
+            scrollDepth: scrollPercent,
+            scrollY: scrollTop,
           });
         }
+      });
 
-        lastScrollTopRef.current = scrollTop;
-        lastScrollTimeRef.current = now;
-
-        if (scrollPercent > maxScrollDepthRef.current) {
-          maxScrollDepthRef.current = scrollPercent;
-        }
-
-        // Check milestones
-        const milestones = [25, 50, 75, 90, 100];
-        milestones.forEach((m) => {
-          if (scrollPercent >= m && !milestonesFiredRef.current.has(m)) {
-            milestonesFiredRef.current.add(m);
-            analytics.track("scroll_milestone", {
-              milestone: m,
-              scrollDepth: scrollPercent,
-              direction,
-              scrollY: Math.round(scrollTop),
-              approxDistancePx: totalScrollDistanceRef.current,
-            });
-          }
-        });
-      }, 150);
+      // Reset inactivity timeout (300ms). Timer ONLY exists while scrolling is active!
+      if (scrollInactivityTimerRef.current)
+        clearTimeout(scrollInactivityTimerRef.current);
+      scrollInactivityTimerRef.current = setTimeout(() => {
+        concludeScrollSegment();
+      }, 300);
     };
 
     // --- 5. Character-Level Input Dynamics (Metadata Only, No Text Values) ---
@@ -648,6 +710,10 @@ const ActiveTracker = () => {
 
     // --- 6. Form Submission & Validation Errors ---
     const handleSubmit = (e) => {
+      // Section 64: Conclude active movement and scroll segments immediately before form submit
+      concludeMouseSegment();
+      concludeScrollSegment();
+
       const form = e.target;
       const formId = getElementIdentifier(form);
       analytics.track("form_submit", {}, formId);
@@ -684,6 +750,9 @@ const ActiveTracker = () => {
     document.addEventListener("invalid", handleInvalid, passiveCapture);
 
     return () => {
+      concludeMouseSegment();
+      concludeScrollSegment();
+
       document.removeEventListener("click", handleClick, passiveCapture);
       document.removeEventListener("mousemove", handleMouseMove, passiveOnly);
       document.removeEventListener("mouseover", handleMouseOver, passiveOnly);

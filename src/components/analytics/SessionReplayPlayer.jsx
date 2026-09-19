@@ -130,8 +130,10 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
 
       // Find the most recent event up to targetAbsTime
       let currentEvent = null;
-      let lastPosEvent = null;
-      let nextPosEvent = null;
+      let activeMouseSegment = null;
+      let lastKnownCursor = null;
+      let activeScrollSegment = null;
+      let lastKnownScrollY = null;
 
       for (let i = startIndex; i < sortedEvents.length; i++) {
         const ev = sortedEvents[i];
@@ -139,89 +141,169 @@ export default function SessionReplayPlayer({ sessionReplays = [], initialSessio
 
         if (evTime <= targetAbsTime) {
           currentEvent = ev;
-          if (ev.metadata?.x != null && ev.metadata?.y != null) {
-            lastPosEvent = ev;
+
+          // Check if ev is a mouse_segment
+          if (ev.eventType === "mouse_segment" && ev.metadata?.points?.length > 0) {
+            const segStart = ev.metadata.startTime || evTime;
+            const segDuration = ev.metadata.duration || 0;
+            if (targetAbsTime >= segStart && targetAbsTime <= segStart + segDuration) {
+              activeMouseSegment = ev;
+            } else {
+              // Segment finished; cursor rests at last point (idle gap)
+              const pts = ev.metadata.points;
+              const lastPt = pts[pts.length - 1];
+              lastKnownCursor = {
+                x: ev.metadata.endX ?? lastPt[1] ?? lastPt[0],
+                y: ev.metadata.endY ?? lastPt[2] ?? lastPt[1],
+              };
+            }
+          } else if (ev.metadata?.x != null && ev.metadata?.y != null) {
+            lastKnownCursor = { x: ev.metadata.x, y: ev.metadata.y };
+          }
+
+          // Check if ev is a scroll_segment
+          if (ev.eventType === "scroll_segment") {
+            const segStart = ev.metadata.startTime || evTime;
+            const segDuration = ev.metadata.duration || 0;
+            if (targetAbsTime >= segStart && targetAbsTime <= segStart + segDuration) {
+              activeScrollSegment = ev;
+            } else if (ev.metadata.endY != null) {
+              lastKnownScrollY = ev.metadata.endY;
+            }
+          } else if (ev.metadata?.scrollY != null) {
+            lastKnownScrollY = ev.metadata.scrollY;
           }
         } else {
-          if (!nextPosEvent && ev.metadata?.x != null && ev.metadata?.y != null) {
-            nextPosEvent = ev;
-          }
           break; // Since sortedEvents is chronologically ordered
         }
       }
 
-      // Section 36 & 37: At extreme speeds (>= 16x up to 128x), snap directly without micro-interpolation
-      const isExtremeSpeed = playbackSpeed >= 16;
+      // Section 69: Reconstruct movement trajectory or maintain resting position during idle gaps
+      if (activeMouseSegment && Array.isArray(activeMouseSegment.metadata.points)) {
+        const pts = activeMouseSegment.metadata.points;
+        const segStart =
+          activeMouseSegment.metadata.startTime ||
+          new Date(activeMouseSegment.timestamp).getTime();
+        const elapsed = targetAbsTime - segStart;
 
-      if (lastPosEvent) {
-        const lastX = (lastPosEvent.metadata.x / 1366) * 100;
-        const lastY = (lastPosEvent.metadata.y / 768) * 100;
+        let p0 = pts[0];
+        let p1 = pts[pts.length - 1];
 
-        if (nextPosEvent && !isExtremeSpeed) {
-          const t0 = new Date(lastPosEvent.timestamp).getTime();
-          const t1 = new Date(nextPosEvent.timestamp).getTime();
-          const ratio = t1 > t0 ? Math.min(1, Math.max(0, (targetAbsTime - t0) / (t1 - t0))) : 0;
-
-          const nextX = (nextPosEvent.metadata.x / 1366) * 100;
-          const nextY = (nextPosEvent.metadata.y / 768) * 100;
-
-          const interpX = lastX + (nextX - lastX) * ratio;
-          const interpY = lastY + (nextY - lastY) * ratio;
-
-          setCurrentCursor({
-            x: Math.max(2, Math.min(98, interpX)),
-            y: Math.max(2, Math.min(98, interpY)),
-            visible: true,
-          });
-        } else {
-          setCurrentCursor({
-            x: Math.max(2, Math.min(98, lastX)),
-            y: Math.max(2, Math.min(98, lastY)),
-            visible: true,
-          });
+        for (let j = 0; j < pts.length - 1; j++) {
+          if (pts[j][0] <= elapsed && pts[j + 1][0] >= elapsed) {
+            p0 = pts[j];
+            p1 = pts[j + 1];
+            break;
+          }
         }
+
+        const delta = Math.max(1, p1[0] - p0[0]);
+        const ratio = Math.min(1, Math.max(0, (elapsed - p0[0]) / delta));
+
+        const x0 = p0[1] ?? p0[0];
+        const y0 = p0[2] ?? p0[1];
+        const x1 = p1[1] ?? p1[0];
+        const y1 = p1[2] ?? p1[1];
+
+        const interpX = ((x0 + (x1 - x0) * ratio) / 1366) * 100;
+        const interpY = ((y0 + (y1 - y0) * ratio) / 768) * 100;
+
+        setCurrentCursor({
+          x: Math.max(2, Math.min(98, interpX)),
+          y: Math.max(2, Math.min(98, interpY)),
+          visible: true,
+        });
+
+        if (p0[3] != null) {
+          setSimulatedScrollY(Math.min(300, Math.round(p0[3] * 0.15)));
+        }
+      } else if (lastKnownCursor) {
+        // Section 69: Inactivity gap! Cursor rests stationary at last recorded position with zero jitter
+        setCurrentCursor({
+          x: Math.max(2, Math.min(98, (lastKnownCursor.x / 1366) * 100)),
+          y: Math.max(2, Math.min(98, (lastKnownCursor.y / 768) * 100)),
+          visible: true,
+        });
       }
 
-      // Check current action highlights
+      // Scroll interpolation during active scroll segment or resting scroll position
+      if (activeScrollSegment) {
+        const segStart =
+          activeScrollSegment.metadata.startTime ||
+          new Date(activeScrollSegment.timestamp).getTime();
+        const elapsed = targetAbsTime - segStart;
+        const dur = Math.max(1, activeScrollSegment.metadata.duration || 1);
+        const ratio = Math.min(1, Math.max(0, elapsed / dur));
+        const sY =
+          (activeScrollSegment.metadata.startY || 0) +
+          ((activeScrollSegment.metadata.endY || 0) -
+            (activeScrollSegment.metadata.startY || 0)) *
+            ratio;
+        setSimulatedScrollY(Math.min(300, Math.round(sY * 0.15)));
+      } else if (lastKnownScrollY != null) {
+        setSimulatedScrollY(Math.min(300, Math.round(lastKnownScrollY * 0.15)));
+      }
+
+      // Check current action highlights & alerts
       if (currentEvent) {
         const evDelta = targetAbsTime - new Date(currentEvent.timestamp).getTime();
 
         // Trigger ripple if click happened within 400ms
-        if ((currentEvent.eventType === "click" || currentEvent.eventType === "rage_click") && evDelta < 400) {
+        const isClick =
+          currentEvent.eventType === "click" ||
+          currentEvent.eventType === "rage_click" ||
+          currentEvent.eventType === "card_click" ||
+          currentEvent.eventType === "button_click";
+
+        if (isClick && evDelta < 400 && currentEvent.metadata?.x != null) {
           setClickRipple({
-            x: (currentEvent.metadata?.x / 1366) * 100,
-            y: (currentEvent.metadata?.y / 768) * 100,
+            x: (currentEvent.metadata.x / 1366) * 100,
+            y: (currentEvent.metadata.y / 768) * 100,
             isRage: currentEvent.eventType === "rage_click",
           });
         } else {
           setClickRipple(null);
         }
 
-        // Scroll sync
-        if (currentEvent.metadata?.scrollY != null) {
-          setSimulatedScrollY(Math.min(300, Math.round(currentEvent.metadata.scrollY * 0.15)));
-        } else if (currentEvent.metadata?.scrollDepth != null) {
-          setSimulatedScrollY(Math.round((currentEvent.metadata.scrollDepth / 100) * 200));
-        }
-
         // Intelligent alerts
         if (evDelta < 1500) {
           if (currentEvent.eventType === "rage_click") {
-            setIntelligentAlert({ type: "rage", text: `⚡ Rage Click Detected on ${currentEvent.elementId || "UI element"}` });
+            setIntelligentAlert({
+              type: "rage",
+              text: `⚡ Rage Click Detected on ${currentEvent.elementId || "UI element"}`,
+            });
           } else if (currentEvent.eventType === "form_error") {
-            setIntelligentAlert({ type: "error", text: `⚠ Validation Error on ${currentEvent.elementId || "input field"}` });
+            setIntelligentAlert({
+              type: "error",
+              text: `⚠ Validation Error on ${currentEvent.elementId || "input field"}`,
+            });
           } else if (currentEvent.eventType === "long_hover") {
-            setIntelligentAlert({ type: "warning", text: `⏳ Hesitation: Long Hover on ${currentEvent.elementId || "element"}` });
-          } else if (currentEvent.eventType === "form_submit") {
-            setIntelligentAlert({ type: "success", text: `✓ Conversion: Form Successfully Submitted!` });
+            setIntelligentAlert({
+              type: "warning",
+              text: `⏳ Hesitation: Long Hover on ${currentEvent.elementId || "element"}`,
+            });
+          } else if (
+            currentEvent.eventType === "form_submit" ||
+            currentEvent.eventType === "form_submit_success"
+          ) {
+            setIntelligentAlert({
+              type: "success",
+              text: `✓ Conversion: Form Successfully Submitted!`,
+            });
           } else if (currentEvent.eventType === "rapid_scroll") {
-            setIntelligentAlert({ type: "info", text: `⏩ Fast Skim: Rapid Scroll Detected` });
+            setIntelligentAlert({
+              type: "info",
+              text: `⏩ Fast Skim: Rapid Scroll Detected`,
+            });
           } else {
             setIntelligentAlert(null);
           }
         } else {
           setIntelligentAlert(null);
         }
+      } else {
+        setClickRipple(null);
+        setIntelligentAlert(null);
       }
     },
     [sessionStart, sortedEvents]

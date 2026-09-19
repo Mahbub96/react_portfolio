@@ -745,11 +745,40 @@ export async function saveBatchEvents(events, clientContext = {}) {
           metadata: ev.metadata,
         });
       }
-    } else if (ev.eventType === "scroll" || ev.eventType === "scroll_milestone") {
+    } else if (
+      ev.eventType === "scroll" ||
+      ev.eventType === "scroll_milestone" ||
+      ev.eventType === "scroll_segment"
+    ) {
       grp.scrolls++;
-      const depth = Number(ev.metadata?.scrollDepth || ev.metadata?.milestone || 0);
+      const depth = Number(
+        ev.metadata?.maxDepth ||
+          ev.metadata?.scrollDepth ||
+          ev.metadata?.milestone ||
+          0
+      );
       if (depth > grp.maxScrollDepth) {
         grp.maxScrollDepth = depth;
+      }
+    } else if (
+      ev.eventType === "mouse_movement" ||
+      ev.eventType === "mouse_segment"
+    ) {
+      grp.moves +=
+        ev.metadata?.pointCount || ev.metadata?.points?.length || 1;
+      if (Array.isArray(ev.metadata?.points)) {
+        const isSegment = ev.eventType === "mouse_segment";
+        ev.metadata.points.slice(0, 5).forEach((pt) => {
+          const px = isSegment ? pt[1] : pt[0];
+          const py = isSegment ? pt[2] : pt[1];
+          if (px != null && py != null) {
+            grp.mousePositions.push({
+              x: px,
+              y: py,
+              timestamp: ev.timestamp,
+            });
+          }
+        });
       }
     }
   }
@@ -1174,10 +1203,14 @@ export async function getSessionReplayData(sessionId) {
       currentStep.interactions++;
       if (
         ev.eventType === "scroll" ||
-        ev.eventType === "scroll_milestone"
+        ev.eventType === "scroll_milestone" ||
+        ev.eventType === "scroll_segment"
       ) {
         const depth = Number(
-          ev.metadata?.scrollDepth || ev.metadata?.milestone || 0
+          ev.metadata?.maxDepth ||
+            ev.metadata?.scrollDepth ||
+            ev.metadata?.milestone ||
+            0
         );
         if (depth > currentStep.maxScrollDepth) {
           currentStep.maxScrollDepth = depth;
@@ -1231,7 +1264,7 @@ export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit 
     const pipeline = [
       {
         $match: {
-          eventType: "mouse_movement",
+          eventType: { $in: ["mouse_movement", "mouse_segment"] },
           ...(rangeStart ? { timestamp: { $gte: rangeStart } } : {}),
           "metadata.points": { $exists: true, $ne: [] },
         },
@@ -1243,13 +1276,45 @@ export async function getMultiModeHeatmapData(mode = "click", rangeStart, limit 
         $project: {
           gridX: {
             $multiply: [
-              { $round: [{ $divide: [{ $arrayElemAt: ["$metadata.points", 0] }, 35] }, 0] },
+              {
+                $round: [
+                  {
+                    $divide: [
+                      {
+                        $cond: [
+                          { $eq: ["$eventType", "mouse_segment"] },
+                          { $arrayElemAt: ["$metadata.points", 1] },
+                          { $arrayElemAt: ["$metadata.points", 0] },
+                        ],
+                      },
+                      35,
+                    ],
+                  },
+                  0,
+                ],
+              },
               35,
             ],
           },
           gridY: {
             $multiply: [
-              { $round: [{ $divide: [{ $arrayElemAt: ["$metadata.points", 1] }, 35] }, 0] },
+              {
+                $round: [
+                  {
+                    $divide: [
+                      {
+                        $cond: [
+                          { $eq: ["$eventType", "mouse_segment"] },
+                          { $arrayElemAt: ["$metadata.points", 2] },
+                          { $arrayElemAt: ["$metadata.points", 1] },
+                        ],
+                      },
+                      35,
+                    ],
+                  },
+                  0,
+                ],
+              },
               35,
             ],
           },

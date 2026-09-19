@@ -30,18 +30,32 @@ export default function SessionReplayTimeline({ sessionReplays = [] }) {
       case "page_view":
         return <FaEye className={styles.eventIconBlue} />;
       case "click":
+      case "card_click":
+      case "button_click":
+      case "link_click":
+      case "rage_click":
+        return <FaMousePointer className={styles.eventIconCyan} />;
+      case "mouse_segment":
+      case "mouse_movement":
         return <FaMousePointer className={styles.eventIconCyan} />;
       case "hover":
+      case "long_hover":
         return <FaClock className={styles.eventIconAmber} />;
+      case "scroll_segment":
       case "scroll_milestone":
       case "scroll":
+      case "rapid_scroll":
         return <FaArrowDown className={styles.eventIconGreen} />;
       case "form_focus":
       case "input_interaction":
       case "form_blur":
         return <FaKeyboard className={styles.eventIconPurple} />;
       case "form_submit":
+      case "form_submit_success":
         return <FaCheckCircle className={styles.eventIconGreen} />;
+      case "form_error":
+      case "form_submit_error":
+        return <FaCheckCircle className={styles.eventIconAmber} />;
       default:
         return <FaPlayCircle className={styles.eventIconDefault} />;
     }
@@ -160,6 +174,18 @@ export default function SessionReplayTimeline({ sessionReplays = [] }) {
                           </div>
                           {ev.metadata && Object.keys(ev.metadata).length > 0 && (
                             <div className={styles.streamMetadata}>
+                              {ev.eventType === "mouse_segment" && (
+                                <span>
+                                  Trajectory ({ev.metadata.pointCount || ev.metadata.points?.length || 0} pts,{" "}
+                                  {Math.round((ev.metadata.durationMs || 0) / 100) / 10}s)
+                                </span>
+                              )}
+                              {ev.eventType === "scroll_segment" && (
+                                <span>
+                                  Scrolled to {ev.metadata.maxDepth || 0}% depth (
+                                  {Math.round((ev.metadata.durationMs || 0) / 100) / 10}s)
+                                </span>
+                              )}
                               {ev.eventType === "scroll_milestone" && (
                                 <span>
                                   Reached {ev.metadata.milestone}% depth

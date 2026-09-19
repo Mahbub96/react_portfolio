@@ -32,6 +32,8 @@ const EVENT_PRIORITIES = {
   error: 1,
 
   // Priority 2 — Important (Retained unless severe memory pressure)
+  mouse_segment: 2,
+  scroll_segment: 2,
   form_view: 2,
   form_focus: 2,
   form_blur: 2,
@@ -47,6 +49,27 @@ const EVENT_PRIORITIES = {
   scroll: 3,
 };
 
+// Section 64: Critical events that immediately override idle optimization and trigger early flush
+const CRITICAL_EVENTS = new Set([
+  "session_start",
+  "session_end",
+  "page_view",
+  "page_exit",
+  "route_change",
+  "card_click",
+  "button_click",
+  "link_click",
+  "click",
+  "rage_click",
+  "form_submit",
+  "form_submit_success",
+  "form_submit_error",
+  "form_abandon",
+  "modal_open",
+  "modal_close",
+  "error",
+]);
+
 class AnalyticsSDK {
   constructor() {
     this.endpoint = "/api/analytics/batch";
@@ -54,7 +77,7 @@ class AnalyticsSDK {
     this.maxBatchSize = 25;
     this.maxQueueSize = 50; // Hard ceiling on memory buffer
     this.queue = [];
-    this.timer = null;
+    this.flushTimer = null; // Event-driven one-shot timer (null when idle)
     this.isFlushing = false;
     this.sessionId = null;
     this.userId = null;
@@ -175,10 +198,10 @@ class AnalyticsSDK {
       // Restore offline queue in idle callback
       this.runIdle(() => {
         this.restoreOfflineQueue();
+        if (this.queue.length > 0) {
+          this.scheduleFlush();
+        }
       });
-
-      // Periodic flush
-      this.startAutoFlush();
 
       // Network online/offline listeners
       window.addEventListener("online", () => {
@@ -345,9 +368,12 @@ class AnalyticsSDK {
 
       this.queue.push(event);
 
-      // Immediately flush in idle slice if buffer threshold is reached
-      if (this.queue.length >= this.maxBatchSize) {
-        this.runIdle(() => this.flush(false));
+      // Section 64 & 65: Immediate flush override for critical events and full batch ceiling
+      if (CRITICAL_EVENTS.has(eventType) || this.queue.length >= this.maxBatchSize) {
+        this.scheduleImmediateFlush();
+      } else {
+        // Section 53 & 60: Event-driven scheduling. Only schedules a single-shot timer when activity occurs
+        this.scheduleFlush();
       }
     } catch {
       // Never throw into calling application
@@ -441,6 +467,11 @@ class AnalyticsSDK {
 
       // Reset retry delay on success
       this.retryDelay = 5000;
+
+      // Section 53 & 60: If events remain, schedule next one-shot flush; if empty, remain completely idle
+      if (this.queue.length > 0) {
+        this.scheduleFlush(this.batchInterval);
+      }
     } catch (error) {
       // Exponential backoff
       this.retryDelay = Math.min(this.retryDelay * 1.5, this.maxRetryDelay);
@@ -558,11 +589,36 @@ class AnalyticsSDK {
     }
   }
 
-  startAutoFlush() {
-    if (this.timer) clearInterval(this.timer);
-    this.timer = setInterval(() => {
+  /**
+   * Section 53, 60, 65: Event-Driven Single-Shot Batch Scheduling
+   * Runs a timer ONLY when events exist in the queue. Zero timers when idle.
+   */
+  scheduleFlush(delayMs = this.batchInterval) {
+    if (this.flushTimer || typeof window === "undefined" || this.isLoggedIn()) return;
+    this.flushTimer = setTimeout(() => {
+      this.flushTimer = null;
       this.runIdle(() => this.flush(false));
-    }, this.batchInterval);
+    }, delayMs);
+  }
+
+  /**
+   * Section 64 & 65: Important events immediately trigger an early async batch flush
+   */
+  scheduleImmediateFlush() {
+    if (typeof window === "undefined" || this.isLoggedIn()) return;
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+    }
+    this.runIdle(() => this.flush(false));
+  }
+
+  startAutoFlush() {
+    // Section 60: Continuous setInterval eliminated.
+    // Event-driven scheduleFlush handles batches only when events are queued.
+    if (this.queue.length > 0) {
+      this.scheduleFlush();
+    }
   }
 }
 
