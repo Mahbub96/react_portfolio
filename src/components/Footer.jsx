@@ -4,9 +4,15 @@ import {
   FaEnvelope,
   FaFacebook,
   FaLinkedin,
-  FaHeart,
 } from "react-icons/fa";
 import styles from "./footer.module.css";
+import { footerRoutes } from "@/lib/seo/routes.mjs";
+import {
+  APP_VERSION,
+  BUILD_NUMBER,
+  COMMIT_HASH,
+  BUILD_DATE,
+} from "@/config/version";
 
 function Footer({ data }) {
   const currentYear = new Date().getFullYear();
@@ -54,6 +60,28 @@ function Footer({ data }) {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
+        {/*
+          Crawlable internal navigation.
+
+          The navbar uses in-page anchors (#projects, #skills, #contact), so
+          before this existed the standalone routes had zero inbound <a href>
+          links anywhere in the HTML — they were orphan pages that Google could
+          only reach via the sitemap. Rendered as plain anchors, server-side,
+          so they are present for crawlers without any JS execution.
+        */}
+        <nav className={styles.siteLinks} aria-label="Site pages">
+          {footerRoutes().map((route) => (
+            <a
+              key={route.path}
+              href={route.path}
+              className={styles.siteLink}
+              title={route.description}
+            >
+              {route.label}
+            </a>
+          ))}
+        </nav>
+
         <div className={styles.socialLinks}>
           {footerSocialLinks.map((link) => (
             <a
@@ -69,28 +97,26 @@ function Footer({ data }) {
           ))}
         </div>
 
-        {/* <div className={styles.footerInfo}>
-          <div className={styles.builtWith}>
-            <span>Built with</span>
-            <FaHeart />
-            <span>using React</span>
-          </div>
-          <div className={styles.copyright}>
-            <a
-              href={socialLinks.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.githubLink}
-            >
-              <span className={styles.bracket}>{"<"}</span>
-              {name}
-              <span className={styles.bracket}>{"/>"}</span>
-            </a>
-            <span className={styles.copyrightText}>
-              © {currentYear}. All Rights Reserved.
+        <div className={styles.bottomMeta}>
+          <p className={styles.copyrightLine}>
+            © {currentYear} {name}. All rights reserved.
+          </p>
+          <div
+            className={styles.versionContainer}
+            title={`Commit: ${COMMIT_HASH}${
+              BUILD_DATE
+                ? ` | Date: ${new Date(BUILD_DATE).toLocaleDateString()}`
+                : ""
+            }`}
+          >
+            <span className={styles.versionBadge}>
+              <span className={styles.versionDot} />
+              <span className={styles.versionLabel}>v{APP_VERSION}</span>
+              <span className={styles.versionSeparator}>•</span>
+              <span className={styles.buildLabel}>Build {BUILD_NUMBER}</span>
             </span>
           </div>
-        </div> */}
+        </div>
       </div>
     </footer>
   );

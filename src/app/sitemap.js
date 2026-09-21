@@ -1,94 +1,34 @@
-import connectDB from "@/lib/mongodb";
-import PortfolioData from "@/models/PortfolioData";
-import { getPortfolioFallback } from "@/lib/portfolioFallback";
+/**
+ * Next.js native sitemap route -> /sitemap.xml
+ *
+ * Serves live database content between deploys. The identical URL set is also
+ * emitted as a static public/sitemap.xml at build time by
+ * scripts/generate-seo-artifacts.mjs, because in production nginx answers
+ * /sitemap.xml from disk before the request reaches this handler. Both paths
+ * share src/lib/seo/sitemapBuilder.mjs so they cannot drift.
+ */
+
+import { getPortfolioData } from "@/lib/getPortfolioData";
+import { buildSitemapEntries } from "@/lib/seo/sitemapBuilder.mjs";
 
 export default async function sitemap() {
-  const baseUrl = "https://mahbub.dev";
+  let projects = [];
 
   try {
-    let projects = [];
-    try {
-      const db = await connectDB();
-      if (db) {
-        const portfolioData = await PortfolioData.find({}).lean();
-        projects =
-          portfolioData.find((item) => item.collectionName === "Projects")
-            ?.data || [];
-      }
-    } catch {
-      // If DB is unreachable, use fallback projects
-      const fallback = getPortfolioFallback();
-      projects = fallback.Projects?.data || [];
-    }
-
-    // Collect valid project image URLs to associate with the projects page
-    const projectImages = projects
-      .filter((project) => Boolean(project?.src))
-      .map((project) => ({
-        loc: project.src.startsWith("http")
-          ? project.src
-          : `${baseUrl}${project.src}`,
-      }));
-
-    // All valid, canonical, navigable routes (with trailing slash per next.config.js)
-    return [
-      {
-        url: `${baseUrl}/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "weekly",
-        priority: 1.0,
-        images: [
-          { loc: `${baseUrl}/assets/img/profile.png` },
-          { loc: `${baseUrl}/assets/img/og-cover.jpg` },
-        ],
-      },
-      {
-        url: `${baseUrl}/projects/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "weekly",
-        priority: 0.9,
-        ...(projectImages.length > 0 ? { images: projectImages } : {}),
-      },
-      {
-        url: `${baseUrl}/skills/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      },
-      {
-        url: `${baseUrl}/contact/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      },
-    ];
+    const portfolioData = await getPortfolioData();
+    projects = portfolioData?.Projects?.data || [];
   } catch (error) {
-    console.error("Error generating sitemap:", error);
-    return [
-      {
-        url: `${baseUrl}/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "weekly",
-        priority: 1.0,
-      },
-      {
-        url: `${baseUrl}/projects/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "weekly",
-        priority: 0.9,
-      },
-      {
-        url: `${baseUrl}/skills/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      },
-      {
-        url: `${baseUrl}/contact/`,
-        lastModified: new Date("2025-01-01"),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      },
-    ];
+    // getPortfolioData already falls back to db.json; this only catches a
+    // hard failure. An empty list still yields the static routes, which is
+    // strictly better than returning no sitemap at all.
+    console.error("sitemap: falling back to static routes only:", error);
   }
+
+  return buildSitemapEntries({ projects }).map((entry) => ({
+    url: entry.url,
+    lastModified: entry.lastModified,
+    changeFrequency: entry.changeFrequency,
+    priority: entry.priority,
+    ...(entry.images?.length ? { images: entry.images } : {}),
+  }));
 }

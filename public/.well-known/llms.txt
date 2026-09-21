@@ -1,33 +1,47 @@
-# Mahbub Alam - Software Engineer Portfolio
+# Mahbub Alam — Software Engineer | Full-Stack, Backend & Applied AI
 
-> Software Engineer specializing in full-stack web applications, scalable backend systems, cloud infrastructure, and applied AI solutions.
+> Software Engineer building full-stack products, backend APIs, cloud-deployed
+> services and applied AI systems. Based in Dhaka, Bangladesh.
 
 - **Name**: Mahbub Alam
 - **Title**: Software Engineer | Full-Stack, Backend & Applied AI
 - **Location**: Dhaka, Bangladesh
+- **Company**: Brotecs Technologies Ltd.
 - **Email**: mahbubcse96@gmail.com
 - **Website**: https://mahbub.dev/
 - **GitHub**: https://github.com/mahbub96
 - **LinkedIn**: https://www.linkedin.com/in/mahbubcse96
 
-## Core Competencies & Tech Stack
-- **Frontend**: React.js, Next.js, JavaScript (ES6+), TypeScript, Tailwind CSS, Bootstrap, HTML5, CSS3
-- **Backend**: Node.js, Express.js, Python, FastAPI, PHP, Laravel, CodeIgniter, RESTful APIs, Microservices
-- **Databases**: MongoDB, MySQL, SQLite, PostgreSQL
-- **Cloud & DevOps**: AWS, Docker, Linux Administration, CI/CD Pipelines, Git, DevSecOps
-- **Applied AI**: Machine Learning integrations, Computer Vision workflows, LLM application development
+## Pages
 
-## Professional Experience
-- **Software Engineer** at Brotecs Technologies Ltd. (Dhaka, Bangladesh)
-  - Developing robust backend systems, scalable cloud-enabled architectures, and high-performance web applications.
+- [Home](https://mahbub.dev/): Portfolio home: profile, projects, skills, experience.
+- [Projects](https://mahbub.dev/projects/): Full project catalogue with stack and source links.
+- [Skills](https://mahbub.dev/skills/): Technical skills grouped by domain.
+- [Contact](https://mahbub.dev/contact/): Contact details and enquiry form.
+- [Resume](https://mahbub.dev/resume/): Printable resume with downloadable PDF.
 
-## Key Portfolio Projects
-- **Brotecs Admin Panel**: Enterprise administrative dashboard with secure authentication and data analytics.
-- **Enterprise VoIP Management**: Telephony and real-time communication platform integration.
-- **Applied AI Workflows**: Image processing, intelligent data parsing, and automated pipelines.
+## Projects
 
-## Canonical Web Pages
-- Homepage & Bio: https://mahbub.dev/
-- Projects Portfolio: https://mahbub.dev/projects/
-- Technical Skills: https://mahbub.dev/skills/
-- Contact & Inquiries: https://mahbub.dev/contact/
+- [LinkLens — Enterprise Link Intelligence Platform](https://mahbub.dev/projects/linklens/): Enterprise-grade smart link and redirect intelligence platform with sub-5ms Redis hot-path routing, ClickHouse forensic analytics, QR generation, RBAC workspaces, webhooks, and self-hosted zero-cost geo/device intelligence. _(NestJS, Next.js, TypeScript, PostgreSQL, Redis, ClickHouse, Prisma, Docker)_
+- [Bangla & English ASR Studio](https://mahbub.dev/projects/bangla-and-english-asr-studio/): End-to-end speech recognition studio for Bangla and English with Whisper inference, live microphone transcription, batch processing, WER/CER benchmarking, dataset validation, and LoRA/QLoRA fine-tuning workflows for GPU training clusters. _(Python, Whisper, faster-whisper, Gradio, Transformers, LoRA, Audio Processing, ML Evaluation)_
+- [Local Vocal Agent](https://mahbub.dev/projects/local-vocal-agent/): Privacy-first local AI voice workspace with FastAPI, React/Vite, Ollama, SQLite and Chroma memory, Faster Whisper STT, TTS, streaming chat, search tools, file workspace, and permission-aware assistant workflows. _(FastAPI, React, Ollama, SQLite, ChromaDB, Whisper, TTS, RAG)_
+- [Advanced Finance Tracker](https://mahbub.dev/projects/advanced-finance-tracker/): Production-grade offline-first finance platform with Expo React Native, local SQLite storage, typed money utilities, budgeting, transactions, accounts, goals, recurring flows, analytics, AI insight planning, and a NestJS API foundation. _(React Native, Expo, TypeScript, SQLite, NestJS, PostgreSQL, Prisma, Jest)_
+- [Healthcare & Medical Applications](https://mahbub.dev/projects/healthcare-and-medical-applications/): Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_
+- [Enterprise & School Management Systems](https://mahbub.dev/projects/enterprise-and-school-management-systems/): Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features. _(Laravel, React.js, Node.js, MySQL)_
+- [Real-Time Chat Application](https://mahbub.dev/projects/real-time-chat-application/): Real-time chat application with instant messaging, modern UI, and socket-based communication between users. _(React.js, Node.js, Socket.io, CSS)_
+- [React Portfolio](https://mahbub.dev/projects/react-portfolio/): Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content. _(Next.js, React.js, CSS, MongoDB)_
+- [Test-Buddy](https://mahbub.dev/projects/test-buddy/): React-based test and exam management demo application built for a university software engineering course. _(React.js, HTML, CSS, JavaScript)_
+- [Blood Donation Management System](https://mahbub.dev/projects/blood-donation-management-system/): Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage. _(Java, SQLite, Java Swing)_
+
+## Skills
+
+- **Frontend**: JavaScript, React.js, Next.js, Bootstrap, Tailwind CSS, React Native
+- **Backend & Languages**: Node.js, Python, PHP, Laravel, C++, Java Swing
+- **Data**: MySQL, SQLite
+- **Tools & Delivery**: Git
+- **Additional**: Machine Learning
+
+## Notes for automated readers
+
+- Canonical origin is https://mahbub.dev (no "www" prefix).
+- The machine-readable URL list is https://mahbub.dev/sitemap.xml.

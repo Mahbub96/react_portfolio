@@ -82,7 +82,12 @@ export default function ProjectModal({
               fill
               sizes="(max-width: 900px) 100vw, 70vw"
               className={styles.modalImage}
-              unoptimized
+              /*
+                Optimized like the card thumbnail. This modal shows the same
+                ~1 MB source PNG at a larger size, so leaving it unoptimized
+                meant every "Quick Preview" click pulled the full raw file
+                even though the card beside it had already been compressed.
+              */
               priority
             />
           </div>

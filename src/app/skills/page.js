@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
+import { canonicalFor } from "@/lib/seo/urls.mjs";
 
 export const dynamic = "force-dynamic";
 
@@ -32,25 +33,31 @@ export async function generateMetadata() {
 
   return {
     title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
-    description: `Mahbub Alam's technical skills include ${skills.length} technologies: React, Node.js, PHP, Laravel, CodeIgniter, MongoDB, MySQL, AWS, Docker, and more. Full Stack Developer expertise in web and mobile development.`,
+    description: `Mahbub Alam's technical skills include ${skills.length} technologies: React, Next.js, Node.js, Python, FastAPI, PHP, Laravel, MongoDB, MySQL, Docker, and more. Software Engineer expertise across backend, full-stack and applied AI.`,
+    alternates: {
+      // Overrides the site-wide canonical in app/layout.js — see projects page.
+      canonical: canonicalFor("/skills/"),
+    },
     keywords: [
       "Mahbub Alam Skills",
       "Full Stack Developer Skills",
       "Technical Skills",
       "React Skills",
+      "Next.js Skills",
       "Node.js Skills",
+      "Python Skills",
+      "FastAPI Skills",
       "PHP Skills",
       "Laravel Skills",
-      "CodeIgniter Skills",
       "MongoDB Skills",
       "MySQL Skills",
-      "AWS Skills",
+      "PostgreSQL Skills",
       "Docker Skills",
       "JavaScript Skills",
       "TypeScript Skills",
       "Web Development Skills",
       "Mobile Development Skills",
-      "VoIP Skills",
+      "Applied AI Skills",
       "System Architecture Skills",
       "DevSecOps Skills",
       "Cloud Computing Skills",
@@ -62,8 +69,8 @@ export async function generateMetadata() {
     ],
     openGraph: {
       title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
-      description: `Mahbub Alam's technical skills include ${skills.length} technologies. Full Stack Developer expertise in web and mobile development.`,
-      url: "https://mahbub.dev/skills",
+      description: `Mahbub Alam's technical skills include ${skills.length} technologies. Software Engineer expertise across backend, full-stack and applied AI.`,
+      url: canonicalFor("/skills/"),
       siteName: "Mahbub Alam Portfolio",
       images: [
         {

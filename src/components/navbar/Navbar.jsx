@@ -4,6 +4,7 @@ import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import LoginModal from "../auth/LoginModal";
 import styles from "./navbar.module.css";
+import { APP_VERSION, BUILD_NUMBER } from "@/config/version";
 
 function Header({ data }) {
   const { auth, logout, isLoaded } = useDataContext();
@@ -106,13 +107,14 @@ function Header({ data }) {
     { id: "experience", label: "Experience", number: "04" },
     { id: "education", label: "Education", number: "05" },
     { id: "contact", label: "Contact", number: "06" },
+    // { id: "resume", label: "Resume", number: "07", href: "/resume" },
     // Only show Analytics link if authenticated and loaded
     ...(auth && isLoaded
       ? [
           {
             id: "analytics",
             label: "Analytics",
-            number: "07",
+            number: "08",
             href: "/analytics",
           },
         ]
@@ -215,6 +217,13 @@ function Header({ data }) {
                     </span>
                   )}
                 </button>
+              </div>
+
+              {/* Mobile Drawer Version Indicator */}
+              <div className={styles.mobileVersionWrapper}>
+                <span className={styles.mobileVersionBadge}>
+                  v{APP_VERSION} • Build {BUILD_NUMBER}
+                </span>
               </div>
             </div>
           </div>

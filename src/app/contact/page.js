@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
+import { canonicalFor } from "@/lib/seo/urls.mjs";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,11 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
 export const metadata = {
   title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
   description:
-    "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, mahbubcse96@gmail.com. Based in Dhaka, Bangladesh.",
+    "Contact Mahbub Alam - Software Engineer for freelance projects and full-time opportunities. Email: mahbubcse96@gmail.com. Based in Dhaka, Bangladesh.",
+  alternates: {
+    // Overrides the site-wide canonical in app/layout.js — see projects page.
+    canonical: canonicalFor("/contact/"),
+  },
   keywords: [
     "Contact Mahbub Alam",
     "Hire Mahbub Alam",
@@ -41,8 +46,8 @@ export const metadata = {
   openGraph: {
     title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
     description:
-      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities. Email: admin@mahbub.dev, mahbubcse96@gmail.com",
-    url: "https://mahbub.dev/contact",
+      "Contact Mahbub Alam - Software Engineer for freelance projects and full-time opportunities. Email: mahbubcse96@gmail.com",
+    url: canonicalFor("/contact/"),
     siteName: "Mahbub Alam Portfolio",
     images: [
       {

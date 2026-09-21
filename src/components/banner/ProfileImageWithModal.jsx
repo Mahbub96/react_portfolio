@@ -123,7 +123,6 @@ export default function ProfileImageWithModal({
                     fill
                     sizes="(max-width: 900px) 100vw, 70vw"
                     className={modalStyles.modalImage}
-                    unoptimized
                     priority
                   />
                 </div>

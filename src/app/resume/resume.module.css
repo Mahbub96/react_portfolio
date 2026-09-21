@@ -1,0 +1,361 @@
+/* ------------------------------------------------------------------ *
+ * Screen styles — A4-proportioned document on a neutral backdrop.
+ * The sheet is sized in millimetres so what you see matches what prints.
+ * ------------------------------------------------------------------ */
+
+.wrapper {
+  background: #eef1f5;
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.toolbar {
+  width: 100%;
+  max-width: 210mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbarNote {
+  font-size: 0.85rem;
+  color: #5b6472;
+  margin: 0;
+}
+
+.printButton {
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.printButton:hover {
+  background: #115e56;
+}
+
+.printButton:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 3px;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 210mm;
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 16mm 14mm;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.5;
+}
+
+/* --- header --- */
+
+.header {
+  border-bottom: 2px solid #0f766e;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.name {
+  font-size: 22pt;
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+  letter-spacing: -0.4px;
+  color: #10202c;
+}
+
+.title {
+  font-size: 11pt;
+  color: #0f766e;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.contactRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 9pt;
+  color: #3d4756;
+}
+
+.contactRow a {
+  color: #3d4756;
+  text-decoration: none;
+}
+
+.contactRow a:hover {
+  text-decoration: underline;
+}
+
+/* --- sections --- */
+
+.section {
+  margin-bottom: 1.05rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.sectionTitle {
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  color: #0f766e;
+  border-bottom: 1px solid #d4dae1;
+  padding-bottom: 0.2rem;
+  margin: 0 0 0.6rem;
+}
+
+.summary {
+  margin: 0;
+  text-align: justify;
+}
+
+/* --- experience / education entries --- */
+
+.entry {
+  margin-bottom: 0.7rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.entry:last-child {
+  margin-bottom: 0;
+}
+
+.entryHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.entryTitle {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 0;
+  color: #10202c;
+}
+
+.entryPeriod {
+  font-size: 9pt;
+  color: #5b6472;
+  white-space: nowrap;
+}
+
+.entrySub {
+  font-size: 9.5pt;
+  color: #0f766e;
+  margin: 0 0 0.2rem;
+}
+
+.entrySub a {
+  color: #0f766e;
+  text-decoration: none;
+}
+
+.entryBody {
+  margin: 0;
+  font-size: 10pt;
+  color: #2c3542;
+}
+
+.entryMeta {
+  font-size: 9pt;
+  color: #5b6472;
+  margin: 0.15rem 0 0;
+}
+
+/* --- skills --- */
+
+.skillGrid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1rem;
+  font-size: 10pt;
+}
+
+.skillGroup {
+  font-weight: 600;
+  color: #10202c;
+  white-space: nowrap;
+}
+
+.skillItems {
+  color: #2c3542;
+}
+
+/* --- projects --- */
+
+.projectHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.aiTag {
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #0f766e;
+  border: 1px solid #0f766e;
+  border-radius: 3px;
+  padding: 0 0.3rem;
+  line-height: 1.5;
+}
+
+.stack {
+  font-size: 9pt;
+  color: #5b6472;
+  margin: 0.15rem 0 0;
+  font-style: italic;
+}
+
+.projectLink {
+  font-size: 9pt;
+  color: #0f766e;
+  text-decoration: none;
+}
+
+.empty {
+  color: #8a94a3;
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ *
+ * Print styles — this is the PDF generator.
+ * Everything chrome-like disappears; the sheet becomes the page.
+ * ------------------------------------------------------------------ */
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  /* The resume page renders no navbar/footer (see page.js), so the only
+     screen-only chrome to remove is the toolbar holding the print button.
+     Note: CSS Modules rejects bare :global(...) selector lists as impure,
+     so global element selectors must not be used in this file. */
+  .toolbar {
+    display: none !important;
+  }
+
+  .wrapper {
+    background: #ffffff;
+    padding: 0;
+    min-height: auto;
+    display: block;
+  }
+
+  .sheet {
+    max-width: none;
+    width: auto;
+    box-shadow: none;
+    padding: 0;
+    font-size: 10pt;
+  }
+
+  /* Force readable black-on-white regardless of the site's dark mode. */
+  .sheet,
+  .entryBody,
+  .summary,
+  .skillItems {
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .name,
+  .entryTitle,
+  .skillGroup {
+    color: #000000 !important;
+  }
+
+  .sectionTitle,
+  .title,
+  .entrySub,
+  .entrySub a,
+  .aiTag,
+  .projectLink {
+    color: #0f766e !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .header {
+    border-bottom-color: #0f766e !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .section,
+  .entry {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .sectionTitle {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Print the destination of links so a paper copy stays useful. */
+  .contactRow a::after,
+  .projectLink::after {
+    content: " (" attr(href) ")";
+    font-size: 7.5pt;
+    color: #5b6472;
+  }
+
+  .contactRow a[href^="mailto:"]::after,
+  .contactRow a[href^="tel:"]::after,
+  .entrySub a::after {
+    content: "";
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Small screens
+ * ------------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .wrapper {
+    padding: 1rem 0.5rem 2rem;
+  }
+
+  .sheet {
+    padding: 10mm 7mm;
+    font-size: 10pt;
+  }
+
+  .name {
+    font-size: 18pt;
+  }
+
+  .skillGrid {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  .skillGroup {
+    margin-top: 0.4rem;
+  }
+}

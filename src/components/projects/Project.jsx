@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   HiOutlineExternalLink,
   HiOutlineDownload,
@@ -11,6 +12,7 @@ import {
 import styles from "./projects.module.css";
 import ProjectModal from "./ProjectModal";
 import HarmonicChip from "@/components/HarmonicChip";
+import { projectSlug } from "@/lib/seo/slug.mjs";
 
 function Project({ project, idx = 0 }) {
   const { name, desc, src, lang, to, id } = project;
@@ -22,6 +24,11 @@ function Project({ project, idx = 0 }) {
   const githubUrl = project.githubUrl || null;
   const downloadUrl = project.downloadUrl || null;
   const primaryTech = technologies.find(Boolean)?.trim() || "Web App";
+
+  // Detail-page path. Derived with the same helper the route and sitemap use,
+  // so a card can never link to a slug the router does not resolve.
+  const slug = project.slug || projectSlug(project);
+  const detailHref = slug ? `/projects/${slug}/` : null;
 
   // Enhanced image path normalization
   const normalizeImagePath = (imageSrc) => {
@@ -95,7 +102,14 @@ function Project({ project, idx = 0 }) {
             width={400}
             height={250}
             sizes="(max-width: 768px) 100vw, 400px"
-            unoptimized
+            /*
+              No `unoptimized` here on purpose. next.config.js already declares
+              WebP/AVIF output; bypassing the optimizer meant the browser
+              downloaded the raw ~1 MB PNG source for every card (~6 MB of
+              images on the homepage). Letting Next serve them cuts that by
+              roughly an order of magnitude at identical display size.
+            */
+            loading="lazy"
             onError={handleImageError}
             onLoad={() => setImageError(false)}
           />
@@ -203,6 +217,27 @@ function Project({ project, idx = 0 }) {
             <HiOutlineCode className={styles.buttonIcon} aria-hidden="true" />
             <span>Code</span>
           </a>
+        )}
+
+        {/*
+          Internal link to the project's own page. This is the crawl path that
+          makes /projects/<slug>/ reachable: without an <a href> pointing at it
+          the detail page exists only in the sitemap, which is a far weaker
+          signal than a real in-content link.
+        */}
+        {detailHref && (
+          <Link
+            className={`${styles.projectButton} ${styles.detailButton}`}
+            href={detailHref}
+            title={`Read more about ${name}`}
+            aria-label={`Read more about ${name}`}
+          >
+            <HiOutlineArrowsExpand
+              className={styles.buttonIcon}
+              aria-hidden="true"
+            />
+            <span>Details</span>
+          </Link>
         )}
 
       </div>

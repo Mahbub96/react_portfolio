@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
+import { canonicalFor } from "@/lib/seo/urls.mjs";
 
 export const dynamic = "force-dynamic";
 
@@ -32,32 +33,39 @@ export async function generateMetadata() {
 
   return {
     title: "Projects by Mahbub Alam | Full Stack Developer Portfolio",
-    description: `Explore ${projects.length} projects by Mahbub Alam - Full Stack Developer. Web applications, mobile apps, VoIP solutions, and innovative software projects. React, Node.js, PHP development portfolio.`,
+    description: `Explore ${projects.length} projects by Mahbub Alam - Software Engineer. Backend APIs, full-stack products, applied AI systems, and mobile applications built with NestJS, Next.js, Python, and React.`,
+    alternates: {
+      // Must override the site-wide canonical set in app/layout.js. Without
+      // this, the page tells Google it is a duplicate of the homepage and is
+      // dropped from the index despite having unique content.
+      canonical: canonicalFor("/projects/"),
+    },
     keywords: [
       "Projects by Mahbub Alam",
       "Mahbub Alam Portfolio",
       "Web Development Projects",
       "React Projects",
+      "Next.js Projects",
+      "NestJS Projects",
       "Node.js Projects",
-      "PHP Projects",
+      "Python Projects",
+      "Applied AI Projects",
+      "Speech Recognition Projects",
       "Full Stack Developer Projects",
-      "VoIP Solutions Projects",
       "Web Applications",
       "Mobile Apps",
       "Software Development",
       "Mahbub Alam Work",
       "Brotecs Technologies Projects",
       "Laravel Projects",
-      "CodeIgniter Projects",
       "MongoDB Projects",
-      "MySQL Projects",
-      "AWS Projects",
+      "PostgreSQL Projects",
       "Docker Projects",
     ],
     openGraph: {
       title: "Projects by Mahbub Alam | Full Stack Developer Portfolio",
-      description: `Explore ${projects.length} projects by Mahbub Alam - Full Stack Developer. Web applications, mobile apps, and innovative solutions.`,
-      url: "https://mahbub.dev/projects",
+      description: `Explore ${projects.length} projects by Mahbub Alam - Software Engineer. Backend APIs, full-stack products, and applied AI systems.`,
+      url: canonicalFor("/projects/"),
       siteName: "Mahbub Alam Portfolio",
       images: [
         {

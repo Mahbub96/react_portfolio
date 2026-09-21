@@ -52,11 +52,14 @@ export function middleware(request) {
   const response = NextResponse.next();
   
   // Add security headers
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'DENY');
+  // NOTE: X-Frame-Options / X-Content-Type-Options / Referrer-Policy /
+  // Permissions-Policy are NOT set here. next.config.js headers() already
+  // applies them to every route; setting them in both places made production
+  // emit each header twice, and where the two values differed (nginx also
+  // adds its own) browsers received conflicting directives such as
+  // "X-Frame-Options: DENY" alongside "SAMEORIGIN", which is undefined
+  // behaviour. One source of truth: next.config.js.
   response.headers.set('X-XSS-Protection', '1; mode=block');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
 
   // API rate limiting
   if (pathname.startsWith('/api/')) {

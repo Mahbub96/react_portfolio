@@ -1,0 +1,142 @@
+/* Project detail page layout. Mirrors the site's dark palette via the shared
+   CSS custom properties so it inherits theme switching for free. */
+
+.wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 7rem 1.5rem 4rem;
+  color: var(--text-primary);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+  color: var(--accent-primary, #64ffda);
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--text-primary);
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  margin: 0 0 1rem;
+}
+
+.description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.imageFrame {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-secondary);
+  background: var(--background-card);
+  margin-bottom: 3rem;
+}
+
+.imageFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.section {
+  margin-bottom: 2.75rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+}
+
+.stackList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stackItem {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-secondary);
+  background: var(--background-card);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent-primary, #64ffda);
+  color: var(--accent-primary, #64ffda);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.linkButton:hover,
+.linkButton:focus-visible {
+  background: var(--accent-primary, #64ffda);
+  color: var(--background-primary, #0a192f);
+}
+
+.backRow {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.backLink {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.25s ease;
+}
+
+.backLink:hover,
+.backLink:focus-visible {
+  color: var(--accent-primary, #64ffda);
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+    padding: 5.5rem 1.1rem 3rem;
+  }
+}

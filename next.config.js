@@ -91,10 +91,9 @@ const nextConfig = {
             key: "X-Download-Options",
             value: "noopen",
           },
-          {
-            key: "X-Requested-With",
-            value: "XMLHttpRequest",
-          },
+          // NOTE: no "X-Requested-With" header here. It was previously sent on
+          // every response; X-Requested-With is a *request* header used by XHR
+          // clients and carries no meaning coming back from a server.
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), payment=()",
@@ -255,10 +254,10 @@ const nextConfig = {
   // URL rewrites and redirects
   async rewrites() {
     return [
-      {
-        source: "/sitemap.xml",
-        destination: "/api/sitemap",
-      },
+      // NOTE: /sitemap.xml is deliberately NOT rewritten to an API route.
+      // It is served by src/app/sitemap.js (live data) and by the static
+      // public/sitemap.xml written at build time — the static file is what
+      // survives nginx answering the request before it reaches Next.
       {
         source: "/robots.txt",
         destination: "/robots.txt",
@@ -273,6 +272,17 @@ const nextConfig = {
   // Redirects for better SEO
   async redirects() {
     return [
+      // Canonical host: www -> apex.
+      // Both hosts currently answer 200 with identical HTML. The canonical tag
+      // points at the apex so Google consolidates them, but serving the same
+      // content on two hostnames without a redirect is still a duplicate-content
+      // signal and splits any links that point at the www form.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.mahbub.dev" }],
+        destination: "https://mahbub.dev/:path*",
+        permanent: true,
+      },
       {
         source: "/home",
         destination: "/",
@@ -309,6 +319,14 @@ const nextConfig = {
   // Environment variables
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_APP_VERSION:
+      process.env.NEXT_PUBLIC_APP_VERSION ||
+      process.env.APP_VERSION ||
+      "3.0.0",
+    NEXT_PUBLIC_BUILD_NUMBER:
+      process.env.NEXT_PUBLIC_BUILD_NUMBER ||
+      process.env.BUILD_NUMBER ||
+      "21092026-171",
   },
 
   // Build output

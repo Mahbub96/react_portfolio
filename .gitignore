@@ -163,3 +163,6 @@ dogfood-output/
 
 # Build artifacts
 mahbub-portfolio-production-*.zip
+
+# Yarn
+.yarn/*

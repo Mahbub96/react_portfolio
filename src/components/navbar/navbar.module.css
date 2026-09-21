@@ -1809,3 +1809,34 @@
     height: 48px !important;
   }
 }
+
+/* Mobile Drawer Version Indicator */
+.mobileVersionWrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileVersionWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+  }
+
+  [data-theme="light"] .mobileVersionWrapper {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .mobileVersionBadge {
+    font-family: var(--font-mono, "Fira Code", monospace);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    letter-spacing: 0.03em;
+    user-select: all;
+  }
+}
+

@@ -696,6 +696,21 @@
   transform: translateY(-3px);
 }
 
+/* Internal link to the project's own detail page. Styled as an outline button
+   so it reads as secondary to the primary Live/Code actions. */
+.detailButton {
+  background: transparent;
+  color: var(--accent-primary, #64ffda);
+  border-color: var(--accent-primary, #64ffda);
+}
+
+.detailButton:hover {
+  background: var(--accent-primary, #64ffda);
+  color: var(--background-primary);
+  box-shadow: 0 0 20px rgba(100, 255, 218, 0.25);
+  transform: translateY(-3px);
+}
+
 /* Mobile Responsive - Only for true mobile screens */
 @media (max-width: 768px) {
   .projectsSection {
