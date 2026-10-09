@@ -7,6 +7,15 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.3.1
+
+### Changed
+- Blog post pages have a centred header: an "All articles" link, tags, title and subtitle, with the author, date and reading time in one compact row. The cover image is a little narrower so the article starts sooner, and the end of each post pairs the share buttons with a link back to all articles.
+- `pnpm admin:hash` accepts admin passwords from 6 characters and suggests 12 or more.
+
+### Fixes
+- The floating Analytics button on the homepage shows its label all the time instead of only on hover, and its hover colours follow the light and dark themes.
+
 ## 1.3.0
 
 ### Added
