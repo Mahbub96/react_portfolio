@@ -47,6 +47,16 @@ export const STATIC_ROUTES = [
     description: "Technical skills grouped by domain.",
   },
   {
+    path: "/blog/",
+    label: "Blog",
+    priority: 0.8,
+    changeFrequency: "weekly",
+    // Listed by the live /blog/sitemap.xml (with every post), not the static one.
+    inSitemap: false,
+    inFooter: true,
+    description: "Engineering articles on backend systems, applied AI and speech recognition.",
+  },
+  {
     path: "/contact/",
     label: "Contact",
     priority: 0.8,

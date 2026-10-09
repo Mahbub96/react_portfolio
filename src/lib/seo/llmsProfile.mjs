@@ -23,6 +23,7 @@ import {
 } from "./projectCatalog.mjs";
 import { caseStudyFor } from "./caseStudies.mjs";
 import { groupSkills } from "./skillCatalog.mjs";
+import { BLOG_PATH, FEED_PATH } from "../blog/posts.mjs";
 
 function skillLines(skills = []) {
   return groupSkills(skills).map(
@@ -91,9 +92,13 @@ function sections({ projects = [], skills = [], experiences = [], educations = [
     .map((route) => `- [${route.label}](${absoluteUrl(route.path)}): ${route.description}`)
     .join("\n");
 
-  const postBlock = posts
-    .map((post) => `- [${post.title}](${absoluteUrl(post.path)}) (${post.datePublished}): ${post.description}`)
-    .join("\n");
+  // llms files are static (built at deploy time) while posts are published
+  // live, so they point to the always-current blog index and full-text feed.
+  const postBlock = [
+    `- [Blog](${absoluteUrl(BLOG_PATH)}): Engineering articles; every new post appears here first.`,
+    `- [RSS feed](${SITE_ORIGIN}${FEED_PATH}): Full text of every published article, newest first.`,
+    ...posts.map((post) => `- [${post.title}](${absoluteUrl(post.path)}) (${post.datePublished}): ${post.description}`),
+  ].join("\n");
 
   return {
     postBlock,
@@ -125,7 +130,7 @@ ${s.routeBlock}
 ## Featured projects
 
 ${s.featuredBlock || "- None yet."}
-${s.postBlock ? `\n## Writing\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}
+${s.postBlock ? `\n## Blog\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}
 ## Experience
 
 ${s.experienceBlock}
@@ -207,5 +212,5 @@ ${s.skillBlock ? `\n## Skills\n\n${s.skillBlock}\n` : ""}
 ## Project case studies
 
 ${studies || "None yet."}
-${s.postBlock ? `\n## Writing\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}`;
+${s.postBlock ? `\n## Blog\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}`;
 }

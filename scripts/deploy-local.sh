@@ -233,6 +233,18 @@ grep -q '3.70' "$html_file"
 ! grep -q 'No Actions Available' "$html_file"
 ! grep -q 'Stitel' "$html_file"
 
+log "Verifying blog and live SEO routes"
+# /blog/feed.xml and /blog/sitemap.xml are served by Next (posts are live);
+# /sitemap.xml is the static index pointing at them. A non-200 here usually
+# means nginx shadows the path with a file-only location.
+for path in /blog/ /blog/feed.xml /blog/sitemap.xml /sitemap.xml /sitemap-pages.xml; do
+  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL$path")"
+  printf '  %s %s\n' "$code" "$path"
+  [[ "$code" == "200" ]] || { echo "expected 200 for $path" >&2; exit 1; }
+done
+curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/blog/feed.xml" | grep -q '<rss'
+curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/sitemap.xml" | grep -q 'blog/sitemap.xml'
+
 log "Verifying single rolling backup"
 ssh -i "$SSH_KEY" -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" \
   "test -f '$BACKUP_FILE' && count=\$(find \"\$(dirname '$BACKUP_FILE')\" -maxdepth 1 -type f -name '$(basename "$BACKUP_FILE")' | wc -l) && test \"\$count\" -eq 1 && printf '%s\n' '$BACKUP_FILE'"

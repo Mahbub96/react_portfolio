@@ -8,7 +8,6 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import styles from "./footer.module.css";
 import { footerRoutes } from "@/lib/seo/routes.mjs";
-import { hasPosts } from "@/lib/blog/posts.mjs";
 import { SITE_AUTHOR, SITE_SUMMARY } from "@/lib/seo/siteConfig.mjs";
 import { APP_VERSION, BUILD_NUMBER, HAS_RELEASE_NOTES } from "@/config/version";
 import VersionBadge from "./VersionBadge";
@@ -85,15 +84,6 @@ function Footer({ data }) {
               {route.label}
             </a>
           ))}
-          {hasPosts() ? (
-            <a
-              href="/blog/"
-              className={styles.siteLink}
-              title="Engineering notes and articles"
-            >
-              Writing
-            </a>
-          ) : null}
         </nav>
 
         <div className={styles.socialLinks}>

@@ -3,9 +3,14 @@
  * Build-time generator for the site's static SEO files:
  *
  *   public/robots.txt
- *   public/sitemap.xml
+ *   public/sitemap.xml        sitemap index -> /sitemap-pages.xml + /blog/sitemap.xml
+ *   public/sitemap-pages.xml  static pages and project case studies
  *   public/llms.txt  (+ public/.well-known/llms.txt)
  *   public/llms-full.txt
+ *
+ * Blog posts are published live from the admin, so they are NOT read here:
+ * the live /blog/sitemap.xml and /blog/feed.xml routes list them, and the
+ * index and llms files point to those.
  *
  * WHY THESE ARE PHYSICAL FILES
  * ----------------------------
@@ -20,14 +25,16 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
   buildSitemapEntries,
+  renderSitemapIndexXml,
   renderSitemapXml,
 } from "../src/lib/seo/sitemapBuilder.mjs";
+import { absoluteUrl } from "../src/lib/seo/urls.mjs";
 import {
   renderLlmsTxt,
   renderLlmsFullTxt,
@@ -44,19 +51,7 @@ async function loadContent() {
     with: { type: "json" },
   });
   const db = raw.default || raw;
-  // Published posts from scripts/generate-blog.mjs (runs first in prebuild).
-  let posts = [];
-  try {
-    const blog = JSON.parse(
-      await readFile(join(ROOT, "src", "content", "blog.generated.json"), "utf8")
-    );
-    posts = (blog.posts || []).filter((post) => !post.draft);
-  } catch {
-    posts = [];
-  }
-
   return {
-    posts,
     projects: db.projects || [],
     skills: db.skills || [],
     experiences: db.experiences || [],
@@ -117,10 +112,17 @@ async function main() {
 
   const entries = buildSitemapEntries({
     projects: content.projects,
-    posts: content.posts,
     lastModifiedFor,
   });
-  await writeArtifact("sitemap.xml", renderSitemapXml(entries));
+  await writeArtifact("sitemap-pages.xml", renderSitemapXml(entries));
+  const newest = entries.map((entry) => entry.lastModified).sort().pop();
+  await writeArtifact(
+    "sitemap.xml",
+    renderSitemapIndexXml([
+      { url: absoluteUrl("/sitemap-pages.xml").replace(/\/$/, ""), lastModified: newest },
+      { url: absoluteUrl("/blog/sitemap.xml").replace(/\/$/, "") },
+    ])
+  );
 
   const llms = renderLlmsTxt(content);
   await writeArtifact("llms.txt", llms);
@@ -129,7 +131,7 @@ async function main() {
   await writeArtifact("llms-full.txt", renderLlmsFullTxt(content));
 
   console.log(
-    `Done — ${entries.length} sitemap URLs, ${content.projects.length} projects, ${content.posts.length} published posts.`
+    `Done — ${entries.length} static sitemap URLs, ${content.projects.length} projects (blog posts: live /blog/sitemap.xml).`
   );
 }
 

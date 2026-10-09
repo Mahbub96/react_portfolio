@@ -4,41 +4,36 @@
  *
  * Run after a production deploy:  pnpm seo:indexnow
  *
- * The key file public/28df78752bbf6920a66c71aa2f29ece0.txt must be live at
- * https://mahbub.dev/28df78752bbf6920a66c71aa2f29ece0.txt — IndexNow fetches it to prove ownership.
- * The key is not a secret; it only proves the submitter controls the host.
+ * URLs come from the static public/sitemap-pages.xml (pages and case
+ * studies) plus the live https://mahbub.dev/blog/sitemap.xml (published
+ * posts). Publishing a post from the admin already pings IndexNow for that
+ * post; this covers everything after a deploy.
  */
 
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { INDEXNOW_HOST, submitIndexNow } from "../src/lib/seo/indexnow.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const HOST = "mahbub.dev";
-const KEY = "28df78752bbf6920a66c71aa2f29ece0";
+const locs = (xml) => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 
 async function main() {
-  const sitemap = await readFile(join(ROOT, "public", "sitemap.xml"), "utf8");
-  const urlList = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-  if (!urlList.length) throw new Error("No URLs found in public/sitemap.xml");
+  const urlList = locs(await readFile(join(ROOT, "public", "sitemap-pages.xml"), "utf8"));
 
-  const response = await fetch("https://api.indexnow.org/indexnow", {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    body: JSON.stringify({
-      host: HOST,
-      key: KEY,
-      keyLocation: `https://${HOST}/${KEY}.txt`,
-      urlList,
-    }),
-  });
+  try {
+    const blog = await fetch(`https://${INDEXNOW_HOST}/blog/sitemap.xml`, { signal: AbortSignal.timeout(15000) });
+    if (blog.ok) urlList.push(...locs(await blog.text()));
+    else console.warn(`Blog sitemap: HTTP ${blog.status}; submitting static pages only`);
+  } catch (error) {
+    console.warn(`Blog sitemap unreachable (${error.message}); submitting static pages only`);
+  }
+  if (!urlList.length) throw new Error("No URLs found");
 
   // 200 = accepted, 202 = accepted (key validation pending)
-  console.log(`IndexNow: HTTP ${response.status} for ${urlList.length} URLs`);
-  if (![200, 202].includes(response.status)) {
-    console.error(await response.text());
-    process.exit(1);
-  }
+  const status = await submitIndexNow([...new Set(urlList)]);
+  console.log(`IndexNow: HTTP ${status} for ${urlList.length} URLs`);
+  if (![200, 202].includes(status)) process.exit(1);
 }
 
 main().catch((error) => {

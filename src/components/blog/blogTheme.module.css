@@ -1,0 +1,5 @@
+/* Applied by the blog and admin layouts next to the Source Serif 4 font
+   variable, so --font-serif resolves to the loaded font there. */
+.theme {
+  --font-serif: var(--font-source-serif), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}

@@ -1,0 +1,61 @@
+/* Syntax colours for server-highlighted code blocks (lowlight / hljs class
+   names). Global because post HTML is injected; scoped to .code-block.
+   Colours come only from the --syntax-* theme tokens. */
+
+.code-block .hljs-comment,
+.code-block .hljs-quote,
+.code-block .hljs-meta {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+.code-block .hljs-keyword,
+.code-block .hljs-selector-tag,
+.code-block .hljs-literal,
+.code-block .hljs-doctag,
+.code-block .hljs-name {
+  color: var(--syntax-keyword);
+}
+
+.code-block .hljs-string,
+.code-block .hljs-regexp,
+.code-block .hljs-addition,
+.code-block .hljs-char.escape_ {
+  color: var(--syntax-string);
+}
+
+.code-block .hljs-number,
+.code-block .hljs-symbol,
+.code-block .hljs-bullet,
+.code-block .hljs-type,
+.code-block .hljs-built_in {
+  color: var(--syntax-number);
+}
+
+.code-block .hljs-title,
+.code-block .hljs-section,
+.code-block .hljs-selector-id,
+.code-block .hljs-selector-class {
+  color: var(--syntax-title);
+}
+
+.code-block .hljs-attr,
+.code-block .hljs-attribute,
+.code-block .hljs-variable,
+.code-block .hljs-template-variable,
+.code-block .hljs-property,
+.code-block .hljs-tag {
+  color: var(--syntax-attr);
+}
+
+.code-block .hljs-deletion {
+  color: var(--accent-error);
+}
+
+.code-block .hljs-emphasis {
+  font-style: italic;
+}
+
+.code-block .hljs-strong {
+  font-weight: 600;
+}

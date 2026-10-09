@@ -1,41 +1,23 @@
 /**
- * Blog data access.
- *
- * Posts are rendered from content/blog/*.md by scripts/generate-blog.mjs
- * (prebuild/predev) into blog.generated.json, so pages, the footer and the
- * layout read plain JSON — no filesystem access or Markdown parsing at
- * runtime on the server.
+ * Pure blog helpers safe to import anywhere (client or server). Post data
+ * itself comes from posts.server.mjs.
  */
 
-import generated from "@/content/blog.generated.json";
+export const BLOG_PATH = "/blog/";
+export const FEED_PATH = "/blog/feed.xml";
 
-const POSTS = Array.isArray(generated?.posts) ? generated.posts : [];
-
-/** Every post in this build (drafts only when built with BLOG_INCLUDE_DRAFTS=1). */
-export function allPosts() {
-  return POSTS;
-}
-
-/** Posts that may be indexed, listed in the sitemap/RSS and linked publicly. */
-export function publishedPosts() {
-  return POSTS.filter((post) => !post.draft);
-}
-
-export function getPost(slug) {
-  return POSTS.find((post) => post.slug === slug) || null;
-}
-
-/** True when the blog has anything to show in this build. */
-export function hasPosts() {
-  return POSTS.length > 0;
-}
-
-/** Human date, e.g. "20 October 2026". */
+/** Human date, e.g. "20 October 2026" (Dhaka time, where posts are written). */
 export function formatDate(iso) {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
-    timeZone: "UTC",
+    timeZone: "Asia/Dhaka",
   });
+}
+
+/** Same calendar day in Dhaka time? Used to hide "Updated" when it adds nothing. */
+export function sameDay(a, b) {
+  return formatDate(a) === formatDate(b);
 }

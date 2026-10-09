@@ -15,7 +15,7 @@
 import { SITE_ORIGIN } from "./siteConfig.mjs";
 
 /** Paths no crawler should fetch: APIs and the owner-only dashboard. */
-export const DISALLOWED_PATHS = ["/api/", "/analytics/", "/private/"];
+export const DISALLOWED_PATHS = ["/api/", "/admin/", "/analytics/", "/private/"];
 
 export const AI_AGENTS = [
   "GPTBot",

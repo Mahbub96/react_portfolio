@@ -4,6 +4,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 Disallow: /analytics/
 Disallow: /private/
 
@@ -27,6 +28,7 @@ User-agent: DuckAssistBot
 User-agent: MistralAI-User
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 Disallow: /analytics/
 Disallow: /private/
 

@@ -14,7 +14,7 @@ import {
   SITE_NAME,
 } from "./siteConfig.mjs";
 import { canonicalFor } from "./urls.mjs";
-import { publishedPosts } from "@/lib/blog/posts.mjs";
+import { FEED_PATH } from "../blog/posts.mjs";
 
 const INDEXABLE_ROBOTS = {
   index: true,
@@ -43,6 +43,8 @@ const NOINDEX_ROBOTS = {
  * @param {object}  [opts.image]       { url, width, height, alt } — must be the real size
  * @param {string}  [opts.ogType]      "website" | "article" | "profile"
  * @param {boolean} [opts.noindex]     keep the page out of search results
+ * @param {string}  [opts.canonical]   absolute canonical URL when the content's
+ *                                      original lives elsewhere (blog posts)
  */
 export function pageMetadata({
   path = "/",
@@ -52,6 +54,7 @@ export function pageMetadata({
   image = DEFAULT_OG_IMAGE,
   ogType = "website",
   noindex = false,
+  canonical = null,
 } = {}) {
   const url = canonicalFor(path);
   const socialTitle = absoluteTitle ? title : `${title} — ${SITE_AUTHOR.name}`;
@@ -60,11 +63,9 @@ export function pageMetadata({
     title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates: {
-      canonical: url,
-      // RSS autodiscovery on every page, once there is something to subscribe to.
-      ...(publishedPosts().length
-        ? { types: { "application/rss+xml": [{ url: "/feed.xml", title: `${SITE_NAME} — Writing` }] } }
-        : {}),
+      canonical: canonical || url,
+      // RSS autodiscovery on every page (the feed is valid even when empty).
+      types: { "application/rss+xml": [{ url: FEED_PATH, title: `${SITE_NAME} — Blog` }] },
     },
     robots: noindex ? NOINDEX_ROBOTS : INDEXABLE_ROBOTS,
     openGraph: {

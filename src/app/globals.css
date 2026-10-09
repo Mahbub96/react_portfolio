@@ -101,8 +101,10 @@
   --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* Long-form typography (blog posts and the editor share these) */
-  --font-serif: var(--font-source-serif), "Iowan Old Style", "Palatino Linotype",
-    Georgia, serif;
+  /* System serif fallback; blog and admin layouts load Source Serif 4 and
+     redefine this token on their wrapper (a :root reference to the font's
+     variable would be invalid outside those routes). */
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --prose-width: 68ch;
   --prose-wide: min(1040px, 100%);
 

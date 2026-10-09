@@ -1,0 +1,429 @@
+/*
+ * Article body typography, shared by the public post page and the admin
+ * editor so what is written is what readers get.
+ *
+ * Layout: normal flow (so float-left/right images wrap text) in a centred
+ * column of --prose-width. The element wrapping .prose must be an
+ * inline-size container (see .bleed): wide and full-bleed figures size
+ * themselves against it with cqi units, which unlike vw exclude the
+ * scrollbar, so full-bleed never causes horizontal scrolling.
+ *
+ * Colours come only from theme tokens.
+ */
+
+.bleed {
+  container-type: inline-size;
+}
+
+.prose {
+  --gutter: 1rem;
+  --wide-extra: 9rem;
+  --prose-font: var(--font-sans);
+  display: flow-root;
+  width: min(var(--prose-width), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+  color: var(--text-secondary);
+  font-family: var(--prose-font);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+.serif {
+  --prose-font: var(--font-serif);
+  font-size: 1.1875rem;
+}
+
+.prose > :global(*) {
+  margin-block: 0;
+  min-width: 0;
+}
+
+.prose > :global(* + *) {
+  margin-top: 1.4em;
+}
+
+/* Breakouts: as wide as the space allows, up to --wide-extra per side. */
+.prose > :global(.figure-wide),
+.prose > :global(.gallery),
+.prose > :global(.embed) {
+  margin-inline: calc(-1 * clamp(0px, (100cqi - 100%) / 2 - var(--gutter), var(--wide-extra)));
+}
+
+.prose > :global(.figure-full) {
+  margin-inline: calc((100% - 100cqi) / 2);
+}
+
+/* Text ---------------------------------------------------------------- */
+
+.prose :global(p) {
+  text-wrap: pretty;
+}
+
+.prose :global(h2),
+.prose :global(h3),
+.prose :global(h4) {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  scroll-margin-top: 6.5rem;
+}
+
+.prose > :global(h2) {
+  margin-top: 2.4em;
+  font-size: 1.65em;
+  font-weight: 700;
+}
+
+.prose > :global(h3) {
+  margin-top: 2em;
+  font-size: 1.3em;
+  font-weight: 650;
+}
+
+.prose > :global(h4) {
+  margin-top: 1.8em;
+  font-size: 1.08em;
+  font-weight: 650;
+}
+
+.prose > :global(h2 + *),
+.prose > :global(h3 + *),
+.prose > :global(h4 + *) {
+  margin-top: 0.75em;
+}
+
+.prose :global(strong) {
+  color: var(--text-primary);
+  font-weight: 650;
+}
+
+.prose :global(a) {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--transition-fast);
+}
+
+.prose :global(a:hover) {
+  text-decoration-color: var(--accent-primary);
+}
+
+.prose :global(a:focus-visible) {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+.prose :global(:not(pre) > code) {
+  padding: 0.12em 0.38em;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--accent-softer);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+.prose :global(s) {
+  color: var(--text-muted);
+}
+
+.prose :global(ul),
+.prose :global(ol) {
+  padding-left: 1.4em;
+}
+
+.prose :global(li + li),
+.prose :global(li > ul),
+.prose :global(li > ol) {
+  margin-top: 0.4em;
+}
+
+.prose :global(li > p + p) {
+  margin-top: 0.5em;
+}
+
+.prose :global(li::marker) {
+  color: var(--accent-primary);
+}
+
+.prose :global(blockquote) {
+  padding: 0.2em 0 0.2em 1.25em;
+  border-left: 3px solid var(--accent-primary);
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+  font-size: 1.12em;
+  font-style: italic;
+}
+
+.prose :global(blockquote > * + *) {
+  margin-top: 0.75em;
+}
+
+.prose :global(hr) {
+  height: 1px;
+  margin-block: 2.75em;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+}
+
+/* Block presets from the editor (align-*, font-*, size-*) --------------- */
+
+.prose :global(.align-center) { text-align: center; }
+.prose :global(.align-right) { text-align: right; }
+.prose :global(.align-justify) { text-align: justify; hyphens: auto; }
+.prose :global(.font-sans) { font-family: var(--font-sans); }
+.prose :global(.font-serif) { font-family: var(--font-serif); }
+.prose :global(.font-mono) { font-family: var(--font-mono); font-size: 0.92em; }
+.prose :global(p.size-sm) { font-size: 0.9em; color: var(--text-muted); }
+.prose :global(p.size-lg) { font-size: 1.22em; line-height: 1.65; color: var(--text-primary); }
+.prose :global(h2.size-lg),
+.prose :global(h3.size-lg),
+.prose :global(h4.size-lg) { font-size: 1.85em; }
+.prose :global(h2.size-sm),
+.prose :global(h3.size-sm),
+.prose :global(h4.size-sm) { font-size: 1.05em; }
+
+/* Figures ----------------------------------------------------------------- */
+
+.prose :global(figure) {
+  margin-block: 2.2em;
+}
+
+.prose :global(figure img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-secondary);
+  background: var(--background-tertiary);
+}
+
+.prose :global(figcaption) {
+  margin-top: 0.75em;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.prose > :global(.figure-full img) {
+  border-radius: 0;
+  border-inline: 0;
+}
+
+@media (min-width: 760px) {
+  .prose > :global(.figure-float-left),
+  .prose > :global(.figure-float-right) {
+    width: 46%;
+    margin-block: 0.35em 1em;
+  }
+
+  .prose > :global(.figure-float-left) {
+    float: left;
+    margin-right: 1.75em;
+  }
+
+  .prose > :global(.figure-float-right) {
+    float: right;
+    margin-left: 1.75em;
+  }
+
+  .prose > :global(h2),
+  .prose > :global(h3),
+  .prose > :global(hr),
+  .prose > :global(.figure-wide),
+  .prose > :global(.figure-full),
+  .prose > :global(.gallery),
+  .prose > :global(.code-block),
+  .prose > :global(.table-wrap) {
+    clear: both;
+  }
+}
+
+.prose :global(.gallery-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 760px) {
+  .prose :global(.gallery-cols-3 .gallery-grid) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.prose :global(.gallery-item img) {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* Code -------------------------------------------------------------------- */
+
+.prose > :global(.code-block) {
+  position: relative;
+  padding: 1.15rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--surface-code);
+  color: var(--syntax-text);
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+@media (min-width: 1100px) {
+  .prose > :global(.code-block) {
+    margin-inline: -1.25rem;
+  }
+}
+
+.prose :global(.code-block[data-language])::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.55rem;
+  right: 0.85rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prose :global(.code-block code) {
+  font: inherit;
+  background: none;
+}
+
+/* Callouts ---------------------------------------------------------------- */
+
+.prose :global(.callout) {
+  --callout: var(--accent-info);
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--callout) 35%, transparent);
+  border-left: 4px solid var(--callout);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--callout) 8%, transparent);
+  color: var(--text-primary);
+  font-size: 0.97em;
+}
+
+.prose :global(.callout > * + *) {
+  margin-top: 0.6em;
+}
+
+.prose :global(.callout-success) { --callout: var(--accent-success); }
+.prose :global(.callout-warning) { --callout: var(--accent-warning); }
+.prose :global(.callout-note) { --callout: var(--accent-primary); }
+
+/* YouTube (click-to-play card, nothing loads from YouTube until clicked) - */
+
+.prose :global(.embed-link) {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--background-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.prose :global(.embed-link img) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  transition: transform var(--transition-slow);
+}
+
+.prose :global(.embed-link:hover img) {
+  transform: scale(1.03);
+}
+
+.prose :global(.embed-play) {
+  position: relative;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary);
+  box-shadow: var(--shadow-glow-strong);
+  transition: transform var(--transition-bounce);
+}
+
+.prose :global(.embed-play)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  border-style: solid;
+  border-width: 0.7rem 0 0.7rem 1.15rem;
+  border-color: transparent transparent transparent var(--background-primary);
+  transform: translate(-50%, -50%);
+}
+
+.prose :global(.embed-link:hover .embed-play),
+.prose :global(.embed-link:focus-visible .embed-play) {
+  transform: scale(1.08);
+}
+
+.prose :global(.embed-title) {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 2.5rem 1.25rem 1rem;
+  background: linear-gradient(transparent, var(--scrim));
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Tables ------------------------------------------------------------------ */
+
+.prose :global(.table-wrap) {
+  overflow-x: auto;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.prose :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.92em;
+}
+
+.prose :global(th),
+.prose :global(td) {
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--border-secondary);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose :global(th) {
+  background: var(--accent-softer);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.prose :global(tr:last-child td) {
+  border-bottom: 0;
+}
+
+.prose :global(td > p),
+.prose :global(th > p) {
+  margin: 0;
+}

@@ -29,6 +29,11 @@
 - [Local Vocal Agent](https://mahbub.dev/projects/local-vocal-agent/): A full-stack voice assistant that runs locally: FastAPI and React, an Ollama-hosted LLM, speech-to-text and text-to-speech, and SQLite plus Chroma memory. _(FastAPI, React, Ollama, SQLite, ChromaDB, Whisper, TTS, RAG)_
 - [Advanced Finance Tracker](https://mahbub.dev/projects/advanced-finance-tracker/): An offline-first personal finance app built with Expo React Native and SQLite on the device, plus a NestJS and PostgreSQL API for multi-device sync. _(React Native, Expo, TypeScript, SQLite, NestJS, PostgreSQL, Prisma, Jest)_
 
+## Blog
+
+- [Blog](https://mahbub.dev/blog/): Engineering articles; every new post appears here first.
+- [RSS feed](https://mahbub.dev/blog/feed.xml): Full text of every published article, newest first.
+
 ## Other projects
 
 - Healthcare & Medical Applications: Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_

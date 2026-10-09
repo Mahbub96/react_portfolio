@@ -16,6 +16,14 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - An allow-list renderer turns editor content into the public HTML: unknown blocks and attributes are dropped, text is escaped, links are limited to http(s)/mailto/relative and images to this site's uploads. Code is highlighted on the server.
 - Publishing checks title, slug, description length, alt text on every image, heading order and canonical URL, and pings IndexNow from production only.
 - Test and development data use prefixed collections (`test_`, `dev_`), so nothing written outside production can appear on mahbub.dev.
+- Public blog rebuilt on the live posts: `/blog/` shows the newest post as a featured card and the rest as a grid, with a designed empty state (noindex until the first post). Post pages have a cover image, byline, reading time, a table of contents (sidebar on very wide screens), wide, full-width and floated images with text wrap, galleries, callouts, highlighted code, tables, share links, an author box, related posts and a reading-progress bar.
+- Automatic SEO for every post: self canonical (or a custom one for cross-posts), Open Graph article tags with a 1200x630 social image, BlogPosting structured data, a live RSS feed with full content at `/blog/feed.xml` and a live `/blog/sitemap.xml`. Renamed posts redirect permanently from their old URLs, and scheduled posts appear at exactly their publish time.
+- `pnpm blog:import <site>` moves Markdown posts into the CMS as drafts through the admin API.
+
+### Changed
+- `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
+- The footer always links to the Blog; the RSS link is announced on every page.
+- Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
 
 ## 1.2.1
 

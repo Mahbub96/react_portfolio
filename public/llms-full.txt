@@ -200,6 +200,11 @@ Advanced Finance Tracker keeps the ledger on the phone and treats the cloud as a
 - Page: https://mahbub.dev/projects/advanced-finance-tracker/
 - Source: https://github.com/Mahbub96/Advance-Finance-Tracker
 
+## Blog
+
+- [Blog](https://mahbub.dev/blog/): Engineering articles; every new post appears here first.
+- [RSS feed](https://mahbub.dev/blog/feed.xml): Full text of every published article, newest first.
+
 ## Other projects
 
 - Healthcare & Medical Applications: Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_

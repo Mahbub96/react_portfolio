@@ -1,90 +1,94 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { FaRss } from "react-icons/fa";
 import JsonLd from "@/components/seo/JsonLd";
+import PostCard from "@/components/blog/PostCard";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph, blogNode } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
-import { allPosts, publishedPosts, formatDate } from "@/lib/blog/posts.mjs";
+import { absoluteUrl } from "@/lib/seo/urls.mjs";
+import { BLOG_PATH, FEED_PATH } from "@/lib/blog/posts.mjs";
+import { getPublishedPosts } from "@/lib/blog/posts.server.mjs";
+import { BLOG_DESCRIPTION } from "@/lib/blog/feeds.mjs";
 import styles from "./blog.module.css";
 
-const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
-  ssr: true,
-});
+const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), { ssr: true });
+const Footer = NextDynamic(() => import("@/components/Footer"), { ssr: true });
 
-const Footer = NextDynamic(() => import("@/components/Footer"), {
-  ssr: true,
-});
+// Posts are published live from the admin; data is cached (see posts.server).
+export const dynamic = "force-dynamic";
 
-const PATH = "/blog/";
-const TITLE = "Writing";
-const DESCRIPTION = `Engineering notes by ${SITE_AUTHOR.name} on backend systems, applied AI, speech recognition and shipping software to small servers.`;
+const TITLE = "Blog";
 
-export const metadata = pageMetadata({
-  path: PATH,
-  title: TITLE,
-  description: DESCRIPTION,
-  // Indexable only once at least one post is published.
-  noindex: publishedPosts().length === 0,
-});
+export async function generateMetadata() {
+  const posts = await getPublishedPosts();
+  return pageMetadata({
+    path: BLOG_PATH,
+    title: TITLE,
+    description: BLOG_DESCRIPTION,
+    // An empty index is not worth indexing; it becomes indexable with the first post.
+    noindex: posts.length === 0,
+  });
+}
 
-export default function BlogIndexPage() {
-  const posts = allPosts();
-  // No posts in this build: the section does not exist yet.
-  if (posts.length === 0) notFound();
+export default async function BlogIndexPage() {
+  const posts = await getPublishedPosts();
+  const [latest, ...rest] = posts;
 
   const graph = buildPageGraph({
-    path: PATH,
+    path: BLOG_PATH,
     name: `${TITLE} — ${SITE_AUTHOR.name}`,
-    description: DESCRIPTION,
+    description: BLOG_DESCRIPTION,
     type: "CollectionPage",
-    breadcrumb: [{ name: TITLE, path: PATH }],
-    mainEntity: { "@id": `https://mahbub.dev${PATH}#blog` },
-    nodes: [blogNode(publishedPosts())],
+    breadcrumb: [{ name: TITLE, path: BLOG_PATH }],
+    mainEntity: { "@id": `${absoluteUrl(BLOG_PATH)}#blog` },
+    nodes: [blogNode(posts)],
   });
 
   return (
     <div>
       <JsonLd data={graph} />
-
       <Suspense fallback={null}>
         <Navbar />
       </Suspense>
 
       <main className={styles.page}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Writing</p>
-          <h1 className={styles.title}>Engineering notes</h1>
-          <p className={styles.lead}>{DESCRIPTION}</p>
-          <p className={styles.meta}>
-            <a href="/feed.xml">RSS feed</a>
-          </p>
+        <header className={styles.hero}>
+          <p className={styles.eyebrow}>Blog</p>
+          <h1 className={styles.heroTitle}>
+            Engineering <span>notes</span>
+          </h1>
+          <p className={styles.heroLead}>{BLOG_DESCRIPTION}</p>
+          <a className={styles.pill} href={FEED_PATH}>
+            <FaRss aria-hidden="true" /> RSS feed
+          </a>
         </header>
 
-        <ul className={styles.postList}>
-          {posts.map((post) => (
-            <li key={post.slug} className={styles.postItem}>
-              <p className={styles.meta}>
-                <time dateTime={post.datePublished}>{formatDate(post.datePublished)}</time>
-                {" · "}
-                {post.readingMinutes} min read
-                {post.draft ? <span className={styles.draftTag}>Draft</span> : null}
-              </p>
-              <h2 className={styles.postTitle}>
-                <Link href={post.path}>{post.title}</Link>
-              </h2>
-              <p className={styles.text}>{post.description}</p>
-              {post.tags.length ? (
-                <ul className={styles.tags} aria-label="Topics">
-                  {post.tags.map((tag) => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </li>
-          ))}
-        </ul>
+        {latest ? (
+          <>
+            <PostCard post={latest} featured eager />
+            {rest.length ? (
+              <section className={styles.grid} aria-label="More posts">
+                {rest.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </section>
+            ) : null}
+          </>
+        ) : (
+          <section className={styles.empty} aria-labelledby="empty-title">
+            <span className={styles.emptyIcon} aria-hidden="true">
+              {"{ }"}
+            </span>
+            <h2 id="empty-title">The first articles are on their way</h2>
+            <p>
+              Notes on Bangla speech recognition, local voice assistants and shipping
+              software to small servers. Subscribe to the <a href={FEED_PATH}>RSS feed</a>{" "}
+              or read <Link href="/about/">about {SITE_AUTHOR.name}</Link> meanwhile.
+            </p>
+          </section>
+        )}
       </main>
 
       <Suspense fallback={null}>

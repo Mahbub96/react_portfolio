@@ -178,3 +178,20 @@ test("youtube ids from every common link form", async () => {
   assert.equal(youtubeId("https://evil.example/watch?v=dQw4w9WgXcQ"), null);
   assert.equal(youtubeId("javascript:alert(1)"), null);
 });
+
+test("markdown import converts to renderable editor JSON", async () => {
+  const { markdownToDoc } = await import("../../../scripts/import-markdown-posts.mjs");
+  const doc = markdownToDoc(
+    "# Top\n\nHello **bold** and `code` with [a link](https://example.com).\n\n- one\n- two\n\n```python\nprint(1)\n```\n\n> quote\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n<script>x</script>\n"
+  );
+  const { html } = renderDoc(doc);
+  assert.match(html, /^<h2 id="top">Top<\/h2>/);
+  assert.match(html, /<strong>bold<\/strong>/);
+  assert.match(html, /<code>code<\/code>/);
+  assert.match(html, /<a href="https:\/\/example\.com\/" target="_blank" rel="noopener noreferrer">a link<\/a>/);
+  assert.match(html, /<ul><li><p>one<\/p><\/li><li><p>two<\/p><\/li><\/ul>/);
+  assert.match(html, /language-python/);
+  assert.match(html, /<blockquote><p>quote<\/p><\/blockquote>/);
+  assert.match(html, /<th><p>a<\/p><\/th>/);
+  assert.match(html, /&lt;script&gt;x&lt;\/script&gt;/);
+});

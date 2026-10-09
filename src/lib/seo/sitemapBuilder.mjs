@@ -2,9 +2,13 @@
  * Sitemap assembly.
  *
  * Split into "what should be in the sitemap" (buildSitemapEntries) and "how it
- * is serialised" (renderSitemapXml). The static public/sitemap.xml generated
- * at build time is the only sitemap the site serves (nginx answers
- * /sitemap.xml from disk), so there is no app/sitemap.js route to drift.
+ * is serialised" (renderSitemapXml / renderSitemapIndexXml).
+ *
+ * nginx answers /sitemap.xml from disk, so it stays a static file, written at
+ * build time as a sitemap INDEX of two children:
+ *   /sitemap-pages.xml  static pages and project case studies (build time)
+ *   /blog/sitemap.xml   the blog index and every published post (live route,
+ *                       so posts published from the admin appear immediately)
  */
 
 import { sitemapRoutes } from "./routes.mjs";
@@ -67,26 +71,14 @@ export function buildSitemapEntries({
     images: [absoluteAssetUrl(project.image)].filter(Boolean),
   }));
 
-  // Published blog posts only (drafts never reach the sitemap). The index is
-  // listed only when there is at least one post to show.
-  const blogEntries = posts.length
-    ? [
-        {
-          url: absoluteUrl("/blog/"),
-          lastModified: isoDate(posts[0].dateModified),
-          changeFrequency: "weekly",
-          priority: 0.8,
-          images: [],
-        },
-        ...posts.map((post) => ({
-          url: absoluteUrl(post.path),
-          lastModified: isoDate(post.dateModified),
-          changeFrequency: "monthly",
-          priority: 0.8,
-          images: [],
-        })),
-      ]
-    : [];
+  // Blog posts are listed by the live /blog/sitemap.xml route.
+  const blogEntries = posts.map((post) => ({
+    url: absoluteUrl(post.path),
+    lastModified: isoDate(post.dateModified),
+    changeFrequency: "monthly",
+    priority: 0.8,
+    images: [absoluteAssetUrl(post.image)].filter(Boolean),
+  }));
 
   return [...staticEntries, ...blogEntries, ...projectEntries];
 }
@@ -99,6 +91,23 @@ function escapeXml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+/** Serialise a sitemap index pointing at child sitemaps. */
+export function renderSitemapIndexXml(children = []) {
+  const items = children
+    .map(
+      (child) =>
+        `  <sitemap>\n    <loc>${escapeXml(child.url)}</loc>${
+          child.lastModified ? `\n    <lastmod>${escapeXml(isoDate(child.lastModified))}</lastmod>` : ""
+        }\n  </sitemap>`
+    )
+    .join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${items}
+</sitemapindex>
+`;
 }
 
 /** Serialise entries as a sitemap.xml document with the image extension. */
