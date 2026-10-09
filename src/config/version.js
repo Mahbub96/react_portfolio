@@ -15,6 +15,7 @@ export const BUILD_NUMBER =
 export const COMMIT_HASH = buildInfo.commitHash || "unknown";
 export const COMMIT_COUNT = buildInfo.commitCount || 0;
 export const BUILD_DATE = buildInfo.buildDate || "";
+export const HAS_RELEASE_NOTES = Boolean(buildInfo.hasReleaseNotes);
 
 export const APP_BUILD_LABEL = `v${APP_VERSION} • Build ${BUILD_NUMBER}`;
 

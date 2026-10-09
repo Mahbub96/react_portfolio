@@ -69,6 +69,63 @@ function formatDateYYYYMMDD(date) {
   return `${y}${m}${d}`;
 }
 
+/**
+ * Release notes for `version`, parsed from CHANGELOG.md.
+ *
+ * Expected shape (Keep-a-Changelog style):
+ *   ## 1.0.0
+ *   Optional intro paragraph.
+ *   ### Section title
+ *   - item
+ *
+ * Returns { version, intro, sections: [{ title, items: [] }] } or null when
+ * the changelog has no entry for this version. Inline Markdown is kept as-is
+ * (only `code` spans are rendered by the UI).
+ */
+async function readReleaseNotes(version) {
+  let markdown;
+  try {
+    markdown = await readFile(join(ROOT, "CHANGELOG.md"), "utf8");
+  } catch {
+    return null;
+  }
+
+  const lines = markdown.split(/\r?\n/);
+  const start = lines.findIndex((line) =>
+    new RegExp(`^##\\s+v?${version.replace(/\./g, "\\.")}\\b`).test(line)
+  );
+  if (start === -1) return null;
+
+  const notes = { version, intro: [], sections: [] };
+  let current = null;
+
+  for (const line of lines.slice(start + 1)) {
+    if (/^##\s/.test(line)) break; // next version
+    const heading = line.match(/^###\s+(.*)/);
+    if (heading) {
+      current = { title: heading[1].trim(), items: [] };
+      notes.sections.push(current);
+      continue;
+    }
+    const item = line.match(/^\s*[-*]\s+(.*)/);
+    if (item) {
+      if (!current) {
+        current = { title: "Changes", items: [] };
+        notes.sections.push(current);
+      }
+      current.items.push(item[1].trim());
+      continue;
+    }
+    if (line.trim() && !current) notes.intro.push(line.trim());
+  }
+
+  return {
+    version: notes.version,
+    intro: notes.intro.join(" "),
+    sections: notes.sections.filter((section) => section.items.length),
+  };
+}
+
 async function main() {
   console.log("Generating build information…");
 
@@ -102,17 +159,40 @@ async function main() {
     process.env.BUILD_NUMBER ||
     defaultBuildNumber;
 
+  const releaseNotes = await readReleaseNotes(version);
+
+  // buildInfo.json is bundled into the app, so it only carries a flag; the
+  // notes themselves go to public/release-notes.json (step 5).
   const buildInfo = {
     version,
     buildNumber,
     commitCount: parseInt(commitCount, 10) || 0,
     commitHash,
     buildDate: now.toISOString(),
+    hasReleaseNotes: Boolean(releaseNotes?.sections?.length),
   };
 
   // 4. Write to src/config/buildInfo.json
   await mkdir(dirname(TARGET_FILE), { recursive: true });
   await writeFile(TARGET_FILE, JSON.stringify(buildInfo, null, 2) + "\n", "utf8");
+
+  // 5. Release notes as a static file, fetched only when the footer badge is
+  // opened — keeps changelog text out of every page's indexed HTML.
+  await writeFile(
+    join(ROOT, "public", "release-notes.json"),
+    JSON.stringify(
+      {
+        version: buildInfo.version,
+        buildNumber: buildInfo.buildNumber,
+        commitHash: buildInfo.commitHash,
+        buildDate: buildInfo.buildDate,
+        notes: releaseNotes,
+      },
+      null,
+      2
+    ) + "\n",
+    "utf8"
+  );
 
   console.log(
     `✓ Generated buildInfo.json: Version ${buildInfo.version}, Build ${buildInfo.buildNumber} (${buildInfo.commitHash})`

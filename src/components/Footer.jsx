@@ -9,12 +9,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import styles from "./footer.module.css";
 import { footerRoutes } from "@/lib/seo/routes.mjs";
 import { SITE_AUTHOR, SITE_SUMMARY } from "@/lib/seo/siteConfig.mjs";
-import {
-  APP_VERSION,
-  BUILD_NUMBER,
-  COMMIT_HASH,
-  BUILD_DATE,
-} from "@/config/version";
+import { APP_VERSION, BUILD_NUMBER, HAS_RELEASE_NOTES } from "@/config/version";
+import VersionBadge from "./VersionBadge";
 
 function Footer({ data }) {
   const currentYear = new Date().getFullYear();
@@ -112,20 +108,12 @@ function Footer({ data }) {
           <p className={styles.copyrightLine}>
             © {currentYear} {name}. All rights reserved.
           </p>
-          <div
-            className={styles.versionContainer}
-            title={`Commit: ${COMMIT_HASH}${
-              BUILD_DATE
-                ? ` | Date: ${new Date(BUILD_DATE).toLocaleDateString()}`
-                : ""
-            }`}
-          >
-            <span className={styles.versionBadge}>
-              <span className={styles.versionDot} />
-              <span className={styles.versionLabel}>v{APP_VERSION}</span>
-              <span className={styles.versionSeparator}>•</span>
-              <span className={styles.buildLabel}>Build {BUILD_NUMBER}</span>
-            </span>
+          <div className={styles.versionContainer}>
+            <VersionBadge
+              version={APP_VERSION}
+              buildNumber={BUILD_NUMBER}
+              hasReleaseNotes={HAS_RELEASE_NOTES}
+            />
           </div>
         </div>
       </div>

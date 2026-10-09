@@ -169,3 +169,4 @@ mahbub-portfolio-production-*.zip
 
 # Generated at prebuild/predev by scripts/generate-build-info.mjs
 src/config/buildInfo.json
+public/release-notes.json
