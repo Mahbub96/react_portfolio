@@ -20,7 +20,7 @@ export const DEFAULT_RULES = [
   "Use only facts present in the provided fields. Do not guess.",
   "Never invent numbers, dates, results, names, quotes or sources.",
   "Only cite links that appear in the provided content.",
-  "If the fields do not contain enough information, report insufficient_context instead of filling gaps.",
+  "Report insufficient_context only when the fields name no subject at all; a title is enough for short fields such as tags, excerpt and meta description.",
   "Neutral, professional tone. Write in English unless the content is in Bangla.",
 ].join("\n");
 

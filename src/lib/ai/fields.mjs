@@ -54,7 +54,7 @@ export const FIELD_SPECS = {
     kind: "tags",
     maxItems: 10,
     maxItem: 40,
-    instruction: "3 to 6 topic tags a reader would search for (technologies, fields, methods). Title Case or the official spelling of a product.",
+    instruction: "3 to 6 tags a reader would search for: the main subject, its category or field, and closely related topics. Title Case, or the official spelling of a product or brand.",
     need: (p) => (p.post.title || p.post.excerpt || words(p.body) >= 20 ? null : "Add a title or some text first."),
   },
   coverAlt: {
