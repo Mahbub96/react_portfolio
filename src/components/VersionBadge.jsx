@@ -3,23 +3,26 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./versionBadge.module.css";
 
-/** Render `code` spans from changelog text; everything else is plain text. */
+/** Render `code` and **bold** spans from changelog text; everything else is plain text. */
 function InlineText({ text = "" }) {
   return String(text)
-    .split(/(`[^`]+`)/g)
+    .split(/(`[^`]+`|\*\*[^*]+\*\*)/g)
     .filter(Boolean)
-    .map((part, index) =>
-      part.startsWith("`") && part.endsWith("`") ? (
-        <code key={index}>{part.slice(1, -1)}</code>
-      ) : (
-        <span key={index}>{part}</span>
-      )
-    );
+    .map((part, index) => {
+      if (part.startsWith("`") && part.endsWith("`")) {
+        return <code key={index}>{part.slice(1, -1)}</code>;
+      }
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={index}>{part.slice(2, -2)}</strong>;
+      }
+      return <span key={index}>{part}</span>;
+    });
 }
 
 /**
  * Footer version badge. Clicking it opens the release notes for the running
- * build (parsed from CHANGELOG.md at build time).
+ * build and every earlier version (parsed from CHANGELOG.md at build time),
+ * newest first in a scrollable list.
  *
  * The notes are fetched from /release-notes.json only when the dialog opens:
  * rendering them into the footer would repeat changelog text on every page's
@@ -76,7 +79,7 @@ export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) 
   }
 
   const data = state.data;
-  const notes = data?.notes;
+  const releases = data?.releases ?? [];
   const builtOn = data?.buildDate ? data.buildDate.slice(0, 10) : null;
 
   return (
@@ -130,23 +133,38 @@ export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) 
               </p>
             ) : null}
 
-            {notes?.intro ? (
-              <p className={styles.intro}>
-                <InlineText text={notes.intro} />
-              </p>
-            ) : null}
+            {releases.map((release) => (
+              <article
+                key={release.version}
+                className={styles.release}
+                aria-labelledby={`release-${release.version}`}
+              >
+                <h3 id={`release-${release.version}`} className={styles.releaseTitle}>
+                  v{release.version}
+                  {release.version === version ? (
+                    <span className={styles.current}>Current</span>
+                  ) : null}
+                </h3>
 
-            {notes?.sections?.map((section) => (
-              <section key={section.title} className={styles.section}>
-                <h3 className={styles.sectionTitle}>{section.title}</h3>
-                <ul className={styles.list}>
-                  {section.items.map((item) => (
-                    <li key={item.slice(0, 60)}>
-                      <InlineText text={item} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
+                {release.intro ? (
+                  <p className={styles.intro}>
+                    <InlineText text={release.intro} />
+                  </p>
+                ) : null}
+
+                {release.sections.map((section) => (
+                  <section key={section.title} className={styles.section}>
+                    <h4 className={styles.sectionTitle}>{section.title}</h4>
+                    <ul className={styles.list}>
+                      {section.items.map((item) => (
+                        <li key={item.slice(0, 60)}>
+                          <InlineText text={item} />
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </article>
             ))}
           </div>
         </div>

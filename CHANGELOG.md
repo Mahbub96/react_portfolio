@@ -15,6 +15,9 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Drafts (`draft: true`) never reach production. Review builds can include them with `BLOG_INCLUDE_DRAFTS=1`; they render with a draft banner and `noindex`.
 - While no post is published, `/blog/` returns 404 and the footer shows no Writing link.
 
+### Changed
+- The release notes dialog now lists every version up to the running one, newest first, in a scrollable view. The running version is marked "Current", and **bold** text in the changelog renders as bold.
+
 ## 1.1.0
 
 ### Added
