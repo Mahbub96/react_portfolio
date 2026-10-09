@@ -7,52 +7,39 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.4.0
+
+### Added
+- AI writing help in the blog editor. A ✨ button next to the title, excerpt, URL, tags, search title, meta description and image descriptions suggests a value based on what the post already says. Nothing changes until you choose "Use it".
+- Help with the article itself: turn your notes into an outline, expand a passage, or improve its wording, with a preview before anything is added.
+- Suggestions stay close to what you wrote: links that are not in your post are removed, and numbers that are not in your notes are flagged for checking.
+
 ## 1.3.1
 
 ### Changed
-- Blog post pages have a centred header: an "All articles" link, tags, title and subtitle, with the author, date and reading time in one compact row. The cover image is a little narrower so the article starts sooner, and the end of each post pairs the share buttons with a link back to all articles.
-- `pnpm admin:hash` accepts admin passwords from 6 characters and suggests 12 or more.
+- Blog posts have a cleaner header with a link back to all articles, a compact author line and a slightly narrower cover image.
 
 ### Fixes
-- The floating Analytics button on the homepage shows its label all the time instead of only on hover, and its hover colours follow the light and dark themes.
+- The Analytics button on the homepage shows its label without hovering, and follows the light and dark themes.
 
 ## 1.3.0
 
 ### Added
-- Blog content store in MongoDB: each post has an autosaved working copy and a separately published live snapshot, with version numbers so two editor tabs cannot overwrite each other, URL slug history for 301 redirects, and the last 30 published revisions.
-- Admin blog API under `/api/admin/blog/` (list, create, autosave, publish, schedule, unpublish, delete, slug check, tags, publish checklist), all behind the admin session.
-- Image uploads: the browser sends pre-resized sizes; the server checks each file's real type and dimensions, rejects SVG, names files by content hash and serves them from `/uploads/blog/` with year-long immutable caching. Uploads are stored outside the build so deploys keep them. YouTube embeds copy the thumbnail locally and link out, so posts load nothing from YouTube.
-- An allow-list renderer turns editor content into the public HTML: unknown blocks and attributes are dropped, text is escaped, links are limited to http(s)/mailto/relative and images to this site's uploads. Code is highlighted on the server.
-- Publishing checks title, slug, description length, alt text on every image, heading order and canonical URL, and pings IndexNow from production only.
-- Test and development data use prefixed collections (`test_`, `dev_`), so nothing written outside production can appear on mahbub.dev.
-- Public blog rebuilt on the live posts: `/blog/` shows the newest post as a featured card and the rest as a grid, with a designed empty state (noindex until the first post). Post pages have a cover image, byline, reading time, a table of contents (sidebar on very wide screens), wide, full-width and floated images with text wrap, galleries, callouts, highlighted code, tables, share links, an author box, related posts and a reading-progress bar.
-- Automatic SEO for every post: self canonical (or a custom one for cross-posts), Open Graph article tags with a 1200x630 social image, BlogPosting structured data, a live RSS feed with full content at `/blog/feed.xml` and a live `/blog/sitemap.xml`. Renamed posts redirect permanently from their old URLs, and scheduled posts appear at exactly their publish time.
-- `pnpm blog:import <site>` moves Markdown posts into the CMS as drafts through the admin API.
-- When you are signed in, blog pages show shortcuts to write a new post, edit the post you are reading, or open all posts. Visitors never see them.
-- Admin at `/admin/` (signed-in only, checked on the server): a posts dashboard with Draft / Scheduled / Published tabs, search and delete, and a full-screen block editor in the style of Ghost and Medium.
-- Block editor: type `/` or press `+` on an empty line to insert headings, lists, quotes, callouts (info, tip, warning, note), code with a language picker, tables, dividers, images, galleries and YouTube embeds. Selected text gets a toolbar for bold, italic, strikethrough, code, links (⌘K), headings, alignment and font/size presets (Sans, Serif, Mono; small, normal, large). Images can be inline, wide, full-width or floated left/right with text wrap; images and pasted or dropped files are resized and converted to WebP in the browser before upload.
-- Autosave 1.5 seconds after you stop typing, with a local backup that survives a closed tab or lost connection, ⌘S to save now, and a conflict notice instead of overwriting when another tab saved first. Preview shows unpublished changes with the public template; publish, update, schedule and unpublish from one menu.
-- Post settings: URL (follows the title until set by hand, with availability check), excerpt, tags, body font, search title and meta description with counters, a Google result preview, a social card preview, a live SEO checklist, and a canonical URL for cross-posts. Publishing is blocked while an image has no alt text or the description is missing or too long.
+- A blog: write, schedule and publish articles from a new admin area, with a block editor for headings, lists, quotes, callouts, code, tables, images, galleries and videos, plus autosave and preview.
+- Every post automatically gets search-friendly metadata, a social sharing image, an RSS feed entry and a sitemap entry, and renamed posts keep their old links working.
+- Uploaded images are resized and optimised automatically.
+- When you are signed in, blog pages show shortcuts to write or edit posts.
 
 ### Changed
-- The top navbar has a **06. Blog** link in place of "06. Contact", which duplicated the "Get in Touch" button (both opened the contact section). Signed in, the navbar also shows Analytics (07) and Write (08, the blog admin). The profile card's "Get In Touch" link now works from every page.
-- `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
-- The footer no longer repeats the site navigation; it keeps the social links, bio and version badge. The RSS feed is announced to feed readers in every page's head but is not shown on the page.
-- Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
-- The serif font is loaded only when a post uses it, and the byline uses a 3 KB avatar, which brought mobile Lighthouse performance on a post from 85 to 92.
+- The navbar links to the Blog in place of the duplicate Contact item; "Get in Touch" stays.
+- A simpler footer without the repeated page links.
+- Faster blog pages on mobile.
 
 ## 1.2.1
 
-### Security
-- Admin login now uses an httpOnly session cookie (`__Host-` prefixed, Secure, SameSite=Strict) instead of a token kept in localStorage. Each login is a revocable server-side session: logging out invalidates the cookie immediately, not just in the browser.
-- Every admin API checks that session, including the portfolio edit, delete and image upload routes and the login history, which previously only compared the `Host` header. Cookie-authenticated writes must also carry a same-site `Origin`.
-- Removed the built-in fallback admin password hash and the default JWT signing secret. Login is disabled until `ADMIN_PASSWORD_HASH` is set, and production refuses to sign or accept tokens without a real `JWT_SECRET` of 32+ characters.
-- Runtime secrets now live only on each server in `.env.runtime`, which deploys load and check before starting the app. `.env.production` is no longer tracked in git. `pnpm admin:hash` generates the password hash and a JWT secret.
-- The strict login rate limit now applies to the login endpoint only; `/admin` responses are `noindex` and never cached.
-
 ### Changed
-- Light and dark theme colours are now CSS tokens in `globals.css` (`:root` and `[data-theme="light"]`) instead of inline styles set from JavaScript. A saved light theme is applied before the first paint, so it no longer flashes dark on load.
-- New shared tokens for upcoming blog and admin UI: serif font, prose widths, focus ring, accent tints and code highlighting. `scripts/check-theme-tokens.mjs` rejects hardcoded colours in blog and admin code.
+- Admin sign-in is more secure.
+- The light theme no longer flashes dark while a page loads, and theme colours are consistent across the site.
 
 ## 1.2.0
 

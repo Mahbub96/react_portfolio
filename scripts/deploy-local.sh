@@ -136,6 +136,15 @@ if (( jwt_len < 32 )); then
   exit 1
 fi
 echo "runtime secrets OK"
+# AI writing assist is optional: warn, never fail.
+if ! grep -qE "^(export )?NVIDIA_API_KEY=.+" "$env_file"; then
+  echo "note: NVIDIA_API_KEY not set; AI suggestions stay off"
+else
+  rules="$(set -a; . "$env_file"; printf '%s' "${AI_RULES_FILE:-}")"
+  if [[ -n "$rules" && ! -r "$rules" ]]; then
+    echo "warning: AI_RULES_FILE ($rules) is not readable; built-in rules will be used"
+  fi
+fi
 PRECHECK
 
 log "Building locally"
