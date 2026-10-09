@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { displayImage } from "@/lib/displayImage";
 import Link from "next/link";
 import {
   HiOutlineExternalLink,
@@ -65,7 +66,7 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
   const normalizedSrc = normalizeImagePath(src);
 
   // Enhanced image URL for production with fallback
-  const imageUrl = normalizedSrc || "/assets/img/projects.png";
+  const imageUrl = displayImage(normalizedSrc) || "/assets/img/projects.png";
 
   // Handle image load error
   const handleImageError = () => {

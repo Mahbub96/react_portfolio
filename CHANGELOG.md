@@ -22,6 +22,7 @@ Versioning restarts at 1.0.0 with this release.
 
 ### Performance
 - Removed the custom webpack `splitChunks` config. The homepage's first-load JS dropped from 594 kB to 168 kB, and the CSS-as-script console error is gone.
+- Project screenshots and the profile photo are served as pre-optimised WebP (about 650 KB in total instead of about 8.4 MB of PNG/JPEG). `images.unoptimized` is on because the runtime optimizer cannot load `sharp` on the Linux server when the build comes from macOS.
 - Removed the Google Fonts stylesheet, which the CSP was blocking, and the manual image preloads. The CSP now allows the Cloudflare Web Analytics beacon.
 
 ### Other

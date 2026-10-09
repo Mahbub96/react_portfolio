@@ -8,7 +8,12 @@ const nextConfig = {
         hostname: "mahbub.dev",
       },
     ],
-    unoptimized: false,
+    // Images are pre-optimised WebP files served statically (see
+    // src/lib/displayImage.js). The runtime optimizer cannot work in
+    // production: the standalone build is made on macOS and its sharp binary
+    // does not load on the Linux x86_64 server, so /_next/image returned the
+    // original multi-MB PNGs.
+    unoptimized: true,
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

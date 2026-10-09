@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { displayImage } from "@/lib/displayImage";
 
 import styles from "./projectDetail.module.css";
 
@@ -67,7 +68,7 @@ export default function ProjectDetail({ project, caseStudy = null }) {
       {image ? (
         <div className={styles.imageFrame}>
           <Image
-            src={image}
+            src={displayImage(image)}
             alt={`${name} — project screenshot`}
             width={1024}
             height={576}

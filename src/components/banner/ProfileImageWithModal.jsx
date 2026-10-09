@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { displayImage } from "@/lib/displayImage";
 import { HiOutlineX, HiOutlineArrowsExpand } from "react-icons/hi";
 import { FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
 import modalStyles from "../projects/ProjectModal.module.css";
@@ -56,7 +57,7 @@ export default function ProfileImageWithModal({
   ];
 
   const pills = capabilities.length > 0 ? capabilities : defaultCapabilities;
-  const imageSrc = profileImage || "/assets/img/profile.png";
+  const imageSrc = displayImage(profileImage || "/assets/img/profile.png");
 
   return (
     <>
