@@ -13,6 +13,7 @@
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "seo:indexnow": "node scripts/indexnow.mjs",
     "admin:hash": "node scripts/hash-password.mjs",
+    "test:blog": "node --test \"src/lib/blog/*.test.mjs\"",
     "blog:generate": "node scripts/generate-blog.mjs",
     "start": "next start",
     "lint": "next lint",
@@ -37,8 +38,11 @@
     "echarts-for-react": "^3.0.2",
     "echarts-gl": "^2.0.9",
     "framer-motion": "^12.4.7",
+    "hast-util-to-html": "9.0.5",
+    "image-size": "2.0.4",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^4.2.1",
+    "lowlight": "3.3.0",
     "mongodb": "^6.0.0",
     "mongoose": "^8.0.0",
     "next": "^14.0.0",
@@ -55,7 +59,8 @@
     "sharp": "^0.35.4",
     "sitemap": "^8.0.0",
     "topojson-client": "^3.1.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.14",

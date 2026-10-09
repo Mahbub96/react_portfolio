@@ -93,6 +93,9 @@ export async function requireAdmin(request) {
     }
     return { valid: true, user };
   } catch (error) {
+    // Next's build-time probe signals "this route is dynamic" by throwing;
+    // swallowing it could let Next cache the 401 as a static response.
+    if (error?.digest === "DYNAMIC_SERVER_USAGE") throw error;
     console.error("Admin auth error:", error.message);
     return { valid: false, status: 401, error: "Authentication required" };
   }

@@ -7,6 +7,16 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.3.0
+
+### Added
+- Blog content store in MongoDB: each post has an autosaved working copy and a separately published live snapshot, with version numbers so two editor tabs cannot overwrite each other, URL slug history for 301 redirects, and the last 30 published revisions.
+- Admin blog API under `/api/admin/blog/` (list, create, autosave, publish, schedule, unpublish, delete, slug check, tags, publish checklist), all behind the admin session.
+- Image uploads: the browser sends pre-resized sizes; the server checks each file's real type and dimensions, rejects SVG, names files by content hash and serves them from `/uploads/blog/` with year-long immutable caching. Uploads are stored outside the build so deploys keep them. YouTube embeds copy the thumbnail locally and link out, so posts load nothing from YouTube.
+- An allow-list renderer turns editor content into the public HTML: unknown blocks and attributes are dropped, text is escaped, links are limited to http(s)/mailto/relative and images to this site's uploads. Code is highlighted on the server.
+- Publishing checks title, slug, description length, alt text on every image, heading order and canonical URL, and pings IndexNow from production only.
+- Test and development data use prefixed collections (`test_`, `dev_`), so nothing written outside production can appear on mahbub.dev.
+
 ## 1.2.1
 
 ### Security

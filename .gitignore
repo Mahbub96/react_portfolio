@@ -177,3 +177,6 @@ public/feed.xml
 
 # Real environment files never go in git (secrets live in .env.runtime on the server)
 .env.production
+
+# Local blog uploads (production writes to $SERVER_DIR/uploads/blog)
+.uploads/
