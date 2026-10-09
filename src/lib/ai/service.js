@@ -100,7 +100,8 @@ async function prepare(input) {
 
 function providerError(error) {
   if (error instanceof AiProviderError) {
-    return new AiError(error.message, error.status === 429 ? 429 : 502, { retryAfter: error.retryAfter, code: "provider" });
+    const status = [429, 504].includes(error.status) ? error.status : 502;
+    return new AiError(error.message, status, { retryAfter: error.retryAfter, code: "provider" });
   }
   return error;
 }

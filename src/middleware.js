@@ -90,6 +90,10 @@ export function middleware(request) {
     if (pathname.startsWith('/api/auth/login')) {
       windowMs = 900000; // 15 minutes for login
       maxRequests = 10; // 10 requests per 15 minutes
+    } else if (pathname.startsWith('/api/admin/blog/ai/generate')) {
+      // Second line of defence; the AI service enforces AI_RATE_PER_MIN itself.
+      windowMs = 60000;
+      maxRequests = (Number.parseInt(process.env.AI_RATE_PER_MIN, 10) || 30) + 5;
     } else if (pathname.startsWith('/api/admin/blog/media')) {
       windowMs = 60000;
       maxRequests = 60; // image variants upload one request each
