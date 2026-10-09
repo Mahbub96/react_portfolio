@@ -28,6 +28,7 @@ import {
 } from "./siteConfig.mjs";
 import { absoluteUrl, absoluteAssetUrl } from "./urls.mjs";
 import { projectPath } from "./projectCatalog.mjs";
+import { ABOUT_TOPICS } from "./aboutProfile.mjs";
 
 export const PERSON_ID = `${SITE_ORIGIN}/#person`;
 export const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
@@ -69,7 +70,7 @@ export function personNode() {
       addressLocality: SITE_AUTHOR.locality,
       addressCountry: SITE_AUTHOR.countryCode,
     },
-    knowsAbout: SITE_EXPERTISE,
+    knowsAbout: [...new Set([...SITE_EXPERTISE, ...ABOUT_TOPICS])],
     sameAs: SAME_AS,
   };
 }

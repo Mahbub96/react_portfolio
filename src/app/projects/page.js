@@ -33,7 +33,7 @@ async function getProjectsData() {
 }
 
 const TITLE = "Projects";
-const DESCRIPTION = `Software projects by ${SITE_AUTHOR.name}: backend platforms, applied AI and speech recognition, full-stack web apps and mobile apps built with NestJS, Python, Next.js and React.`;
+const DESCRIPTION = `Software projects by ${SITE_AUTHOR.name}: backend platforms, applied AI and speech recognition, full-stack and mobile apps with NestJS, Python and React.`;
 
 export const metadata = pageMetadata({
   path: "/projects/",

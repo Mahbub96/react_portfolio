@@ -20,6 +20,15 @@ export const STATIC_ROUTES = [
     description: "Portfolio home: profile, projects, skills, experience.",
   },
   {
+    path: "/about/",
+    label: "About",
+    priority: 0.9,
+    changeFrequency: "monthly",
+    inSitemap: true,
+    inFooter: true,
+    description: "Who Mahbub Alam is: focus areas, engineering approach, experience and education.",
+  },
+  {
     path: "/projects/",
     label: "Projects",
     priority: 0.9,

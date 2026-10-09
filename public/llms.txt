@@ -15,6 +15,7 @@
 ## Pages
 
 - [Home](https://mahbub.dev/): Portfolio home: profile, projects, skills, experience.
+- [About](https://mahbub.dev/about/): Who Mahbub Alam is: focus areas, engineering approach, experience and education.
 - [Projects](https://mahbub.dev/projects/): Full project catalogue with stack and source links.
 - [Skills](https://mahbub.dev/skills/): Technical skills grouped by domain.
 - [Contact](https://mahbub.dev/contact/): Contact details and enquiry form.

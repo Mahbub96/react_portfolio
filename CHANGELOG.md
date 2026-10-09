@@ -7,6 +7,15 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.1.0
+
+### Added
+- New `/about/` page covering identity, focus areas, engineering approach, experience, education and links to all case studies. It uses `AboutPage` structured data with the Person as its main entity, and appears in the sitemap, footer and llms.txt.
+- The Person structured data now also lists speech-recognition and mobile topics, each backed by a project or the thesis.
+
+### Fixes
+- Shortened the meta descriptions on `/projects/`, `/skills/` and `/resume/` to under 160 characters so Google does not truncate them.
+
 ## 1.0.1
 
 ### Fixes

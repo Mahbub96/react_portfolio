@@ -39,7 +39,7 @@ async function getCV() {
 }
 
 const TITLE = "Resume";
-const DESCRIPTION = `Resume of ${SITE_AUTHOR.name}, ${SITE_AUTHOR.jobTitle} at ${SITE_AUTHOR.company}: experience, skills, selected projects and education in backend, full-stack and applied AI.`;
+const DESCRIPTION = `Resume of ${SITE_AUTHOR.name}, ${SITE_AUTHOR.jobTitle} at ${SITE_AUTHOR.company}: experience, skills, projects and education in backend, full-stack and applied AI.`;
 
 export const metadata = pageMetadata({
   path: "/resume/",
