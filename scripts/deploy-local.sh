@@ -216,8 +216,9 @@ pm2 list --no-color
 REMOTE
 
 log "Verifying server localhost"
+# PM2 returns before Next is listening; wait up to ~60s for it to come up.
 ssh -i "$SSH_KEY" -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" \
-  "curl -fsSI --max-time 15 http://127.0.0.1:$APP_PORT/ | grep -i '^HTTP/'"
+  "for i in \$(seq 1 30); do curl -fsSI --max-time 15 http://127.0.0.1:$APP_PORT/ | grep -i '^HTTP/' && exit 0; sleep 2; done; echo 'app did not become ready on port $APP_PORT' >&2; exit 1"
 
 log "Verifying public URL"
 curl -fsSI --max-time 20 "$PUBLIC_BASE_URL/" | grep -i '^HTTP/'
