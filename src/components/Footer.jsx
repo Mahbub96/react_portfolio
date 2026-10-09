@@ -7,7 +7,6 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import styles from "./footer.module.css";
-import { footerRoutes } from "@/lib/seo/routes.mjs";
 import { SITE_AUTHOR, SITE_SUMMARY } from "@/lib/seo/siteConfig.mjs";
 import { APP_VERSION, BUILD_NUMBER, HAS_RELEASE_NOTES } from "@/config/version";
 import VersionBadge from "./VersionBadge";
@@ -64,28 +63,6 @@ function Footer({ data }) {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
-        {/*
-          Crawlable internal navigation.
-
-          The navbar uses in-page anchors (#projects, #skills, #contact), so
-          before this existed the standalone routes had zero inbound <a href>
-          links anywhere in the HTML — they were orphan pages that Google could
-          only reach via the sitemap. Rendered as plain anchors, server-side,
-          so they are present for crawlers without any JS execution.
-        */}
-        <nav className={styles.siteLinks} aria-label="Site pages">
-          {footerRoutes().map((route) => (
-            <a
-              key={route.path}
-              href={route.path}
-              className={styles.siteLink}
-              title={route.description}
-            >
-              {route.label}
-            </a>
-          ))}
-        </nav>
-
         <div className={styles.socialLinks}>
           {footerSocialLinks.map((link) => (
             <a

@@ -1,9 +1,9 @@
 /**
  * Registry of the site's static, indexable routes.
  *
- * This is the one list that the sitemap, the footer navigation and llms.txt
- * all read. Adding a page here makes it appear in every surface at once;
- * previously each of those three places kept its own copy and they disagreed.
+ * This is the one list that the sitemap and llms.txt read. Adding a page
+ * here makes it appear in both at once; previously each kept its own copy
+ * and they disagreed.
  *
  * `inSitemap: false` marks a route that is reachable and linkable but must not
  * be advertised to search engines (utility pages, gated views).
@@ -16,7 +16,6 @@ export const STATIC_ROUTES = [
     priority: 1.0,
     changeFrequency: "weekly",
     inSitemap: true,
-    inFooter: false, // the logo already links home
     description: "Portfolio home: profile, projects, skills, experience.",
   },
   {
@@ -25,7 +24,6 @@ export const STATIC_ROUTES = [
     priority: 0.9,
     changeFrequency: "monthly",
     inSitemap: true,
-    inFooter: true,
     description: "Who Mahbub Alam is: focus areas, engineering approach, experience and education.",
   },
   {
@@ -34,7 +32,6 @@ export const STATIC_ROUTES = [
     priority: 0.9,
     changeFrequency: "weekly",
     inSitemap: true,
-    inFooter: true,
     description: "Full project catalogue with stack and source links.",
   },
   {
@@ -43,7 +40,6 @@ export const STATIC_ROUTES = [
     priority: 0.8,
     changeFrequency: "monthly",
     inSitemap: true,
-    inFooter: true,
     description: "Technical skills grouped by domain.",
   },
   {
@@ -53,7 +49,6 @@ export const STATIC_ROUTES = [
     changeFrequency: "weekly",
     // Listed by the live /blog/sitemap.xml (with every post), not the static one.
     inSitemap: false,
-    inFooter: true,
     description: "Engineering articles on backend systems, applied AI and speech recognition.",
   },
   {
@@ -62,7 +57,6 @@ export const STATIC_ROUTES = [
     priority: 0.8,
     changeFrequency: "monthly",
     inSitemap: true,
-    inFooter: true,
     description: "Contact details and enquiry form.",
   },
   {
@@ -71,7 +65,6 @@ export const STATIC_ROUTES = [
     priority: 0.7,
     changeFrequency: "monthly",
     inSitemap: true,
-    inFooter: true,
     description: "Printable resume with downloadable PDF.",
   },
 ];
@@ -81,7 +74,3 @@ export function sitemapRoutes() {
   return STATIC_ROUTES.filter((route) => route.inSitemap);
 }
 
-/** Routes that should be rendered as crawlable footer links. */
-export function footerRoutes() {
-  return STATIC_ROUTES.filter((route) => route.inFooter);
-}

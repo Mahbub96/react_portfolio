@@ -25,7 +25,7 @@ export {
   absoluteAssetUrl,
 } from "./urls.mjs";
 
-export { STATIC_ROUTES, sitemapRoutes, footerRoutes } from "./routes.mjs";
+export { STATIC_ROUTES, sitemapRoutes } from "./routes.mjs";
 
 export { slugify, projectSlug, withUniqueSlugs } from "./slug.mjs";
 

@@ -28,7 +28,7 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 ### Changed
 - The top navbar has a **06. Blog** link in place of "06. Contact", which duplicated the "Get in Touch" button (both opened the contact section). Signed in, the navbar also shows Analytics (07) and Write (08, the blog admin). The profile card's "Get In Touch" link now works from every page.
 - `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
-- The footer always links to the Blog. The RSS feed is announced to feed readers in every page's head but is not shown on the page.
+- The footer no longer repeats the site navigation; it keeps the social links, bio and version badge. The RSS feed is announced to feed readers in every page's head but is not shown on the page.
 - Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
 - The serif font is loaded only when a post uses it, and the byline uses a 3 KB avatar, which brought mobile Lighthouse performance on a post from 85 to 92.
 

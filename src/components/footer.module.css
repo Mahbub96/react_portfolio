@@ -55,29 +55,8 @@
   Styled to read as secondary navigation rather than competing with the
   social icon row above it.
 */
-.siteLinks {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.75rem;
-  animation: fadeInUp 0.8s ease-out;
-}
 
-.siteLink {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  padding: 0.25rem 0;
-  border-bottom: 1px solid transparent;
-  transition: color 0.3s ease, border-color 0.3s ease;
-}
 
-.siteLink:hover,
-.siteLink:focus-visible {
-  color: var(--accent-primary, #64ffda);
-  border-bottom-color: currentColor;
-}
 
 .summary {
   max-width: 62ch;
