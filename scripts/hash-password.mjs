@@ -44,9 +44,12 @@ if (password !== confirm) {
   console.error("Passwords do not match.");
   process.exit(1);
 }
-if (password.length < 12) {
-  console.error("Use at least 12 characters.");
+if (password.length < 6) {
+  console.error("Use at least 6 characters.");
   process.exit(1);
+}
+if (password.length < 12) {
+  console.warn("Note: a longer password (12+ characters) is much harder to guess.");
 }
 
 const hash = await bcrypt.hash(password, 12);
