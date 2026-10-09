@@ -263,19 +263,9 @@ const nextConfig = {
   },
 
   // Redirects for better SEO
+  // (www -> apex is handled in src/middleware.js so it is a single hop.)
   async redirects() {
     return [
-      // Canonical host: www -> apex.
-      // Both hosts currently answer 200 with identical HTML. The canonical tag
-      // points at the apex so Google consolidates them, but serving the same
-      // content on two hostnames without a redirect is still a duplicate-content
-      // signal and splits any links that point at the www form.
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.mahbub.dev" }],
-        destination: "https://mahbub.dev/:path*",
-        permanent: true,
-      },
       {
         source: "/home",
         destination: "/",

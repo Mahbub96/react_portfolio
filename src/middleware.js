@@ -45,8 +45,17 @@ function getClientIP(request) {
 
 // Security middleware
 export function middleware(request) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
   const clientIP = getClientIP(request);
+
+  // Canonical host: www.mahbub.dev -> mahbub.dev in ONE hop, preserving the
+  // exact path (incl. trailing slash) and query. The next.config.js redirect
+  // previously used `:path*`, which dropped the trailing slash and caused a
+  // second 308 to the slash-terminated URL.
+  const host = (request.headers.get("host") || "").toLowerCase();
+  if (host === "www.mahbub.dev") {
+    return NextResponse.redirect(`https://mahbub.dev${pathname}${search}`, 301);
+  }
 
   // Security headers for all responses
   const response = NextResponse.next();

@@ -7,6 +7,11 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.0.1
+
+### Fixes
+- `www.mahbub.dev` now redirects to `mahbub.dev` in a single 301 that keeps the exact path and trailing slash. Before, it took two redirects and dropped the trailing slash.
+
 ## 1.0.0
 
 Versioning restarts at 1.0.0 with this release.
