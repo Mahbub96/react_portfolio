@@ -258,7 +258,7 @@
   transform: translateY(-2px);
   border-color: var(--border-primary);
   background: color-mix(in srgb, var(--background-card) 75%, var(--accent-softer));
-  box-shadow: var(--shadow-lg), 0 0 25px rgba(32, 201, 151, 0.12);
+  box-shadow: var(--shadow-lg), 0 0 25px var(--accent-soft);
 }
 
 .cardBody {
@@ -413,8 +413,8 @@
 
 .featured {
   border-color: var(--border-accent);
-  background: linear-gradient(135deg, rgba(32, 201, 151, 0.08) 0%, var(--background-card) 100%);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 24px rgba(32, 201, 151, 0.1);
+  background: linear-gradient(135deg, var(--accent-softer) 0%, var(--background-card) 100%);
+  box-shadow: var(--shadow-lg), 0 0 24px var(--accent-soft);
 }
 
 /* Grid layout option */
