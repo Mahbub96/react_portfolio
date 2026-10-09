@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import mongoose from "mongoose";
+import { adminDenied, requireAdmin } from "@/lib/adminSession";
 
 // Create a schema for login attempts
 const LoginAttemptSchema = new mongoose.Schema({
@@ -21,6 +22,9 @@ try {
 }
 
 export async function GET(request) {
+  const auth = await requireAdmin(request);
+  if (!auth.valid) return adminDenied(auth);
+
   try {
     await connectDB();
 

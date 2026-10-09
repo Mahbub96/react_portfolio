@@ -1,15 +1,41 @@
+import { randomBytes } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { NextResponse } from "next/server";
 
 // JWT configuration
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+const MIN_SECRET_LENGTH = 32;
 
 // Rate limiting storage (in production, use Redis)
 const loginAttempts = new Map();
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+
+/**
+ * The signing secret, read at call time (not import time) so `next build`
+ * works without it. There is deliberately no shared default: in production a
+ * missing or short secret makes signing and verifying fail closed. In
+ * development a random per-process secret is used, so sessions end when the
+ * dev server restarts.
+ */
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  // Reject the length check's obvious bypass: a copied example placeholder.
+  if (secret && secret.length >= MIN_SECRET_LENGTH && !/change-this|your-super-secret/i.test(secret)) {
+    return secret;
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(`JWT_SECRET must be set to at least ${MIN_SECRET_LENGTH} characters`);
+  }
+
+  if (!global.__devJwtSecret) {
+    global.__devJwtSecret = randomBytes(32).toString('hex');
+    console.warn('JWT_SECRET is not set; using a random development secret.');
+  }
+  return global.__devJwtSecret;
+}
 
 // Secure password hashing
 export async function hashPassword(password) {
@@ -19,26 +45,19 @@ export async function hashPassword(password) {
 
 // Secure password verification
 export async function verifyPassword(password, hashedPassword) {
+  if (!hashedPassword) return false;
   return await bcrypt.compare(password, hashedPassword);
 }
 
 // Generate JWT token
 export function generateToken(payload) {
-  if (!JWT_SECRET || JWT_SECRET === 'your-super-secret-jwt-key-change-this-in-production') {
-    console.warn('Using default JWT secret. Please set JWT_SECRET environment variable in production.');
-  }
-  
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: JWT_EXPIRES_IN });
 }
 
 // Verify JWT token
 export function verifyToken(token) {
   try {
-    if (!JWT_SECRET || JWT_SECRET === 'your-super-secret-jwt-key-change-this-in-production') {
-      console.warn('Using default JWT secret. Please set JWT_SECRET environment variable in production.');
-    }
-    
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch (error) {
     if (error.name !== 'TokenExpiredError' && error.name !== 'JsonWebTokenError') {
       console.log('JWT verification error:', error.message);
@@ -85,27 +104,6 @@ export function checkLoginRateLimit(identifier) {
 // Reset login attempts on successful login
 export function resetLoginAttempts(identifier) {
   loginAttempts.delete(identifier);
-}
-
-// Authentication middleware
-export function authenticateToken(request) {
-  try {
-    const authHeader = request.headers.get('authorization');
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-    if (!token) {
-      return { valid: false, error: 'Access token required' };
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return { valid: false, error: 'Invalid or expired token' };
-    }
-
-    return { valid: true, user: decoded };
-  } catch (error) {
-    return { valid: false, error: 'Authentication failed' };
-  }
 }
 
 // Input sanitization

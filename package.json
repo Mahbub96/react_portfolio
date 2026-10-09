@@ -1,6 +1,6 @@
 {
   "name": "mahbub-portfolio-nextjs",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "engines": {
     "node": ">=22 <23"
@@ -12,6 +12,7 @@
     "build": "next build",
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "seo:indexnow": "node scripts/indexnow.mjs",
+    "admin:hash": "node scripts/hash-password.mjs",
     "blog:generate": "node scripts/generate-blog.mjs",
     "start": "next start",
     "lint": "next lint",

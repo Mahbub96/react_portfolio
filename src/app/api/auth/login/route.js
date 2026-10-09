@@ -1,14 +1,20 @@
-import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import mongoose from "mongoose";
-import { 
-  verifyPassword, 
-  generateToken, 
-  checkLoginRateLimit, 
+import {
+  verifyPassword,
+  checkLoginRateLimit,
   resetLoginAttempts,
-  secureResponse 
+  secureResponse
 } from "@/lib/auth";
-import { ADMIN_CONFIG, ADMIN_ROLES } from "@/config/admin";
+import { ADMIN_CONFIG } from "@/config/admin";
+import AdminSession from "@/models/AdminSession";
+import {
+  adminDenied,
+  getClientIP,
+  requireAdmin,
+  setSessionCookie,
+  startAdminSession,
+} from "@/lib/adminSession";
 
 // Create a schema for login attempts
 const LoginAttemptSchema = new mongoose.Schema({
@@ -26,44 +32,29 @@ const LoginAttemptSchema = new mongoose.Schema({
   expiresAt: { type: Date, default: () => new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) }, // 90 days
 });
 
-// Create a schema for admin sessions
-const AdminSessionSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  username: { type: String, required: true },
-  token: { type: String, required: true },
-  userAgent: { type: String },
-  ipAddress: { type: String },
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, required: true },
-  lastActivity: { type: Date, default: Date.now },
-  isActive: { type: Boolean, default: true },
-});
-
 // Use existing connection or create new one
-let LoginAttempt, AdminSession;
+let LoginAttempt;
 try {
   LoginAttempt = mongoose.model("LoginAttempt");
 } catch {
   LoginAttempt = mongoose.model("LoginAttempt", LoginAttemptSchema);
 }
 
-try {
-  AdminSession = mongoose.model("AdminSession");
-} catch {
-  AdminSession = mongoose.model("AdminSession", AdminSessionSchema);
-}
-
-// Get client IP address
-function getClientIP(request) {
-  return request.headers.get("x-forwarded-for")?.split(",")[0] ||
-         request.headers.get("x-real-ip") ||
-         request.headers.get("x-client-ip") ||
-         "unknown";
-}
-
 export async function POST(request) {
   try {
-    await connectDB();
+    if (!ADMIN_CONFIG.PASSWORD_HASH) {
+      return secureResponse(
+        { success: false, message: "Admin login is not configured" },
+        503
+      );
+    }
+
+    if (!(await connectDB())) {
+      return secureResponse(
+        { success: false, message: "Admin login is unavailable" },
+        503
+      );
+    }
 
     const body = await request.json();
     const { username, password, timestamp, userAgent } = body;
@@ -106,36 +97,9 @@ export async function POST(request) {
 
     // Validate credentials
     if (sanitizedUsername === ADMIN_CONFIG.USERNAME.toLowerCase()) {
-      const DEFAULT_ADMIN_HASH = "$2a$12$gEemmlhB/3WYXwC3hnkvn.XzCaY7BnOLw4UDyF.POLCt3wRysoSYa";
-      let isPasswordValid = await verifyPassword(password, ADMIN_CONFIG.PASSWORD_HASH);
-      if (!isPasswordValid && ADMIN_CONFIG.PASSWORD_HASH !== DEFAULT_ADMIN_HASH) {
-        isPasswordValid = await verifyPassword(password, DEFAULT_ADMIN_HASH);
-      }
-      
+      const isPasswordValid = await verifyPassword(password, ADMIN_CONFIG.PASSWORD_HASH);
+
       if (isPasswordValid) {
-        // Generate JWT token
-        const tokenPayload = {
-          userId: sanitizedUsername,
-          username: sanitizedUsername,
-          role: ADMIN_ROLES.ADMIN,
-          iat: Math.floor(Date.now() / 1000),
-        };
-
-        const token = generateToken(tokenPayload);
-
-        // Create admin session
-        const sessionExpiry = new Date(Date.now() + ADMIN_CONFIG.SESSION_TIMEOUT);
-        const adminSession = new AdminSession({
-          userId: sanitizedUsername,
-          username: sanitizedUsername,
-          token,
-          userAgent,
-          ipAddress: getClientIP(request),
-          expiresAt: sessionExpiry,
-        });
-
-        await adminSession.save();
-
         // Log successful login
         const loginAttempt = new LoginAttempt({
           username: sanitizedUsername,
@@ -151,14 +115,18 @@ export async function POST(request) {
         // Reset login attempts
         resetLoginAttempts(sanitizedUsername);
 
-        // Return success with token
-        return secureResponse({
-          success: true,
-          message: "Login successful",
-          token,
-          userRole: ADMIN_ROLES.ADMIN,
-          expiresAt: sessionExpiry.toISOString(),
-        });
+        // The session token goes only into the httpOnly cookie; the body
+        // carries nothing a script could reuse.
+        const session = await startAdminSession({ username: sanitizedUsername, request });
+        return setSessionCookie(
+          secureResponse({
+            success: true,
+            message: "Login successful",
+            userRole: session.role,
+            expiresAt: session.expiresAt.toISOString(),
+          }),
+          session
+        );
 
       } else {
         // Log failed login attempt
@@ -215,8 +183,11 @@ export async function POST(request) {
   }
 }
 
-// Clean up expired sessions and login attempts
-export async function GET() {
+// Clean up expired sessions and login attempts (admin only)
+export async function GET(request) {
+  const auth = await requireAdmin(request);
+  if (!auth.valid) return adminDenied(auth);
+
   try {
     await connectDB();
     

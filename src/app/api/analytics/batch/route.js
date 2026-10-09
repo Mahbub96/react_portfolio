@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { secureResponse } from "@/lib/auth";
+import { hasAdminCookie } from "@/lib/adminSession";
 import { getIPAndGeolocation } from "@/services/ipGeolocation";
 import { saveBatchEvents } from "@/services/analyticsService";
 
@@ -14,8 +15,7 @@ export async function POST(request) {
     }
 
     // Discard tracking events from logged-in admin users
-    const authHeader = request.headers.get("authorization");
-    if (authHeader && authHeader.startsWith("Bearer ")) {
+    if (hasAdminCookie(request)) {
       return secureResponse({ success: true, insertedCount: 0, ignored: "authenticated_user" });
     }
 

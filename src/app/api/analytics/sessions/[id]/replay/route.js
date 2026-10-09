@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import { authenticateToken, secureResponse } from "@/lib/auth";
+import { secureResponse } from "@/lib/auth";
+import { requireAdmin } from "@/lib/adminSession";
 import { getSessionReplayData } from "@/services/analyticsService";
 
 export async function GET(request, { params }) {
   try {
-    const authResult = authenticateToken(request);
+    const authResult = await requireAdmin(request);
     if (!authResult.valid) {
       return secureResponse(
         { error: "Authentication required to access session replay" },

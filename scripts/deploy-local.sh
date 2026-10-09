@@ -23,6 +23,12 @@ Optional overrides:
   PUBLIC_BASE_URL=https://<domain>
   ARTIFACT=/tmp/<domain-slug>-build.tar.gz
   REMOTE_ARTIFACT=/tmp/<domain-slug>-build.tar.gz
+
+Runtime secrets are read on the server from $SERVER_DIR/.env.runtime
+(chmod 600, never in git, never touched by deploys). Required keys:
+  JWT_SECRET, ADMIN_PASSWORD_HASH, MONGODB_URI, SITE_ENV
+SITE_ENV must be "production" on mahbub.dev and "test" everywhere else.
+See env.example.
 USAGE
 }
 
@@ -66,15 +72,18 @@ case "$DOMAIN" in
   mahbub.dev)
     DEFAULT_APP_NAME="mahbub.dev"
     DEFAULT_APP_PORT="3000"
+    EXPECTED_SITE_ENV="production"
     ;;
   test.mahbub.dev)
     # Keep the current PM2 name/port so old test processes are replaced cleanly.
     DEFAULT_APP_NAME="my-app-5010"
     DEFAULT_APP_PORT="5010"
+    EXPECTED_SITE_ENV="test"
     ;;
   *)
     DEFAULT_APP_NAME="$DOMAIN"
     DEFAULT_APP_PORT=""
+    EXPECTED_SITE_ENV="test"
     ;;
 esac
 
@@ -96,6 +105,38 @@ printf '  domain: %s\n  public URL: %s\n  server dir: %s\n  app: %s\n  port: %s\
 log "Checking SSH key"
 test -f "$SSH_KEY"
 chmod 600 "$SSH_KEY"
+
+log "Checking server runtime secrets ($SERVER_DIR/.env.runtime)"
+# Fails before anything is built or replaced. Only key names are checked;
+# values never leave the server.
+ssh -i "$SSH_KEY" -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" \
+  "SERVER_DIR='$SERVER_DIR' EXPECTED_SITE_ENV='$EXPECTED_SITE_ENV' bash -s" <<'PRECHECK'
+set -euo pipefail
+env_file="$SERVER_DIR/.env.runtime"
+if [[ ! -f "$env_file" ]]; then
+  echo "missing $env_file (see env.example)" >&2
+  exit 1
+fi
+missing=()
+for key in JWT_SECRET ADMIN_PASSWORD_HASH MONGODB_URI SITE_ENV; do
+  grep -qE "^(export )?$key=.+" "$env_file" || missing+=("$key")
+done
+if (( ${#missing[@]} )); then
+  echo "missing keys in $env_file: ${missing[*]}" >&2
+  exit 1
+fi
+site_env="$(set -a; . "$env_file"; printf '%s' "$SITE_ENV")"
+if [[ "$site_env" != "$EXPECTED_SITE_ENV" ]]; then
+  echo "SITE_ENV is '$site_env' but this domain needs '$EXPECTED_SITE_ENV'" >&2
+  exit 1
+fi
+jwt_len="$(set -a; . "$env_file"; printf '%s' "$JWT_SECRET" | wc -c | tr -d ' ')"
+if (( jwt_len < 32 )); then
+  echo "JWT_SECRET must be at least 32 characters" >&2
+  exit 1
+fi
+echo "runtime secrets OK"
+PRECHECK
 
 log "Building locally"
 rm -rf .next
@@ -145,6 +186,13 @@ find "$(dirname "$BACKUP_FILE")" -maxdepth 1 -type f \
 
 rm -rf .next public scripts/updatePortfolioContent.js db.json package.json next.config.js
 tar -xzf "$REMOTE_ARTIFACT" -C "$SERVER_DIR"
+
+# Runtime secrets for this environment (see env.example). Exported so both
+# the optional content sync and the PM2 process see them; real environment
+# variables take precedence over the .env files bundled in the build.
+set -a
+. "$SERVER_DIR/.env.runtime"
+set +a
 
 # Database content sync is OPT-IN (UPDATE_CONTENT=1): it upserts db.json into
 # the MongoDB configured in the server-side .env, i.e. a data write on that

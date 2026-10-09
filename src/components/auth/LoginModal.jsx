@@ -51,17 +51,8 @@ function LoginModal({ show, onHide }) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Store JWT token securely
-        if (data.token) {
-          localStorage.setItem("authToken", data.token);
-          localStorage.setItem("userRole", data.userRole || "admin");
-          
-          // Call login function with token and role
-          login(data.token, data.userRole || "admin");
-        } else {
-          // Fallback if no token in response
-          login();
-        }
+        // The session is in an httpOnly cookie set by the response.
+        login(data.userRole || "admin", data.expiresAt);
         
         onHide();
         setUsername("");

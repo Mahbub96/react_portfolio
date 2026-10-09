@@ -10,58 +10,30 @@ import {
 const DataContext = createContext();
 export const useDataContext = () => useContext(DataContext);
 
-// Helper function to safely decode JWT payload
-function decodeJWTPayload(token) {
+// The session token lives in an httpOnly cookie that scripts cannot read.
+// The browser only keeps this non-secret marker ({ role, expiresAt }) so it
+// knows whether to ask /api/auth/session at all; public visitors never do.
+export const ADMIN_MARKER_KEY = "adminSession";
+
+function readMarker() {
   try {
-    if (!token || typeof token !== "string") return null;
-
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-
-    // Use proper base64 decoding with padding
-    const payload = parts[1];
-    // Add padding if needed
-    const paddedPayload = payload + "=".repeat((4 - (payload.length % 4)) % 4);
-
-    try {
-      // Try using atob first (browser environment)
-      if (typeof atob !== "undefined") {
-        const decoded = atob(
-          paddedPayload.replace(/-/g, "+").replace(/_/g, "/")
-        );
-        return JSON.parse(decoded);
-      } else {
-        // Fallback for Node.js environment
-        const decoded = Buffer.from(paddedPayload, "base64").toString("utf8");
-        return JSON.parse(decoded);
-      }
-    } catch (decodeError) {
-      console.log("JWT decode error:", decodeError);
-      return null;
+    const marker = JSON.parse(localStorage.getItem(ADMIN_MARKER_KEY) || "null");
+    if (marker?.expiresAt && Date.parse(marker.expiresAt) > Date.now()) {
+      return marker;
     }
-  } catch (error) {
-    console.log("JWT decode error:", error);
-    return null;
+  } catch {
+    // ignore malformed marker
   }
+  return null;
 }
 
-// Helper function to check if token needs refresh (within 5 minutes of expiry)
-function shouldRefreshToken(payload) {
-  if (!payload || !payload.exp) return false;
-  const currentTime = Math.floor(Date.now() / 1000);
-  const timeUntilExpiry = payload.exp - currentTime;
-  return timeUntilExpiry < 300; // 5 minutes
-}
-
-// Helper function to validate token structure
-function isValidTokenStructure(payload) {
-  // More lenient validation - only require exp field
-  return (
-    payload &&
-    typeof payload === "object" &&
-    payload.exp &&
-    typeof payload.exp === "number"
-  );
+function writeMarker(marker) {
+  try {
+    if (marker) localStorage.setItem(ADMIN_MARKER_KEY, JSON.stringify(marker));
+    else localStorage.removeItem(ADMIN_MARKER_KEY);
+  } catch {
+    // storage unavailable (private mode); auth still works via the cookie
+  }
 }
 
 function DataContextProvider(props) {
@@ -69,97 +41,69 @@ function DataContextProvider(props) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
 
   // Global profile image state for real-time updates across all components
   const [globalProfileImage, setGlobalProfileImage] = useState(
     "/assets/img/profile.png"
   );
 
-  // Check JWT token on client side only
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      const role = localStorage.getItem("userRole");
-
-      if (token && role) {
-        // Verify token validity using proper JWT decoding
-        const payload = decodeJWTPayload(token);
-
-        if (payload && isValidTokenStructure(payload)) {
-          const currentTime = Math.floor(Date.now() / 1000);
-
-          if (payload.exp > currentTime) {
-            // Token is valid
-            setAuthToken(token);
-            setUserRole(role);
-            setIsAuthenticated(true);
-
-            // Check if token needs refresh
-            if (shouldRefreshToken(payload)) {
-              // In a real app, you'd call a refresh endpoint here
-            }
-          } else {
-            // Token expired, clear it
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userRole");
-            setIsAuthenticated(false);
-          }
-        } else {
-          // Invalid token structure, clear it
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userRole");
-          setIsAuthenticated(false);
-        }
-      }
-
-      // Load saved profile image from localStorage if available
-      const savedProfileImage = localStorage.getItem("profileImage");
-      if (savedProfileImage) {
-        setGlobalProfileImage(savedProfileImage);
-      }
-
-      setIsLoaded(true);
-    }
+  const clearAuthState = useCallback(() => {
+    writeMarker(null);
+    setUserRole(null);
+    setIsAuthenticated(false);
   }, []);
 
-  // Set up token validation interval - only check every 5 minutes to reduce unnecessary API calls
-  useEffect(() => {
-    if (!isAuthenticated || !authToken) return;
-
-    const interval = setInterval(() => {
-      const payload = decodeJWTPayload(authToken);
-
-      if (payload && isValidTokenStructure(payload)) {
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        if (payload.exp <= currentTime) {
-          // Token expired, logout user
-          logout();
-        } else if (shouldRefreshToken(payload)) {
-          // In a real app, you'd call a refresh endpoint here
-        }
-      } else {
-        // Invalid token structure, logout user
-        logout();
+  // Confirm the cookie session with the server; the marker alone is a hint.
+  const verifySession = useCallback(async () => {
+    try {
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
+      const data = await response.json();
+      if (data.authenticated) {
+        writeMarker({ role: data.role, expiresAt: data.expiresAt });
+        setUserRole(data.role);
+        setIsAuthenticated(true);
+        return true;
       }
-    }, 300000); // Check every 5 minutes instead of every minute
-
-    return () => clearInterval(interval);
-  }, [isAuthenticated, authToken]);
-
-  // Update localStorage whenever auth state changes
-  useEffect(() => {
-    if (typeof window !== "undefined" && isLoaded) {
-      if (isAuthenticated && authToken && userRole) {
-        localStorage.setItem("authToken", authToken);
-        localStorage.setItem("userRole", userRole);
-      } else {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userRole");
-      }
+    } catch {
+      // network error: keep the optimistic state; API calls will 401 if stale
+      return Boolean(readMarker());
     }
-  }, [isAuthenticated, authToken, userRole, isLoaded]);
+    clearAuthState();
+    return false;
+  }, [clearAuthState]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Tokens from the old localStorage scheme are no longer used.
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userRole");
+
+    const marker = readMarker();
+    if (marker) {
+      setUserRole(marker.role);
+      setIsAuthenticated(true);
+      verifySession();
+    } else {
+      writeMarker(null);
+    }
+
+    // Load saved profile image from localStorage if available
+    const savedProfileImage = localStorage.getItem("profileImage");
+    if (savedProfileImage) {
+      setGlobalProfileImage(savedProfileImage);
+    }
+
+    setIsLoaded(true);
+  }, [verifySession]);
+
+  // Re-check every 5 minutes while logged in, so an expired or revoked
+  // session logs the UI out.
+  useEffect(() => {
+    if (!isAuthenticated) return undefined;
+    const interval = setInterval(verifySession, 300000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, verifySession]);
 
   // Update localStorage whenever profile image changes
   useEffect(() => {
@@ -168,48 +112,25 @@ function DataContextProvider(props) {
     }
   }, [globalProfileImage, isLoaded]);
 
-  const login = (token, role) => {
-    setAuthToken(token);
+  // Called after /api/auth/login succeeded (the cookie is already set).
+  const login = useCallback((role = "admin", expiresAt) => {
+    writeMarker({
+      role,
+      expiresAt: expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    });
     setUserRole(role);
     setIsAuthenticated(true);
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
-      // Track logout event in database
-      if (typeof window !== "undefined" && authToken) {
-        const payload = decodeJWTPayload(authToken);
-
-        if (payload && payload.username) {
-          await fetch("/api/auth/logout", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
-            body: JSON.stringify({
-              username: payload.username,
-              timestamp: new Date().toISOString(),
-              userAgent: navigator.userAgent,
-              reason: "user_logout",
-            }),
-          });
-        }
-      }
+      await fetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
-      console.log("Error tracking logout:", error);
+      console.log("Error during logout:", error);
     } finally {
-      setAuthToken(null);
-      setUserRole(null);
-      setIsAuthenticated(false);
-
-      // Clear localStorage
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userRole");
-      }
+      clearAuthState();
     }
-  };
+  }, [clearAuthState]);
 
   // Check if user has specific permission
   const hasPermission = useCallback(
@@ -260,45 +181,27 @@ function DataContextProvider(props) {
     }
   }, []);
 
-  // Get auth headers for API calls
-  const getAuthHeaders = useCallback(() => {
-    if (authToken) {
-      return {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      };
-    }
-    return { "Content-Type": "application/json" };
-  }, [authToken]);
+  // Kept for existing callers; the cookie carries authentication.
+  const getAuthHeaders = useCallback(
+    () => ({ "Content-Type": "application/json" }),
+    []
+  );
 
-  // Enhanced API call function with better error handling
+  // fetch wrapper for admin APIs: same-origin requests send the session
+  // cookie automatically; a 401 means the session ended.
   const makeAuthenticatedRequest = useCallback(
     async (url, options = {}) => {
       try {
-        const headers = getAuthHeaders();
-
         const response = await fetch(url, {
           ...options,
           headers: {
-            ...headers,
+            ...getAuthHeaders(),
             ...options.headers,
           },
         });
 
         if (response.status === 401) {
-          // Check if token is actually expired or just invalid
-          const payload = decodeJWTPayload(authToken);
-
-          if (payload && isValidTokenStructure(payload)) {
-            const currentTime = Math.floor(Date.now() / 1000);
-
-            if (payload.exp <= currentTime) {
-              // Token is actually expired, logout user
-              logout();
-              return { error: "Token expired", status: 401 };
-            }
-          }
-          // Token might be invalid but not expired, return error without logout
+          clearAuthState();
           return { error: "Authentication failed", status: 401 };
         }
 
@@ -308,36 +211,19 @@ function DataContextProvider(props) {
         return { error: "Network error", status: 0 };
       }
     },
-    [authToken, getAuthHeaders, logout]
+    [getAuthHeaders, clearAuthState]
   );
 
-  // Function to refresh authentication state
+  // Re-check the session (used after a 401 or when a page mounts)
   const refreshAuth = useCallback(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      const role = localStorage.getItem("userRole");
-
-      if (token && role) {
-        const payload = decodeJWTPayload(token);
-        if (payload && isValidTokenStructure(payload)) {
-          const currentTime = Math.floor(Date.now() / 1000);
-          if (payload.exp > currentTime) {
-            setAuthToken(token);
-            setUserRole(role);
-            setIsAuthenticated(true);
-            return true;
-          }
-        }
-      }
-
-      // Clear invalid authentication
-      setAuthToken(null);
-      setUserRole(null);
-      setIsAuthenticated(false);
+    if (typeof window === "undefined") return false;
+    if (!readMarker()) {
+      clearAuthState();
       return false;
     }
-    return false;
-  }, []);
+    verifySession();
+    return true;
+  }, [clearAuthState, verifySession]);
 
   const values = {
     auth: isAuthenticated,
@@ -345,7 +231,6 @@ function DataContextProvider(props) {
     logout,
     isLoaded,
     userRole,
-    authToken,
     hasPermission,
     getAuthHeaders,
     makeAuthenticatedRequest,

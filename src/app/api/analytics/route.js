@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Analytics from "@/models/Analytics";
-import { authenticateToken, secureResponse } from "@/lib/auth";
+import { secureResponse } from "@/lib/auth";
+import { requireAdmin } from "@/lib/adminSession";
 import {
   getAnalyticsStats,
   getComponentStats,
@@ -20,7 +21,7 @@ import {
 export async function GET(request) {
   try {
     // Authenticate user for analytics access
-    const authResult = authenticateToken(request);
+    const authResult = await requireAdmin(request);
     if (!authResult.valid) {
       return secureResponse(
         { error: "Authentication required to access analytics" },

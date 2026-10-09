@@ -1,12 +1,33 @@
-// Secure admin configuration
-// In production, these should be stored in environment variables or secure database
+// Admin configuration. Credentials come only from the environment: there is
+// no built-in password, so admin login is disabled until ADMIN_PASSWORD_HASH
+// is set (generate one with `pnpm admin:hash`).
+
+/**
+ * bcrypt hashes contain "$", which Next's .env loader expands (even in a
+ * process variable, when a bundled .env file also names the key), silently
+ * corrupting the hash. The recommended form is therefore base64 with a
+ * "b64:" prefix, which reads the same in bash, .env files and process env.
+ * A raw "$2…" hash is still accepted.
+ */
+function readPasswordHash() {
+  const raw = process.env.ADMIN_PASSWORD_HASH;
+  if (!raw) return null;
+  const hash = raw.startsWith("b64:")
+    ? Buffer.from(raw.slice(4), "base64").toString("utf8")
+    : raw;
+  if (!/^\$2[aby]\$\d{2}\$.{53}$/.test(hash)) {
+    console.error(
+      "ADMIN_PASSWORD_HASH is not a valid bcrypt hash (possibly mangled by $-expansion); " +
+        "use the b64: form from `pnpm admin:hash`. Admin login is disabled."
+    );
+    return null;
+  }
+  return hash;
+}
 
 export const ADMIN_CONFIG = {
-  // These should be environment variables in production
   USERNAME: process.env.ADMIN_USERNAME || "mahbub",
-  PASSWORD_HASH:
-    process.env.ADMIN_PASSWORD_HASH ||
-    "$2a$12$gEemmlhB/3WYXwC3hnkvn.XzCaY7BnOLw4UDyF.POLCt3wRysoSYa", // mahbub1230
+  PASSWORD_HASH: readPasswordHash(),
   SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
   MAX_SESSIONS: 3, // Maximum concurrent sessions
 };

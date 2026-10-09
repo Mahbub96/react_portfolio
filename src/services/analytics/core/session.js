@@ -12,19 +12,13 @@ export const OPT_OUT_KEY = "analytics_opt_out";
  */
 export function isAdminLoggedIn() {
   if (typeof window === "undefined") return false;
+  if (window.location.pathname.startsWith("/admin")) return true;
   try {
-    const token = localStorage.getItem("authToken");
-    if (!token) return false;
-    const parts = token.split(".");
-    if (parts.length === 3) {
-      const payload = JSON.parse(atob(parts[1]));
-      if (payload.exp && payload.exp * 1000 < Date.now()) {
-        return false;
-      }
-    }
-    return true;
+    // Non-secret marker written by the auth context after a cookie login.
+    const marker = JSON.parse(localStorage.getItem("adminSession") || "null");
+    return Boolean(marker?.expiresAt && Date.parse(marker.expiresAt) > Date.now());
   } catch {
-    return Boolean(localStorage.getItem("authToken"));
+    return false;
   }
 }
 

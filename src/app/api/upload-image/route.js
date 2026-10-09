@@ -1,20 +1,12 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
+import { adminDenied, requireAdmin } from "@/lib/adminSession";
 
 export async function POST(request) {
   try {
-    // Check if domain is mahbub.dev for admin operations
-    const hostname = request.headers.get("host");
-    const isAdminDomain =
-      hostname === "mahbub.dev" || hostname === "localhost:3000";
-
-    if (!isAdminDomain) {
-      return NextResponse.json(
-        { error: "Image uploads are only allowed on mahbub.dev domain." },
-        { status: 403 }
-      );
-    }
+    const auth = await requireAdmin(request);
+    if (!auth.valid) return adminDenied(auth);
 
     const formData = await request.formData();
     const file = formData.get("image");

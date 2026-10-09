@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
+import { adminDenied, requireAdmin } from "@/lib/adminSession";
 
 export async function PUT(
   request,
@@ -10,17 +11,8 @@ export async function PUT(
     const { collectionName, documentId } = params;
     const updatedData = await request.json();
 
-    // Check if domain is mahbub.dev for admin operations
-    const hostname = request.headers.get("host");
-    const isAdminDomain =
-      hostname === "mahbub.dev" || hostname === "localhost:3000";
-
-    if (!isAdminDomain) {
-      return NextResponse.json(
-        { error: "Data updates are only allowed on mahbub.dev domain." },
-        { status: 403 }
-      );
-    }
+    const auth = await requireAdmin(request);
+    if (!auth.valid) return adminDenied(auth);
 
     await connectDB();
 
@@ -87,17 +79,8 @@ export async function DELETE(
   try {
     const { collectionName, documentId } = params;
 
-    // Check if domain is mahbub.dev for admin operations
-    const hostname = request.headers.get("host");
-    const isAdminDomain =
-      hostname === "mahbub.dev" || hostname === "localhost:3000";
-
-    if (!isAdminDomain) {
-      return NextResponse.json(
-        { error: "Data deletion is only allowed on mahbub.dev domain." },
-        { status: 403 }
-      );
-    }
+    const auth = await requireAdmin(request);
+    if (!auth.valid) return adminDenied(auth);
 
     await connectDB();
 

@@ -7,6 +7,16 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.2.1
+
+### Security
+- Admin login now uses an httpOnly session cookie (`__Host-` prefixed, Secure, SameSite=Strict) instead of a token kept in localStorage. Each login is a revocable server-side session: logging out invalidates the cookie immediately, not just in the browser.
+- Every admin API checks that session, including the portfolio edit, delete and image upload routes and the login history, which previously only compared the `Host` header. Cookie-authenticated writes must also carry a same-site `Origin`.
+- Removed the built-in fallback admin password hash and the default JWT signing secret. Login is disabled until `ADMIN_PASSWORD_HASH` is set, and production refuses to sign or accept tokens without a real `JWT_SECRET` of 32+ characters.
+- Runtime secrets now live only on each server in `.env.runtime`, which deploys load and check before starting the app. `.env.production` is no longer tracked in git. `pnpm admin:hash` generates the password hash and a JWT secret.
+- The strict login rate limit now applies to the login endpoint only; `/admin` responses are `noindex` and never cached.
+
+
 ## 1.2.0
 
 ### Added

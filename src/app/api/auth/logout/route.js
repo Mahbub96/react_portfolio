@@ -1,7 +1,13 @@
-import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import mongoose from "mongoose";
 import { secureResponse } from "@/lib/auth";
+import AdminSession from "@/models/AdminSession";
+import {
+  adminDenied,
+  endAdminSession,
+  getClientIP,
+  requireAdmin,
+} from "@/lib/adminSession";
 
 // Create a schema for logout events
 const LogoutEventSchema = new mongoose.Schema({
@@ -16,118 +22,52 @@ const LogoutEventSchema = new mongoose.Schema({
   expiresAt: { type: Date, default: () => new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) }, // 90 days
 });
 
-// Create a schema for admin sessions (if not already defined)
-const AdminSessionSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  username: { type: String, required: true },
-  token: { type: String, required: true },
-  userAgent: { type: String },
-  ipAddress: { type: String },
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, required: true },
-  lastActivity: { type: Date, default: Date.now },
-  isActive: { type: Boolean, default: true },
-});
-
 // Use existing connection or create new one
-let LogoutEvent, AdminSession;
+let LogoutEvent;
 try {
   LogoutEvent = mongoose.model("LogoutEvent");
 } catch {
   LogoutEvent = mongoose.model("LogoutEvent", LogoutEventSchema);
 }
 
-try {
-  AdminSession = mongoose.model("AdminSession");
-} catch {
-  AdminSession = mongoose.model("AdminSession", AdminSessionSchema);
-}
-
-// Get client IP address
-function getClientIP(request) {
-  return request.headers.get("x-forwarded-for")?.split(",")[0] ||
-         request.headers.get("x-real-ip") ||
-         request.headers.get("x-client-ip") ||
-         "unknown";
-}
-
+// End the caller's own session: revoke it server-side and clear the cookie.
+// Always succeeds from the client's point of view, so a stale cookie can
+// still be cleared.
 export async function POST(request) {
+  const response = secureResponse({ success: true, message: "Logout successful" });
+
   try {
-    await connectDB();
+    const { claims, session } = await endAdminSession(request, response);
 
-    const body = await request.json();
-    const { username, timestamp, userAgent, reason = "user_logout" } = body;
+    if (claims?.username && (await connectDB())) {
+      await LogoutEvent.create({
+        userId: claims.username,
+        username: claims.username,
+        timestamp: new Date(),
+        userAgent: request.headers.get("user-agent") || undefined,
+        ipAddress: getClientIP(request),
+        reason: "user_logout",
+        sessionDuration: session ? Date.now() - new Date(session.createdAt).getTime() : 0,
+      });
 
-    // Input validation
-    if (!username) {
-      return secureResponse(
-        { success: false, message: "Username is required" },
-        400
-      );
+      // Clean up expired sessions and logout events (older than 90 days)
+      const now = new Date();
+      await AdminSession.deleteMany({ expiresAt: { $lt: now } });
+      const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+      await LogoutEvent.deleteMany({ createdAt: { $lt: ninetyDaysAgo } });
     }
-
-    // Sanitize inputs
-    const sanitizedUsername = username.trim().toLowerCase();
-
-    // Get client IP
-    const clientIP = getClientIP(request);
-
-    // Find and deactivate all active sessions for this user
-    const activeSessions = await AdminSession.find({
-      username: sanitizedUsername,
-      isActive: true
-    });
-
-    let sessionDuration = 0;
-    if (activeSessions.length > 0) {
-      // Calculate session duration and deactivate sessions
-      for (const session of activeSessions) {
-        sessionDuration = Math.max(sessionDuration, Date.now() - session.createdAt.getTime());
-        session.isActive = false;
-        await session.save();
-      }
-    }
-
-    // Log logout event
-    const logoutEvent = new LogoutEvent({
-      userId: sanitizedUsername,
-      username: sanitizedUsername,
-      timestamp: new Date(timestamp),
-      userAgent,
-      ipAddress: clientIP,
-      reason,
-      sessionDuration,
-    });
-
-    await logoutEvent.save();
-
-    // Clean up expired sessions
-    const now = new Date();
-    await AdminSession.deleteMany({ expiresAt: { $lt: now } });
-
-    // Clean up expired logout events (older than 90 days)
-    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-    await LogoutEvent.deleteMany({ createdAt: { $lt: ninetyDaysAgo } });
-
-    return secureResponse({
-      success: true,
-      message: "Logout successful",
-      sessionsTerminated: activeSessions.length,
-    });
-
   } catch (error) {
     console.log("Logout API error:", error);
-    
-    // Don't expose internal errors to client
-    return secureResponse(
-      { success: false, message: "Logout failed" },
-      500
-    );
   }
+
+  return response;
 }
 
 // Force logout all sessions for a user (admin only)
 export async function DELETE(request) {
+  const auth = await requireAdmin(request);
+  if (!auth.valid) return adminDenied(auth);
+
   try {
     await connectDB();
 

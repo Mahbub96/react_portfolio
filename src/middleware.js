@@ -76,9 +76,15 @@ export function middleware(request) {
     let windowMs = 60000; // 1 minute default
     let maxRequests = 100; // 100 requests per minute default
 
-    if (pathname.startsWith('/api/auth/')) {
-      windowMs = 900000; // 15 minutes for auth
+    if (pathname.startsWith('/api/auth/login')) {
+      windowMs = 900000; // 15 minutes for login
       maxRequests = 10; // 10 requests per 15 minutes
+    } else if (pathname.startsWith('/api/admin/blog/media')) {
+      windowMs = 60000;
+      maxRequests = 60; // image variants upload one request each
+    } else if (pathname.startsWith('/api/admin/')) {
+      windowMs = 60000;
+      maxRequests = 300; // editor autosave and lookups
     } else if (pathname.startsWith('/api/contact')) {
       windowMs = 900000; // 15 minutes for contact form
       maxRequests = 8; // allow genuine retries after a typo or validation error
@@ -149,6 +155,12 @@ export function middleware(request) {
         );
       }
     }
+  }
+
+  // The admin area is private: never indexed, never cached by a shared cache.
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    response.headers.set('Cache-Control', 'private, no-store');
   }
 
   return response;

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
-import { authenticateToken, secureResponse } from "@/lib/auth";
+import { secureResponse } from "@/lib/auth";
+import { requireAdmin } from "@/lib/adminSession";
 import { hasPermission } from "@/config/admin";
 
 // Cache duration in seconds
@@ -43,7 +44,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     // Authenticate user
-    const authResult = authenticateToken(request);
+    const authResult = await requireAdmin(request);
     if (!authResult.valid) {
       return secureResponse(
         { error: "Authentication required" },
