@@ -171,7 +171,7 @@ export default function ProfileImageWithModal({
                 {/* Actions */}
                 <div className={modalStyles.actionGroup}>
                   <a
-                    href="#contact"
+                    href="/#contact"
                     onClick={() => setIsOpen(false)}
                     className={modalStyles.primaryAction}
                   >

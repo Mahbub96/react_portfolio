@@ -25,6 +25,7 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Post settings: URL (follows the title until set by hand, with availability check), excerpt, tags, body font, search title and meta description with counters, a Google result preview, a social card preview, a live SEO checklist, and a canonical URL for cross-posts. Publishing is blocked while an image has no alt text or the description is missing or too long.
 
 ### Changed
+- The top navbar has a **06. Blog** link in place of "06. Contact", which duplicated the "Get in Touch" button (both opened the contact section). Signed in, the navbar also shows Analytics (07) and Write (08, the blog admin). The profile card's "Get In Touch" link now works from every page.
 - `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
 - The footer always links to the Blog; the RSS link is announced on every page.
 - Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
