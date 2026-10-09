@@ -26,6 +26,8 @@ Versioning restarts at 1.0.0 with this release.
 - Removed the Google Fonts stylesheet, which the CSP was blocking, and the manual image preloads. The CSP now allows the Cloudflare Web Analytics beacon.
 
 ### Other
+- IndexNow key file and `pnpm seo:indexnow`, which submit the sitemap URLs to Bing and other IndexNow engines after a production deploy.
+- `deploy-local.sh` no longer writes to MongoDB unless asked: the portfolio content sync runs only with `UPDATE_CONTENT=1`.
 - The version badge in the footer opens the release notes for the running build. The notes come from this changelog at build time and are fetched only when the badge is opened, so they never appear in the page HTML.
 - Navbar section links work from sub-pages (`/#section`).
 - Version and build number come only from the generated `buildInfo.json`; the hardcoded defaults in `next.config.js` are removed.

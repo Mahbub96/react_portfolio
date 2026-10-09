@@ -117,7 +117,7 @@ scp -i "$SSH_KEY" -o BatchMode=yes "$ARTIFACT" "$SERVER_USER@$SERVER_HOST:$REMOT
 
 log "Deploying on server with single rolling backup"
 ssh -i "$SSH_KEY" -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" \
-  "DOMAIN='$DOMAIN' DOMAIN_SLUG='$DOMAIN_SLUG' SERVER_DIR='$SERVER_DIR' BACKUP_FILE='$BACKUP_FILE' APP_NAME='$APP_NAME' APP_PORT='$APP_PORT' PUBLIC_BASE_URL='$PUBLIC_BASE_URL' REMOTE_ARTIFACT='$REMOTE_ARTIFACT' REMOTE_NODE_PATH='$REMOTE_NODE_PATH' bash -s" <<'REMOTE'
+  "UPDATE_CONTENT='${UPDATE_CONTENT:-0}' DOMAIN='$DOMAIN' DOMAIN_SLUG='$DOMAIN_SLUG' SERVER_DIR='$SERVER_DIR' BACKUP_FILE='$BACKUP_FILE' APP_NAME='$APP_NAME' APP_PORT='$APP_PORT' PUBLIC_BASE_URL='$PUBLIC_BASE_URL' REMOTE_ARTIFACT='$REMOTE_ARTIFACT' REMOTE_NODE_PATH='$REMOTE_NODE_PATH' bash -s" <<'REMOTE'
 set -euo pipefail
 
 export PATH="$REMOTE_NODE_PATH:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
@@ -146,8 +146,15 @@ find "$(dirname "$BACKUP_FILE")" -maxdepth 1 -type f \
 rm -rf .next public scripts/updatePortfolioContent.js db.json package.json next.config.js
 tar -xzf "$REMOTE_ARTIFACT" -C "$SERVER_DIR"
 
-# Uses existing server-side .env/.env.production values; no secrets are uploaded.
-NODE_ENV=production node scripts/updatePortfolioContent.js
+# Database content sync is OPT-IN (UPDATE_CONTENT=1): it upserts db.json into
+# the MongoDB configured in the server-side .env, i.e. a data write on that
+# environment. A normal code deploy must never modify data.
+if [[ "$UPDATE_CONTENT" == "1" ]]; then
+  echo "UPDATE_CONTENT=1: syncing portfolio content into MongoDB"
+  NODE_ENV=production node scripts/updatePortfolioContent.js
+else
+  echo "Skipping database content sync (set UPDATE_CONTENT=1 to enable)"
+fi
 
 pm2 stop "$APP_NAME" || true
 pm2 delete "$APP_NAME" || true
