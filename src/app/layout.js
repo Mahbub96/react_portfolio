@@ -91,9 +91,16 @@ export const metadata = {
   },
 };
 
+// Runs before first paint so a saved light theme never flashes dark.
+// Mirrors ThemeProvider: dark unless localStorage says "light".
+const THEME_SCRIPT = `try{document.documentElement.setAttribute("data-theme",localStorage.getItem("theme")==="light"?"light":"dark")}catch(e){}`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className={inter.className} suppressHydrationWarning={true}>
         <DataContextProvider>
           <ThemeProvider>

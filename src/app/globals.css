@@ -51,10 +51,10 @@
 
   /* Borders - Enhanced and Professional */
   --border-primary: rgba(32, 201, 151, 0.25);
-  --border-secondary: rgba(255, 255, 255, 0.12);
+  --border-secondary: rgba(255, 255, 255, 0.095);
   --border-accent: rgba(32, 201, 151, 0.45);
-  --border-muted: rgba(255, 255, 255, 0.1);
-  --border-light: rgba(0, 0, 0, 0.1);
+  --border-muted: rgba(255, 255, 255, 0.085);
+  --border-light: rgba(255, 255, 255, 0.095);
 
   /* Shadows - Layered and Sophisticated */
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
@@ -64,7 +64,7 @@
     0 4px 8px -2px rgba(0, 0, 0, 0.2);
   --shadow-xl: 0 20px 30px -5px rgba(0, 0, 0, 0.45),
     0 10px 15px -5px rgba(0, 0, 0, 0.25);
-  --shadow-glow: 0 0 30px rgba(32, 201, 151, 0.25);
+  --shadow-glow: 0 0 30px rgba(32, 201, 151, 0.2);
   --shadow-glow-strong: 0 0 55px rgba(32, 201, 151, 0.34);
   --shadow-premium: 0 24px 80px rgba(0, 0, 0, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -100,6 +100,28 @@
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+  /* Long-form typography (blog posts and the editor share these) */
+  --font-serif: var(--font-source-serif), "Iowan Old Style", "Palatino Linotype",
+    Georgia, serif;
+  --prose-width: 68ch;
+  --prose-wide: min(1040px, 100%);
+
+  /* Interaction states derived from the theme accent */
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 38%, transparent);
+  --accent-soft: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  --accent-softer: color-mix(in srgb, var(--accent-primary) 7%, transparent);
+  --scrim: color-mix(in srgb, var(--background-primary) 72%, transparent);
+
+  /* Code blocks and syntax highlighting */
+  --surface-code: rgba(0, 0, 0, 0.32);
+  --syntax-text: #e2e8f0;
+  --syntax-comment: #94a3b8;
+  --syntax-keyword: #20c997;
+  --syntax-string: #fbbf24;
+  --syntax-number: #c084fc;
+  --syntax-title: #38bdf8;
+  --syntax-attr: #f472b6;
+
   /* Legacy support */
   --background-color: var(--background-primary);
   --text-color: var(--text-primary);
@@ -110,6 +132,60 @@
   --border-color: var(--border-primary);
   --card-bg: var(--background-card);
   --hover-color: var(--accent-secondary);
+}
+
+
+/* Light theme. ThemeProvider (and the pre-paint script in app/layout.js) set
+   data-theme on <html>; every colour that differs from :root is defined here,
+   so components only ever reference tokens. */
+[data-theme="light"] {
+  --background-primary: #f8fbff;
+  --background-secondary: #f8fbff;
+  --background-tertiary: #eaf1f8;
+  --background-card: rgba(255, 255, 255, 0.72);
+  --background-elevated: rgba(255, 255, 255, 0.86);
+  --background-glass: rgba(255, 255, 255, 0.76);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-accent: #0d9488;
+
+  --accent-primary: #0d9488;
+  --accent-secondary: #0891b2;
+  --accent-tertiary: #0f766e;
+
+  --border-primary: rgba(13, 148, 136, 0.22);
+  --border-secondary: rgba(15, 23, 42, 0.1);
+  --border-accent: rgba(13, 148, 136, 0.35);
+  --border-muted: rgba(15, 23, 42, 0.08);
+  --border-light: rgba(15, 23, 42, 0.1);
+
+  --shadow-glow: 0 0 30px rgba(13, 148, 136, 0.2);
+  --shadow-glow-strong: 0 0 40px rgba(13, 148, 136, 0.3);
+  --shadow-premium: 0 24px 70px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --gradient-primary: linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #0f766e 100%);
+  --gradient-text: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+  --gradient-premium: radial-gradient(circle at 18% 8%, rgba(13, 148, 136, 0.13), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.11), transparent 26%),
+    linear-gradient(135deg, #f8fbff 0%, #eef7fb 52%, #e8f3f2 100%);
+
+  --surface-code: #f1f5f9;
+  --syntax-text: #1e293b;
+  --syntax-comment: #64748b;
+  --syntax-keyword: #0f766e;
+  --syntax-string: #b45309;
+  --syntax-number: #7c3aed;
+  --syntax-title: #0369a1;
+  --syntax-attr: #be185d;
+
+  color-scheme: light;
+}
+
+:root:not([data-theme="light"]) {
+  color-scheme: dark;
 }
 
 * {

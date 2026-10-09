@@ -16,6 +16,9 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Runtime secrets now live only on each server in `.env.runtime`, which deploys load and check before starting the app. `.env.production` is no longer tracked in git. `pnpm admin:hash` generates the password hash and a JWT secret.
 - The strict login rate limit now applies to the login endpoint only; `/admin` responses are `noindex` and never cached.
 
+### Changed
+- Light and dark theme colours are now CSS tokens in `globals.css` (`:root` and `[data-theme="light"]`) instead of inline styles set from JavaScript. A saved light theme is applied before the first paint, so it no longer flashes dark on load.
+- New shared tokens for upcoming blog and admin UI: serif font, prose widths, focus ring, accent tints and code highlighting. `scripts/check-theme-tokens.mjs` rejects hardcoded colours in blog and admin code.
 
 ## 1.2.0
 
