@@ -92,7 +92,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(100, 255, 218, 0.2),
+    var(--accent-soft),
     transparent
   );
   transition: left 0.5s;
@@ -103,10 +103,14 @@
 }
 
 .analyticsFloatBtn:hover {
-  background: rgba(100, 255, 218, 0.1);
+  background: var(--accent-softer);
   transform: translateY(-2px);
   box-shadow: var(--shadow-xl);
-  padding: 0 24px;
+}
+
+.analyticsFloatBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .floatBtnIcon {
@@ -141,15 +145,10 @@
   }
 }
 
+/* Always visible: an icon-only pill read as an empty button. */
 .floatBtnLabel {
-  opacity: 0;
-  transform: translateX(-10px);
-  transition: all 0.3s ease;
-}
-
-.analyticsFloatBtn:hover .floatBtnLabel {
-  opacity: 1;
-  transform: translateX(0);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .analyticsModalOverlay {
