@@ -1,17 +1,18 @@
 {
   "name": "mahbub-portfolio-nextjs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "engines": {
     "node": ">=22 <23"
   },
   "scripts": {
-    "predev": "node scripts/generate-build-info.mjs",
+    "predev": "node scripts/generate-blog.mjs && node scripts/generate-build-info.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/generate-build-info.mjs && node scripts/generate-seo-artifacts.mjs",
+    "prebuild": "node scripts/generate-blog.mjs && node scripts/generate-build-info.mjs && node scripts/generate-seo-artifacts.mjs",
     "build": "next build",
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "seo:indexnow": "node scripts/indexnow.mjs",
+    "blog:generate": "node scripts/generate-blog.mjs",
     "start": "next start",
     "lint": "next lint",
     "seed": "node scripts/seedProjects.js",
@@ -65,6 +66,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.0.0",
+    "marked": "^18.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "typescript": "^5.0.0"

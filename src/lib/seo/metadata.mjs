@@ -14,6 +14,7 @@ import {
   SITE_NAME,
 } from "./siteConfig.mjs";
 import { canonicalFor } from "./urls.mjs";
+import { publishedPosts } from "@/lib/blog/posts.mjs";
 
 const INDEXABLE_ROBOTS = {
   index: true,
@@ -58,7 +59,13 @@ export function pageMetadata({
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      // RSS autodiscovery on every page, once there is something to subscribe to.
+      ...(publishedPosts().length
+        ? { types: { "application/rss+xml": [{ url: "/feed.xml", title: `${SITE_NAME} — Writing` }] } }
+        : {}),
+    },
     robots: noindex ? NOINDEX_ROBOTS : INDEXABLE_ROBOTS,
     openGraph: {
       type: ogType,

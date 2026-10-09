@@ -205,3 +205,45 @@ export function projectListNode(projects = []) {
     })),
   };
 }
+
+/** Blog entity for /blog/ — written and published by the Person. */
+export function blogNode(posts = []) {
+  const url = absoluteUrl("/blog/");
+  return {
+    "@type": "Blog",
+    "@id": `${url}#blog`,
+    url,
+    name: `${SITE_NAME} — Writing`,
+    inLanguage: "en",
+    author: personRef,
+    publisher: personRef,
+    blogPost: posts.map((post) => ({ "@id": `${absoluteUrl(post.path)}#article` })),
+  };
+}
+
+/**
+ * BlogPosting for one article. author/publisher reference the Person @id so
+ * every article strengthens the same "Mahbub Alam" entity.
+ */
+export function blogPostingNode(post) {
+  const url = absoluteUrl(post.path);
+  const node = {
+    "@type": "BlogPosting",
+    "@id": `${url}#article`,
+    headline: post.title,
+    description: post.description,
+    url,
+    datePublished: post.datePublished,
+    dateModified: post.dateModified,
+    inLanguage: "en",
+    wordCount: post.wordCount,
+    author: personRef,
+    publisher: personRef,
+    isPartOf: { "@id": `${absoluteUrl("/blog/")}#blog` },
+    mainEntityOfPage: { "@id": `${url}#webpage` },
+  };
+  if (post.tags?.length) node.keywords = post.tags.join(", ");
+  const image = absoluteAssetUrl(post.image || "/assets/img/og-cover.jpg");
+  if (image) node.image = image;
+  return node;
+}

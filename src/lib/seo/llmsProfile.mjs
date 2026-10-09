@@ -67,7 +67,7 @@ function profileBlock() {
 - **X**: ${SITE_AUTHOR.x}`;
 }
 
-function sections({ projects = [], skills = [], experiences = [], educations = [] }) {
+function sections({ projects = [], skills = [], experiences = [], educations = [], posts = [] }) {
   const catalog = buildProjectCatalog(projects);
   const featured = catalog.filter(isIndexableProject);
   const others = catalog.filter((project) => !isIndexableProject(project));
@@ -91,7 +91,12 @@ function sections({ projects = [], skills = [], experiences = [], educations = [
     .map((route) => `- [${route.label}](${absoluteUrl(route.path)}): ${route.description}`)
     .join("\n");
 
+  const postBlock = posts
+    .map((post) => `- [${post.title}](${absoluteUrl(post.path)}) (${post.datePublished}): ${post.description}`)
+    .join("\n");
+
   return {
+    postBlock,
     featured,
     featuredBlock,
     otherBlock,
@@ -120,7 +125,7 @@ ${s.routeBlock}
 ## Featured projects
 
 ${s.featuredBlock || "- None yet."}
-${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}
+${s.postBlock ? `\n## Writing\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}
 ## Experience
 
 ${s.experienceBlock}
@@ -202,5 +207,5 @@ ${s.skillBlock ? `\n## Skills\n\n${s.skillBlock}\n` : ""}
 ## Project case studies
 
 ${studies || "None yet."}
-${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}`;
+${s.postBlock ? `\n## Writing\n\n${s.postBlock}\n` : ""}${s.otherBlock ? `\n## Other projects\n\n${s.otherBlock}\n` : ""}`;
 }

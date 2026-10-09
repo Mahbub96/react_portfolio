@@ -30,6 +30,7 @@ function isoDate(value) {
  */
 export function buildSitemapEntries({
   projects = [],
+  posts = [],
   lastModified,
   lastModifiedFor = () => null,
 } = {}) {
@@ -66,7 +67,28 @@ export function buildSitemapEntries({
     images: [absoluteAssetUrl(project.image)].filter(Boolean),
   }));
 
-  return [...staticEntries, ...projectEntries];
+  // Published blog posts only (drafts never reach the sitemap). The index is
+  // listed only when there is at least one post to show.
+  const blogEntries = posts.length
+    ? [
+        {
+          url: absoluteUrl("/blog/"),
+          lastModified: isoDate(posts[0].dateModified),
+          changeFrequency: "weekly",
+          priority: 0.8,
+          images: [],
+        },
+        ...posts.map((post) => ({
+          url: absoluteUrl(post.path),
+          lastModified: isoDate(post.dateModified),
+          changeFrequency: "monthly",
+          priority: 0.8,
+          images: [],
+        })),
+      ]
+    : [];
+
+  return [...staticEntries, ...blogEntries, ...projectEntries];
 }
 
 /** Escape the five XML predefined entities. */

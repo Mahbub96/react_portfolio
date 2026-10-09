@@ -7,6 +7,14 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.2.0
+
+### Added
+- **Blog** (`/blog/`): posts are Markdown files in `content/blog/`. They are rendered to static HTML at build time, so no Markdown library reaches the server or the browser. Each post has `BlogPosting` structured data linked to the Person, a self-canonical, article Open Graph tags, reading time, and published and updated dates.
+- RSS feed at `/feed.xml`, with autodiscovery links on every page. Published posts are added to the sitemap and llms.txt automatically.
+- Drafts (`draft: true`) never reach production. Review builds can include them with `BLOG_INCLUDE_DRAFTS=1`; they render with a draft banner and `noindex`.
+- While no post is published, `/blog/` returns 404 and the footer shows no Writing link.
+
 ## 1.1.0
 
 ### Added

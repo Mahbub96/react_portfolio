@@ -20,7 +20,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -44,7 +44,19 @@ async function loadContent() {
     with: { type: "json" },
   });
   const db = raw.default || raw;
+  // Published posts from scripts/generate-blog.mjs (runs first in prebuild).
+  let posts = [];
+  try {
+    const blog = JSON.parse(
+      await readFile(join(ROOT, "src", "content", "blog.generated.json"), "utf8")
+    );
+    posts = (blog.posts || []).filter((post) => !post.draft);
+  } catch {
+    posts = [];
+  }
+
   return {
+    posts,
     projects: db.projects || [],
     skills: db.skills || [],
     experiences: db.experiences || [],
@@ -78,6 +90,7 @@ const ROUTE_SOURCES = {
   "/skills/": ["db.json", "src/app/skills", "src/components/skills"],
   "/contact/": ["src/app/contact/page.js", "src/components/contact"],
   "/resume/": ["db.json", "src/app/resume", "src/lib/cvBuilder.js"],
+  "/about/": ["src/app/about", "src/lib/seo/aboutProfile.mjs"],
 };
 const PROJECT_SOURCES = ["db.json", "src/lib/seo/caseStudies.mjs", "src/app/projects/[slug]/page.js", "src/components/projects/detail"];
 
@@ -102,7 +115,11 @@ async function main() {
 
   await writeArtifact("robots.txt", renderRobotsTxt());
 
-  const entries = buildSitemapEntries({ projects: content.projects, lastModifiedFor });
+  const entries = buildSitemapEntries({
+    projects: content.projects,
+    posts: content.posts,
+    lastModifiedFor,
+  });
   await writeArtifact("sitemap.xml", renderSitemapXml(entries));
 
   const llms = renderLlmsTxt(content);
@@ -112,7 +129,7 @@ async function main() {
   await writeArtifact("llms-full.txt", renderLlmsFullTxt(content));
 
   console.log(
-    `Done — ${entries.length} sitemap URLs, ${content.projects.length} projects.`
+    `Done — ${entries.length} sitemap URLs, ${content.projects.length} projects, ${content.posts.length} published posts.`
   );
 }
 
