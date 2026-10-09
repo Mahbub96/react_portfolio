@@ -9,84 +9,11 @@ function Educations({ data }) {
   // Use server data for rendering
   const education = Array.isArray(data?.data) ? [...data.data] : [];
 
-  // Enhanced structured data for education section
-  const educationStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "@id": "https://mahbub.dev#education",
-    name: "Mahbub Alam Education",
-    description: "Academic background and educational qualifications",
-    numberOfItems: education.length,
-    itemListElement: education.map((edu, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "EducationalOccupationalCredential",
-        "@id": `https://mahbub.dev#education-${edu.id || index}`,
-        name: edu.degName,
-        description: edu.name,
-        credentialCategory: "Degree",
-        educationalLevel: "Bachelor's Degree",
-        recognizedBy: {
-          "@type": "CollegeOrUniversity",
-          name: edu.name,
-          url: "https://stamforduniversity.edu.bd",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Dhaka",
-            addressCountry: "Bangladesh",
-          },
-        },
-        dateIssued: edu.time,
-        validIn: {
-          "@type": "Country",
-          name: "Bangladesh",
-        },
-        credentialCategory: "Degree",
-        educationalLevel: "Bachelor's Degree",
-        ...(edu.cgpa && {
-          credentialCategory: "Academic Degree",
-          educationalLevel: "Bachelor's Degree",
-          additionalProperty: {
-            "@type": "PropertyValue",
-            name: "CGPA",
-            value: edu.cgpa,
-          },
-        }),
-        ...(edu.Department && {
-          educationalProgramMode: "Full-time",
-          educationalProgramType: "Bachelor's Program",
-          educationalProgramName: edu.Department,
-        }),
-        ...(edu.Thesis && {
-          educationalProgramMode: "Full-time",
-          educationalProgramType: "Bachelor's Program",
-          educationalProgramName: edu.Department,
-          additionalProperty: {
-            "@type": "PropertyValue",
-            name: "Thesis",
-            value: edu.Thesis,
-          },
-        }),
-      },
-    })),
-  };
-
   return (
     <>
-      {/* Structured Data for Education */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(educationStructuredData),
-        }}
-      />
-
       <section
         id="education"
         className={styles.educationSection}
-        itemScope
-        itemType="https://schema.org/ItemList"
         aria-labelledby="education-heading"
       >
         <div className="container">
@@ -117,8 +44,6 @@ function Educations({ data }) {
                     index % 2 === 0 ? styles.left : styles.right
                   } ${styles.animateInTimeline}`}
                   style={{ animationDelay: `${index * 0.2}s` }}
-                  itemScope
-                  itemType="https://schema.org/EducationalOccupationalCredential"
                 >
                   <div className={styles.timelineContent}>
                     <div
@@ -129,7 +54,6 @@ function Educations({ data }) {
                     {/* Education Date */}
                     <time
                       className={styles.date}
-                      itemProp="dateIssued"
                       dateTime={edu.time}
                     >
                       <HarmonicChip text={edu.time} />
@@ -138,14 +62,13 @@ function Educations({ data }) {
                     {/* Institution Name */}
                     <h3
                       className={styles.title}
-                      itemProp="recognizedBy"
                       id={`education-${edu.id || index}-title`}
                     >
                       {edu.name}
                     </h3>
 
                     {/* Degree Name */}
-                    <p className={styles.degree} itemProp="name">
+                    <p className={styles.degree}>
                       <HarmonicChip text={edu.degName} />
                     </p>
 
@@ -153,7 +76,6 @@ function Educations({ data }) {
                     {edu.Department && (
                       <p
                         className={styles.department}
-                        itemProp="educationalProgramName"
                       >
                         <HarmonicChip text={edu.Department} />
                       </p>
@@ -165,7 +87,6 @@ function Educations({ data }) {
                         <span className={styles.cgpaLabel}>CGPA:</span>
                         <span
                           className={styles.cgpaValue}
-                          itemProp="additionalProperty"
                         >
                           <HarmonicChip text={edu.cgpa} />
                         </span>
@@ -178,7 +99,6 @@ function Educations({ data }) {
                         <span className={styles.thesisLabel}>Thesis:</span>
                         <span
                           className={styles.thesisValue}
-                          itemProp="additionalProperty"
                         >
                           {edu.Thesis}
                         </span>
@@ -200,18 +120,6 @@ function Educations({ data }) {
                       </div>
                     )}
 
-                    {/* Additional Metadata */}
-                    <div
-                      className={styles.educationMetadata}
-                      style={{ display: "none" }}
-                    >
-                      <meta itemProp="credentialCategory" content="Degree" />
-                      <meta
-                        itemProp="educationalLevel"
-                        content="Bachelor's Degree"
-                      />
-                      <meta itemProp="validIn" content="Bangladesh" />
-                    </div>
                   </div>
                 </div>
               ))

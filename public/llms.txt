@@ -1,16 +1,16 @@
-# Mahbub Alam — Software Engineer | Full-Stack, Backend & Applied AI
+# Mahbub Alam — Software Engineer
 
-> Software Engineer building full-stack products, backend APIs, cloud-deployed
-> services and applied AI systems. Based in Dhaka, Bangladesh.
+> Mahbub Alam is a Software Engineer at Brotecs Technologies in Dhaka, Bangladesh, building backend APIs, full-stack products and applied AI systems.
 
-- **Name**: Mahbub Alam
-- **Title**: Software Engineer | Full-Stack, Backend & Applied AI
+- **Name**: Mahbub Alam (also written Md Mahbub Alam, Md. Mahbub Alam)
+- **Role**: Software Engineer — Backend, Full-Stack & Applied AI
+- **Employer**: Brotecs Technologies Ltd. (https://brotecs.com)
 - **Location**: Dhaka, Bangladesh
-- **Company**: Brotecs Technologies Ltd.
 - **Email**: mahbubcse96@gmail.com
 - **Website**: https://mahbub.dev/
-- **GitHub**: https://github.com/mahbub96
 - **LinkedIn**: https://www.linkedin.com/in/mahbubcse96
+- **GitHub**: https://github.com/Mahbub96
+- **X**: https://x.com/mahbubcse96
 
 ## Pages
 
@@ -19,19 +19,35 @@
 - [Skills](https://mahbub.dev/skills/): Technical skills grouped by domain.
 - [Contact](https://mahbub.dev/contact/): Contact details and enquiry form.
 - [Resume](https://mahbub.dev/resume/): Printable resume with downloadable PDF.
+- [Full profile for LLMs](https://mahbub.dev/llms-full.txt): Everything on this site as plain Markdown, including project case studies.
 
-## Projects
+## Featured projects
 
-- [LinkLens — Enterprise Link Intelligence Platform](https://mahbub.dev/projects/linklens/): Enterprise-grade smart link and redirect intelligence platform with sub-5ms Redis hot-path routing, ClickHouse forensic analytics, QR generation, RBAC workspaces, webhooks, and self-hosted zero-cost geo/device intelligence. _(NestJS, Next.js, TypeScript, PostgreSQL, Redis, ClickHouse, Prisma, Docker)_
-- [Bangla & English ASR Studio](https://mahbub.dev/projects/bangla-and-english-asr-studio/): End-to-end speech recognition studio for Bangla and English with Whisper inference, live microphone transcription, batch processing, WER/CER benchmarking, dataset validation, and LoRA/QLoRA fine-tuning workflows for GPU training clusters. _(Python, Whisper, faster-whisper, Gradio, Transformers, LoRA, Audio Processing, ML Evaluation)_
-- [Local Vocal Agent](https://mahbub.dev/projects/local-vocal-agent/): Privacy-first local AI voice workspace with FastAPI, React/Vite, Ollama, SQLite and Chroma memory, Faster Whisper STT, TTS, streaming chat, search tools, file workspace, and permission-aware assistant workflows. _(FastAPI, React, Ollama, SQLite, ChromaDB, Whisper, TTS, RAG)_
-- [Advanced Finance Tracker](https://mahbub.dev/projects/advanced-finance-tracker/): Production-grade offline-first finance platform with Expo React Native, local SQLite storage, typed money utilities, budgeting, transactions, accounts, goals, recurring flows, analytics, AI insight planning, and a NestJS API foundation. _(React Native, Expo, TypeScript, SQLite, NestJS, PostgreSQL, Prisma, Jest)_
-- [Healthcare & Medical Applications](https://mahbub.dev/projects/healthcare-and-medical-applications/): Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_
-- [Enterprise & School Management Systems](https://mahbub.dev/projects/enterprise-and-school-management-systems/): Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features. _(Laravel, React.js, Node.js, MySQL)_
-- [Real-Time Chat Application](https://mahbub.dev/projects/real-time-chat-application/): Real-time chat application with instant messaging, modern UI, and socket-based communication between users. _(React.js, Node.js, Socket.io, CSS)_
-- [React Portfolio](https://mahbub.dev/projects/react-portfolio/): Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content. _(Next.js, React.js, CSS, MongoDB)_
-- [Test-Buddy](https://mahbub.dev/projects/test-buddy/): React-based test and exam management demo application built for a university software engineering course. _(React.js, HTML, CSS, JavaScript)_
-- [Blood Donation Management System](https://mahbub.dev/projects/blood-donation-management-system/): Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage. _(Java, SQLite, Java Swing)_
+- [LinkLens — Enterprise Link Intelligence Platform](https://mahbub.dev/projects/linklens/): LinkLens is a self-hosted link management and redirect platform built with NestJS, Redis, ClickHouse and Next.js, separating a fast redirect path from asynchronous analytics. _(NestJS, Next.js, TypeScript, PostgreSQL, Redis, ClickHouse, Prisma, Docker)_
+- [Bangla & English ASR Studio](https://mahbub.dev/projects/bangla-and-english-asr-studio/): A local-first speech-to-text studio and Whisper fine-tuning pipeline for Bangla and English: transcription UI, batch jobs, WER/CER benchmarking and guarded LoRA training. _(Python, Whisper, faster-whisper, Gradio, Transformers, LoRA, Audio Processing, ML Evaluation)_
+- [Local Vocal Agent](https://mahbub.dev/projects/local-vocal-agent/): A full-stack voice assistant that runs locally: FastAPI and React, an Ollama-hosted LLM, speech-to-text and text-to-speech, and SQLite plus Chroma memory. _(FastAPI, React, Ollama, SQLite, ChromaDB, Whisper, TTS, RAG)_
+- [Advanced Finance Tracker](https://mahbub.dev/projects/advanced-finance-tracker/): An offline-first personal finance app built with Expo React Native and SQLite on the device, plus a NestJS and PostgreSQL API for multi-device sync. _(React Native, Expo, TypeScript, SQLite, NestJS, PostgreSQL, Prisma, Jest)_
+
+## Other projects
+
+- Healthcare & Medical Applications: Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_
+- Enterprise & School Management Systems: Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features. _(Laravel, React.js, Node.js, MySQL)_
+- [Real-Time Chat Application](https://github.com/Mahbub96/chat-application): Real-time chat application with instant messaging, modern UI, and socket-based communication between users. _(React.js, Node.js, Socket.io, CSS)_
+- [React Portfolio](https://github.com/Mahbub96/react_portfolio): Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content. _(Next.js, React.js, CSS, MongoDB)_
+- [Test-Buddy](https://github.com/Mahbub96/Test-Buddy): React-based test and exam management demo application built for a university software engineering course. _(React.js, HTML, CSS, JavaScript)_
+- [Blood Donation Management System](https://github.com/Mahbub96/BloodDonationManagementSystem): Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage. _(Java, SQLite, Java Swing)_
+
+## Experience
+
+- **Junior Software Engineer II** — Brotecs Technologies Ltd. (March 2025 - Present): Develop and maintain full-stack web applications and backend services across enterprise, healthcare, education, ERP, and automation-focused systems with secure workflows, performance improvements, CI/CD, and maintainable architecture.
+- **Junior Software Engineer I** — Brotecs Technologies Ltd. (March 2024 - March 2025): Developed full-stack application features, backend APIs, database-driven modules, dashboards, authentication flows, authorization logic, reporting features, and integration workflows.
+- **Software Engineer Intern** — Brotecs Technologies Ltd. (September 2023 - March 2024): Assisted in developing web application modules, fixing bugs, improving UI flows, working with databases, and learning production software development practices.
+
+## Education
+
+- **Bachelor of Science, Computer Science and Engineering** — Stamford University Bangladesh (2019 - 2022) — CGPA 3.70 out of 4.00. Thesis: Speech Emotion Recognition Using Deep Learning
+- **Higher Secondary Certificate (HSC)** — BAF Shaheen College, Jessore (2014 - 2016) — CGPA 4.00 out of 5.00
+- **Secondary School Certificate (SSC)** — Shyamkur High School (2009 - 2014) — CGPA 4.44 out of 5.00
 
 ## Skills
 

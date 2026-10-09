@@ -19,105 +19,11 @@ const ProjectsServer = ({ data }) => {
   const projects = validateProjectsData(data?.data);
   const totalCount = projects.length;
 
-  // Enhanced structured data for projects section
-  const projectsStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "@id": "https://mahbub.dev#projects",
-    name: "Mahbub Alam Portfolio Projects",
-    description:
-      "Full Stack Development Projects showcasing React, Node.js, PHP, and modern web technologies",
-    numberOfItems: totalCount,
-    itemListElement: projects.map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "SoftwareApplication",
-        "@id": `https://mahbub.dev#project-${project.id || index}`,
-        name: project.name,
-        description: project.desc,
-        applicationCategory: "Web Application",
-        operatingSystem: "Web Browser",
-        softwareVersion: "1.0.0",
-        author: {
-          "@type": "Person",
-          name: "Mahbub Alam",
-          url: "https://mahbub.dev",
-        },
-        creator: {
-          "@type": "Person",
-          name: "Mahbub Alam",
-          url: "https://mahbub.dev",
-        },
-        dateCreated: project.createdAt || new Date().toISOString(),
-        dateModified: project.updatedAt || new Date().toISOString(),
-        ...(project.src && {
-          image: project.src.startsWith("http")
-            ? project.src
-            : `https://mahbub.dev${project.src}`,
-        }),
-        ...(project.to &&
-          project.to !== "#" && {
-            url: project.to,
-          }),
-        ...(project.lang && {
-          programmingLanguage: Array.isArray(project.lang)
-            ? project.lang.join(", ")
-            : project.lang,
-        }),
-      },
-    })),
-  };
-
-  // Portfolio structured data
-  const portfolioStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    "@id": "https://mahbub.dev#portfolio",
-    name: "Mahbub Alam Development Portfolio",
-    description:
-      "Collection of web development projects and applications built by Mahbub Alam",
-    creator: {
-      "@type": "Person",
-      name: "Mahbub Alam",
-      url: "https://mahbub.dev",
-    },
-    dateCreated: "2024-01-01",
-    dateModified: new Date().toISOString(),
-    genre: "Web Development",
-    keywords:
-      "React, Node.js, PHP, Laravel, MongoDB, AWS, Docker, Web Applications",
-    inLanguage: "en",
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Mahbub Alam Portfolio",
-      url: "https://mahbub.dev",
-    },
-  };
-
   return (
     <>
-      {/* Structured Data for Projects */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(projectsStructuredData),
-        }}
-      />
-
-      {/* Portfolio Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(portfolioStructuredData),
-        }}
-      />
-
       <section
         id="projects"
         className={styles.projectsSection}
-        itemScope
-        itemType="https://schema.org/ItemList"
         aria-labelledby="projects-heading"
       >
         <div className="container">
@@ -139,7 +45,6 @@ const ProjectsServer = ({ data }) => {
 
           <div
             className={styles.projectsGrid}
-            itemProp="itemListElement"
             role="list"
             aria-label="Portfolio projects grid"
           >
@@ -155,9 +60,6 @@ const ProjectsServer = ({ data }) => {
                   <Project
                     project={project}
                     index={index}
-                    itemScope
-                    itemType="https://schema.org/SoftwareApplication"
-                    itemProp="itemListElement"
                   />
                 </div>
               ))

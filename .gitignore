@@ -166,3 +166,6 @@ mahbub-portfolio-production-*.zip
 
 # Yarn
 .yarn/*
+
+# Generated at prebuild/predev by scripts/generate-build-info.mjs
+src/config/buildInfo.json

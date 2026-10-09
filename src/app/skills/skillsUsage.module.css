@@ -1,0 +1,76 @@
+.usage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 4rem;
+  color: var(--text-primary);
+}
+
+.heading {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  margin: 0 0 0.75rem;
+}
+
+.intro {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0 0 2rem;
+  max-width: 70ch;
+}
+
+.group {
+  margin-bottom: 2rem;
+}
+
+.groupTitle {
+  font-size: 1.05rem;
+  margin: 0 0 0.75rem;
+  color: var(--accent-primary, #64ffda);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(130px, 200px) 1fr;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 0.95rem;
+}
+
+.skill {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.projects {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.projects a {
+  color: var(--accent-primary, #64ffda);
+  text-decoration: none;
+}
+
+.projects a:hover,
+.projects a:focus-visible {
+  text-decoration: underline;
+}
+
+.projectsMuted {
+  color: var(--text-tertiary, var(--text-secondary));
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .item {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

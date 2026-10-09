@@ -84,71 +84,11 @@ function Experience({ data }) {
     };
   };
 
-  // Enhanced structured data for experience section
-  const experienceStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "@id": "https://mahbub.dev#experience",
-    name: "Mahbub Alam Work Experience",
-    description:
-      "Professional work experience in software development and technology",
-    numberOfItems: experiences.length,
-    itemListElement: experiences.map((experience, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "JobPosting",
-        "@id": `https://mahbub.dev#job-${experience.id || index}`,
-        title: experience.name,
-        description: experience.how,
-        datePosted:
-          experience.startDate ||
-          experience.time?.split("-")[0] ||
-          experience.time,
-        validThrough:
-          experience.endDate || experience.time?.split("-")[1] || "Present",
-        employmentType: "FULL_TIME",
-        jobLocation: {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Dhaka",
-            addressCountry: "Bangladesh",
-          },
-        },
-        hiringOrganization: {
-          "@type": "Organization",
-          name: experience.company || "Technology Company",
-          url: experience.companyUrl || "https://mahbub.dev",
-        },
-        applicantLocationRequirements: {
-          "@type": "Country",
-          name: "Bangladesh",
-        },
-        jobBenefits: [
-          "Professional Development",
-          "Technology Exposure",
-          "Team Collaboration",
-        ],
-      },
-    })),
-  };
-
   return (
     <>
-      {/* Structured Data for Experience */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(experienceStructuredData),
-        }}
-      />
-
       <section
         id="experience"
         className={styles.experienceSection}
-        itemScope
-        itemType="https://schema.org/ItemList"
         aria-labelledby="experience-heading"
       >
         <div className="container">
@@ -197,8 +137,6 @@ function Experience({ data }) {
                     index % 2 === 0 ? styles.left : styles.right
                   } ${styles.animateInTimeline}`}
                   style={{ animationDelay: `${index * 0.2}s` }}
-                  itemScope
-                  itemType="https://schema.org/JobPosting"
                 >
                   <div className={styles.timelineContent}>
                     <div
@@ -209,7 +147,6 @@ function Experience({ data }) {
                     {/* Experience Date */}
                     <time
                       className={styles.date}
-                      itemProp="datePosted"
                       dateTime={
                         experience.startDate ||
                         experience.time?.split("-")[0] ||
@@ -222,14 +159,13 @@ function Experience({ data }) {
                     {/* Job Title */}
                     <h3
                       className={styles.title}
-                      itemProp="title"
                       id={`experience-${experience.id || index}-title`}
                     >
                       {experience.name}
                     </h3>
 
                     {/* Job Description */}
-                    <p className={styles.description} itemProp="description">
+                    <p className={styles.description}>
                       {experience.how}
                     </p>
 
@@ -238,7 +174,6 @@ function Experience({ data }) {
                       <div className={styles.companyInfo}>
                         <span
                           className={styles.companyName}
-                          itemProp="hiringOrganization"
                         >
                           <HarmonicChip text={experience.company} />
                         </span>
@@ -256,21 +191,6 @@ function Experience({ data }) {
                       </div>
                     )}
 
-                    {/* Additional Metadata */}
-                    <div
-                      className={styles.experienceMetadata}
-                      style={{ display: "none" }}
-                    >
-                      <meta itemProp="employmentType" content="FULL_TIME" />
-                      <meta
-                        itemProp="jobLocation"
-                        content="Dhaka, Bangladesh"
-                      />
-                      <meta
-                        itemProp="applicantLocationRequirements"
-                        content="Bangladesh"
-                      />
-                    </div>
                   </div>
                 </div>
               ))

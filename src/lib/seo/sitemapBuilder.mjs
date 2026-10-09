@@ -2,9 +2,9 @@
  * Sitemap assembly.
  *
  * Split into "what should be in the sitemap" (buildSitemapEntries) and "how it
- * is serialised" (renderSitemapXml) so the same entry list feeds both Next's
- * native `app/sitemap.js` export and the build-time static file generator
- * without either re-deriving the URL set.
+ * is serialised" (renderSitemapXml). The static public/sitemap.xml generated
+ * at build time is the only sitemap the site serves (nginx answers
+ * /sitemap.xml from disk), so there is no app/sitemap.js route to drift.
  */
 
 import { sitemapRoutes } from "./routes.mjs";
@@ -22,27 +22,34 @@ function isoDate(value) {
  * Build the complete entry list: static routes plus one entry per indexable
  * project detail page.
  *
- * `lastModified` defaults to the build/request date rather than a hardcoded
- * constant — a sitemap frozen at a fixed past date tells crawlers nothing has
- * changed and suppresses re-crawls.
+ * `lastModifiedFor(kind, item)` should return the date the content behind a
+ * URL last really changed (the build script derives it from git history).
+ * Stamping every URL with the build date on every deploy teaches crawlers to
+ * ignore lastmod; a frozen constant suppresses re-crawls. Falls back to
+ * `lastModified`, then to today.
  */
-export function buildSitemapEntries({ projects = [], lastModified } = {}) {
-  const stamp = isoDate(lastModified);
+export function buildSitemapEntries({
+  projects = [],
+  lastModified,
+  lastModifiedFor = () => null,
+} = {}) {
+  const fallback = isoDate(lastModified);
+  const dateFor = (kind, item) => {
+    const value = lastModifiedFor(kind, item);
+    return value ? isoDate(value) : fallback;
+  };
 
   const staticEntries = sitemapRoutes().map((route) => {
     const entry = {
       url: absoluteUrl(route.path),
-      lastModified: stamp,
+      lastModified: dateFor("route", route),
       changeFrequency: route.changeFrequency,
       priority: route.priority,
       images: [],
     };
 
     if (route.path === "/") {
-      entry.images = [
-        absoluteAssetUrl("/assets/img/profile.png"),
-        absoluteAssetUrl("/assets/img/og-cover.jpg"),
-      ].filter(Boolean);
+      entry.images = [absoluteAssetUrl("/assets/img/profile.png")].filter(Boolean);
     }
 
     return entry;
@@ -53,7 +60,7 @@ export function buildSitemapEntries({ projects = [], lastModified } = {}) {
   // Project images belong to their own detail page, not piled onto /projects/.
   const projectEntries = catalog.map((project) => ({
     url: absoluteUrl(projectPath(project)),
-    lastModified: stamp,
+    lastModified: dateFor("project", project),
     changeFrequency: "monthly",
     priority: 0.7,
     images: [absoluteAssetUrl(project.image)].filter(Boolean),

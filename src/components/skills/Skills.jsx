@@ -24,8 +24,6 @@ function Skills({ data, headingLevel = "h2" }) {
     <section
       id="skills"
       className={styles.skillsSection}
-      itemScope
-      itemType="http://schema.org/ItemList"
     >
       <div className="container">
         <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
@@ -36,28 +34,24 @@ function Skills({ data, headingLevel = "h2" }) {
           <div className={styles.headerLine}></div>
         </div>
 
-        <div className={styles.skillsGrid} itemProp="itemListElement">
+        <div className={styles.skillsGrid}>
           {skills.length > 0 ? (
             skills.map((skill, index) => (
               <div
                 key={skill.id}
                 className={`${styles.skillCard} ${styles.animateInCard}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
-                itemScope
-                itemType="http://schema.org/Thing"
-                itemProp="itemListElement"
               >
                 <div className={styles.skillIcon}>
                   <img
                     src={normalizeImagePath(skill.src)}
                     alt={`${skill.name} technology icon`}
                     loading="lazy"
-                    itemProp="image"
                     width="64"
                     height="64"
                   />
                 </div>
-                <h3 itemProp="name">{skill.name}</h3>
+                <h3>{skill.name}</h3>
               </div>
             ))
           ) : (

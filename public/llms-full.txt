@@ -1,0 +1,210 @@
+# Mahbub Alam — Software Engineer (full profile)
+
+> Mahbub Alam is a Software Engineer at Brotecs Technologies in Dhaka, Bangladesh, building backend APIs, full-stack products and applied AI systems.
+
+- **Name**: Mahbub Alam (also written Md Mahbub Alam, Md. Mahbub Alam)
+- **Role**: Software Engineer — Backend, Full-Stack & Applied AI
+- **Employer**: Brotecs Technologies Ltd. (https://brotecs.com)
+- **Location**: Dhaka, Bangladesh
+- **Email**: mahbubcse96@gmail.com
+- **Website**: https://mahbub.dev/
+- **LinkedIn**: https://www.linkedin.com/in/mahbubcse96
+- **GitHub**: https://github.com/Mahbub96
+- **X**: https://x.com/mahbubcse96
+
+## Experience
+
+- **Junior Software Engineer II** — Brotecs Technologies Ltd. (March 2025 - Present): Develop and maintain full-stack web applications and backend services across enterprise, healthcare, education, ERP, and automation-focused systems with secure workflows, performance improvements, CI/CD, and maintainable architecture.
+- **Junior Software Engineer I** — Brotecs Technologies Ltd. (March 2024 - March 2025): Developed full-stack application features, backend APIs, database-driven modules, dashboards, authentication flows, authorization logic, reporting features, and integration workflows.
+- **Software Engineer Intern** — Brotecs Technologies Ltd. (September 2023 - March 2024): Assisted in developing web application modules, fixing bugs, improving UI flows, working with databases, and learning production software development practices.
+
+## Education
+
+- **Bachelor of Science, Computer Science and Engineering** — Stamford University Bangladesh (2019 - 2022) — CGPA 3.70 out of 4.00. Thesis: Speech Emotion Recognition Using Deep Learning
+- **Higher Secondary Certificate (HSC)** — BAF Shaheen College, Jessore (2014 - 2016) — CGPA 4.00 out of 5.00
+- **Secondary School Certificate (SSC)** — Shyamkur High School (2009 - 2014) — CGPA 4.44 out of 5.00
+
+## Skills
+
+- **Frontend**: JavaScript, React.js, Next.js, Bootstrap, Tailwind CSS, React Native
+- **Backend & Languages**: Node.js, Python, PHP, Laravel, C++, Java Swing
+- **Data**: MySQL, SQLite
+- **Tools & Delivery**: Git
+- **Additional**: Machine Learning
+
+## Project case studies
+
+### LinkLens — self-hosted link intelligence and smart redirect engine
+
+LinkLens is a self-hosted link management and redirect platform built with NestJS, Redis, ClickHouse and Next.js, separating a fast redirect path from asynchronous analytics.
+
+#### The problem
+
+Typical URL shorteners resolve every click against a transactional relational database and call paid third-party APIs for geolocation. Both become the bottleneck — in latency and in cost — as click volume grows.
+
+LinkLens was designed so that the redirect itself never waits on the database or on analytics, and so that geo/device enrichment costs nothing per request.
+
+#### Architecture and approach
+
+- Hot path: link rules are resolved from Redis by the NestJS redirect engine, without querying PostgreSQL. The design target for this path is a single-digit-millisecond redirect.
+- Cold path: each click is published to a BullMQ queue; a worker pool enriches it and stream-inserts it into ClickHouse, a columnar store suited to large analytical aggregations.
+- Geo and device data come from local MaxMind .mmdb datasets and ua-parser-js evaluated in memory, so there is no recurring external lookup cost.
+- Custom domains get TLS automatically: Caddy issues certificates on demand after validating the domain through a backend webhook, without server restarts.
+
+#### Key features
+
+- Rule-based routing by country, OS, browser, language or weighted A/B split.
+- Analytics dashboards on ClickHouse aggregations, with UTM attribution and a live WebSocket activity feed.
+- Workspace isolation with OWNER, ADMIN, MANAGER and ANALYST roles (RBAC).
+- REST API documented with OpenAPI 3.0, SHA-256-hashed API keys with rotation, and HMAC-SHA256-signed webhooks.
+- A GDPR mode that truncates IP addresses before they are persisted.
+- SVG/PNG/PDF QR-code generation with logo overlays and styling.
+
+#### Engineering decisions
+
+- Split read path and write path: the redirect response never depends on analytics writes succeeding.
+- Columnar storage (ClickHouse MergeTree ordered by workspace, link and month, with a 365-day TTL) for click telemetry instead of the relational database.
+- Self-hosted enrichment data instead of a paid geo API, trading periodic dataset updates for zero per-request cost.
+
+#### Technology stack
+
+- **Backend**: NestJS, TypeScript, Passport.js (JWT/OAuth), BullMQ
+- **Data**: PostgreSQL 16 (Prisma), Redis 7, ClickHouse 24
+- **Frontend**: Next.js 14 (App Router), React 18, Tailwind CSS, TanStack Query, Zustand, Recharts
+- **Infrastructure**: Docker Compose, Caddy 2 (on-demand TLS)
+
+#### Links
+
+- Page: https://mahbub.dev/projects/linklens/
+- Source: https://github.com/Mahbub96/LinkLens
+
+### Bangla & English ASR Studio — Whisper transcription, evaluation and fine-tuning
+
+A local-first speech-to-text studio and Whisper fine-tuning pipeline for Bangla and English: transcription UI, batch jobs, WER/CER benchmarking and guarded LoRA training.
+
+#### The problem
+
+Off-the-shelf Whisper models work well in general, but production Bangla and mixed Bangla/English (Banglish) audio raises practical problems: Bangla can be misdetected as another Indic language, and mixed-language speech needs controlled decoding and repeatable evaluation.
+
+Fine-tuning without a fixed baseline creates a grey area — there is no evidence that the new model is actually better than the one it replaces.
+
+#### Architecture and approach
+
+- A React operator UI for microphone and file transcription, batch jobs, benchmarks, diagnostics and training controls.
+- A FastAPI backend that handles model loading, audio normalisation, job tracking, exports, evaluation and training subprocesses.
+- CLI scripts for the same operations, so GPU servers and automation do not depend on the UI.
+- Docker Compose stacks for CPU, development with hot reload, and an NVIDIA GPU override.
+
+#### Key features
+
+- Benchmarking against ground-truth metadata with word error rate (WER) and character error rate (CER), plus per-sample predictions.
+- Bangla/English decoding profiles and post-processing guards.
+- Training and evaluation directly from Parquet datasets (e.g. SUBAK.KO from Hugging Face) without extracting every clip to WAV, including a streaming mode.
+- LoRA/QLoRA fine-tuning of Whisper, training small adapter layers instead of all model weights.
+- Resumable segmented dataset downloads and a persistent model cache that survives container rebuilds.
+
+#### Engineering decisions
+
+- Guarded training workflow: back up the current model, evaluate it on a fixed held-out test set, train, evaluate the new model on the same set, then write a side-by-side comparison with confusion analysis.
+- The pipeline never auto-replaces the production model. The comparison reports a verdict (new better, old better, or mixed metrics) and the final decision stays manual.
+- The test split is kept fixed and untouched so old-vs-new comparisons stay fair.
+
+#### Technology stack
+
+- **Speech & ML**: Whisper, faster-whisper, Hugging Face Transformers, LoRA / QLoRA, PyTorch
+- **Backend**: Python, FastAPI, FFmpeg
+- **Frontend**: React, Vite
+- **Infrastructure**: Docker Compose, NVIDIA CUDA (GPU override)
+
+#### Links
+
+- Page: https://mahbub.dev/projects/bangla-and-english-asr-studio/
+- Source: https://github.com/Mahbub96/bangla-asr-pipeline
+
+### Local Vocal Agent — a privacy-first local AI voice assistant
+
+A full-stack voice assistant that runs locally: FastAPI and React, an Ollama-hosted LLM, speech-to-text and text-to-speech, and SQLite plus Chroma memory.
+
+#### The problem
+
+Most voice assistants send audio and conversation history to a cloud service. Local Vocal Agent keeps the language model, speech pipeline and memory on the user's own machine.
+
+#### Architecture and approach
+
+- FastAPI backend exposing versioned endpoints for text chat, voice chat, sessions, user profile and system status/metrics.
+- React + Vite frontend for the chat and voice workspace.
+- LLM inference through Ollama; speech-to-text with Faster Whisper and a text-to-speech stage for spoken replies.
+- Two memory layers: SQLite for sessions and messages, and Chroma as a vector store for retrieval.
+- Internet search support with a configurable provider (Google News RSS by default, DuckDuckGo as an alternative) and an automatic fallback when a provider returns nothing.
+
+#### Key features
+
+- Streaming chat and voice-chat endpoints.
+- Session history and per-session message retrieval.
+- System metrics and status endpoints for the running stack.
+- A CI check that keeps the CI requirements file in sync with the full requirements.
+
+#### Engineering decisions
+
+- Local-first by design: models run under Ollama on the host instead of a hosted API.
+- Search providers are pluggable through configuration, so the assistant degrades gracefully when one source fails.
+
+#### Technology stack
+
+- **AI**: Ollama, Faster Whisper (STT), TTS, ChromaDB (vector memory), RAG
+- **Backend**: Python, FastAPI, SQLite
+- **Frontend**: React, Vite
+
+#### Links
+
+- Page: https://mahbub.dev/projects/local-vocal-agent/
+- Source: https://github.com/Mahbub96/Local-vocal-agent
+
+### Advanced Finance Tracker — offline-first personal finance app
+
+An offline-first personal finance app built with Expo React Native and SQLite on the device, plus a NestJS and PostgreSQL API for multi-device sync.
+
+#### The problem
+
+Most finance apps keep the user's ledger only in the cloud, so the app is slow without a connection and the data depends on a remote server.
+
+Advanced Finance Tracker keeps the ledger on the phone and treats the cloud as an optional sync target.
+
+#### Architecture and approach
+
+- Mobile client in React Native with Expo and Expo Router, storing every record in an embedded SQLite database with schema migrations.
+- NestJS API with Prisma and PostgreSQL acting as the sync engine for multiple devices, with offline change queuing.
+- pnpm monorepo with shared packages for TypeScript types, Zod validation schemas, a typed API client and configuration.
+
+#### Key features
+
+- Accounts (bank, cash, cards, savings), multi-currency balances and transfers between accounts.
+- Income/expense ledger with recurring rules, budgets per category and savings goals.
+- Lending and borrowing tracking.
+- Scoped soft-deletion (month, year or all-time) that propagates through sync.
+
+#### Engineering decisions
+
+- Money is handled as integer/scaled-decimal strings rather than floating point, so totals never accumulate rounding errors.
+- Deletions are soft-delete tombstones (deleted_at) that sync to the server, so a record deleted on one device cannot be resurrected by another device's sync.
+- Parameterised SQL everywhere on the device database.
+
+#### Technology stack
+
+- **Mobile**: React Native, Expo, Expo Router, TypeScript, SQLite (expo-sqlite)
+- **Backend**: NestJS, Prisma, PostgreSQL, Redis
+- **Tooling**: pnpm workspaces, Zod, Jest, ESLint
+
+#### Links
+
+- Page: https://mahbub.dev/projects/advanced-finance-tracker/
+- Source: https://github.com/Mahbub96/Advance-Finance-Tracker
+
+## Other projects
+
+- Healthcare & Medical Applications: Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations. _(React.js, Node.js, Laravel, MySQL, MongoDB)_
+- Enterprise & School Management Systems: Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features. _(Laravel, React.js, Node.js, MySQL)_
+- [Real-Time Chat Application](https://github.com/Mahbub96/chat-application): Real-time chat application with instant messaging, modern UI, and socket-based communication between users. _(React.js, Node.js, Socket.io, CSS)_
+- [React Portfolio](https://github.com/Mahbub96/react_portfolio): Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content. _(Next.js, React.js, CSS, MongoDB)_
+- [Test-Buddy](https://github.com/Mahbub96/Test-Buddy): React-based test and exam management demo application built for a university software engineering course. _(React.js, HTML, CSS, JavaScript)_
+- [Blood Donation Management System](https://github.com/Mahbub96/BloodDonationManagementSystem): Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage. _(Java, SQLite, Java Swing)_

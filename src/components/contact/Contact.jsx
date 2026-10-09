@@ -5,39 +5,34 @@ import {
   FaMapMarkerAlt,
   FaEnvelope,
   FaPaperPlane,
-  FaPhone,
   FaGlobe,
 } from "react-icons/fa";
 import styles from "./contact.module.css";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
 import analytics from "@/services/analyticsSdk";
+import {
+  CONTACT_MESSAGE,
+  SITE_AUTHOR,
+  SITE_ORIGIN,
+} from "@/lib/seo/siteConfig.mjs";
 
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /contact page
 // passes "h1" so that page has exactly one top-level heading.
-export default function Contact({ data, headingLevel = "h2" }) {
+//
+// Public contact details come from the SEO site config, not the CMS, so a
+// stale database row can never re-publish a phone number, extra email
+// addresses or availability wording.
+const contactInfo = {
+  location: SITE_AUTHOR.location,
+  email: SITE_AUTHOR.email,
+  website: `${SITE_ORIGIN}/`,
+};
+
+export default function Contact({ headingLevel = "h2" }) {
   const Heading = headingLevel;
-  const contactData = data?.Contact?.data || {};
-
-  // Default values if no data from database
-  const contactInfo = contactData.contactInfo || {
-    location: "Dhaka, Bangladesh",
-    email: "admin@mahbub.dev",
-    phone: "+880 1784 310 996",
-    website: "https://mahbub.dev",
-  };
-
-  // All available email addresses for SEO
-  const allEmails = [
-    "admin@mahbub.dev",
-    "mahbubcse96@gmail.com",
-    "mahbub.alam.sobuz@gmail.com",
-  ];
-
-  const message =
-    contactData.message ||
-    "I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!";
+  const message = CONTACT_MESSAGE;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -164,85 +159,11 @@ export default function Contact({ data, headingLevel = "h2" }) {
     }
   };
 
-  // Enhanced structured data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    name: "Contact - Mahbub Alam Portfolio",
-    description:
-      "Get in touch with Mahbub Alam for collaboration, opportunities, or just to say hello. Full Stack Developer specializing in React, Node.js, PHP, and modern web technologies.",
-    mainEntity: {
-      "@type": "Organization",
-      name: "Mahbub Alam - Full Stack Developer",
-      contactPoint: [
-        {
-          "@type": "ContactPoint",
-          telephone: contactInfo.phone,
-          email: contactInfo.email,
-          contactType: "customer service",
-          areaServed: "Worldwide",
-          availableLanguage: "English",
-          hoursAvailable: {
-            "@type": "OpeningHoursSpecification",
-            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            opens: "09:00",
-            closes: "18:00",
-          },
-        },
-        ...allEmails.map((email) => ({
-          "@type": "ContactPoint",
-          email: email,
-          contactType: "customer service",
-          areaServed: "Worldwide",
-          availableLanguage: "English",
-        })),
-      ],
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: contactInfo.location.split(",")[0].trim(),
-        addressCountry:
-          contactInfo.location.split(",")[1]?.trim() || "Bangladesh",
-        addressRegion: "Dhaka",
-        postalCode: "1230",
-      },
-      url: contactInfo.website,
-      sameAs: [
-        "https://github.com/mahbub96",
-        "https://linkedin.com/in/md-mahbub-alam-6b751821b",
-        "https://fb.me/MahbubCSE96",
-      ],
-    },
-    potentialAction: {
-      "@type": "ContactAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: "https://mahbub.dev/contact",
-        inLanguage: "en-US",
-        actionPlatform: [
-          "http://schema.org/DesktopWebPlatform",
-          "http://schema.org/MobileWebPlatform",
-        ],
-      },
-      result: {
-        "@type": "ContactPage",
-        name: "Contact Form Submission",
-      },
-    },
-  };
-
   return (
     <>
-      {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
       <section
         id="contact"
         className={styles.contactSection}
-        itemScope
-        itemType="http://schema.org/ContactPage"
         aria-labelledby="contact-heading"
       >
         <div className="container">
@@ -267,7 +188,7 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     className={styles.contactIcon}
                     aria-hidden="true"
                   />
-                  <span itemProp="address" className={styles.contactText}>
+                  <span className={styles.contactText}>
                     <HarmonicChip text={contactInfo.location} />
                   </span>
                 </div>
@@ -278,29 +199,12 @@ export default function Contact({ data, headingLevel = "h2" }) {
                   />
                   <a
                     href={`mailto:${contactInfo.email}`}
-                    itemProp="email"
                     className={styles.contactLink}
                     aria-label={`Send email to ${contactInfo.email}`}
                   >
                     <HarmonicChip text={contactInfo.email} />
                   </a>
                 </div>
-                {contactInfo.phone && (
-                  <div className={styles.contactItem}>
-                    <FaPhone
-                      className={styles.contactIcon}
-                      aria-hidden="true"
-                    />
-                    <a
-                      href={`tel:${contactInfo.phone.replace(/\s+/g, "")}`}
-                      itemProp="telephone"
-                      className={styles.contactLink}
-                      aria-label={`Call ${contactInfo.phone}`}
-                    >
-                      <HarmonicChip text={contactInfo.phone} />
-                    </a>
-                  </div>
-                )}
                 {contactInfo.website && (
                   <div className={styles.contactItem}>
                     <FaGlobe
@@ -309,7 +213,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     />
                     <a
                       href={contactInfo.website}
-                      itemProp="url"
                       className={styles.contactLink}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -326,8 +229,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
               <form
                 className={styles.contactForm}
                 onSubmit={handleSubmit}
-                itemScope
-                itemType="http://schema.org/ContactForm"
                 aria-labelledby="contact-form-heading"
                 noValidate
               >
@@ -358,7 +259,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     aria-required="true"
                     aria-describedby="name-error"
                     aria-invalid={fieldErrors.name ? "true" : "false"}
-                    itemProp="name"
                     className={styles.formInput}
                     autoComplete="name"
                   />
@@ -390,7 +290,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     aria-required="true"
                     aria-describedby="email-error"
                     aria-invalid={fieldErrors.email ? "true" : "false"}
-                    itemProp="email"
                     className={styles.formInput}
                     autoComplete="email"
                   />
@@ -422,7 +321,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     aria-required="true"
                     aria-describedby="subject-error"
                     aria-invalid={fieldErrors.subject ? "true" : "false"}
-                    itemProp="subject"
                     className={styles.formInput}
                     autoComplete="off"
                   />
@@ -454,7 +352,6 @@ export default function Contact({ data, headingLevel = "h2" }) {
                     aria-required="true"
                     aria-describedby="message-error"
                     aria-invalid={fieldErrors.message ? "true" : "false"}
-                    itemProp="message"
                     className={styles.formTextarea}
                     autoComplete="off"
                   ></textarea>

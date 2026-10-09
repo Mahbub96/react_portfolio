@@ -1,89 +1,58 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
-import { canonicalFor } from "@/lib/seo/urls.mjs";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata.mjs";
+import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 
 export const dynamic = "force-dynamic";
 
 const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
-  loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
 const Contact = NextDynamic(() => import("@/components/contact/Contact"), {
-  loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
 const Footer = NextDynamic(() => import("@/components/Footer"), {
-  loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-export const metadata = {
-  title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
-  description:
-    "Contact Mahbub Alam - Software Engineer for freelance projects and full-time opportunities. Email: mahbubcse96@gmail.com. Based in Dhaka, Bangladesh.",
-  alternates: {
-    // Overrides the site-wide canonical in app/layout.js — see projects page.
-    canonical: canonicalFor("/contact/"),
-  },
-  keywords: [
-    "Contact Mahbub Alam",
-    "Hire Mahbub Alam",
-    "Freelance Developer",
-    "Full Stack Developer",
-    "Mahbub Alam Contact",
-    "Dhaka Developer",
-    "Bangladesh Developer",
-    "admin@mahbub.dev",
-    "mahbubcse96@gmail.com",
-    "React Developer Contact",
-    "PHP Developer Contact",
-    "Node.js Developer Contact",
-    "Web Development Services",
-    "Software Engineer Contact",
-  ],
-  openGraph: {
-    title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
-    description:
-      "Contact Mahbub Alam - Software Engineer for freelance projects and full-time opportunities. Email: mahbubcse96@gmail.com",
-    url: canonicalFor("/contact/"),
-    siteName: "Mahbub Alam Portfolio",
-    images: [
-      {
-        url: "/assets/img/og-cover.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Contact Mahbub Alam - Full Stack Developer",
-      },
-    ],
-  },
-  twitter: {
-    title: "Contact Mahbub Alam | Full Stack Developer - Get in Touch",
-    description:
-      "Contact Mahbub Alam - Full Stack Developer for freelance projects and full-time opportunities.",
-    images: ["/assets/img/og-cover.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+const TITLE = "Contact";
+// Neutral on purpose: no availability, hiring or freelance wording.
+const DESCRIPTION = `Get in touch with ${SITE_AUTHOR.name}, ${SITE_AUTHOR.jobTitle} in ${SITE_AUTHOR.location} — email or send a message through the contact form.`;
+
+export const metadata = pageMetadata({
+  path: "/contact/",
+  title: TITLE,
+  description: DESCRIPTION,
+});
 
 export default function ContactPage() {
+  const graph = buildPageGraph({
+    path: "/contact/",
+    name: `${TITLE} — ${SITE_AUTHOR.name}`,
+    description: DESCRIPTION,
+    type: "ContactPage",
+    breadcrumb: [{ name: TITLE, path: "/contact/" }],
+  });
+
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <JsonLd data={graph} />
+
+      <Suspense fallback={null}>
         <Navbar />
       </Suspense>
 
       <main className="container">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={null}>
           <Contact headingLevel="h1" />
         </Suspense>
       </main>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <Footer />
       </Suspense>
     </div>

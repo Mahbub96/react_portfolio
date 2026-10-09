@@ -79,6 +79,15 @@
   border-bottom-color: currentColor;
 }
 
+.summary {
+  max-width: 62ch;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
 .bottomMeta {
   display: flex;
   flex-direction: column;

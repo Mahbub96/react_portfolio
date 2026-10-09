@@ -5,8 +5,10 @@ import {
   FaFacebook,
   FaLinkedin,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import styles from "./footer.module.css";
 import { footerRoutes } from "@/lib/seo/routes.mjs";
+import { SITE_AUTHOR, SITE_SUMMARY } from "@/lib/seo/siteConfig.mjs";
 import {
   APP_VERSION,
   BUILD_NUMBER,
@@ -21,13 +23,13 @@ function Footer({ data }) {
   const profile = data?.profile?.data || {};
   const bannerData = data?.Banner?.data || {};
   const name = profile.name || bannerData.name || "Mahbub Alam";
-  const socialLinks = bannerData.socialLinks || {
-    email: process.env.EMAIL || "admin@mahbub.dev",
-    github: process.env.GITHUB_URL || "https://github.com/mahbub96",
-    facebook: process.env.FACEBOOK_URL || "https://fb.me/MahbubCSE96",
-    linkedin:
-      process.env.LINKEDIN_URL ||
-      "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
+  // Identity links come from the SEO site config — one source of truth.
+  const socialLinks = {
+    email: SITE_AUTHOR.email,
+    github: SITE_AUTHOR.github,
+    facebook: SITE_AUTHOR.facebook,
+    linkedin: SITE_AUTHOR.linkedin,
+    x: SITE_AUTHOR.x,
   };
 
   const footerSocialLinks = [
@@ -54,6 +56,12 @@ function Footer({ data }) {
       icon: FaLinkedin,
       url: socialLinks.linkedin,
       title: "LinkedIn Profile",
+    },
+    {
+      name: "X",
+      icon: FaXTwitter,
+      url: socialLinks.x,
+      title: "X (Twitter) Profile",
     },
   ];
 
@@ -88,14 +96,17 @@ function Footer({ data }) {
               key={link.name}
               href={link.url}
               target="_blank"
-              rel="noopener noreferrer"
               title={link.title}
+              aria-label={`${name} — ${link.title}`}
+              rel="me noopener noreferrer"
               className={styles.socialLink}
             >
-              <link.icon />
+              <link.icon aria-hidden="true" />
             </a>
           ))}
         </div>
+
+        <p className={styles.summary}>{SITE_SUMMARY}</p>
 
         <div className={styles.bottomMeta}>
           <p className={styles.copyrightLine}>

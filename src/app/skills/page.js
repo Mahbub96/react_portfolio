@@ -1,114 +1,138 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
+import Link from "next/link";
 import { getPortfolioData } from "@/lib/getPortfolioData";
-import { canonicalFor } from "@/lib/seo/urls.mjs";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata.mjs";
+import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
+import {
+  buildProjectCatalog,
+  isIndexableProject,
+  projectPath,
+} from "@/lib/seo/projectCatalog.mjs";
+import { groupSkills } from "@/lib/seo/skillCatalog.mjs";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
+import styles from "./skillsUsage.module.css";
 
 export const dynamic = "force-dynamic";
 
 const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
-  loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-const Skills = NextDynamic(() => import("@/components/skills/Skills"), {
-  loading: () => <div>Loading...</div>,
+const Skills = NextDynamic(() => import("@/components/skills/SkillsServer"), {
   ssr: true,
 });
 
 const Footer = NextDynamic(() => import("@/components/Footer"), {
-  loading: () => <div>Loading...</div>,
   ssr: true,
 });
 
-// Returns the Skills collection in the wrapper shape ({ data, lastUpdate })
-// that the Skills component expects, sharing the homepage's db.json fallback
-// so this page never renders empty when MongoDB is unreachable.
-async function getSkillsData() {
-  const portfolioData = await getPortfolioData();
-  return portfolioData?.Skills || { data: [] };
+const TITLE = "Skills & Technologies";
+const DESCRIPTION = `Languages, frameworks, databases and tools ${SITE_AUTHOR.name} uses — Node.js, NestJS, Python, FastAPI, React, Next.js, PostgreSQL, Docker — and the projects that use them.`;
+
+export const metadata = pageMetadata({
+  path: "/skills/",
+  title: TITLE,
+  description: DESCRIPTION,
+});
+
+/** Normalise a technology name so "React.js" matches "React", "Node.js" matches "Node". */
+function techKey(value = "") {
+  return String(value)
+    .toLowerCase()
+    .replace(/\.js$/, "")
+    .replace(/[^a-z0-9+#]/g, "");
 }
 
-export async function generateMetadata() {
-  const skills = (await getSkillsData())?.data || [];
+/**
+ * For each skill, the projects whose stack lists it. Built purely from the
+ * portfolio data, so every claim on the page is backed by a project card.
+ */
+function skillUsage(skills = [], projects = []) {
+  const catalog = buildProjectCatalog(projects);
 
-  return {
-    title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
-    description: `Mahbub Alam's technical skills include ${skills.length} technologies: React, Next.js, Node.js, Python, FastAPI, PHP, Laravel, MongoDB, MySQL, Docker, and more. Software Engineer expertise across backend, full-stack and applied AI.`,
-    alternates: {
-      // Overrides the site-wide canonical in app/layout.js — see projects page.
-      canonical: canonicalFor("/skills/"),
-    },
-    keywords: [
-      "Mahbub Alam Skills",
-      "Full Stack Developer Skills",
-      "Technical Skills",
-      "React Skills",
-      "Next.js Skills",
-      "Node.js Skills",
-      "Python Skills",
-      "FastAPI Skills",
-      "PHP Skills",
-      "Laravel Skills",
-      "MongoDB Skills",
-      "MySQL Skills",
-      "PostgreSQL Skills",
-      "Docker Skills",
-      "JavaScript Skills",
-      "TypeScript Skills",
-      "Web Development Skills",
-      "Mobile Development Skills",
-      "Applied AI Skills",
-      "System Architecture Skills",
-      "DevSecOps Skills",
-      "Cloud Computing Skills",
-      "Mahbub Alam Technologies",
-      "Programming Languages",
-      "Frameworks",
-      "Databases",
-      "Cloud Platforms",
-    ],
-    openGraph: {
-      title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
-      description: `Mahbub Alam's technical skills include ${skills.length} technologies. Software Engineer expertise across backend, full-stack and applied AI.`,
-      url: canonicalFor("/skills/"),
-      siteName: "Mahbub Alam Portfolio",
-      images: [
-        {
-          url: "/assets/img/og-cover.jpg",
-          width: 1200,
-          height: 630,
-          alt: "Skills & Technologies - Mahbub Alam Full Stack Developer",
-        },
-      ],
-    },
-    twitter: {
-      title: "Skills & Technologies | Mahbub Alam - Full Stack Developer",
-      description: `Mahbub Alam's technical skills include ${skills.length} technologies. Full Stack Developer expertise in web and mobile development.`,
-      images: ["/assets/img/og-cover.jpg"],
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return groupSkills(skills).map(({ category, skills: grouped }) => ({
+    category,
+    skills: grouped
+      .map((skill) => {
+        const name = skill.name || skill.title || skill.altTxt;
+        const key = techKey(name);
+        const usedIn = catalog.filter((project) =>
+          project.stack.some((tech) => techKey(tech) === key)
+        );
+        return { name, usedIn };
+      })
+      .filter((entry) => entry.name),
+  }));
 }
 
 export default async function SkillsPage() {
-  const skillsData = await getSkillsData();
+  const portfolioData = await getPortfolioData();
+  const skillsData = portfolioData?.Skills || { data: [] };
+  const usage = skillUsage(skillsData.data || [], portfolioData?.Projects?.data || []);
+
+  const graph = buildPageGraph({
+    path: "/skills/",
+    name: `${TITLE} — ${SITE_AUTHOR.name}`,
+    description: DESCRIPTION,
+    type: "WebPage",
+    breadcrumb: [{ name: "Skills", path: "/skills/" }],
+  });
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <JsonLd data={graph} />
+
+      <Suspense fallback={null}>
         <Navbar />
       </Suspense>
 
-      <main className="container">
-        <Suspense fallback={<div>Loading...</div>}>
+      <main>
+        <Suspense fallback={null}>
           <Skills data={skillsData} headingLevel="h1" />
         </Suspense>
+
+        <section className={styles.usage} aria-labelledby="skills-usage-heading">
+          <h2 id="skills-usage-heading" className={styles.heading}>
+            Where these skills are used
+          </h2>
+          <p className={styles.intro}>
+            {SITE_AUTHOR.name} works mainly on backend services and APIs, full-stack
+            web applications and applied AI. Each technology below links to the
+            projects in this portfolio that use it.
+          </p>
+
+          {usage
+            .filter(({ skills }) => skills.some(({ usedIn }) => usedIn.length))
+            .map(({ category, skills }) => (
+            <div key={category} className={styles.group}>
+              <h3 className={styles.groupTitle}>{category}</h3>
+              <ul className={styles.list}>
+                {skills.filter(({ usedIn }) => usedIn.length).map(({ name, usedIn }) => (
+                  <li key={name} className={styles.item}>
+                    <span className={styles.skill}>{name}</span>
+                    <span className={styles.projects}>
+                        {usedIn.map((project, index) => (
+                          <span key={project.slug}>
+                            {index > 0 ? ", " : ""}
+                            {isIndexableProject(project) ? (
+                              <Link href={projectPath(project)}>{project.name}</Link>
+                            ) : (
+                              project.name
+                            )}
+                          </span>
+                        ))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
       </main>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <Footer />
       </Suspense>
     </div>

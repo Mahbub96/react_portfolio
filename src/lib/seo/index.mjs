@@ -9,7 +9,12 @@ export {
   SITE_ORIGIN,
   SITE_NAME,
   SITE_AUTHOR,
+  SITE_SUMMARY,
+  SITE_DESCRIPTION,
   SITE_EXPERTISE,
+  SAME_AS,
+  DEFAULT_OG_IMAGE,
+  CONTACT_MESSAGE,
   TRAILING_SLASH,
 } from "./siteConfig.mjs";
 
@@ -28,8 +33,15 @@ export {
   buildProjectCatalog,
   findProjectBySlug,
   projectPath,
+  isIndexableProject,
   indexableProjects,
 } from "./projectCatalog.mjs";
+
+export { CASE_STUDIES, caseStudyFor } from "./caseStudies.mjs";
+
+export { pageMetadata, clampDescription } from "./metadata.mjs";
+
+export { renderRobotsTxt, AI_AGENTS, DISALLOWED_PATHS } from "./robots.mjs";
 
 export {
   SKILL_CATEGORY_ORDER,
@@ -39,6 +51,15 @@ export {
 
 export { buildSitemapEntries, renderSitemapXml } from "./sitemapBuilder.mjs";
 
-export { renderLlmsTxt } from "./llmsProfile.mjs";
+export { renderLlmsTxt, renderLlmsFullTxt } from "./llmsProfile.mjs";
 
-export { buildProjectJsonLd, buildBreadcrumbJsonLd } from "./structuredData.mjs";
+export {
+  PERSON_ID,
+  WEBSITE_ID,
+  personNode,
+  websiteNode,
+  breadcrumbNode,
+  buildPageGraph,
+  projectNode,
+  projectListNode,
+} from "./structuredData.mjs";

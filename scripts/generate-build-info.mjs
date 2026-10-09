@@ -2,9 +2,10 @@
 /**
  * Build-time generator for version and build metadata.
  * Generates src/config/buildInfo.json containing:
- * - version: Semantic version from environment or package.json (e.g., 3.0.0)
- * - buildNumber: DDMMYYYY-<commit_count> (e.g., 21092026-171) or from environment
- * - commitCount: Git commit count (e.g., 171)
+ * - version: A.M.m from package.json (or APP_VERSION env)
+ *     A = architectural change, M = major update, m = minor update
+ * - buildNumber: YYYYMMDD-<commit_count> (e.g., 20261009-173) or from environment
+ * - commitCount: git commit count of HEAD (the "commit number")
  * - commitHash: Short git commit hash (e.g., a443317)
  * - buildDate: ISO 8601 timestamp
  */
@@ -35,8 +36,8 @@ for (const envPath of envFiles) {
 }
 
 function getGitInfo() {
-  let commitCount = "171";
-  let commitHash = "a443317";
+  let commitCount = "0";
+  let commitHash = "unknown";
 
   try {
     commitCount = execSync("git rev-list --count HEAD", {
@@ -61,18 +62,18 @@ function getGitInfo() {
   return { commitCount, commitHash };
 }
 
-function formatDateDDMMYYYY(date) {
+function formatDateYYYYMMDD(date) {
   const d = String(date.getDate()).padStart(2, "0");
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const y = date.getFullYear();
-  return `${d}${m}${y}`;
+  return `${y}${m}${d}`;
 }
 
 async function main() {
   console.log("Generating build information…");
 
   // 1. Read package.json for version fallback
-  let defaultVersion = "3.0.0";
+  let defaultVersion = "1.0.0";
   try {
     const pkgRaw = await readFile(join(ROOT, "package.json"), "utf8");
     const pkg = JSON.parse(pkgRaw);
@@ -91,10 +92,10 @@ async function main() {
 
   // 2. Compute build date and git info
   const now = new Date();
-  const dateStr = formatDateDDMMYYYY(now);
+  const dateStr = formatDateYYYYMMDD(now);
   const { commitCount, commitHash } = getGitInfo();
 
-  // 3. Build number format: DDMMYYYY-<commit_count> (e.g. 21092026-171) or env override
+  // 3. Build number format: YYYYMMDD-<commit_count> (e.g. 20261009-173) or env override
   const defaultBuildNumber = `${dateStr}-${commitCount}`;
   const buildNumber =
     process.env.NEXT_PUBLIC_BUILD_NUMBER ||
@@ -104,7 +105,7 @@ async function main() {
   const buildInfo = {
     version,
     buildNumber,
-    commitCount: parseInt(commitCount, 10) || 171,
+    commitCount: parseInt(commitCount, 10) || 0,
     commitHash,
     buildDate: now.toISOString(),
   };

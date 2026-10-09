@@ -1,7 +1,9 @@
-import connectDB from "@/lib/mongodb";
-import PortfolioData from "@/models/PortfolioData";
+import { getPortfolioData } from "@/lib/getPortfolioData";
 import { buildCV } from "@/lib/cvBuilder";
-import { canonicalFor } from "@/lib/seo/urls.mjs";
+import JsonLd from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata.mjs";
+import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import PrintButton from "./PrintButton";
 import styles from "./resume.module.css";
 
@@ -9,61 +11,42 @@ import styles from "./resume.module.css";
 export const revalidate = 3600;
 
 /**
- * Reads the portfolio collections directly (server component), exactly the
- * pattern src/app/skills/page.js already uses. No HTTP hop to our own API.
+ * Goes through getPortfolioData() like every other page, so the resume falls
+ * back to db.json instead of rendering empty when MongoDB is unreachable.
+ * Public identity fields are pinned to the SEO site config: no phone number
+ * is published and only the one public email address is shown.
  */
 async function getCV() {
   try {
-    await connectDB();
-    const docs = await PortfolioData.find({}).lean();
-
-    const portfolio = {};
-    docs.forEach((item) => {
-      portfolio[item.collectionName] = {
-        data: item.data,
-        lastUpdate: item.lastUpdate,
-      };
-    });
-
-    return buildCV(portfolio);
+    const portfolio = await getPortfolioData();
+    const cv = buildCV(portfolio);
+    return {
+      ...cv,
+      profile: {
+        ...cv.profile,
+        name: SITE_AUTHOR.name,
+        email: SITE_AUTHOR.email,
+        phone: "",
+        website: "https://mahbub.dev/",
+        linkedin: SITE_AUTHOR.linkedin,
+        github: SITE_AUTHOR.github,
+      },
+    };
   } catch (error) {
     console.error("Error loading CV data:", error);
     return null;
   }
 }
 
-export async function generateMetadata() {
-  const cv = await getCV();
-  const name = cv?.profile?.name || "Mahbub Alam";
-  const title = cv?.profile?.title || "Software Engineer";
-  const years = cv?.experience?.label ? `${cv.experience.label} of experience. ` : "";
+const TITLE = "Resume";
+const DESCRIPTION = `Resume of ${SITE_AUTHOR.name}, ${SITE_AUTHOR.jobTitle} at ${SITE_AUTHOR.company}: experience, skills, selected projects and education in backend, full-stack and applied AI.`;
 
-  return {
-    title: `Resume | ${name} — ${title}`,
-    description: `${name} — ${title}. ${years}Backend, full-stack, and applied AI engineering. View and download CV as PDF.`,
-    alternates: { canonical: canonicalFor("/resume/") },
-    openGraph: {
-      title: `Resume | ${name}`,
-      description: `${name} — ${title}. ${years}Download CV as PDF.`,
-      url: "https://mahbub.dev/resume",
-      siteName: "Mahbub Alam Portfolio",
-      images: [
-        {
-          url: "/assets/img/profile.png",
-          width: 1200,
-          height: 630,
-          alt: `Resume - ${name}`,
-        },
-      ],
-    },
-    twitter: {
-      title: `Resume | ${name}`,
-      description: `${name} — ${title}. Download CV as PDF.`,
-      images: ["/assets/img/profile.png"],
-    },
-    robots: { index: true, follow: true },
-  };
-}
+export const metadata = pageMetadata({
+  path: "/resume/",
+  title: TITLE,
+  description: DESCRIPTION,
+  ogType: "profile",
+});
 
 function stripProtocol(url = "") {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -86,8 +69,17 @@ export default async function ResumePage() {
 
   const { profile, summary, experience, experiences, education, skillGroups, projects } = cv;
 
+  const graph = buildPageGraph({
+    path: "/resume/",
+    name: `${TITLE} — ${SITE_AUTHOR.name}`,
+    description: DESCRIPTION,
+    type: "ProfilePage",
+    breadcrumb: [{ name: TITLE, path: "/resume/" }],
+  });
+
   return (
     <div className={styles.wrapper}>
+      <JsonLd data={graph} />
       <div className={styles.toolbar}>
         <p className={styles.toolbarNote}>
           Generated from live portfolio data
@@ -105,9 +97,6 @@ export default async function ResumePage() {
 
           <div className={styles.contactRow}>
             {profile.location && <span>{profile.location}</span>}
-            {profile.phone && (
-              <a href={`tel:${profile.phone.replace(/[^+\d]/g, "")}`}>{profile.phone}</a>
-            )}
             {profile.email && <a href={`mailto:${profile.email}`}>{profile.email}</a>}
             {profile.website && (
               <a href={profile.website}>{stripProtocol(profile.website)}</a>

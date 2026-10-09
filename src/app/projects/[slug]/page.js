@@ -1,14 +1,11 @@
 /**
  * Project detail page -> /projects/<slug>/
  *
- * These pages are the reason the site can rank for anything beyond the owner's
- * name: each one is a distinct URL about a distinct piece of engineering, with
- * its own title, description and SoftwareSourceCode schema. Previously all ten
- * projects lived as cards on a single route and competed for one listing.
- *
- * Content comes from the same portfolio source as everything else — adding a
- * project to the database creates its page, its sitemap entry and its llms.txt
- * line with no code change here.
+ * Projects with a written case study (lib/seo/caseStudies.mjs) are indexable
+ * long-form pages with their own title, description, image and
+ * SoftwareSourceCode schema — these are what let the site rank for technical
+ * queries beyond the owner's name. Projects without one still render here,
+ * but with `noindex`, so a ~100-word page never competes as thin content.
  */
 
 import { notFound } from "next/navigation";
@@ -16,18 +13,19 @@ import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 
 import { getPortfolioData } from "@/lib/getPortfolioData";
-import { canonicalFor } from "@/lib/seo/urls.mjs";
 import {
   findProjectBySlug,
-  indexableProjects,
+  isIndexableProject,
   projectPath,
 } from "@/lib/seo/projectCatalog.mjs";
-import {
-  buildProjectJsonLd,
-  buildBreadcrumbJsonLd,
-} from "@/lib/seo/structuredData.mjs";
+import { caseStudyFor } from "@/lib/seo/caseStudies.mjs";
+import { buildPageGraph, projectNode } from "@/lib/seo/structuredData.mjs";
+import { clampDescription, pageMetadata } from "@/lib/seo/metadata.mjs";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/siteConfig.mjs";
+import { absoluteUrl } from "@/lib/seo/urls.mjs";
 
 import ProjectDetail from "@/components/projects/detail/ProjectDetail";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -39,26 +37,20 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
   ssr: true,
 });
 
+/** All project images are 1024×576 (16:9); declare the real size. */
+const PROJECT_IMAGE_SIZE = { width: 1024, height: 576 };
+
 async function loadProjects() {
   const portfolioData = await getPortfolioData();
   return portfolioData?.Projects?.data || [];
 }
 
-/**
- * Pre-declare the indexable slugs.
- *
- * Keeps the route enumerable for the build even though rendering is dynamic —
- * without it, a detail URL only exists once something links to it.
- */
-export async function generateStaticParams() {
-  try {
-    const projects = await loadProjects();
-    return indexableProjects(projects).map((project) => ({
-      slug: project.slug,
-    }));
-  } catch {
-    return [];
-  }
+function shortName(name = "") {
+  return String(name).split(/\s+[\u2013\u2014:]\s+/)[0].trim() || name;
+}
+
+function describe(project, caseStudy) {
+  return clampDescription(caseStudy?.summary || project.description || `${project.name} — a project by Mahbub Alam.`);
 }
 
 export async function generateMetadata({ params }) {
@@ -66,53 +58,26 @@ export async function generateMetadata({ params }) {
   const project = findProjectBySlug(projects, params?.slug);
 
   if (!project) {
-    // Tell crawlers not to index a URL that resolves to the not-found page.
-    return {
-      title: "Project not found",
-      robots: { index: false, follow: true },
-    };
+    return { title: "Project not found", robots: { index: false, follow: true } };
   }
 
-  const url = canonicalFor(projectPath(project));
-  const stack = project.stack.slice(0, 6).join(", ");
-  const description = project.description
-    ? `${project.description}${stack ? ` Built with ${stack}.` : ""}`.slice(0, 300)
-    : `${project.name} — a project by Mahbub Alam.`;
+  const caseStudy = caseStudyFor(project.slug);
+  const image = project.image
+    ? {
+        url: project.image,
+        ...PROJECT_IMAGE_SIZE,
+        alt: `${shortName(project.name)} — project screenshot`,
+      }
+    : DEFAULT_OG_IMAGE;
 
-  return {
-    title: `${project.name} | Project by Mahbub Alam`,
-    description,
-    alternates: { canonical: url },
-    keywords: [
-      project.name,
-      ...project.stack,
-      "Mahbub Alam",
-      "Software Engineer",
-      "Portfolio Project",
-    ],
-    openGraph: {
-      type: "article",
-      title: `${project.name} | Project by Mahbub Alam`,
-      description,
-      url,
-      siteName: "Mahbub Alam Portfolio",
-      images: [
-        {
-          url: project.image || "/assets/img/og-cover.jpg",
-          width: 1200,
-          height: 630,
-          alt: `${project.name} — project screenshot`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${project.name} | Project by Mahbub Alam`,
-      description,
-      images: [project.image || "/assets/img/og-cover.jpg"],
-    },
-    robots: { index: true, follow: true },
-  };
+  return pageMetadata({
+    path: projectPath(project),
+    title: caseStudy?.title || project.name,
+    description: describe(project, caseStudy),
+    image,
+    ogType: "article",
+    noindex: !isIndexableProject(project),
+  });
 }
 
 export default async function ProjectDetailPage({ params }) {
@@ -121,24 +86,39 @@ export default async function ProjectDetailPage({ params }) {
 
   if (!project) notFound();
 
-  const jsonLd = [
-    buildProjectJsonLd(project),
-    buildBreadcrumbJsonLd(project),
-  ];
+  const caseStudy = caseStudyFor(project.slug);
+  const path = projectPath(project);
+  const name = caseStudy?.headline || project.name;
+
+  const graph = buildPageGraph({
+    path,
+    name,
+    description: describe(project, caseStudy),
+    type: "WebPage",
+    breadcrumb: [
+      { name: "Projects", path: "/projects/" },
+      { name: shortName(project.name), path },
+    ],
+    mainEntity: { "@id": `${absoluteUrl(path)}#project` },
+    nodes: [
+      projectNode({
+        ...project,
+        summary: caseStudy?.summary,
+        keywords: caseStudy?.keywords,
+      }),
+    ],
+  });
 
   return (
     <div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={graph} />
 
       <Suspense fallback={null}>
         <Navbar />
       </Suspense>
 
       <main>
-        <ProjectDetail project={project} />
+        <ProjectDetail project={project} caseStudy={caseStudy} />
       </main>
 
       <Suspense fallback={null}>

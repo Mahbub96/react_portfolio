@@ -14,7 +14,9 @@ import ProjectModal from "./ProjectModal";
 import HarmonicChip from "@/components/HarmonicChip";
 import { projectSlug } from "@/lib/seo/slug.mjs";
 
-function Project({ project, idx = 0 }) {
+// titleAs: h3 under the homepage's h2 "Projects"; the standalone /projects
+// page (h1) passes "h2" so the heading outline stays sequential.
+function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
   const { name, desc, src, lang, to, id } = project;
   const [imageError, setImageError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,8 +75,6 @@ function Project({ project, idx = 0 }) {
   return (
     <article
       className={styles.projectCard}
-      itemScope
-      itemType="https://schema.org/SoftwareApplication"
       style={{
         animationDelay: `${idx * 0.1}s`,
       }}
@@ -98,7 +98,6 @@ function Project({ project, idx = 0 }) {
           <Image
             src={imageUrl}
             alt={`${name} - ${desc}`}
-            itemProp="image"
             width={400}
             height={250}
             sizes="(max-width: 768px) 100vw, 400px"
@@ -132,10 +131,10 @@ function Project({ project, idx = 0 }) {
 
       {/* Project Content */}
       <div className={styles.projectContent}>
-        <h3 itemProp="name" id={`project-${id || idx}-title`}>
+        <TitleTag id={`project-${id || idx}-title`}>
           {name}
-        </h3>
-        <p className={styles.bodyDescription} itemProp="description">
+        </TitleTag>
+        <p className={styles.bodyDescription}>
           {desc}
         </p>
 
@@ -145,27 +144,12 @@ function Project({ project, idx = 0 }) {
             <span
               key={index}
               className={styles.techTag}
-              itemProp="programmingLanguage"
             >
               <HarmonicChip text={tech.trim()} />
             </span>
           ))}
         </div>
 
-        {/* Project Metadata */}
-        <div className={styles.projectMetadata}>
-          <meta itemProp="applicationCategory" content="Web Application" />
-          <meta itemProp="operatingSystem" content="Web Browser" />
-          <meta itemProp="softwareVersion" content="1.0.0" />
-          <meta
-            itemProp="dateCreated"
-            content={project.createdAt || new Date().toISOString()}
-          />
-          <meta
-            itemProp="dateModified"
-            content={project.updatedAt || new Date().toISOString()}
-          />
-        </div>
       </div>
 
       {/* Action Buttons Container - Appears in the gap on hover */}
@@ -178,7 +162,6 @@ function Project({ project, idx = 0 }) {
             rel="noopener noreferrer"
             title="View live demo"
             aria-label={`View ${name} live demo`}
-            itemProp="url"
           >
             <HiOutlineExternalLink
               className={styles.buttonIcon}
@@ -240,16 +223,6 @@ function Project({ project, idx = 0 }) {
           </Link>
         )}
 
-      </div>
-
-      {/* Additional Schema.org markup */}
-      <div className={styles.schemaData} style={{ display: "none" }}>
-        <meta itemProp="author" content="Mahbub Alam" />
-        <meta itemProp="creator" content="Mahbub Alam" />
-        <meta itemProp="publisher" content="Mahbub Alam" />
-        <meta itemProp="inLanguage" content="en" />
-        <meta itemProp="isAccessibleForFree" content="true" />
-        <meta itemProp="offers" content="Free to use" />
       </div>
 
       {/* Bezel-less theme-aligned project modal */}

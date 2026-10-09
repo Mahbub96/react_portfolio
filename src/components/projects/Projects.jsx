@@ -3,26 +3,6 @@ import styles from "./projects.module.css";
 import Project from "./Project";
 import HarmonicHeading from "../HarmonicHeading";
 
-// Server-side data fetching function
-async function getProjectsData() {
-  try {
-    // This would be your actual data fetching logic
-    // For now, returning mock data structure
-    return {
-      projects: [],
-      totalCount: 0,
-      lastUpdated: new Date().toISOString(),
-    };
-  } catch (error) {
-    console.log("Error fetching projects data:", error);
-    return {
-      projects: [],
-      totalCount: 0,
-      lastUpdated: new Date().toISOString(),
-    };
-  }
-}
-
 // headingLevel defaults to h2 because this section also renders on the
 // homepage, which already has its own h1. The standalone /projects page
 // passes "h1" so that page has exactly one top-level heading.
@@ -31,71 +11,11 @@ function Projects({ data, headingLevel = "h2" }) {
   const Heading = headingLevel;
   const totalCount = projects.length;
 
-  // Enhanced structured data for projects section
-  const projectsStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "@id": "https://mahbub.dev#projects",
-    name: "Mahbub Alam Portfolio Projects",
-    description:
-      "Full Stack Development Projects showcasing React, Node.js, PHP, and modern web technologies",
-    numberOfItems: totalCount,
-    itemListElement: projects.map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "SoftwareApplication",
-        "@id": `https://mahbub.dev#project-${project.id || index}`,
-        name: project.name,
-        description: project.desc,
-        applicationCategory: "Web Application",
-        operatingSystem: "Web Browser",
-        softwareVersion: "1.0.0",
-        author: {
-          "@type": "Person",
-          name: "Mahbub Alam",
-          url: "https://mahbub.dev",
-        },
-        creator: {
-          "@type": "Person",
-          name: "Mahbub Alam",
-          url: "https://mahbub.dev",
-        },
-        dateCreated: project.createdAt || new Date().toISOString(),
-        dateModified: project.updatedAt || new Date().toISOString(),
-        ...(project.src && {
-          image: project.src.startsWith("http")
-            ? project.src
-            : `https://mahbub.dev${project.src}`,
-        }),
-        ...(project.to &&
-          project.to !== "#" && {
-            url: project.to,
-          }),
-        ...(project.lang && {
-          programmingLanguage: Array.isArray(project.lang)
-            ? project.lang.join(", ")
-            : project.lang,
-        }),
-      },
-    })),
-  };
-
   return (
     <>
-      {/* Structured Data for Projects */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(projectsStructuredData),
-        }}
-      />
-
       <section
         id="projects"
         className="py-24 relative overflow-hidden bg-gray-900 w-full max-w-full"
-        itemScope
-        itemType="https://schema.org/ItemList"
         aria-labelledby="projects-heading"
       >
         {/* Background gradient overlay */}
@@ -135,6 +55,7 @@ function Projects({ data, headingLevel = "h2" }) {
                   key={project.id || `project-${idx}`}
                   project={project}
                   idx={idx}
+                  titleAs={headingLevel === "h1" ? "h2" : "h3"}
                 />
               ))
             ) : (

@@ -4,16 +4,16 @@ export const APP_VERSION =
   process.env.NEXT_PUBLIC_APP_VERSION ||
   process.env.APP_VERSION ||
   buildInfo.version ||
-  "3.0.0";
+  "1.0.0";
 
 export const BUILD_NUMBER =
   process.env.NEXT_PUBLIC_BUILD_NUMBER ||
   process.env.BUILD_NUMBER ||
   buildInfo.buildNumber ||
-  "21092026-171";
+  "dev";
 
-export const COMMIT_HASH = buildInfo.commitHash || "a443317";
-export const COMMIT_COUNT = buildInfo.commitCount || 171;
+export const COMMIT_HASH = buildInfo.commitHash || "unknown";
+export const COMMIT_COUNT = buildInfo.commitCount || 0;
 export const BUILD_DATE = buildInfo.buildDate || "";
 
 export const APP_BUILD_LABEL = `v${APP_VERSION} • Build ${BUILD_NUMBER}`;

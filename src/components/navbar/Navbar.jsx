@@ -63,11 +63,15 @@ function Header({ data }) {
     };
   }, [isMenuOpen]);
 
+  // Links point at "/#section" so they also work from sub-pages (where the
+  // section does not exist and the browser should navigate home). Only when
+  // the section is on the current page is the click intercepted for smooth
+  // scrolling.
   const handleNavClick = (e, sectionId) => {
-    e.preventDefault();
     if (typeof window !== "undefined" && typeof document !== "undefined") {
       const section = document.getElementById(sectionId);
       if (section) {
+        e.preventDefault();
         const navHeight = 70; // Approximate navbar height
         const sectionTop = section.offsetTop - navHeight;
         window.scrollTo({
@@ -160,7 +164,7 @@ function Header({ data }) {
                         {label}
                       </a>
                     ) : (
-                      <a href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
+                      <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
                         <span className={styles.navNumber}>{number}.</span>
                         {label}
                       </a>
@@ -181,11 +185,11 @@ function Header({ data }) {
                       </button>
                     ) : (
                       <a
-                        href="#contact"
+                        href="/#contact"
                         className={styles.authButton}
                         onClick={(e) => handleNavClick(e, "contact")}
                       >
-                        Hire Me
+                        Get in Touch
                       </a>
                     )}
                   </>

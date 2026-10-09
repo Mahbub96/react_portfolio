@@ -8,6 +8,7 @@
  */
 
 import { withUniqueSlugs } from "./slug.mjs";
+import { caseStudyFor } from "./caseStudies.mjs";
 
 /**
  * Normalise a raw project record into the shape SEO surfaces consume.
@@ -61,16 +62,17 @@ export function projectPath(project = {}) {
 /**
  * Projects worth their own indexable page.
  *
- * The bar is unique content, not a public repository: client work under NDA
- * has no GitHub link but still carries a distinct description and stack, and
- * excluding it would drop real engineering from the index. Entries filtered
- * out here remain visible as cards on /projects/ — they simply do not get a
- * standalone URL that Google would judge as thin.
+ * The bar is unique long-form content: a detail page that only repeats the
+ * card's one-line description is ~100 words, which Google treats as thin and
+ * leaves "crawled – currently not indexed". Only projects with a written case
+ * study (caseStudies.mjs) are indexable and listed in the sitemap/llms.txt.
+ * Every other project still renders at its URL — with `noindex` — and stays
+ * visible as a card on /projects/.
  */
+export function isIndexableProject(project = {}) {
+  return Boolean(caseStudyFor(project.slug));
+}
+
 export function indexableProjects(rawProjects = []) {
-  return buildProjectCatalog(rawProjects).filter((project) => {
-    const hasDescription = project.description.length >= 80;
-    const hasStack = project.stack.length >= 3;
-    return hasDescription && hasStack;
-  });
+  return buildProjectCatalog(rawProjects).filter(isIndexableProject);
 }

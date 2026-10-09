@@ -1,34 +1,56 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { projectPath } from "@/lib/seo/projectCatalog.mjs";
 import styles from "./projectDetail.module.css";
 
 /**
  * Presentational body of a project detail page.
  *
- * Kept as its own component so the route file stays focused on data loading
- * and metadata, and so this markup can be reused (e.g. in a future modal or
- * print view) without dragging the page's SEO concerns along with it.
- *
- * Headings are deliberately a single h1 followed by h2 sections: the detail
- * page is the canonical document for this project, so its heading outline
- * should read as a standalone article rather than a card inside a list.
+ * Heading outline: one h1 (the project), then h2 sections. When a case study
+ * exists (lib/seo/caseStudies.mjs) the page reads as a standalone technical
+ * write-up — problem, approach, features, decisions, stack — which is the
+ * content that lets it rank on its own. Without one it falls back to the card
+ * data and the route marks itself noindex.
  */
-export default function ProjectDetail({ project }) {
+
+function Paragraphs({ items = [] }) {
+  return items.map((text) => (
+    <p key={text.slice(0, 40)} className={styles.body}>
+      {text}
+    </p>
+  ));
+}
+
+function Bullets({ items = [] }) {
+  return (
+    <ul className={styles.bulletList}>
+      {items.map((text) => (
+        <li key={text.slice(0, 40)}>{text}</li>
+      ))}
+    </ul>
+  );
+}
+
+export default function ProjectDetail({ project, caseStudy = null }) {
   if (!project) return null;
 
   const { name, description, image, stack, githubUrl, liveUrl, downloadUrl } =
     project;
 
   const links = [
-    githubUrl && { href: githubUrl, label: "View source", external: true },
-    liveUrl && { href: liveUrl, label: "Visit live site", external: true },
-    downloadUrl && { href: downloadUrl, label: "Download", external: true },
+    githubUrl && { href: githubUrl, label: "View source on GitHub" },
+    liveUrl && { href: liveUrl, label: "Visit live site" },
+    downloadUrl && { href: downloadUrl, label: "Download" },
   ].filter(Boolean);
 
+  const title = caseStudy?.headline || name;
+  const intro = caseStudy?.summary || description;
+  const stackGroups = caseStudy?.stackGroups
+    ? Object.entries(caseStudy.stackGroups)
+    : null;
+
   return (
-    <article className={styles.wrapper} itemScope itemType="https://schema.org/SoftwareSourceCode">
+    <article className={styles.wrapper}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link href="/">Home</Link>
         <span aria-hidden="true">/</span>
@@ -38,14 +60,8 @@ export default function ProjectDetail({ project }) {
       </nav>
 
       <header className={styles.header}>
-        <h1 className={styles.title} itemProp="name">
-          {name}
-        </h1>
-        {description ? (
-          <p className={styles.description} itemProp="description">
-            {description}
-          </p>
-        ) : null}
+        <h1 className={styles.title}>{title}</h1>
+        {intro ? <p className={styles.description}>{intro}</p> : null}
       </header>
 
       {image ? (
@@ -53,23 +69,80 @@ export default function ProjectDetail({ project }) {
           <Image
             src={image}
             alt={`${name} — project screenshot`}
-            width={1200}
-            height={675}
+            width={1024}
+            height={576}
             sizes="(max-width: 900px) 100vw, 900px"
             priority
-            itemProp="image"
           />
         </div>
       ) : null}
 
-      {stack?.length ? (
+      {caseStudy?.problem?.length ? (
+        <section className={styles.section} aria-labelledby="problem-heading">
+          <h2 id="problem-heading" className={styles.sectionTitle}>
+            The problem
+          </h2>
+          <Paragraphs items={caseStudy.problem} />
+        </section>
+      ) : null}
+
+      {caseStudy?.approach?.length ? (
+        <section className={styles.section} aria-labelledby="approach-heading">
+          <h2 id="approach-heading" className={styles.sectionTitle}>
+            Architecture and approach
+          </h2>
+          <Bullets items={caseStudy.approach} />
+        </section>
+      ) : null}
+
+      {caseStudy?.features?.length ? (
+        <section className={styles.section} aria-labelledby="features-heading">
+          <h2 id="features-heading" className={styles.sectionTitle}>
+            Key features
+          </h2>
+          <Bullets items={caseStudy.features} />
+        </section>
+      ) : null}
+
+      {caseStudy?.decisions?.length ? (
+        <section className={styles.section} aria-labelledby="decisions-heading">
+          <h2 id="decisions-heading" className={styles.sectionTitle}>
+            Engineering decisions
+          </h2>
+          <Bullets items={caseStudy.decisions} />
+        </section>
+      ) : null}
+
+      {stackGroups ? (
+        <section className={styles.section} aria-labelledby="tech-heading">
+          <h2 id="tech-heading" className={styles.sectionTitle}>
+            Technology stack
+          </h2>
+          <dl className={styles.stackGroups}>
+            {stackGroups.map(([group, items]) => (
+              <div key={group} className={styles.stackGroup}>
+                <dt>{group}</dt>
+                <dd>
+                  <ul className={styles.stackList}>
+                    {items.map((tech) => (
+                      <li key={tech} className={styles.stackItem}>
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ) : stack?.length ? (
         <section className={styles.section} aria-labelledby="tech-heading">
           <h2 id="tech-heading" className={styles.sectionTitle}>
             Technology stack
           </h2>
           <ul className={styles.stackList}>
             {stack.map((tech) => (
-              <li key={tech} className={styles.stackItem} itemProp="programmingLanguage">
+              <li key={tech} className={styles.stackItem}>
                 {tech}
               </li>
             ))}

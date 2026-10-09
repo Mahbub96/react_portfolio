@@ -17,6 +17,7 @@ import HarmonicName from "./HarmonicName";
 import HarmonicChip from "./HarmonicChip";
 import ProfileImageWithModal from "./ProfileImageWithModal";
 import { getResumeConfig } from "@/lib/resumeConfig";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 
 // Server-side Banner + About merged component for better SEO
 const BannerServer = ({
@@ -102,8 +103,8 @@ const BannerServer = ({
     "Software Engineer | Full-Stack, Backend & Applied AI";
   const location =
     bannerData.location || profileData.location || "Dhaka, Bangladesh";
-  const company = profileData.company || "Brotecs Technologies Ltd";
-  const companyUrl = profileData.companyUrl || "https://brotecs.com";
+  const company = profileData.company || SITE_AUTHOR.company;
+  const companyUrl = profileData.companyUrl || SITE_AUTHOR.companyUrl;
   const bio =
     bannerData.bio ||
     profileData.description ||
@@ -111,76 +112,17 @@ const BannerServer = ({
   const heroPromise =
     bannerData.headline ||
     "I build maintainable web applications, backend APIs, and practical AI-enabled systems for real business workflows.";
-  const socialLinks = bannerData.socialLinks || {
-    email: "support@mahbub.dev",
-    github: "https://github.com/mahbub96",
-    facebook: "https://fb.me/MahbubCSE96",
-    linkedin: "https://www.linkedin.com/in/md-mahbub-alam-6b751821b",
-  };
-
-  // Enhanced structured data for merged banner + about section
-  const mergedStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": "https://mahbub.dev#banner-about",
-    name: name,
-    jobTitle: jobTitle,
-    description: bio,
-    image: profileImage || "https://mahbub.dev/assets/img/profile.png",
-    url: "https://mahbub.dev",
-    email: socialLinks.email,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: location,
-      addressCountry: "Bangladesh",
-      addressRegion: "Dhaka",
-    },
-    sameAs: [socialLinks.github, socialLinks.linkedin, socialLinks.facebook],
-    worksFor: {
-      "@type": "Organization",
-      name: company,
-      url: companyUrl,
-      description:
-        "Technology company building software, backend systems and AI-enabled products",
-    },
-    knowsAbout: [
-      "Full Stack Development",
-      "Software Engineering",
-      "Backend Development",
-      "React.js",
-      "Node.js",
-      "Next.js",
-      "NestJS",
-      "TypeScript",
-      "Python",
-      "FastAPI",
-      "PHP",
-      "Laravel",
-      "PostgreSQL",
-      "MongoDB",
-      "MySQL",
-      "Redis",
-      "Cloud Computing",
-      "System Architecture",
-      "DevSecOps",
-      "Docker",
-      "Applied AI",
-      "Machine Learning",
-      "Computer Vision",
-      "Speech Recognition",
-    ],
+  // Profile links and email come from the SEO site config (one source of
+  // truth for identity), never from the CMS row.
+  const socialLinks = {
+    email: SITE_AUTHOR.email,
+    github: SITE_AUTHOR.github,
+    facebook: SITE_AUTHOR.facebook,
+    linkedin: SITE_AUTHOR.linkedin,
   };
 
   return (
     <>
-      {/* Structured Data for merged Banner + About */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(mergedStructuredData),
-        }}
-      />
-
       <section
         className={styles.bannerSection}
         id="about"

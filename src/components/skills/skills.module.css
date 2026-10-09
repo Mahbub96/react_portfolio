@@ -53,7 +53,7 @@
   min-width: 0;
 }
 
-.sectionHeader h2 {
+.sectionHeader :is(h1, h2) {
   font-size: clamp(2rem, 4vw, 2.35rem);
   font-weight: 750;
   line-height: 1.12;
@@ -133,7 +133,7 @@
   border-bottom: 1px solid var(--border-secondary);
 }
 
-.groupHeader h3 {
+.groupHeader :is(h2, h3) {
   margin: 0;
   color: var(--text-primary);
   font-size: clamp(1.08rem, 2vw, 1.18rem);
@@ -372,7 +372,7 @@
     margin-bottom: var(--spacing-2xl);
   }
 
-  .sectionHeader h2 {
+  .sectionHeader :is(h1, h2) {
     font-size: clamp(1.75rem, 8vw, 2rem);
   }
 
@@ -516,7 +516,7 @@
   backdrop-filter: blur(18px);
 }
 
-.groupHeader h3 {
+.groupHeader :is(h2, h3) {
   letter-spacing: -0.03em;
 }
 
@@ -616,8 +616,8 @@
 }
 
 [data-theme="light"] .skillName,
-[data-theme="light"] .groupHeader h3,
-[data-theme="light"] .sectionHeader h2 {
+[data-theme="light"] .groupHeader :is(h2, h3),
+[data-theme="light"] .sectionHeader :is(h1, h2) {
   color: #0f172a;
 }
 

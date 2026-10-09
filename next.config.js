@@ -31,30 +31,11 @@ const nextConfig = {
     scrollRestoration: true,
   },
 
-  // Webpack optimizations
-  webpack: (config, { dev, isServer }) => {
-    // Optimize bundle size
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: "all",
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendors",
-            chunks: "all",
-          },
-          common: {
-            name: "common",
-            minChunks: 2,
-            chunks: "all",
-            enforce: true,
-          },
-        },
-      };
-    }
-
-    return config;
-  },
+  // No custom webpack splitChunks: the previous config forced every
+  // node_modules package into one ~550 KB "vendors" chunk loaded on every
+  // route (echarts, jspdf, etc. included) and its enforced "common" group
+  // pulled CSS into a JS chunk, which browsers then refused to execute.
+  // Next's default per-route chunking is the right behaviour here.
 
   // Enhanced security headers
   async headers() {
@@ -112,7 +93,7 @@ const nextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
           },
           {
             key: "Strict-Transport-Security",
@@ -234,6 +215,21 @@ const nextConfig = {
         ],
       },
 
+      // Plain-text profiles for LLM agents
+      {
+        source: "/:file(llms.txt|llms-full.txt)",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600",
+          },
+        ],
+      },
+
       // Headers for robots.txt
       {
         source: "/robots.txt",
@@ -254,14 +250,6 @@ const nextConfig = {
   // URL rewrites and redirects
   async rewrites() {
     return [
-      // NOTE: /sitemap.xml is deliberately NOT rewritten to an API route.
-      // It is served by src/app/sitemap.js (live data) and by the static
-      // public/sitemap.xml written at build time — the static file is what
-      // survives nginx answering the request before it reaches Next.
-      {
-        source: "/robots.txt",
-        destination: "/robots.txt",
-      },
       {
         source: "/manifest.json",
         destination: "/manifest.json",
@@ -317,16 +305,11 @@ const nextConfig = {
   },
 
   // Environment variables
+  // Version/build number are NOT injected here: scripts/generate-build-info.mjs
+  // writes src/config/buildInfo.json at prebuild (A.M.m + YYYYMMDD-<commits>).
+  // Hardcoded defaults in this block used to shadow that file forever.
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
-    NEXT_PUBLIC_APP_VERSION:
-      process.env.NEXT_PUBLIC_APP_VERSION ||
-      process.env.APP_VERSION ||
-      "3.0.0",
-    NEXT_PUBLIC_BUILD_NUMBER:
-      process.env.NEXT_PUBLIC_BUILD_NUMBER ||
-      process.env.BUILD_NUMBER ||
-      "21092026-171",
   },
 
   // Build output
