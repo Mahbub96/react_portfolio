@@ -13,6 +13,17 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - AI writing help in the blog editor. A ✨ button next to the title, excerpt, URL, tags, search title, meta description and image descriptions suggests a value based on what the post already says. Nothing changes until you choose "Use it".
 - Help with the article itself: turn your notes into an outline, expand a passage, or improve its wording, with a preview before anything is added.
 - Suggestions stay close to what you wrote: links that are not in your post are removed, and numbers that are not in your notes are flagged for checking.
+- `/blog/` has topic filters with post counts, a search box, and a choice of list or grid view.
+- The editor has a formatting bar that stays in view (headings, bold, italic, code, lists, quote, code block, image, table, YouTube), and an empty post shows starting points for adding images and blocks.
+- Several images can be uploaded or dropped at once; they are added in order where they were dropped.
+
+### Changed
+- Blog cards are more compact: topic, date and reading time on one line, the excerpt, and the cover image beside the text. Posts without a cover show no placeholder.
+- Post pages and the editor use a tighter layout and updated typography.
+- The cover image in the editor has floating Replace, Alt text & caption, and Remove buttons. "New post" shows a progress screen while the draft is created.
+
+### Fixes
+- Short fields (title, URL, tags) can be suggested from the title alone, before the post has any body text.
 
 ## 1.3.1
 
