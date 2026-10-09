@@ -80,6 +80,9 @@ importers:
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
+      marked:
+        specifier: ^18.1.0
+        version: 18.1.0
       mongodb:
         specifier: ^6.0.0
         version: 6.21.0
@@ -162,9 +165,6 @@ importers:
       eslint-config-next:
         specifier: ^14.0.0
         version: 14.2.35(eslint@8.57.1)(typescript@5.9.3)
-      marked:
-        specifier: ^18.1.0
-        version: 18.1.0
       postcss:
         specifier: ^8.5.6
         version: 8.5.28
