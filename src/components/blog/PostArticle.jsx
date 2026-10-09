@@ -79,7 +79,12 @@ export default function PostArticle({ post, related = [] }) {
 
         {post.coverImage ? (
           <figure className={styles.cover}>
-            <BlogImage image={post.coverImage} eager sizes="(min-width: 1020px) 980px, 100vw" />
+            <div
+              className={styles.coverFrame}
+              style={{ "--cover-image": `url("${(post.coverImage.variants?.[0] || post.coverImage).src}")` }}
+            >
+              <BlogImage image={post.coverImage} eager sizes="(min-width: 900px) 860px, 100vw" />
+            </div>
             {post.coverImage.caption ? <figcaption>{post.coverImage.caption}</figcaption> : null}
           </figure>
         ) : null}

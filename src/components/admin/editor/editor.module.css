@@ -117,6 +117,63 @@
   padding-left: 1.1rem;
 }
 
+/* A text field with its AI button beside it (title, excerpt). */
+.fieldRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.fieldRow > span {
+  margin-top: 0.35rem;
+}
+
+/* Quick-insert bar shown while the post body is empty. */
+.insertBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  width: min(var(--prose-width), 100% - 2rem);
+  margin: -0.5rem auto 1.5rem;
+  font-size: 1.125rem;
+}
+
+.insertBar > span {
+  margin-right: 0.25rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.insertBar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--background-card);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.insertBar button:hover {
+  border-color: var(--border-accent);
+  background: var(--accent-softer);
+  color: var(--accent-primary);
+}
+
+.insertBar button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 .workspace {
   display: flex;
   align-items: flex-start;
@@ -125,28 +182,32 @@
 .document {
   flex: 1;
   min-width: 0;
-  padding: 3rem 0 10rem;
+  padding: 2rem 0 8rem;
 }
 
 .docHead {
+  /* Same font size as the body so the ch-based width lines up with it. */
+  display: grid;
   width: min(var(--prose-width), 100% - 2rem);
-  margin: 0 auto 2rem;
+  gap: 0.4rem;
+  margin: 0 auto 1.25rem;
   font-size: 1.125rem;
 }
 
 .title {
   display: block;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 0;
   overflow: hidden;
   border: 0;
   background: transparent;
   color: var(--text-primary);
   font: inherit;
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 760;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.7rem, 3.4vw, 2.2rem);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   resize: none;
 }
 
@@ -161,16 +222,16 @@
 
 .excerptInline {
   display: block;
-  width: 100%;
-  margin-top: 0.85rem;
+  flex: 1;
+  min-width: 0;
   padding: 0;
   overflow: hidden;
   border: 0;
   background: transparent;
   color: var(--text-secondary);
   font: inherit;
-  font-size: 1.15rem;
-  line-height: 1.6;
+  font-size: 1.02rem;
+  line-height: 1.55;
   resize: none;
 }
 
@@ -185,24 +246,22 @@
 
 /* Cover image */
 .cover {
-  position: relative;
-  width: min(1000px, 100% - 2rem);
-  margin: 0 auto 2.5rem;
+  width: min(var(--prose-width), 100% - 2rem);
+  margin: 0 auto 1rem;
+  font-size: 1.125rem;
 }
 
 .coverDrop {
-  display: flex;
-  width: min(var(--prose-width), 100%);
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  margin: 0 auto;
-  padding: 0.65rem 0.9rem;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
   border: 1px dashed var(--border-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--text-muted);
   font: inherit;
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
 }
@@ -221,16 +280,21 @@
 
 .coverMedia {
   position: relative;
+  display: grid;
+  aspect-ratio: 16 / 9;
+  max-height: 300px;
+  place-items: center;
   overflow: hidden;
   border: 1px solid var(--border-secondary);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-lg);
   background: var(--background-tertiary);
 }
 
 .coverMedia img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .coverActions {
@@ -531,8 +595,8 @@
 /* Canvas ------------------------------------------------------------------------- */
 
 .canvas {
-  min-height: 50vh;
-  padding-bottom: 4rem;
+  min-height: 35vh;
+  padding-bottom: 3rem;
 }
 
 .canvas:focus {

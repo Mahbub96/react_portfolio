@@ -8,7 +8,10 @@ export default function PostCard({ post, featured = false, headingLevel = 2, eag
   const Heading = `h${headingLevel}`;
   return (
     <article className={`${styles.card} ${featured ? styles.featured : ""}`}>
-      <div className={styles.cardMedia}>
+      <div
+        className={styles.cardMedia}
+        style={post.coverImage ? { "--cover-image": `url("${(post.coverImage.variants?.[0] || post.coverImage).src}")` } : undefined}
+      >
         {post.coverImage ? (
           <BlogImage
             image={post.coverImage}

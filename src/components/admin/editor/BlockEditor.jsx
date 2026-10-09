@@ -82,7 +82,7 @@ const SLASH_ITEMS = [
   { group: "Callouts", title: "Tip", hint: "Positive callout", icon: LuLightbulb, keys: "callout success tip", run: (c) => c.setParagraph().setCallout("success") },
   { group: "Callouts", title: "Warning", hint: "Caution callout", icon: LuTriangleAlert, keys: "callout warning caution", run: (c) => c.setParagraph().setCallout("warning") },
   { group: "Callouts", title: "Note", hint: "Accent callout", icon: LuStickyNote, keys: "callout note aside", run: (c) => c.setParagraph().setCallout("note") },
-  { group: "Media", title: "Image", hint: "Upload a picture", icon: LuImage, keys: "picture photo img", action: "image" },
+  { group: "Media", title: "Image", hint: "Upload one or more pictures", icon: LuImage, keys: "picture photo img", action: "image" },
   { group: "Media", title: "Gallery", hint: "2–9 images in a grid", icon: LuImages, keys: "images grid", action: "gallery" },
   { group: "Media", title: "YouTube", hint: "Embed a video", icon: LuYoutube, keys: "video embed", action: "youtube" },
   { group: "Code & data", title: "Code", hint: "Highlighted code block", icon: LuSquareCode, keys: "codeblock snippet", run: (c) => c.setCodeBlock() },
@@ -352,12 +352,24 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     async (files, position) => {
       const editor = editorRef.current;
       const images = [...files].filter((f) => f.type.startsWith("image/"));
-      for (const file of images) {
-        setUploading(`Uploading ${file.name || "image"}…`);
+      let at = position;
+      for (const [index, file] of images.entries()) {
+        setUploading(images.length > 1 ? `Uploading image ${index + 1} of ${images.length}…` : `Uploading ${file.name || "image"}…`);
         try {
           const media = await uploadImage(file);
+          const figure = { type: "figure", attrs: { ...media, alt: "", layout: "inline" } };
           const chain = editor.chain().focus();
-          (position != null ? chain.insertContentAt(position, { type: "figure", attrs: { ...media, alt: "", layout: "inline" } }) : chain.insertFigure({ ...media, alt: "", layout: "inline" })).run();
+          // Several dropped images land in order at the drop point.
+          // After an insert the new image is selected, and inserting "at the
+          // selection" would replace it, so later images go right after it.
+          if (at != null) {
+            chain.insertContentAt(Math.min(at, editor.state.doc.content.size), figure).run();
+            at += 1;
+          } else if (index > 0) {
+            chain.insertContentAt(editor.state.selection.to, figure).run();
+          } else {
+            chain.insertFigure(figure.attrs).run();
+          }
         } catch (error) {
           if (error.status !== 401) toast(error.message, { type: "error" });
         }
@@ -514,6 +526,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     onCreate: ({ editor: e }) => onStatsRef.current?.({ words: e.storage.characterCount.words() }),
   });
   editorRef.current = editor;
+  const isEmpty = useEditorState({ editor, selector: ({ editor: e }) => Boolean(e?.isEmpty) }) ?? false;
 
   function runItem(e, range, item) {
     const chain = e.chain().focus().deleteRange(range);
@@ -549,8 +562,29 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
 
   if (!editor) return <div className={styles.editorLoading}>Loading editor…</div>;
 
+  // Starting points for an empty post: makes images and blocks discoverable.
+  const quickInsert = [
+    { label: "Image", icon: LuImage, run: () => fileRef.current?.click() },
+    { label: "Gallery", icon: LuImages, run: () => editor.chain().focus("end").insertContent({ type: "gallery", attrs: { images: [], columns: 3 } }).run() },
+    { label: "Heading", icon: LuHeading2, run: () => editor.chain().focus("end").setHeading({ level: 2 }).run() },
+    { label: "List", icon: LuList, run: () => editor.chain().focus("end").toggleBulletList().run() },
+    { label: "Quote", icon: LuQuote, run: () => editor.chain().focus("end").toggleBlockquote().run() },
+    { label: "Code", icon: LuSquareCode, run: () => editor.chain().focus("end").setCodeBlock().run() },
+    { label: "YouTube", icon: LuYoutube, run: () => setYoutubeOpen(true) },
+  ];
+
   return (
     <>
+      {isEmpty ? (
+        <div className={styles.insertBar} role="toolbar" aria-label="Start with">
+          <span>Add</span>
+          {quickInsert.map(({ label, icon: Icon, run }) => (
+            <button key={label} type="button" onMouseDown={(e) => e.preventDefault()} onClick={run}>
+              <Icon aria-hidden="true" /> {label}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className={prose.bleed}>
         <EditorContent editor={editor} />
       </div>
@@ -590,6 +624,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
 
       <input
         ref={fileRef}
+        multiple
         type="file"
         accept={ACCEPTED_TYPES}
         hidden

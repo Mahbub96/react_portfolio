@@ -21,7 +21,6 @@ import CoverImage from "./CoverImage";
 import SettingsDrawer, { seoChecklist } from "./SettingsDrawer";
 import AiAssist from "./ai/AiAssist";
 import { AiProvider } from "./ai/AiContext";
-import aiStyles from "./ai/ai.module.css";
 import { clearBackup, readBackup, useAutosave } from "./useAutosave";
 import admin from "../admin.module.css";
 import styles from "./editor.module.css";
@@ -383,47 +382,43 @@ export default function EditorScreen({ id }) {
         <main className={styles.document}>
           <CoverImage value={fields.coverImage} onChange={(coverImage) => update({ coverImage })} />
           <div className={styles.docHead}>
-            <div className={aiStyles.inlineField}>
-            <span className={aiStyles.inlineButton}>
+            <div className={styles.fieldRow}>
+              <textarea
+                ref={titleRef}
+                className={styles.title}
+                rows={1}
+                value={fields.title}
+                placeholder="Post title"
+                maxLength={200}
+                aria-label="Title"
+                onChange={(e) => update({ title: e.target.value.replace(/\n/g, " ") })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    excerptRef.current?.focus();
+                  }
+                }}
+              />
               <AiAssist target="title" label="title" onAccept={(title) => update({ title })} />
-            </span>
-            <textarea
-              ref={titleRef}
-              className={styles.title}
-              rows={1}
-              value={fields.title}
-              placeholder="Post title"
-              maxLength={200}
-              aria-label="Title"
-              onChange={(e) => update({ title: e.target.value.replace(/\n/g, " ") })}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  excerptRef.current?.focus();
-                }
-              }}
-            />
             </div>
-            <div className={aiStyles.inlineField}>
-            <span className={aiStyles.inlineButton}>
+            <div className={styles.fieldRow}>
+              <textarea
+                ref={excerptRef}
+                className={styles.excerptInline}
+                rows={1}
+                value={fields.excerpt}
+                placeholder="Short summary (shown under the title and in search results)"
+                maxLength={300}
+                aria-label="Excerpt"
+                onChange={(e) => update({ excerpt: e.target.value.replace(/\n/g, " ") })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    editorRef.current?.focusStart();
+                  }
+                }}
+              />
               <AiAssist target="excerpt" label="excerpt" onAccept={(excerpt) => update({ excerpt })} />
-            </span>
-            <textarea
-              ref={excerptRef}
-              className={styles.excerptInline}
-              rows={1}
-              value={fields.excerpt}
-              placeholder="Add a short excerpt (shown under the title and in search results)"
-              maxLength={300}
-              aria-label="Excerpt"
-              onChange={(e) => update({ excerpt: e.target.value.replace(/\n/g, " ") })}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  editorRef.current?.focusStart();
-                }
-              }}
-            />
             </div>
           </div>
           <BlockEditor

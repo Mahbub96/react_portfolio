@@ -278,21 +278,3 @@
   line-height: 1.6;
   white-space: pre-wrap;
 }
-
-/* Title and excerpt fields in the editor: button sits at the right edge */
-.inlineField {
-  position: relative;
-}
-
-.inlineField > .inlineButton {
-  position: absolute;
-  top: 0.35rem;
-  right: -2.4rem;
-}
-
-@media (max-width: 900px) {
-  .inlineField > .inlineButton {
-    right: 0;
-    top: -1.9rem;
-  }
-}
