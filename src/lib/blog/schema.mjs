@@ -64,6 +64,9 @@ export const postPatchSchema = z
     version: z.number().int().min(0),
     title: optionalText(LIMITS.title),
     slug: z.string().trim().toLowerCase().max(80).optional(),
+    // The slug was derived from the title (not typed): resolve collisions by
+    // suffixing (-2, -3) instead of rejecting.
+    autoSlug: z.boolean().optional(),
     excerpt: optionalText(LIMITS.excerpt),
     metaTitle: optionalText(LIMITS.metaTitle * 2),
     metaDescription: optionalText(LIMITS.metaDescription * 2),

@@ -57,8 +57,19 @@ export function middleware(request) {
     return NextResponse.redirect(`https://mahbub.dev${pathname}${search}`, 301);
   }
 
-  // Security headers for all responses
-  const response = NextResponse.next();
+  const isAdminPage = pathname === '/admin' || pathname.startsWith('/admin/');
+
+  // Security headers for all responses. Admin pages also get the requested
+  // path as a request header, so the server-side login gate can send the
+  // owner back to it after signing in.
+  let response;
+  if (isAdminPage) {
+    const headers = new Headers(request.headers);
+    headers.set('x-admin-path', `${pathname}${search}`);
+    response = NextResponse.next({ request: { headers } });
+  } else {
+    response = NextResponse.next();
+  }
   
   // Add security headers
   // NOTE: X-Frame-Options / X-Content-Type-Options / Referrer-Policy /
@@ -158,7 +169,7 @@ export function middleware(request) {
   }
 
   // The admin area is private: never indexed, never cached by a shared cache.
-  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+  if (isAdminPage) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
     response.headers.set('Cache-Control', 'private, no-store');
   }

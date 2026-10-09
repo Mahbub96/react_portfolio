@@ -8,26 +8,7 @@ import { toHtml } from "hast-util-to-html";
 
 const lowlight = createLowlight(common);
 
-/** Languages offered in the editor's code block picker. */
-export const CODE_LANGUAGES = [
-  { id: "plaintext", label: "Plain text" },
-  { id: "bash", label: "Bash" },
-  { id: "javascript", label: "JavaScript" },
-  { id: "typescript", label: "TypeScript" },
-  { id: "python", label: "Python" },
-  { id: "json", label: "JSON" },
-  { id: "yaml", label: "YAML" },
-  { id: "sql", label: "SQL" },
-  { id: "xml", label: "HTML / XML" },
-  { id: "css", label: "CSS" },
-  { id: "go", label: "Go" },
-  { id: "php", label: "PHP" },
-  { id: "java", label: "Java" },
-  { id: "kotlin", label: "Kotlin" },
-  { id: "rust", label: "Rust" },
-  { id: "markdown", label: "Markdown" },
-  { id: "diff", label: "Diff" },
-];
+export { CODE_LANGUAGES } from "./codeLanguages.mjs";
 
 const ALIASES = { js: "javascript", ts: "typescript", py: "python", sh: "bash", shell: "bash", html: "xml", yml: "yaml", md: "markdown", text: "plaintext" };
 

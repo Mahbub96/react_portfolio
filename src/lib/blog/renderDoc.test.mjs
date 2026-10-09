@@ -195,3 +195,11 @@ test("markdown import converts to renderable editor JSON", async () => {
   assert.match(html, /<th><p>a<\/p><\/th>/);
   assert.match(html, /&lt;script&gt;x&lt;\/script&gt;/);
 });
+
+test("post-login redirect only allows admin paths", async () => {
+  const { safeAdminNext } = await import("./safeNext.mjs");
+  assert.equal(safeAdminNext("/admin/posts/abc/"), "/admin/posts/abc/");
+  for (const bad of ["https://evil.example/", "//evil.example/admin/", "/admin/../api/x", "/blog/", "javascript:alert(1)", ""]) {
+    assert.equal(safeAdminNext(bad), "/admin/posts/", bad);
+  }
+});

@@ -19,11 +19,16 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Public blog rebuilt on the live posts: `/blog/` shows the newest post as a featured card and the rest as a grid, with a designed empty state (noindex until the first post). Post pages have a cover image, byline, reading time, a table of contents (sidebar on very wide screens), wide, full-width and floated images with text wrap, galleries, callouts, highlighted code, tables, share links, an author box, related posts and a reading-progress bar.
 - Automatic SEO for every post: self canonical (or a custom one for cross-posts), Open Graph article tags with a 1200x630 social image, BlogPosting structured data, a live RSS feed with full content at `/blog/feed.xml` and a live `/blog/sitemap.xml`. Renamed posts redirect permanently from their old URLs, and scheduled posts appear at exactly their publish time.
 - `pnpm blog:import <site>` moves Markdown posts into the CMS as drafts through the admin API.
+- Admin at `/admin/` (signed-in only, checked on the server): a posts dashboard with Draft / Scheduled / Published tabs, search and delete, and a full-screen block editor in the style of Ghost and Medium.
+- Block editor: type `/` or press `+` on an empty line to insert headings, lists, quotes, callouts (info, tip, warning, note), code with a language picker, tables, dividers, images, galleries and YouTube embeds. Selected text gets a toolbar for bold, italic, strikethrough, code, links (⌘K), headings, alignment and font/size presets (Sans, Serif, Mono; small, normal, large). Images can be inline, wide, full-width or floated left/right with text wrap; images and pasted or dropped files are resized and converted to WebP in the browser before upload.
+- Autosave 1.5 seconds after you stop typing, with a local backup that survives a closed tab or lost connection, ⌘S to save now, and a conflict notice instead of overwriting when another tab saved first. Preview shows unpublished changes with the public template; publish, update, schedule and unpublish from one menu.
+- Post settings: URL (follows the title until set by hand, with availability check), excerpt, tags, body font, search title and meta description with counters, a Google result preview, a social card preview, a live SEO checklist, and a canonical URL for cross-posts. Publishing is blocked while an image has no alt text or the description is missing or too long.
 
 ### Changed
 - `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
 - The footer always links to the Blog; the RSS link is announced on every page.
 - Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
+- The serif font is loaded only when a post uses it, and the byline uses a 3 KB avatar, which brought mobile Lighthouse performance on a post from 85 to 92.
 
 ## 1.2.1
 

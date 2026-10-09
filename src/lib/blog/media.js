@@ -117,6 +117,41 @@ export async function storeImage(BlogMedia, { variants, og = null, kind = "image
   ).toObject();
 }
 
+/**
+ * Add one smaller size (or the 1200x630 social crop) to an existing image.
+ * Lets the editor upload one file per request, keeping every request far
+ * below nginx's default 1 MB body limit. A size must keep the original's
+ * aspect ratio (within 2%) and be narrower than it.
+ */
+export async function addImageVariant(BlogMedia, id, buffer, { og = false } = {}) {
+  const media = await BlogMedia.findById(id);
+  if (!media) throw new MediaError("Image not found");
+  const info = inspectImage(buffer);
+  const short = media.hash.slice(0, 12);
+  const largestSrc = [...media.variants].sort((a, b) => b.width - a.width)[0]?.src || "";
+  const relDir = largestSrc.slice(UPLOAD_URL_PREFIX.length).split("/").slice(0, -1).join("/");
+  if (!relDir) throw new MediaError("Image has no stored files");
+
+  if (og) {
+    if (info.width !== 1200 || info.height !== 630) throw new MediaError("Social image must be 1200x630");
+    media.ogSrc = await writeVariant(relDir, `${short}-og.${info.ext}`, buffer);
+  } else {
+    const ratio = media.width / media.height;
+    if (info.width >= media.width) throw new MediaError("A size must be smaller than the original");
+    if (Math.abs(info.width / info.height - ratio) / ratio > 0.02) {
+      throw new MediaError("A size must keep the original aspect ratio");
+    }
+    if (!media.variants.some((v) => v.width === info.width)) {
+      if (media.variants.length >= MAX_VARIANTS) throw new MediaError(`At most ${MAX_VARIANTS} sizes per image`);
+      const src = await writeVariant(relDir, `${short}-${info.width}.${info.ext}`, buffer);
+      media.variants.push({ width: info.width, height: info.height, bytes: buffer.length, src });
+      media.variants.sort((a, b) => a.width - b.width);
+    }
+  }
+  await media.save();
+  return media.toObject();
+}
+
 /** Delete a media item's files (callers check it is unused first). */
 export async function removeImageFiles(media) {
   const srcs = [...(media.variants || []).map((v) => v.src), media.ogSrc].filter(Boolean);

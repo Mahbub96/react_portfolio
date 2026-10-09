@@ -3,7 +3,7 @@ import connectDB from "@/lib/mongodb";
 import { blogModels } from "@/models/Blog";
 import { adminRoute } from "@/lib/blog/adminApi";
 import { BlogError } from "@/lib/blog/adminPosts";
-import { removeImageFiles } from "@/lib/blog/media";
+import { addImageVariant, MAX_FILE_BYTES, mediaToImageRef, removeImageFiles } from "@/lib/blog/media";
 
 export const dynamic = "force-dynamic";
 
@@ -25,4 +25,25 @@ export const DELETE = adminRoute(async (request, { params }) => {
   await removeImageFiles(item);
   await BlogMedia.deleteOne({ _id: item._id });
   return { deleted: true };
+});
+
+/**
+ * Add one size to an uploaded image (multipart: `variant` or `og` file).
+ * The editor uploads the largest size first (POST /media/), then the others
+ * here, one per request.
+ */
+export const POST = adminRoute(async (request, { params }) => {
+  if (Number(request.headers.get("content-length") || 0) > MAX_FILE_BYTES + 64 * 1024) {
+    throw new BlogError("Upload is larger than 4 MB", 413);
+  }
+  if (!(await connectDB())) throw new BlogError("Database unavailable", 503);
+  if (!mongoose.isValidObjectId(params.id)) throw new BlogError("Image not found", 404);
+  const form = await request.formData();
+  const og = form.get("og");
+  const file = og && typeof og === "object" ? og : form.get("variant");
+  if (!file || typeof file !== "object" || !file.size) throw new BlogError("No image received", 422);
+  const media = await addImageVariant(blogModels().BlogMedia, params.id, Buffer.from(await file.arrayBuffer()), {
+    og: file === og,
+  });
+  return { media: mediaToImageRef(media) };
 });

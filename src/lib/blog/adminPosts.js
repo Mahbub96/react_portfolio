@@ -134,8 +134,12 @@ export async function updatePost(id, patch) {
   const contentBytes = patch.contentJson ? Buffer.byteLength(JSON.stringify(patch.contentJson)) : 0;
   if (contentBytes > LIMITS.contentBytes) throw new BlogError("The post is too large to save", 413);
 
-  const slugChanged = patch.slug !== undefined && patch.slug !== post.slug;
   const oldSlug = post.slug;
+  if (patch.slug !== undefined && patch.slug !== post.slug && patch.autoSlug) {
+    if (!isValidSlug(patch.slug)) patch.slug = post.slug;
+    else patch.slug = await uniqueSlug(BlogPost, patch.slug, post._id);
+  }
+  const slugChanged = patch.slug !== undefined && patch.slug !== post.slug;
   if (slugChanged) {
     if (!isValidSlug(patch.slug)) throw new BlogError("Invalid URL slug", 422);
     if (await BlogPost.exists({ slug: patch.slug, _id: { $ne: post._id } })) {
@@ -255,4 +259,35 @@ export async function deletePost(id) {
 export async function listTags() {
   const { BlogPost } = await models();
   return (await BlogPost.distinct("tags")).filter(Boolean).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * The working copy rendered exactly like a published post (same renderer,
+ * same public shape), for /admin/preview/[id]/. Nothing is saved.
+ */
+export async function previewPost(id) {
+  const { BlogPost } = await models();
+  const post = (await findPost(BlogPost, id)).toObject();
+  const rendered = renderPost(post);
+  const now = new Date().toISOString();
+  const cover = post.coverImage?.src ? post.coverImage : null;
+  return {
+    slug: post.slug,
+    path: `/blog/${post.slug}/`,
+    title: post.title || "Untitled",
+    description: postDescription(post),
+    excerpt: post.excerpt || post.metaDescription || "",
+    coverImage: cover
+      ? { ...cover, variants: (cover.variants || []).map(({ width, height, src }) => ({ width, height, src })) }
+      : null,
+    tags: post.tags || [],
+    wordCount: rendered.wordCount,
+    readingMinutes: rendered.readingMinutes,
+    datePublished: post.live?.publishedAt ? new Date(post.live.publishedAt).toISOString() : now,
+    dateModified: now,
+    html: rendered.html,
+    toc: rendered.toc,
+    bodyFont: post.bodyFont === "serif" ? "serif" : "sans",
+    status: displayStatus(post),
+  };
 }
