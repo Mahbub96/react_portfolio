@@ -19,6 +19,7 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Public blog rebuilt on the live posts: `/blog/` shows the newest post as a featured card and the rest as a grid, with a designed empty state (noindex until the first post). Post pages have a cover image, byline, reading time, a table of contents (sidebar on very wide screens), wide, full-width and floated images with text wrap, galleries, callouts, highlighted code, tables, share links, an author box, related posts and a reading-progress bar.
 - Automatic SEO for every post: self canonical (or a custom one for cross-posts), Open Graph article tags with a 1200x630 social image, BlogPosting structured data, a live RSS feed with full content at `/blog/feed.xml` and a live `/blog/sitemap.xml`. Renamed posts redirect permanently from their old URLs, and scheduled posts appear at exactly their publish time.
 - `pnpm blog:import <site>` moves Markdown posts into the CMS as drafts through the admin API.
+- When you are signed in, blog pages show shortcuts to write a new post, edit the post you are reading, or open all posts. Visitors never see them.
 - Admin at `/admin/` (signed-in only, checked on the server): a posts dashboard with Draft / Scheduled / Published tabs, search and delete, and a full-screen block editor in the style of Ghost and Medium.
 - Block editor: type `/` or press `+` on an empty line to insert headings, lists, quotes, callouts (info, tip, warning, note), code with a language picker, tables, dividers, images, galleries and YouTube embeds. Selected text gets a toolbar for bold, italic, strikethrough, code, links (⌘K), headings, alignment and font/size presets (Sans, Serif, Mono; small, normal, large). Images can be inline, wide, full-width or floated left/right with text wrap; images and pasted or dropped files are resized and converted to WebP in the browser before upload.
 - Autosave 1.5 seconds after you stop typing, with a local backup that survives a closed tab or lost connection, ⌘S to save now, and a conflict notice instead of overwriting when another tab saved first. Preview shows unpublished changes with the public template; publish, update, schedule and unpublish from one menu.
@@ -27,7 +28,7 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 ### Changed
 - The top navbar has a **06. Blog** link in place of "06. Contact", which duplicated the "Get in Touch" button (both opened the contact section). Signed in, the navbar also shows Analytics (07) and Write (08, the blog admin). The profile card's "Get In Touch" link now works from every page.
 - `/sitemap.xml` is now a sitemap index pointing to the static `/sitemap-pages.xml` and the live blog sitemap; `llms.txt` links the blog and its full-text feed. robots.txt disallows `/admin/`.
-- The footer always links to the Blog; the RSS link is announced on every page.
+- The footer always links to the Blog. The RSS feed is announced to feed readers in every page's head but is not shown on the page.
 - Blog posts are no longer built from Markdown files; `scripts/generate-blog.mjs` is removed. The hardcoded-colour check now runs on every build.
 - The serif font is loaded only when a post uses it, and the byline uses a 3 KB avatar, which brought mobile Lighthouse performance on a post from 85 to 92.
 

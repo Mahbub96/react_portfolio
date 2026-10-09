@@ -1,14 +1,14 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import Link from "next/link";
-import { FaRss } from "react-icons/fa";
 import JsonLd from "@/components/seo/JsonLd";
+import OwnerBar from "@/components/blog/OwnerBar";
 import PostCard from "@/components/blog/PostCard";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph, blogNode } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import { absoluteUrl } from "@/lib/seo/urls.mjs";
-import { BLOG_PATH, FEED_PATH } from "@/lib/blog/posts.mjs";
+import { BLOG_PATH } from "@/lib/blog/posts.mjs";
 import { getPublishedPosts } from "@/lib/blog/posts.server.mjs";
 import { BLOG_DESCRIPTION } from "@/lib/blog/feeds.mjs";
 import styles from "./blog.module.css";
@@ -60,9 +60,6 @@ export default async function BlogIndexPage() {
             Engineering <span>notes</span>
           </h1>
           <p className={styles.heroLead}>{BLOG_DESCRIPTION}</p>
-          <a className={styles.pill} href={FEED_PATH}>
-            <FaRss aria-hidden="true" /> RSS feed
-          </a>
         </header>
 
         {latest ? (
@@ -84,12 +81,13 @@ export default async function BlogIndexPage() {
             <h2 id="empty-title">The first articles are on their way</h2>
             <p>
               Notes on Bangla speech recognition, local voice assistants and shipping
-              software to small servers. Subscribe to the <a href={FEED_PATH}>RSS feed</a>{" "}
-              or read <Link href="/about/">about {SITE_AUTHOR.name}</Link> meanwhile.
+              software to small servers. Meanwhile, read more{" "}
+              <Link href="/about/">about {SITE_AUTHOR.name}</Link>.
             </p>
           </section>
         )}
       </main>
+      <OwnerBar />
 
       <Suspense fallback={null}>
         <Footer />

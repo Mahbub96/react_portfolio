@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import { notFound, permanentRedirect } from "next/navigation";
 import JsonLd from "@/components/seo/JsonLd";
+import OwnerBar from "@/components/blog/OwnerBar";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph, blogPostingNode } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
@@ -95,6 +96,7 @@ export default async function BlogPostPage({ params }) {
       <main className={styles.post}>
         <PostArticle post={post} related={related} />
       </main>
+      <OwnerBar slug={post.slug} />
 
       <Suspense fallback={null}>
         <Footer />
