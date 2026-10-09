@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaEnvelope, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { LuArrowLeft } from "react-icons/lu";
+import { LuArrowLeft, LuBookOpen } from "react-icons/lu";
 import BlogImage from "@/components/blog/BlogImage";
 import PostCard from "@/components/blog/PostCard";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
@@ -13,8 +13,6 @@ import styles from "@/app/blog/blog.module.css";
 /**
  * The article template shared by the public post page and the admin
  * preview, so a preview is exactly what readers will get.
- *
- * `post.html` must come from the allow-list renderer (lib/blog/renderDoc).
  */
 function TocList({ toc }) {
   return (
@@ -30,68 +28,75 @@ function TocList({ toc }) {
 
 export default function PostArticle({ post, related = [] }) {
   const url = absoluteUrl(post.path);
-  const showToc = post.toc.length >= 3;
+  const showToc = post.toc?.length >= 3;
   const updated = !sameDay(post.dateModified, post.datePublished);
   const shareText = encodeURIComponent(post.title);
   const shareUrl = encodeURIComponent(url);
 
   return (
     <>
-      <article>
+      <article className={styles.post}>
         <header className={styles.postHeader}>
-          <Link href={BLOG_PATH} className={styles.backLink}>
-            <LuArrowLeft aria-hidden="true" /> All articles
-          </Link>
-          {post.tags.length ? (
-            <ul className={styles.tags} aria-label="Topics">
-              {post.tags.map((tag) => (
-                <li key={tag} className={styles.tag}>
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <h1 className={styles.postTitle}>{post.title}</h1>
-          {post.excerpt ? <p className={styles.postLead}>{post.excerpt}</p> : null}
-          <div className={styles.byline}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={styles.avatar} src="/assets/img/profile-128.webp" alt="" width="44" height="44" />
-            <div className={styles.bylineText}>
-              <Link href="/about/" rel="author">
-                {SITE_AUTHOR.name}
+          <div className={`${styles.headerLayout} ${post.coverImage ? styles.headerWithCover : ""}`}>
+            <div className={styles.headerInfo}>
+              <Link href={BLOG_PATH} className={styles.backLink}>
+                <LuArrowLeft aria-hidden="true" /> All articles
               </Link>
-              <p className={styles.meta}>
-                <time dateTime={post.datePublished}>{formatDate(post.datePublished)}</time>
-                {updated ? (
-                  <>
+
+              {post.tags?.length ? (
+                <ul className={styles.tags} aria-label="Topics">
+                  {post.tags.map((tag) => (
+                    <li key={tag} className={styles.tag}>
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              <h1 className={styles.postTitle}>{post.title}</h1>
+
+              {post.excerpt ? <p className={styles.postLead}>{post.excerpt}</p> : null}
+
+              <div className={styles.byline}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className={styles.avatar} src="/assets/img/profile-128.webp" alt="" width="44" height="44" />
+                <div className={styles.bylineText}>
+                  <Link href="/about/" rel="author">
+                    {SITE_AUTHOR.name}
+                  </Link>
+                  <p className={styles.meta}>
+                    <time dateTime={post.datePublished}>{formatDate(post.datePublished)}</time>
+                    {updated ? (
+                      <>
+                        <span className={styles.dot} aria-hidden="true" />
+                        <span>
+                          Updated <time dateTime={post.dateModified}>{formatDate(post.dateModified)}</time>
+                        </span>
+                      </>
+                    ) : null}
                     <span className={styles.dot} aria-hidden="true" />
-                    <span>
-                      Updated <time dateTime={post.dateModified}>{formatDate(post.dateModified)}</time>
-                    </span>
-                  </>
-                ) : null}
-                <span className={styles.dot} aria-hidden="true" />
-                <span>{post.readingMinutes} min read</span>
-              </p>
+                    <span>{post.readingMinutes} min read</span>
+                  </p>
+                </div>
+              </div>
             </div>
+
+            {post.coverImage ? (
+              <figure className={styles.headerCover}>
+                <div className={styles.headerCoverFrame}>
+                  <BlogImage image={post.coverImage} eager sizes="(min-width: 860px) 380px, 100vw" />
+                </div>
+                {post.coverImage.caption ? <figcaption>{post.coverImage.caption}</figcaption> : null}
+              </figure>
+            ) : null}
           </div>
         </header>
 
-        {post.coverImage ? (
-          <figure className={styles.cover}>
-            <div
-              className={styles.coverFrame}
-              style={{ "--cover-image": `url("${(post.coverImage.variants?.[0] || post.coverImage).src}")` }}
-            >
-              <BlogImage image={post.coverImage} eager sizes="(min-width: 900px) 860px, 100vw" />
-            </div>
-            {post.coverImage.caption ? <figcaption>{post.coverImage.caption}</figcaption> : null}
-          </figure>
-        ) : null}
-
         {showToc ? (
           <details className={styles.tocInline}>
-            <summary>On this page</summary>
+            <summary>
+              <LuBookOpen aria-hidden="true" /> In this article ({post.toc.length} sections)
+            </summary>
             <TocList toc={post.toc} />
           </details>
         ) : null}
@@ -105,12 +110,10 @@ export default function PostArticle({ post, related = [] }) {
               </nav>
             </aside>
           ) : null}
+
           <div className={prose.bleed}>
             <div
               className={`${prose.prose} ${post.bodyFont === "serif" ? prose.serif : ""}`}
-              // Produced by the allow-list renderer at publish time
-              // (src/lib/blog/renderDoc.mjs): escaped text, safe links,
-              // own-upload images only.
               dangerouslySetInnerHTML={{ __html: post.html }}
             />
           </div>
@@ -153,7 +156,7 @@ export default function PostArticle({ post, related = [] }) {
       {related.length ? (
         <section className={styles.related} aria-labelledby="related-title">
           <h2 id="related-title">Keep reading</h2>
-          <div className={styles.grid}>
+          <div className={styles.feedList}>
             {related.map((item) => (
               <PostCard key={item.slug} post={item} headingLevel={3} />
             ))}

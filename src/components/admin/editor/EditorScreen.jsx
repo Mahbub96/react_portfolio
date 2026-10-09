@@ -10,7 +10,10 @@ import {
   LuCloudOff,
   LuEye,
   LuLoaderCircle,
+  LuPencil,
+  LuPlus,
   LuSettings2,
+  LuX,
 } from "react-icons/lu";
 import { slugify } from "@/lib/seo/slug.mjs";
 import { adminFetch } from "../adminApi";
@@ -284,9 +287,16 @@ export default function EditorScreen({ id }) {
     <AiProvider getContext={aiContext}>
     <div className={styles.screen}>
       <header className={styles.bar}>
-        <Link href="/admin/posts/" className={admin.iconBtn} aria-label="Back to posts" title="Back to posts">
-          <LuArrowLeft />
-        </Link>
+        <button
+          type="button"
+          onClick={() => router.push("/admin/posts/")}
+          className={styles.backBtn}
+          aria-label="Back to all posts"
+          title="Back to all posts"
+        >
+          <LuArrowLeft aria-hidden="true" />
+          <span>Posts</span>
+        </button>
         <div className={styles.barStatus} aria-live="polite">
           {status === "saving" ? (
             <LuLoaderCircle className={styles.spin} aria-hidden="true" />
@@ -379,8 +389,59 @@ export default function EditorScreen({ id }) {
       ) : null}
 
       <div className={styles.workspace}>
-        <main className={styles.document}>
+        <main className={styles.studioCard}>
+          {/* Top Canvas Meta Strip */}
+          <div className={styles.canvasTopMeta}>
+            <div className={styles.metaLeft}>
+              <span className={styles.slugBadge} title="Blog URL slug">
+                <span className={styles.slugPrefix}>/blog/</span>
+                <span className={styles.slugText}>{fields.slug || "untitled"}</span>
+                <button
+                  type="button"
+                  className={styles.slugEditBtn}
+                  onClick={() => setDrawer(true)}
+                  title="Edit slug & URL in settings"
+                >
+                  <LuPencil aria-hidden="true" />
+                </button>
+              </span>
+              <button
+                type="button"
+                className={`${styles.fontToggleBtn} ${fields.bodyFont === "serif" ? styles.fontActive : ""}`}
+                onClick={() => update({ bodyFont: fields.bodyFont === "serif" ? "sans" : "serif" })}
+                title="Toggle font preset: Sans-serif / Serif"
+              >
+                {fields.bodyFont === "serif" ? "Serif" : "Sans"}
+              </button>
+            </div>
+            <div className={styles.metaRight}>
+              <div className={styles.inlineTags}>
+                {(fields.tags || []).map((tag) => (
+                  <span key={tag} className={styles.tagChip}>
+                    #{tag}
+                    <button
+                      type="button"
+                      onClick={() => update({ tags: fields.tags.filter((t) => t !== tag) })}
+                      aria-label={`Remove ${tag}`}
+                    >
+                      <LuX aria-hidden="true" />
+                    </button>
+                  </span>
+                ))}
+                <button
+                  type="button"
+                  className={styles.addTagBtn}
+                  onClick={() => setDrawer(true)}
+                  title="Add topic tags in settings"
+                >
+                  <LuPlus aria-hidden="true" /> {fields.tags?.length ? "Tags" : "Add topics"}
+                </button>
+              </div>
+            </div>
+          </div>
+
           <CoverImage value={fields.coverImage} onChange={(coverImage) => update({ coverImage })} />
+
           <div className={styles.docHead}>
             <div className={styles.fieldRow}>
               <textarea
@@ -388,7 +449,7 @@ export default function EditorScreen({ id }) {
                 className={styles.title}
                 rows={1}
                 value={fields.title}
-                placeholder="Post title"
+                placeholder="Article title…"
                 maxLength={200}
                 aria-label="Title"
                 onChange={(e) => update({ title: e.target.value.replace(/\n/g, " ") })}
@@ -407,7 +468,7 @@ export default function EditorScreen({ id }) {
                 className={styles.excerptInline}
                 rows={1}
                 value={fields.excerpt}
-                placeholder="Short summary (shown under the title and in search results)"
+                placeholder="Brief summary or hook (shown under the title and in search results)…"
                 maxLength={300}
                 aria-label="Excerpt"
                 onChange={(e) => update({ excerpt: e.target.value.replace(/\n/g, " ") })}
@@ -421,6 +482,7 @@ export default function EditorScreen({ id }) {
               <AiAssist target="excerpt" label="excerpt" onAccept={(excerpt) => update({ excerpt })} />
             </div>
           </div>
+
           <BlockEditor
             ref={editorRef}
             content={fields.contentJson}

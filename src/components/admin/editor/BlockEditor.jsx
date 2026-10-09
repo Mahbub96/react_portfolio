@@ -585,6 +585,108 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
           ))}
         </div>
       ) : null}
+      <div className={styles.stickyFormatBar} role="toolbar" aria-label="Editor formatting tools">
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("heading", { level: 2 }) ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          title="Heading 2"
+        >
+          <LuHeading2 aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("heading", { level: 3 }) ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          title="Heading 3"
+        >
+          <LuHeading3 aria-hidden="true" />
+        </button>
+        <span className={styles.formatDivider} />
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("bold") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          title="Bold (⌘B)"
+        >
+          <LuBold aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("italic") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          title="Italic (⌘I)"
+        >
+          <LuItalic aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("code") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          title="Inline Code"
+        >
+          <LuCode aria-hidden="true" />
+        </button>
+        <span className={styles.formatDivider} />
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("bulletList") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          title="Bullet List"
+        >
+          <LuList aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("orderedList") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          title="Numbered List"
+        >
+          <LuListOrdered aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("blockquote") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          title="Quote"
+        >
+          <LuQuote aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("codeBlock") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().setCodeBlock().run()}
+          title="Code Block"
+        >
+          <LuSquareCode aria-hidden="true" />
+        </button>
+        <span className={styles.formatDivider} />
+        <button
+          type="button"
+          className={styles.formatBtn}
+          onClick={() => fileRef.current?.click()}
+          title="Insert Image"
+        >
+          <LuImage aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={styles.formatBtn}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+          title="Insert Table"
+        >
+          <LuTable aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={styles.formatBtn}
+          onClick={() => setYoutubeOpen(true)}
+          title="Embed YouTube Video"
+        >
+          <LuYoutube aria-hidden="true" />
+        </button>
+      </div>
+
       <div className={prose.bleed}>
         <EditorContent editor={editor} />
       </div>

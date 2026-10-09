@@ -440,10 +440,10 @@
 
 .row {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
-  gap: 1rem;
+  grid-template-columns: 3.8rem minmax(0, 1fr) auto;
+  gap: 0.9rem;
   align-items: center;
-  padding: 0.9rem 1rem;
+  padding: 0.65rem 0.95rem;
   transition: background var(--transition-fast);
 }
 
@@ -456,11 +456,11 @@
 }
 
 .thumb {
-  width: 4.5rem;
+  width: 3.8rem;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border: 1px solid var(--border-secondary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: var(--background-tertiary);
 }
 

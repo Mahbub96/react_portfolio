@@ -3,7 +3,7 @@ import NextDynamic from "next/dynamic";
 import Link from "next/link";
 import JsonLd from "@/components/seo/JsonLd";
 import OwnerBar from "@/components/blog/OwnerBar";
-import PostCard from "@/components/blog/PostCard";
+import BlogFeed from "@/components/blog/BlogFeed";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph, blogNode } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
@@ -34,7 +34,6 @@ export async function generateMetadata() {
 
 export default async function BlogIndexPage() {
   const posts = await getPublishedPosts();
-  const [latest, ...rest] = posts;
 
   const graph = buildPageGraph({
     path: BLOG_PATH,
@@ -62,17 +61,8 @@ export default async function BlogIndexPage() {
           <p className={styles.heroLead}>{BLOG_DESCRIPTION}</p>
         </header>
 
-        {latest ? (
-          <>
-            <PostCard post={latest} featured eager />
-            {rest.length ? (
-              <section className={styles.grid} aria-label="More posts">
-                {rest.map((post) => (
-                  <PostCard key={post.slug} post={post} />
-                ))}
-              </section>
-            ) : null}
-          </>
+        {posts.length > 0 ? (
+          <BlogFeed posts={posts} />
         ) : (
           <section className={styles.empty} aria-labelledby="empty-title">
             <span className={styles.emptyIcon} aria-hidden="true">
