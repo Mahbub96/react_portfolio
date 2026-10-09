@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { LuImagePlus, LuLoaderCircle, LuRefreshCw, LuTrash2 } from "react-icons/lu";
 import { useAdminUI } from "../AdminUI";
 import { ACCEPTED_TYPES, uploadImage } from "./imagePipeline";
+import AiAssist from "./ai/AiAssist";
 import admin from "../admin.module.css";
 import styles from "./editor.module.css";
 
@@ -70,14 +71,17 @@ export default function CoverImage({ value, onChange }) {
         ) : null}
       </div>
       <div className={styles.coverFields}>
-        <input
-          className={`${admin.input} ${!value.alt ? admin.inputError : ""}`}
-          value={value.alt || ""}
-          maxLength={300}
-          placeholder="Alt text (required)"
-          aria-label="Cover image alt text"
-          onChange={(e) => onChange({ ...value, alt: e.target.value })}
-        />
+        <div className={styles.altWithAi}>
+          <input
+            className={`${admin.input} ${!value.alt ? admin.inputError : ""}`}
+            value={value.alt || ""}
+            maxLength={300}
+            placeholder="Alt text (required)"
+            aria-label="Cover image alt text"
+            onChange={(e) => onChange({ ...value, alt: e.target.value })}
+          />
+          <AiAssist target="coverAlt" label="cover alt text" align="start" onAccept={(alt) => onChange({ ...value, alt })} />
+        </div>
         <input
           className={admin.input}
           value={value.caption || ""}

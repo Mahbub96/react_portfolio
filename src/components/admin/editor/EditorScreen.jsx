@@ -19,6 +19,9 @@ import { shortDate } from "../PostsDashboard";
 import BlockEditor from "./BlockEditor";
 import CoverImage from "./CoverImage";
 import SettingsDrawer, { seoChecklist } from "./SettingsDrawer";
+import AiAssist from "./ai/AiAssist";
+import { AiProvider } from "./ai/AiContext";
+import aiStyles from "./ai/ai.module.css";
 import { clearBackup, readBackup, useAutosave } from "./useAutosave";
 import admin from "../admin.module.css";
 import styles from "./editor.module.css";
@@ -223,6 +226,24 @@ export default function EditorScreen({ id }) {
     }
   };
 
+  // Every field the AI may use as context, by name.
+  const aiContext = useCallback(() => {
+    const f = fieldsRef.current || {};
+    return {
+      fields: {
+        title: f.title || "",
+        excerpt: f.excerpt || "",
+        slug: f.slug || "",
+        tags: f.tags || [],
+        metaTitle: f.metaTitle || "",
+        metaDescription: f.metaDescription || "",
+        coverAlt: f.coverImage?.alt || "",
+        coverCaption: f.coverImage?.caption || "",
+        contentJson: f.contentJson || undefined,
+      },
+    };
+  }, []);
+
   if (loadError) {
     return (
       <main className={admin.main}>
@@ -261,6 +282,7 @@ export default function EditorScreen({ id }) {
     post.status === "draft" ? "Draft" : post.status === "scheduled" ? `Scheduled · ${shortDate(post.publishedAt)}` : post.hasUnpublishedChanges ? "Published · unpublished changes" : "Published";
 
   return (
+    <AiProvider getContext={aiContext}>
     <div className={styles.screen}>
       <header className={styles.bar}>
         <Link href="/admin/posts/" className={admin.iconBtn} aria-label="Back to posts" title="Back to posts">
@@ -361,6 +383,10 @@ export default function EditorScreen({ id }) {
         <main className={styles.document}>
           <CoverImage value={fields.coverImage} onChange={(coverImage) => update({ coverImage })} />
           <div className={styles.docHead}>
+            <div className={aiStyles.inlineField}>
+            <span className={aiStyles.inlineButton}>
+              <AiAssist target="title" label="title" onAccept={(title) => update({ title })} />
+            </span>
             <textarea
               ref={titleRef}
               className={styles.title}
@@ -377,6 +403,11 @@ export default function EditorScreen({ id }) {
                 }
               }}
             />
+            </div>
+            <div className={aiStyles.inlineField}>
+            <span className={aiStyles.inlineButton}>
+              <AiAssist target="excerpt" label="excerpt" onAccept={(excerpt) => update({ excerpt })} />
+            </span>
             <textarea
               ref={excerptRef}
               className={styles.excerptInline}
@@ -393,6 +424,7 @@ export default function EditorScreen({ id }) {
                 }
               }}
             />
+            </div>
           </div>
           <BlockEditor
             ref={editorRef}
@@ -407,5 +439,6 @@ export default function EditorScreen({ id }) {
         ) : null}
       </div>
     </div>
+    </AiProvider>
   );
 }

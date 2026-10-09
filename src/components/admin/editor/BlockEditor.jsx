@@ -37,6 +37,8 @@ import {
   LuTable,
   LuTriangleAlert,
   LuUnlink,
+  LuSparkles,
+  LuWandSparkles,
   LuYoutube,
 } from "react-icons/lu";
 import { adminFetch } from "../adminApi";
@@ -51,6 +53,9 @@ import {
   YouTube,
 } from "./extensions";
 import { ACCEPTED_TYPES, uploadImage } from "./imagePipeline";
+import { markdownToDoc } from "@/lib/blog/markdown.mjs";
+import { useAi } from "./ai/AiContext";
+import BodyDraft from "./ai/BodyDraft";
 import prose from "@/components/blog/prose.module.css";
 import admin from "../admin.module.css";
 import styles from "./editor.module.css";
@@ -84,9 +89,15 @@ const SLASH_ITEMS = [
   { group: "Code & data", title: "Table", hint: "3 × 3 with header", icon: LuTable, keys: "grid", run: (c) => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true }) },
 ];
 
-function filterItems(query) {
+const AI_ITEMS = [
+  { group: "AI assist", title: "Outline from my notes", hint: "Headings from what you wrote", icon: LuSparkles, keys: "ai outline structure", action: "ai:body.outline" },
+];
+
+function filterItems(query, withAi = false) {
   const q = query.toLowerCase().trim();
-  return SLASH_ITEMS.filter((item) => !q || `${item.title} ${item.keys} ${item.group}`.toLowerCase().includes(q)).slice(0, 12);
+  return [...SLASH_ITEMS, ...(withAi ? AI_ITEMS : [])]
+    .filter((item) => !q || `${item.title} ${item.keys} ${item.group}`.toLowerCase().includes(q))
+    .slice(0, 14);
 }
 
 /* Slash menu popup ---------------------------------------------------------------- */
@@ -147,7 +158,7 @@ function Btn({ active, label, onClick, children }) {
   );
 }
 
-function BubbleToolbar({ editor }) {
+function BubbleToolbar({ editor, onAi }) {
   const [mode, setMode] = useState(null); // null | "link" | "style"
   const [href, setHref] = useState("");
   const state = useEditorState({
@@ -241,6 +252,13 @@ function BubbleToolbar({ editor }) {
             <Btn active={state.align === "right"} label="Align right" onClick={() => chain().setTextAlign("right").run()}><LuAlignRight /></Btn>
             <span className={styles.toolbarDivider} />
             <Btn active={mode === "style" || state.font || state.size} label="Font and size" onClick={() => setMode(mode === "style" ? null : "style")}><LuCaseSensitive /></Btn>
+            {onAi ? (
+              <>
+                <span className={styles.toolbarDivider} />
+                <Btn label="Expand with AI" onClick={() => onAi("body.expand")}><LuSparkles /></Btn>
+                <Btn label="Improve wording with AI" onClick={() => onAi("body.improve")}><LuWandSparkles /></Btn>
+              </>
+            ) : null}
           </>
         )}
         {mode === "style" ? (
@@ -309,6 +327,14 @@ function YouTubeDialog({ onClose, onInsert }) {
 
 const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChange, onStats }, ref) {
   const { toast } = useAdminUI();
+  const ai = useAi();
+  // The slash menu's handlers are created once with the editor; read the
+  // current AI state through refs so they never see a stale value.
+  const aiRef = useRef(ai);
+  aiRef.current = ai;
+  const aiEnabledRef = useRef(false);
+  aiEnabledRef.current = Boolean(ai?.enabled);
+  const [draft, setDraft] = useState(null);
   const fileRef = useRef(null);
   const [slash, setSlash] = useState({ items: [], index: 0, rect: null, command: null });
   const slashRef = useRef(slash);
@@ -341,10 +367,60 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     [toast]
   );
 
-  const requestBlock = useCallback((action) => {
-    if (action === "youtube") setYoutubeOpen(true);
-    else fileRef.current?.click();
-  }, []);
+  /**
+   * AI body actions. Outline uses the whole post as notes and inserts at the
+   * cursor; expand/improve work on the selection and replace it. The result
+   * is reviewed in BodyDraft and only inserted on Accept.
+   */
+  const runBodyAction = useCallback(
+    async (target) => {
+      const e = editorRef.current;
+      const assist = aiRef.current;
+      if (!e || !assist?.enabled) return;
+      const { from, to } = e.state.selection;
+      const doc = e.state.doc;
+      const selection = target === "body.outline" ? "" : doc.textBetween(from, to, "\n\n", " ");
+      const nearbyText = `${doc.textBetween(Math.max(0, from - 600), from, "\n", " ")}\n…\n${doc.textBetween(to, Math.min(doc.content.size, to + 600), "\n", " ")}`;
+      const range = target === "body.outline" ? { from: to, to } : { from, to };
+      setDraft({ target, phase: "streaming", text: "", range });
+      try {
+        const result = await assist.streamBody(target, { selection, nearbyText }, (text) =>
+          setDraft((d) => (d ? { ...d, text } : d))
+        );
+        setDraft((d) =>
+          d
+            ? result.status === "ok"
+              ? { ...d, phase: "ready", text: result.value, warnings: result.warnings }
+              : { ...d, phase: "info", reason: result.reason }
+            : d
+        );
+      } catch (error) {
+        if (error.status === 401) return;
+        setDraft((d) => (d ? { ...d, phase: "error", error: error.message } : d));
+      }
+    },
+    []
+  );
+
+  const acceptDraft = useCallback(() => {
+    const e = editorRef.current;
+    if (!e || !draft?.text) return setDraft(null);
+    const content = markdownToDoc(draft.text).content;
+    const size = e.state.doc.content.size;
+    const from = Math.min(draft.range.from, size);
+    const to = Math.min(draft.range.to, size);
+    e.chain().focus().insertContentAt(from === to ? from : { from, to }, content).run();
+    setDraft(null);
+  }, [draft]);
+
+  const requestBlock = useCallback(
+    (action) => {
+      if (action === "youtube") setYoutubeOpen(true);
+      else if (action.startsWith("ai:")) runBodyAction(action.slice(3));
+      else fileRef.current?.click();
+    },
+    [runBodyAction]
+  );
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -369,7 +445,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
       YouTube,
       CodeBlockWithLanguage,
       SlashCommand.configure({
-        items: filterItems,
+        items: (query) => filterItems(query, aiEnabledRef.current),
         render: () => ({
           onStart: (props) => setSlash({ items: props.items, index: 0, rect: props.clientRect?.(), command: props.command }),
           onUpdate: (props) => setSlash((s) => ({ ...s, items: props.items, index: 0, rect: props.clientRect?.(), command: props.command })),
@@ -492,7 +568,8 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
         </button>
       </FloatingMenu>
 
-      <BubbleToolbar editor={editor} />
+      <BubbleToolbar editor={editor} onAi={ai?.enabled ? runBodyAction : null} />
+      <BodyDraft draft={draft} onAccept={acceptDraft} onDiscard={() => setDraft(null)} />
       <SlashMenu state={slash} onPick={pickSlash} onHover={(index) => setSlash((s) => ({ ...s, index }))} />
 
       {uploading ? (

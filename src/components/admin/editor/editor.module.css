@@ -248,6 +248,12 @@
   opacity: 1;
 }
 
+.altWithAi {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .coverFields {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -320,6 +326,12 @@
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.labelTools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .urlPreview {

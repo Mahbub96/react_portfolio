@@ -22,4 +22,6 @@ export const generateSchema = z.object({
   selection: text(20000),
   nearbyText: text(5000),
   image: z.object({ caption: text(1000), nearbyText: text(5000) }).optional(),
+  // "Try again": skip the answer cache (still counts against the limits).
+  fresh: z.boolean().optional(),
 });

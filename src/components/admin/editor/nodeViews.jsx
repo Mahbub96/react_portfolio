@@ -6,6 +6,7 @@ import { LuImagePlus, LuLoaderCircle, LuPlay, LuRefreshCw, LuTrash2, LuTriangleA
 import { CODE_LANGUAGES } from "@/lib/blog/codeLanguages.mjs";
 import { useAdminUI } from "../AdminUI";
 import { ACCEPTED_TYPES, uploadImage } from "./imagePipeline";
+import AiAssist from "./ai/AiAssist";
 import styles from "./editor.module.css";
 
 const LAYOUTS = [
@@ -49,7 +50,19 @@ function Uploading({ progress }) {
 
 /* Image ------------------------------------------------------------------------ */
 
-export function FigureView({ node, updateAttributes, deleteNode, selected }) {
+/** Text just before and after a node, so AI alt text can use its surroundings. */
+function surroundingText(editor, getPos, node) {
+  try {
+    const pos = getPos();
+    const doc = editor.state.doc;
+    const end = pos + node.nodeSize;
+    return `${doc.textBetween(Math.max(0, pos - 800), pos, "\n", " ")}\n…\n${doc.textBetween(end, Math.min(doc.content.size, end + 800), "\n", " ")}`.trim();
+  } catch {
+    return "";
+  }
+}
+
+export function FigureView({ node, updateAttributes, deleteNode, selected, editor, getPos }) {
   const { src, alt, caption, layout, width, height } = node.attrs;
   const [editingAlt, setEditingAlt] = useState(false);
   const [progress, upload] = useUpload();
@@ -102,6 +115,12 @@ export function FigureView({ node, updateAttributes, deleteNode, selected }) {
             placeholder="Describe the image for screen readers and search engines"
             onChange={(e) => updateAttributes({ alt: e.target.value })}
             maxLength={300}
+          />
+          <AiAssist
+            target="imageAlt"
+            label="alt text"
+            extra={() => ({ image: { caption: node.attrs.caption || "", nearbyText: surroundingText(editor, getPos, node) } })}
+            onAccept={(value) => updateAttributes({ alt: value })}
           />
         </label>
       ) : null}

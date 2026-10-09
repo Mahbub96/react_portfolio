@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { LuCircleAlert, LuCircleCheck, LuTrash2, LuTriangleAlert, LuX } from "react-icons/lu";
 import { slugify } from "@/lib/seo/slug.mjs";
 import { adminFetch } from "../adminApi";
+import AiAssist from "./ai/AiAssist";
 import admin from "../admin.module.css";
 import styles from "./editor.module.css";
 
@@ -167,6 +168,7 @@ export default function SettingsDrawer({ id, fields, update, post, words, onClos
       <div className={admin.field}>
         <div className={admin.labelRow}>
           <label className={admin.label} htmlFor="slug">URL</label>
+          <AiAssist target="slug" label="URL slug" onAccept={(slug) => setSlugInput(slug)} />
         </div>
         <input
           id="slug"
@@ -185,13 +187,19 @@ export default function SettingsDrawer({ id, fields, update, post, words, onClos
       <div className={admin.field}>
         <div className={admin.labelRow}>
           <label className={admin.label} htmlFor="excerpt">Excerpt</label>
-          <Counter value={fields.excerpt} limit={300} />
+          <span className={styles.labelTools}>
+            <Counter value={fields.excerpt} limit={300} />
+            <AiAssist target="excerpt" label="excerpt" onAccept={(excerpt) => update({ excerpt })} />
+          </span>
         </div>
         <textarea id="excerpt" className={admin.textarea} value={fields.excerpt} maxLength={300} onChange={(e) => update({ excerpt: e.target.value })} placeholder="One or two sentences shown under the title and on post cards." />
       </div>
 
       <div className={admin.field}>
-        <span className={admin.label}>Tags</span>
+        <div className={admin.labelRow}>
+          <span className={admin.label}>Tags</span>
+          <AiAssist target="tags" label="tags" onAccept={(tags) => update({ tags })} />
+        </div>
         <TagsInput value={fields.tags} onChange={(tags) => update({ tags })} />
         <span className={admin.hint}>Up to 10. The first tag appears in the breadcrumb.</span>
       </div>
@@ -212,14 +220,20 @@ export default function SettingsDrawer({ id, fields, update, post, words, onClos
         <div className={admin.field}>
           <div className={admin.labelRow}>
             <label className={admin.label} htmlFor="metaTitle">Search title</label>
-            <Counter value={fields.metaTitle || fields.title} limit={70} warnAt={60} />
+            <span className={styles.labelTools}>
+              <Counter value={fields.metaTitle || fields.title} limit={70} warnAt={60} />
+              <AiAssist target="metaTitle" label="search title" onAccept={(metaTitle) => update({ metaTitle })} />
+            </span>
           </div>
           <input id="metaTitle" className={admin.input} value={fields.metaTitle} maxLength={140} placeholder={fields.title || "Defaults to the title"} onChange={(e) => update({ metaTitle: e.target.value })} />
         </div>
         <div className={admin.field}>
           <div className={admin.labelRow}>
             <label className={admin.label} htmlFor="metaDescription">Meta description</label>
-            <Counter value={fields.metaDescription || fields.excerpt} limit={160} warnAt={155} />
+            <span className={styles.labelTools}>
+              <Counter value={fields.metaDescription || fields.excerpt} limit={160} warnAt={155} />
+              <AiAssist target="metaDescription" label="meta description" onAccept={(metaDescription) => update({ metaDescription })} />
+            </span>
           </div>
           <textarea id="metaDescription" className={admin.textarea} value={fields.metaDescription} maxLength={320} placeholder={fields.excerpt || "Defaults to the excerpt"} onChange={(e) => update({ metaDescription: e.target.value })} />
         </div>

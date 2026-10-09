@@ -74,7 +74,7 @@ async function prepare(input) {
   if (reason) return { early: { status: "insufficient_context", reason, warnings: [] } };
 
   const cacheKey = cache.key(input.target, payload, config.model);
-  const cached = cache.get(cacheKey);
+  const cached = input.fresh ? null : cache.get(cacheKey);
   if (cached) return { early: { ...cached, cached: true } };
 
   if (config.dailyLimit) {
