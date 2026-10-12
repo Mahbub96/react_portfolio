@@ -106,7 +106,7 @@ export default function Contact({ headingLevel = "h2" }) {
     setSubmitStatus(null);
 
     try {
-      const response = await axios.post("/api/contact", formData);
+      const response = await axios.post("/api/contact/", formData);
 
       if (response.status === 200) {
         setSubmitStatus("success");
@@ -256,6 +256,7 @@ export default function Contact({ headingLevel = "h2" }) {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
+                    disabled={isSubmitting}
                     aria-required="true"
                     aria-describedby="name-error"
                     aria-invalid={fieldErrors.name ? "true" : "false"}
@@ -287,6 +288,7 @@ export default function Contact({ headingLevel = "h2" }) {
                     onChange={handleChange}
                     placeholder="Enter your email address"
                     required
+                    disabled={isSubmitting}
                     aria-required="true"
                     aria-describedby="email-error"
                     aria-invalid={fieldErrors.email ? "true" : "false"}
@@ -318,6 +320,7 @@ export default function Contact({ headingLevel = "h2" }) {
                     onChange={handleChange}
                     placeholder="What is this about?"
                     required
+                    disabled={isSubmitting}
                     aria-required="true"
                     aria-describedby="subject-error"
                     aria-invalid={fieldErrors.subject ? "true" : "false"}
@@ -349,6 +352,7 @@ export default function Contact({ headingLevel = "h2" }) {
                     placeholder="Tell me more about your inquiry..."
                     rows="5"
                     required
+                    disabled={isSubmitting}
                     aria-required="true"
                     aria-describedby="message-error"
                     aria-invalid={fieldErrors.message ? "true" : "false"}
@@ -371,8 +375,27 @@ export default function Contact({ headingLevel = "h2" }) {
                     aria-live="polite"
                     aria-atomic="true"
                   >
-                    <span className={styles.messageIcon}>✓</span>
-                    Message sent successfully! I'll get back to you soon.
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+                      <span>
+                        <span className={styles.messageIcon}>✓</span>
+                        Message sent successfully! I'll get back to you soon.
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSubmitStatus(null)}
+                        style={{
+                          background: "transparent",
+                          border: "1px solid currentColor",
+                          color: "inherit",
+                          borderRadius: "4px",
+                          padding: "4px 10px",
+                          cursor: "pointer",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        Send another message
+                      </button>
+                    </div>
                   </div>
                 )}
                 {submitStatus === "error" && (

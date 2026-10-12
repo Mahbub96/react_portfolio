@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import connectDB from "@/lib/mongodb";
+import ContactMessage from "@/models/ContactMessage";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import { sanitizeInput, validateEmail, secureResponse } from "@/lib/auth";
 
 // Rate limiting storage (in production, use Redis or similar)
 const rateLimit = new Map();
 
 // Rate limiting function
-function checkRateLimit(email) {
+function checkRateLimit(key) {
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
-  const maxRequests = 3; // Max 3 requests per 15 minutes
+  const maxRequests = 5; // Max 5 requests per 15 minutes
 
-  if (!rateLimit.has(email)) {
-    rateLimit.set(email, { count: 1, resetTime: now + windowMs });
+  if (!rateLimit.has(key)) {
+    rateLimit.set(key, { count: 1, resetTime: now + windowMs });
     return true;
   }
 
-  const userLimit = rateLimit.get(email);
+  const userLimit = rateLimit.get(key);
 
   if (now > userLimit.resetTime) {
-    rateLimit.set(email, { count: 1, resetTime: now + windowMs });
+    rateLimit.set(key, { count: 1, resetTime: now + windowMs });
     return true;
   }
 
@@ -33,6 +36,12 @@ function checkRateLimit(email) {
 
 export async function POST(request) {
   try {
+    const clientIp =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const userAgent = request.headers.get("user-agent") || "unknown";
+
     const { name, email, subject, message } = await request.json();
 
     // Enhanced validation
@@ -115,8 +124,9 @@ export async function POST(request) {
       );
     }
 
-    // Check rate limiting
-    if (!checkRateLimit(email)) {
+    // Check rate limiting (keyed by IP + email)
+    const rateLimitKey = `${clientIp}:${email.trim().toLowerCase()}`;
+    if (!checkRateLimit(rateLimitKey)) {
       return secureResponse(
         {
           error:
@@ -131,127 +141,167 @@ export async function POST(request) {
     const sanitizedName = sanitizeInput(name.trim());
     const sanitizedSubject = sanitizeInput(subject.trim());
     const sanitizedMessage = sanitizeInput(message.trim());
+    const normalizedEmail = email.trim().toLowerCase();
 
-    // Create transporter using SMTP
-    const transporter = nodemailer.createTransporter({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: process.env.SMTP_PORT || 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    // 1. Persist message to database first so inquiries are never lost
+    let savedMessage = null;
+    try {
+      const dbConnection = await connectDB();
+      if (dbConnection) {
+        savedMessage = await ContactMessage.create({
+          name: sanitizedName,
+          email: normalizedEmail,
+          subject: sanitizedSubject,
+          message: sanitizedMessage,
+          ip: clientIp,
+          userAgent: userAgent,
+          status: "pending",
+        });
+      }
+    } catch (dbError) {
+      console.error("Database persistence failed in contact API:", dbError?.message || dbError);
+    }
 
-    // Enhanced email content with better styling
-    const mailOptions = {
-      from: `"Portfolio Contact Form" <${process.env.EMAIL_USER}>`,
-      to: [
-        "admin@mahbub.dev",
-        "support@mahbub.dev",
-        "mahbubcse96@gmail.com",
-      ].join(", "),
-      replyTo: email,
-      subject: `Portfolio Contact: ${sanitizedSubject}`,
-      html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>New Contact Form Submission</title>
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
-            .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-            .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
-            .content { padding: 30px; }
-            .section { margin-bottom: 25px; }
-            .section h3 { color: #333; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; }
-            .field { display: flex; margin-bottom: 12px; align-items: center; }
-            .field strong { min-width: 80px; color: #495057; font-weight: 600; }
-            .field span { color: #212529; margin-left: 10px; }
-            .message-box { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
-            .message-text { line-height: 1.6; color: #495057; margin: 0; }
-            .footer { background: #e9ecef; padding: 20px; text-align: center; color: #6c757d; font-size: 14px; }
-            .timestamp { color: #6c757d; font-style: italic; }
-            .contact-info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; }
-            .contact-info h4 { margin: 0 0 10px 0; color: #1976d2; }
-            .contact-info p { margin: 5px 0; color: #424242; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>📧 New Contact Form Submission</h1>
-            </div>
-            
-            <div class="content">
-              <div class="section">
-                <h3>👤 Contact Details</h3>
-                <div class="field">
-                  <strong>Name:</strong>
-                  <span>${sanitizedName}</span>
+    // 2. Determine if SMTP credentials are configured
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+    const isEmailConfigured = Boolean(emailUser && emailPass);
+
+    const recipientEmail =
+      process.env.CONTACT_RECEIVER_EMAIL ||
+      SITE_AUTHOR?.email ||
+      "mahbubcse96@gmail.com";
+
+    // If SMTP credentials are not configured (e.g. local dev / missing env),
+    // mark as saved locally and return success so submissions work seamlessly.
+    if (!isEmailConfigured) {
+      if (savedMessage) {
+        savedMessage.status = "saved_locally";
+        await savedMessage.save().catch(() => {});
+      }
+      console.log(
+        `[Contact API] SMTP credentials not configured (EMAIL_USER / EMAIL_PASS missing). Inquiry saved to DB with ID: ${
+          savedMessage?._id || "unpersisted"
+        }`
+      );
+
+      return secureResponse({
+        message: "Thank you for reaching out! Your message has been received.",
+        timestamp: new Date().toISOString(),
+        deliveryMode: "saved_locally",
+      });
+    }
+
+    // 3. Attempt email dispatch via Nodemailer
+    try {
+      const transporter = nodemailer.createTransporter({
+        host: process.env.SMTP_HOST || "smtp.gmail.com",
+        port: Number.parseInt(process.env.SMTP_PORT || "587", 10),
+        secure: process.env.SMTP_PORT === "465",
+        auth: {
+          user: emailUser,
+          pass: emailPass,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      const mailOptions = {
+        from: `"Portfolio Contact Form" <${emailUser}>`,
+        to: recipientEmail,
+        replyTo: normalizedEmail,
+        subject: `Portfolio Contact: ${sanitizedSubject}`,
+        html: `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Contact Form Submission</title>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+              .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+              .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+              .content { padding: 30px; }
+              .section { margin-bottom: 25px; }
+              .section h3 { color: #333; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; }
+              .field { display: flex; margin-bottom: 12px; align-items: center; }
+              .field strong { min-width: 80px; color: #495057; font-weight: 600; }
+              .field span { color: #212529; margin-left: 10px; }
+              .message-box { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
+              .message-text { line-height: 1.6; color: #495057; margin: 0; }
+              .footer { background: #e9ecef; padding: 20px; text-align: center; color: #6c757d; font-size: 14px; }
+              .timestamp { color: #6c757d; font-style: italic; }
+              .contact-info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; }
+              .contact-info h4 { margin: 0 0 10px 0; color: #1976d2; }
+              .contact-info p { margin: 5px 0; color: #424242; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>📧 New Contact Form Submission</h1>
+              </div>
+              
+              <div class="content">
+                <div class="section">
+                  <h3>👤 Contact Details</h3>
+                  <div class="field">
+                    <strong>Name:</strong>
+                    <span>${sanitizedName}</span>
+                  </div>
+                  <div class="field">
+                    <strong>Email:</strong>
+                    <span>${normalizedEmail}</span>
+                  </div>
+                  <div class="field">
+                    <strong>Subject:</strong>
+                    <span>${sanitizedSubject}</span>
+                  </div>
                 </div>
-                <div class="field">
-                  <strong>Email:</strong>
-                  <span>${email}</span>
+                
+                <div class="section">
+                  <h3>💬 Message</h3>
+                  <div class="message-box">
+                    <p class="message-text">${sanitizedMessage.replace(
+                      /\n/g,
+                      "<br>"
+                    )}</p>
+                  </div>
                 </div>
-                <div class="field">
-                  <strong>Subject:</strong>
-                  <span>${sanitizedSubject}</span>
+
+                <div class="contact-info">
+                  <h4>📋 Submission Details</h4>
+                  <p><strong>Time:</strong> ${new Date().toLocaleString("en-US", {
+                    timeZone: "Asia/Dhaka",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}</p>
+                  <p><strong>IP Address:</strong> ${clientIp}</p>
+                  <p><strong>User Agent:</strong> ${userAgent}</p>
                 </div>
               </div>
               
-              <div class="section">
-                <h3>💬 Message</h3>
-                <div class="message-box">
-                  <p class="message-text">${sanitizedMessage.replace(
-                    /\n/g,
-                    "<br>"
-                  )}</p>
-                </div>
-              </div>
-
-              <div class="contact-info">
-                <h4>📋 Submission Details</h4>
-                <p><strong>Time:</strong> ${new Date().toLocaleString("en-US", {
-                  timeZone: "Asia/Dhaka",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}</p>
-                <p><strong>IP Address:</strong> ${
-                  request.headers.get("x-forwarded-for") ||
-                  request.headers.get("x-real-ip") ||
-                  "Unknown"
-                }</p>
-                <p><strong>User Agent:</strong> ${
-                  request.headers.get("user-agent") || "Unknown"
-                }</p>
+              <div class="footer">
+                <p>This message was sent from your portfolio contact form at <span class="timestamp">${new Date().toLocaleString()}</span></p>
+                <p>Please respond to the sender's email address: <strong>${normalizedEmail}</strong></p>
               </div>
             </div>
-            
-            <div class="footer">
-              <p>This message was sent from your portfolio contact form at <span class="timestamp">${new Date().toLocaleString()}</span></p>
-              <p>Please respond to the sender's email address: <strong>${email}</strong></p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
-      text: `
+          </body>
+          </html>
+        `,
+        text: `
 New Contact Form Submission
 
 Contact Details:
 - Name: ${sanitizedName}
-- Email: ${email}
+- Email: ${normalizedEmail}
 - Subject: ${sanitizedSubject}
 
 Message:
@@ -259,34 +309,53 @@ ${sanitizedMessage}
 
 Submission Details:
 - Time: ${new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" })}
-- IP: ${
-        request.headers.get("x-forwarded-for") ||
-        request.headers.get("x-real-ip") ||
-        "Unknown"
-      }
+- IP: ${clientIp}
 
 Sent from portfolio contact form at ${new Date().toLocaleString()}
-      `,
-    };
+        `,
+      };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailOptions);
 
-    // Return success response
-    return secureResponse({
-      message: "Email sent successfully! I'll get back to you soon.",
-      timestamp: new Date().toISOString(),
-    });
+      if (savedMessage) {
+        savedMessage.status = "sent";
+        await savedMessage.save().catch(() => {});
+      }
+
+      return secureResponse({
+        message: "Email sent successfully! I'll get back to you soon.",
+        timestamp: new Date().toISOString(),
+      });
+    } catch (emailErr) {
+      console.error("Error sending email in contact route:", emailErr?.code || emailErr?.message);
+
+      if (savedMessage) {
+        savedMessage.status = "failed";
+        savedMessage.emailError = emailErr?.message || String(emailErr);
+        await savedMessage.save().catch(() => {});
+
+        // Since the message is safely preserved in MongoDB, assure the user
+        return secureResponse({
+          message: "Thank you! Your message has been received and saved.",
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return secureResponse(
+        {
+          error:
+            "Failed to send email. Please try again later or contact me directly.",
+          details:
+            process.env.NODE_ENV === "development" ? emailErr.message : undefined,
+        },
+        500
+      );
+    }
   } catch (error) {
-    console.log("Error sending email:", error.code || error.message);
-
-    // Return user-friendly error message
+    console.error("Unexpected error in contact route:", error?.message || error);
     return secureResponse(
       {
-        error:
-          "Failed to send email. Please try again later or contact me directly.",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        error: "An unexpected error occurred. Please try again later.",
       },
       500
     );

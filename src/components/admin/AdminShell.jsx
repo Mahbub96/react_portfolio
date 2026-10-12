@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LuChartBar, LuExternalLink, LuFileText, LuLogOut, LuMoon, LuSun } from "react-icons/lu";
+import { LuChartBar, LuExternalLink, LuFileText, LuLogOut, LuMail, LuMoon, LuSun } from "react-icons/lu";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useDataContext } from "@/contexts/useAllContext";
 import { AdminUIProvider } from "./AdminUI";
@@ -42,6 +42,13 @@ export default function AdminShell({ children }) {
               >
                 <LuFileText aria-hidden="true" />
                 <span className={styles.navLabel}>Posts</span>
+              </Link>
+              <Link
+                href="/admin/messages/"
+                className={`${styles.navLink} ${pathname?.startsWith("/admin/messages") ? styles.navLinkActive : ""}`}
+              >
+                <LuMail aria-hidden="true" />
+                <span className={styles.navLabel}>Messages</span>
               </Link>
               <Link href="/analytics/" className={styles.navLink}>
                 <LuChartBar aria-hidden="true" />
