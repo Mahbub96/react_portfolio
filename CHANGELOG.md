@@ -7,6 +7,20 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.5.0
+
+### Added
+- Contact messages are now kept. Every enquiry sent through the contact form is saved before any email is attempted, so nothing is lost if mail delivery is unavailable.
+- A Messages area in the admin panel, reachable from the sidebar, lists enquiries newest first with the sender's name, email, subject and message. You can filter by delivery state and search across all four fields, and counts show how many were emailed, saved only, or failed.
+- Missing portfolio sections are filled in from the built-in defaults on request, leaving any section that already has content untouched.
+
+### Changed
+- The contact form disables its fields while a message is being sent, and the success notice can be dismissed.
+- Sending a message now reports how it was handled: emailed immediately, or saved for later when email is not configured. Either way the sender sees a confirmation.
+
+### Fixes
+- A failed or unconfigured email no longer causes the contact form to report an error to the sender, and a database problem no longer stops the message from being sent.
+
 ## 1.4.1
 
 ### Added
