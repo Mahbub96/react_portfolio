@@ -252,8 +252,15 @@ for path in /blog/ /blog/feed.xml /blog/sitemap.xml /sitemap.xml /sitemap-pages.
   printf '  %s %s\n' "$code" "$path"
   [[ "$code" == "200" ]] || { echo "expected 200 for $path" >&2; exit 1; }
 done
-curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/blog/feed.xml" | grep -q '<rss'
-curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/sitemap.xml" | grep -q 'blog/sitemap.xml'
+feed_tmp="$(mktemp)"
+curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/blog/feed.xml" > "$feed_tmp"
+grep -q '<rss' "$feed_tmp"
+rm -f "$feed_tmp"
+
+sitemap_tmp="$(mktemp)"
+curl -fsSL --max-time 20 -A 'Mozilla/5.0' "$PUBLIC_BASE_URL/sitemap.xml" > "$sitemap_tmp"
+grep -q 'blog/sitemap.xml' "$sitemap_tmp"
+rm -f "$sitemap_tmp"
 
 log "Verifying single rolling backup"
 ssh -i "$SSH_KEY" -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" \
