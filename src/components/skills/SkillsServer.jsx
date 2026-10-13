@@ -1,128 +1,99 @@
 import React from "react";
 import styles from "./skills.module.css";
-import ThreeDots from "../ThreeDots";
-import { groupSkills } from "@/lib/seo/skillCatalog.mjs";
 import HarmonicHeading from "../HarmonicHeading";
-import HarmonicChip from "@/components/HarmonicChip";
+import CoreStrengthsCard from "./CoreStrengthsCard";
+import SkillCategoryCard from "./SkillCategoryCard";
+import SkillsClient from "./SkillsClient";
+import { SKILL_CATEGORIES } from "./skillsData";
 
-// Server-side Skills component for better SEO
-// headingLevel defaults to h2 because this section also renders on the
-// homepage (which has its own h1); the standalone /skills page passes "h1".
-const SkillsServer = ({ data, headingLevel = "h2" }) => {
-  // Validate and normalize skills data
-  const validateSkillsData = (skillsData) => {
-    if (!skillsData || !Array.isArray(skillsData)) {
-      return [];
-    }
+export default function SkillsServer({ data, headingLevel = "h2" }) {
+  const rawSkills = Array.isArray(data?.data) ? data.data : [];
 
-    return skillsData.filter((skill) => skill && typeof skill === "object");
-  };
-
-  const skills = validateSkillsData(data?.data);
-
-  // Shared with llms.txt and the /skills page so a skill is never filed
-  // under different categories in different places.
-  const grouped = groupSkills(skills);
-
-  // Keep the heading outline sequential under whichever level the section
-  // title uses (h1 on /skills/, h2 on the homepage).
+  // Sequential heading levels for accessibility & SEO
   const level = Number(String(headingLevel).replace(/\D/g, "")) || 2;
-  const GroupHeading = `h${Math.min(level + 1, 6)}`;
-  const SkillHeading = `h${Math.min(level + 2, 6)}`;
-  const skillGroups = Object.fromEntries(
-    grouped.map(({ category, skills: items }) => [category, items])
-  );
-  const orderedGroups = grouped.map(({ category }) => category);
+  const cardHeadingLevel = `h${Math.min(level + 1, 6)}`;
 
-  // Helper function to normalize image paths
-  const normalizeImagePath = (src) => {
-    if (!src) return src;
-    return src.startsWith("./") || src.startsWith("../")
-      ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
-      : src;
-  };
+  // Find categories by ID
+  const languagesCategory = SKILL_CATEGORIES.find((c) => c.id === "languages");
+  const frameworksCategory = SKILL_CATEGORIES.find((c) => c.id === "frameworks");
+  const dataCategory = SKILL_CATEGORIES.find((c) => c.id === "data-infra");
+  const aiCategory = SKILL_CATEGORIES.find((c) => c.id === "ai-engineering");
 
   return (
-    <>
-      <section
-        id="skills"
-        className={styles.skillsSection}
-        aria-labelledby="skills-heading"
-      >
-        <div className="container">
-          <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-            <HarmonicHeading
-              as={headingLevel}
-              id="skills-heading"
-              text="Skills & Technologies"
+    <section
+      id="skills"
+      className={styles.skillsSection}
+      aria-labelledby="skills-heading"
+    >
+      <div className="container">
+        {/* Editorial Section Header */}
+        <header className={styles.sectionHeader}>
+          <div className={styles.eyebrow}>
+            <span className={styles.eyebrowBar} aria-hidden="true" />
+            <span className={styles.eyebrowText}>WHAT I WORK WITH</span>
+          </div>
+
+          <HarmonicHeading
+            as={headingLevel}
+            id="skills-heading"
+            text="Skills & Technologies"
+            className={styles.mainTitle}
+          />
+
+          <p className={styles.sectionSubtitle}>
+            Tools I use to build reliable products, scalable services, and intelligent systems.
+          </p>
+        </header>
+
+        {/* 3-Column Asymmetric Bento Grid */}
+        <div
+          className={styles.bentoGrid}
+          role="region"
+          aria-label="Skills & Technologies Overview"
+        >
+          {/* Column 1: Core Strengths (Spans 2 rows on desktop) */}
+          <CoreStrengthsCard headingLevel={cardHeadingLevel} />
+
+          {/* Column 2, Row 1: Languages */}
+          {languagesCategory && (
+            <SkillCategoryCard
+              category={languagesCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.languagesCard}
             />
-            <div className={styles.headerLine} aria-hidden="true"></div>
-          </div>
+          )}
 
-          <div className={styles.skillsGroups}>
-            {skills.length > 0 ? (
-              orderedGroups.map((category) => (
-                <section
-                  key={category}
-                  className={styles.skillGroup}
-                  aria-labelledby={`skills-${category
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, "-")}`}
-                >
-                  <div className={styles.groupHeader}>
-                    <GroupHeading
-                      id={`skills-${category
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]+/g, "-")}`}
-                    >
-                      {category}
-                    </GroupHeading>
-                    <span>
-                      <HarmonicChip text={`${skillGroups[category].length} technologies`} />
-                    </span>
-                  </div>
+          {/* Column 3, Row 1: Frameworks & Libraries */}
+          {frameworksCategory && (
+            <SkillCategoryCard
+              category={frameworksCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.frameworksCard}
+            />
+          )}
 
-                  <div
-                    className={styles.skillsGrid}
-                    role="list"
-                    aria-label={`${category} skills`}
-                  >
-                    {skillGroups[category].map((skill, index) => (
-                      <div
-                        key={skill.id || `${category}-${skill.name}`}
-                        className={`${styles.skillCard} ${styles.animateInCard}`}
-                        style={{ animationDelay: `${index * 0.05}s` }}
-                        role="listitem"
-                        aria-label={`${skill.name} skill card`}
-                      >
-                        <div className={styles.skillIcon}>
-                          <img
-                            src={normalizeImagePath(skill.src)}
-                            alt={`${skill.name} technology icon`}
-                            loading="lazy"
-                            width="64"
-                            height="64"
-                            title={`${skill.name} - Technical Skill`}
-                          />
-                        </div>
-                        <SkillHeading className={styles.skillName}>
-                          <HarmonicChip text={skill.name} />
-                        </SkillHeading>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ))
-            ) : (
-              <div className={styles.loading}>
-                <ThreeDots />
-              </div>
-            )}
-          </div>
+          {/* Column 2, Row 2: Data & Infrastructure */}
+          {dataCategory && (
+            <SkillCategoryCard
+              category={dataCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.dataCard}
+            />
+          )}
+
+          {/* Column 3, Row 2: AI & Engineering */}
+          {aiCategory && (
+            <SkillCategoryCard
+              category={aiCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.aiCard}
+            />
+          )}
         </div>
-      </section>
-    </>
-  );
-};
 
-export default SkillsServer;
+        {/* Client-side admin controls (rendered only when authenticated) */}
+        <SkillsClient skills={rawSkills} />
+      </div>
+    </section>
+  );
+}

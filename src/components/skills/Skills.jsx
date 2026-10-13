@@ -1,71 +1,11 @@
 import React from "react";
-import styles from "./skills.module.css";
-import ThreeDots from "../ThreeDots";
-import HarmonicHeading from "../HarmonicHeading";
+import SkillsServer from "./SkillsServer";
 
-import SkillsClient from "./SkillsClient";
-
-// headingLevel defaults to h2 because this section also renders on the
-// homepage, which already has its own h1. The standalone /skills page
-// passes "h1" so that page has exactly one top-level heading.
+/**
+ * Skills component adapter that delegates to SkillsServer for consistent rendering.
+ */
 function Skills({ data, headingLevel = "h2" }) {
-  const skills = data?.data || [];
-  const Heading = headingLevel;
-
-  // Helper function to normalize image paths
-  const normalizeImagePath = (src) => {
-    if (!src) return src;
-    return src.startsWith("./") || src.startsWith("../")
-      ? src.replace(/^\.\.\/\.\.\/assets\/img\//, "/assets/img/")
-      : src;
-  };
-
-  return (
-    <section
-      id="skills"
-      className={styles.skillsSection}
-    >
-      <div className="container">
-        <div className={`${styles.sectionHeader} ${styles.animateIn}`}>
-          <HarmonicHeading
-            as={Heading}
-            text="Skills & Technologies"
-          />
-          <div className={styles.headerLine}></div>
-        </div>
-
-        <div className={styles.skillsGrid}>
-          {skills.length > 0 ? (
-            skills.map((skill, index) => (
-              <div
-                key={skill.id}
-                className={`${styles.skillCard} ${styles.animateInCard}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className={styles.skillIcon}>
-                  <img
-                    src={normalizeImagePath(skill.src)}
-                    alt={`${skill.name} technology icon`}
-                    loading="lazy"
-                    width="64"
-                    height="64"
-                  />
-                </div>
-                <h3>{skill.name}</h3>
-              </div>
-            ))
-          ) : (
-            <div className={styles.loading}>
-              <ThreeDots />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Client-side interactive features */}
-      <SkillsClient skills={skills} />
-    </section>
-  );
+  return <SkillsServer data={data} headingLevel={headingLevel} />;
 }
 
 export default Skills;
