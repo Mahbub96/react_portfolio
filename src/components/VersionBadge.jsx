@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDataContext } from "@/contexts/useAllContext";
 import styles from "./versionBadge.module.css";
 
 /** Render `code` and **bold** spans from changelog text; everything else is plain text. */
@@ -30,6 +31,7 @@ function InlineText({ text = "" }) {
  * Escape-to-close and the backdrop.
  */
 export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) {
+  const { auth, isLoaded } = useDataContext();
   const dialogRef = useRef(null);
   const [state, setState] = useState({ status: "idle", data: null });
 
@@ -74,7 +76,9 @@ export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) 
     </>
   );
 
-  if (!hasReleaseNotes) {
+  // Release notes are only clickable and visible to logged-in admins
+  const canViewReleaseNotes = Boolean(isLoaded && auth && hasReleaseNotes);
+  if (!canViewReleaseNotes) {
     return <span className={styles.badge}>{badge}</span>;
   }
 

@@ -17,16 +17,23 @@
 
 .prose {
   --gutter: 1rem;
-  --wide-extra: 9rem;
+  --wide-extra: 6rem;
   --prose-font: var(--font-sans);
   display: flow-root;
-  width: min(var(--prose-width), 100% - 2 * var(--gutter));
-  margin-inline: auto;
+  width: 100%;
+  max-width: 860px;
+  margin-inline: 0;
   color: var(--text-secondary);
   font-family: var(--prose-font);
   font-size: 1.125rem;
-  line-height: 1.7;
+  line-height: 1.72;
   overflow-wrap: break-word;
+}
+
+@media (max-width: 1079px) {
+  .prose {
+    margin-inline: auto;
+  }
 }
 
 .serif {

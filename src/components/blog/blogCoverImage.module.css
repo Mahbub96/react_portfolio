@@ -1,0 +1,185 @@
+.coverFrame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  cursor: pointer;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-secondary);
+  background: var(--background-tertiary);
+  box-shadow: var(--shadow-xl);
+  transition: border-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-normal);
+  outline: none;
+}
+
+.coverFrame:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.coverFrame:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-primary);
+}
+
+.coverFrame img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.coverFrame:hover img {
+  transform: scale(1.02);
+}
+
+.zoomHint {
+  position: absolute;
+  bottom: 0.85rem;
+  right: 0.85rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--background-primary) 85%, transparent);
+  border: 1px solid var(--border-primary);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  z-index: 3;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.coverFrame:hover .zoomHint,
+.coverFrame:focus-visible .zoomHint {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Modal lightbox */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--background-primary) 85%, transparent);
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: min(1100px, 94vw);
+  max-height: 92vh;
+  border-radius: var(--radius-xl);
+  background: var(--background-secondary);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-premium);
+  overflow: hidden;
+  animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  background: color-mix(in srgb, var(--background-primary) 80%, transparent);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  border-color: var(--border-primary);
+  transform: scale(1.08);
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.imageStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: calc(92vh - 60px);
+  overflow: hidden;
+  background: var(--background-primary);
+}
+
+.modalImage {
+  max-width: 100%;
+  max-height: calc(85vh - 60px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.captionBar {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-secondary);
+  background: var(--background-secondary);
+}
+
+.captionText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

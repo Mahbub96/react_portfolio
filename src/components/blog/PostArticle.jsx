@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FaEnvelope, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { LuArrowLeft, LuBookOpen } from "react-icons/lu";
-import BlogImage from "@/components/blog/BlogImage";
+import BlogCoverImage from "@/components/blog/BlogCoverImage";
 import PostCard from "@/components/blog/PostCard";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import { absoluteUrl } from "@/lib/seo/urls.mjs";
@@ -86,9 +86,7 @@ export default function PostArticle({ post, related = [] }) {
 
             {post.coverImage ? (
               <figure className={styles.headerCover}>
-                <div className={styles.headerCoverFrame}>
-                  <BlogImage image={post.coverImage} eager sizes="(min-width: 860px) 380px, 100vw" />
-                </div>
+                <BlogCoverImage image={post.coverImage} eager title={post.title} />
                 {post.coverImage.caption ? <figcaption>{post.coverImage.caption}</figcaption> : null}
               </figure>
             ) : null}
@@ -104,7 +102,49 @@ export default function PostArticle({ post, related = [] }) {
           </details>
         ) : null}
 
-        <div className={styles.bodyWrap}>
+        <div className={`${styles.bodyWrap} ${showToc ? styles.bodyWrapWithToc : ""}`}>
+          <div className={styles.bodyContent}>
+            <div className={prose.bleed}>
+              <div
+                className={`${prose.prose} ${post.bodyFont === "serif" ? prose.serif : ""}`}
+                dangerouslySetInnerHTML={{ __html: post.html }}
+              />
+            </div>
+
+            <footer className={styles.postFooter}>
+              <div className={styles.footerRow}>
+                <div className={styles.share}>
+                  <span>Share</span>
+                  <a href={`https://x.com/intent/tweet?text=${shareText}&url=${shareUrl}`} target="_blank" rel="noopener noreferrer">
+                    <FaXTwitter aria-hidden="true" /> X
+                  </a>
+                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noopener noreferrer">
+                    <FaLinkedin aria-hidden="true" /> LinkedIn
+                  </a>
+                  <a href={`mailto:?subject=${shareText}&body=${shareUrl}`}>
+                    <FaEnvelope aria-hidden="true" /> Email
+                  </a>
+                </div>
+                <Link href={BLOG_PATH} className={styles.backLink}>
+                  <LuArrowLeft aria-hidden="true" /> All articles
+                </Link>
+              </div>
+
+              <section className={styles.author} aria-labelledby="author-name">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/assets/img/profile-128.webp" alt="" width="64" height="64" loading="lazy" />
+                <div>
+                  <h2 id="author-name">{SITE_AUTHOR.name}</h2>
+                  <p>
+                    {SITE_AUTHOR.jobTitle} in {SITE_AUTHOR.location}, building backend systems and
+                    applied AI. More <Link href="/#about">about me</Link>, my{" "}
+                    <Link href="/#projects">projects</Link>, or <Link href="/#contact">get in touch</Link>.
+                  </p>
+                </div>
+              </section>
+            </footer>
+          </div>
+
           {showToc ? (
             <aside className={styles.tocSide}>
               <nav aria-label="On this page">
@@ -113,47 +153,7 @@ export default function PostArticle({ post, related = [] }) {
               </nav>
             </aside>
           ) : null}
-
-          <div className={prose.bleed}>
-            <div
-              className={`${prose.prose} ${post.bodyFont === "serif" ? prose.serif : ""}`}
-              dangerouslySetInnerHTML={{ __html: post.html }}
-            />
-          </div>
         </div>
-
-        <footer className={styles.postFooter}>
-          <div className={styles.footerRow}>
-            <div className={styles.share}>
-              <span>Share</span>
-              <a href={`https://x.com/intent/tweet?text=${shareText}&url=${shareUrl}`} target="_blank" rel="noopener noreferrer">
-                <FaXTwitter aria-hidden="true" /> X
-              </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noopener noreferrer">
-                <FaLinkedin aria-hidden="true" /> LinkedIn
-              </a>
-              <a href={`mailto:?subject=${shareText}&body=${shareUrl}`}>
-                <FaEnvelope aria-hidden="true" /> Email
-              </a>
-            </div>
-            <Link href={BLOG_PATH} className={styles.backLink}>
-              <LuArrowLeft aria-hidden="true" /> All articles
-            </Link>
-          </div>
-
-          <section className={styles.author} aria-labelledby="author-name">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/img/profile-128.webp" alt="" width="64" height="64" loading="lazy" />
-            <div>
-              <h2 id="author-name">{SITE_AUTHOR.name}</h2>
-              <p>
-                {SITE_AUTHOR.jobTitle} in {SITE_AUTHOR.location}, building backend systems and
-                applied AI. More <Link href="/#about">about me</Link>, my{" "}
-                <Link href="/#projects">projects</Link>, or <Link href="/#contact">get in touch</Link>.
-              </p>
-            </div>
-          </section>
-        </footer>
       </article>
 
       {related.length ? (

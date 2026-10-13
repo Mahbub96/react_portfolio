@@ -616,21 +616,21 @@
 }
 
 .postHeader {
-  width: min(1040px, 100% - 2.5rem);
-  margin: 0 auto 2.5rem;
+  width: min(1280px, 100% - 3rem);
+  margin: 0 auto 3rem;
 }
 
 .headerLayout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.75rem;
+  gap: 2rem;
   align-items: center;
 }
 
 @media (min-width: 860px) {
   .headerWithCover {
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 480px);
+    gap: 3.5rem;
   }
 }
 
@@ -780,13 +780,29 @@
 }
 
 .bodyWrap {
+  width: min(1280px, 100% - 3rem);
+  margin: 0 auto;
   position: relative;
+}
+
+.bodyContent {
+  min-width: 0;
+  width: 100%;
+}
+
+@media (min-width: 1080px) {
+  .bodyWrapWithToc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 3.5rem;
+    align-items: start;
+  }
 }
 
 /* Table of contents: collapsible above the text, sidebar on desktop */
 .tocInline {
   font-size: 0.95rem;
-  width: min(var(--prose-width), 100% - 2rem);
+  width: min(860px, 100% - 2rem);
   margin: 0 auto 2.25rem;
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-lg);
@@ -819,22 +835,16 @@
   display: none;
 }
 
-@media (min-width: 1140px) {
+@media (min-width: 1080px) {
   .tocInline {
     display: none;
   }
 
   .tocSide {
-    position: absolute;
-    inset: 0 1.5rem 0 auto;
     display: block;
-    width: 220px;
-  }
-
-  .tocSide nav {
     position: sticky;
-    top: 7rem;
-    max-height: calc(100vh - 9rem);
+    top: 6.5rem;
+    max-height: calc(100vh - 8rem);
     overflow-y: auto;
   }
 }
@@ -889,12 +899,19 @@
 .postFooter {
   font-size: 1.125rem;
   display: grid;
-  width: min(var(--prose-width), 100% - 2rem);
+  width: 100%;
+  max-width: 860px;
   gap: 2rem;
-  margin: 3.5rem auto 0;
+  margin: 3.5rem 0 0;
   padding-top: 2rem;
   border-top: 1px solid var(--border-secondary);
   clear: both;
+}
+
+@media (max-width: 1079px) {
+  .postFooter {
+    margin: 3.5rem auto 0;
+  }
 }
 
 .footerRow {
@@ -970,7 +987,7 @@
 }
 
 .related {
-  width: min(1120px, 100% - 2rem);
+  width: min(1280px, 100% - 3rem);
   margin: 4.5rem auto 0;
 }
 
