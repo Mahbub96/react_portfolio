@@ -1,14 +1,24 @@
 import React from "react";
 import styles from "./skills.module.css";
-import { CORE_STRENGTHS } from "./skillsData";
-import { LuCode, LuTerminal } from "react-icons/lu";
+import { LuCode, LuTerminal, LuServer, LuAppWindow, LuBrain } from "react-icons/lu";
 
-export default function CoreStrengthsCard({ headingLevel = "h3" }) {
+const CAPABILITY_ICONS = {
+  server: LuServer,
+  window: LuAppWindow,
+  brain: LuBrain,
+};
+
+export default function CoreStrengthsCard({
+  coreStrengths = [],
+  headingLevel = "h3",
+}) {
   const CardHeading = headingLevel;
   const BlockHeading = `h${Math.min(
     (Number(String(headingLevel).replace(/\D/g, "")) || 3) + 1,
     6
   )}`;
+
+  const blocks = Array.isArray(coreStrengths) ? coreStrengths : [];
 
   return (
     <article
@@ -24,28 +34,28 @@ export default function CoreStrengthsCard({ headingLevel = "h3" }) {
         </div>
         <div className={styles.cardHeaderText}>
           <CardHeading id="core-strengths-title" className={styles.cardTitle}>
-            {CORE_STRENGTHS.eyebrow}
+            Core strengths
           </CardHeading>
           <p className={styles.cardDescription}>
-            {CORE_STRENGTHS.description}
+            The areas I focus on and have the deepest experience in, built through real projects and professional work.
           </p>
         </div>
       </div>
 
       <div className={styles.capabilityList} role="list">
-        {CORE_STRENGTHS.blocks.map((block) => {
-          const Icon = block.icon;
+        {blocks.map((block) => {
+          const Icon = CAPABILITY_ICONS[block.icon] || LuServer;
           return (
             <div
-              key={block.id}
+              key={block.id || block.title}
               className={styles.capabilityBlock}
               role="listitem"
             >
               <div
                 className={styles.capabilityIconWrapper}
                 style={{
-                  "--accent-glow": block.glowBg,
-                  "--accent-color": block.accentColor,
+                  "--accent-glow": block.glowBg || "rgba(32, 201, 151, 0.12)",
+                  "--accent-color": block.accentColor || "var(--accent-primary)",
                 }}
                 aria-hidden="true"
               >
@@ -70,7 +80,7 @@ export default function CoreStrengthsCard({ headingLevel = "h3" }) {
           <LuTerminal className={styles.terminalIcon} />
         </span>
         <span className={styles.coreFooterText}>
-          {CORE_STRENGTHS.footerStatement}
+          Built through production work and hands-on projects.
         </span>
       </div>
     </article>

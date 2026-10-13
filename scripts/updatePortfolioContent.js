@@ -29,6 +29,7 @@ const PortfolioDataSchema = new mongoose.Schema(
         'Banner',
         'About',
         'Contact',
+        'CoreStrengths',
       ],
     },
     data: {
@@ -77,6 +78,7 @@ const updates = {
     },
   },
   Skills: legacyDb.skills,
+  CoreStrengths: legacyDb.coreStrengths || [],
   Experiences: legacyDb.experiences,
   Educations: legacyDb.educations,
   Projects: legacyDb.projects,

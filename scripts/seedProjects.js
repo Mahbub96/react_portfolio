@@ -23,6 +23,7 @@ const PortfolioDataSchema = new mongoose.Schema(
         "Banner",
         "About",
         "Contact",
+        "CoreStrengths",
       ],
     },
     data: {
@@ -58,6 +59,7 @@ const sampleData = {
     website: "https://mahbub.dev",
   },
   Skills: legacyDb.skills,
+  CoreStrengths: legacyDb.coreStrengths || [],
   Experiences: legacyDb.experiences,
   Educations: legacyDb.educations,
   Projects: legacyDb.projects,

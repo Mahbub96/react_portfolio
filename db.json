@@ -7,86 +7,291 @@
       "state": true
     }
   ],
+  "coreStrengths": [
+    {
+      "id": "backend-apis",
+      "title": "Backend & APIs",
+      "description": "Building reliable backend services, APIs, and maintainable application architectures.",
+      "tech": "Node.js · NestJS · Express",
+      "icon": "server",
+      "accentColor": "#38bdf8",
+      "glowBg": "rgba(56, 189, 248, 0.12)"
+    },
+    {
+      "id": "fullstack",
+      "title": "Full-Stack Engineering",
+      "description": "Developing modern web applications with practical frontend and backend integration.",
+      "tech": "React · Next.js · TypeScript",
+      "icon": "window",
+      "accentColor": "#20c997",
+      "glowBg": "rgba(32, 201, 151, 0.12)"
+    },
+    {
+      "id": "ai-ml",
+      "title": "Applied AI / ML",
+      "description": "Building intelligent systems with machine learning, deep learning, and speech technologies.",
+      "tech": "Python · PyTorch · Whisper",
+      "icon": "brain",
+      "accentColor": "#a855f7",
+      "glowBg": "rgba(168, 85, 247, 0.12)"
+    }
+  ],
   "skills": [
     {
       "id": 100,
       "name": "JavaScript",
+      "category": "Languages",
+      "icon": "SiJavascript",
+      "color": "#f7df1e",
       "src": "/assets/img/javaScript.png"
     },
     {
       "id": 101,
-      "name": "React.js",
-      "src": "/assets/img/react.png"
+      "name": "TypeScript",
+      "category": "Languages",
+      "icon": "SiTypescript",
+      "color": "#3178c6",
+      "src": "/assets/img/javaScript.png"
     },
     {
       "id": 102,
-      "name": "Next.js",
-      "src": "/assets/img/react.png"
+      "name": "Python",
+      "category": "Languages",
+      "icon": "SiPython",
+      "color": "#3776ab",
+      "src": "/assets/img/python.png"
     },
     {
       "id": 103,
-      "name": "Node.js",
-      "src": "/assets/img/nodejs.png"
+      "name": "PHP",
+      "category": "Languages",
+      "icon": "SiPhp",
+      "color": "#777bb4",
+      "src": "/assets/img/php.png"
     },
     {
       "id": 104,
-      "name": "Python",
-      "src": "/assets/img/python.png"
-    },
-    {
-      "id": 105,
-      "name": "PHP",
-      "src": "/assets/img/php.png"
-    },
-    {
-      "id": 106,
-      "name": "Laravel",
-      "src": "/assets/img/php.png"
-    },
-    {
-      "id": 107,
-      "name": "MySQL",
-      "src": "/assets/img/mysql.png"
-    },
-    {
-      "id": 108,
-      "name": "SQLite",
-      "src": "/assets/img/sqlite3.png"
-    },
-    {
-      "id": 109,
-      "name": "Git",
-      "src": "/assets/img/git.png"
-    },
-    {
-      "id": 110,
-      "name": "Bootstrap",
-      "src": "/assets/img/bootstarp.png"
-    },
-    {
-      "id": 111,
-      "name": "Tailwind CSS",
-      "src": "/assets/img/tailwind.png"
-    },
-    {
-      "id": 112,
-      "name": "React Native",
-      "src": "/assets/img/react-native.png"
-    },
-    {
-      "id": 113,
       "name": "C++",
+      "category": "Languages",
+      "icon": "SiCplusplus",
+      "color": "#00599c",
       "src": "/assets/img/c++.png"
     },
     {
-      "id": 114,
-      "name": "Java Swing",
+      "id": 105,
+      "name": "Java",
+      "category": "Languages",
+      "icon": "FaJava",
+      "color": "#f89820",
       "src": "/assets/img/swings.png"
     },
     {
-      "id": 115,
-      "name": "Machine Learning",
+      "id": 106,
+      "name": "C",
+      "category": "Languages",
+      "icon": "SiC",
+      "color": "#a8b9cc",
+      "src": "/assets/img/c++.png"
+    },
+    {
+      "id": 200,
+      "name": "Node.js",
+      "category": "Frameworks & Libraries",
+      "icon": "SiNodedotjs",
+      "color": "#5fa04e",
+      "src": "/assets/img/nodejs.png"
+    },
+    {
+      "id": 201,
+      "name": "NestJS",
+      "category": "Frameworks & Libraries",
+      "icon": "SiNestjs",
+      "color": "#ea2845",
+      "src": "/assets/img/nodejs.png"
+    },
+    {
+      "id": 202,
+      "name": "Express",
+      "category": "Frameworks & Libraries",
+      "icon": "SiExpress",
+      "color": "currentColor",
+      "src": "/assets/img/nodejs.png"
+    },
+    {
+      "id": 203,
+      "name": "React",
+      "category": "Frameworks & Libraries",
+      "icon": "SiReact",
+      "color": "#61dafb",
+      "src": "/assets/img/react.png"
+    },
+    {
+      "id": 204,
+      "name": "Next.js",
+      "category": "Frameworks & Libraries",
+      "icon": "SiNextdotjs",
+      "color": "currentColor",
+      "src": "/assets/img/react.png"
+    },
+    {
+      "id": 205,
+      "name": "Laravel",
+      "category": "Frameworks & Libraries",
+      "icon": "SiLaravel",
+      "color": "#ff2d20",
+      "src": "/assets/img/php.png"
+    },
+    {
+      "id": 206,
+      "name": "React Native",
+      "category": "Frameworks & Libraries",
+      "icon": "TbBrandReactNative",
+      "color": "#61dafb",
+      "src": "/assets/img/react-native.png"
+    },
+    {
+      "id": 207,
+      "name": "AngularJS",
+      "category": "Frameworks & Libraries",
+      "icon": "SiAngular",
+      "color": "#dd0031",
+      "src": "/assets/img/react.png"
+    },
+    {
+      "id": 208,
+      "name": "CodeIgniter",
+      "category": "Frameworks & Libraries",
+      "icon": "SiCodeigniter",
+      "color": "#ee4623",
+      "src": "/assets/img/php.png"
+    },
+    {
+      "id": 300,
+      "name": "PostgreSQL",
+      "category": "Data & Infrastructure",
+      "icon": "SiPostgresql",
+      "color": "#4169e1",
+      "src": "/assets/img/mysql.png"
+    },
+    {
+      "id": 301,
+      "name": "MySQL",
+      "category": "Data & Infrastructure",
+      "icon": "SiMysql",
+      "color": "#4479a1",
+      "src": "/assets/img/mysql.png"
+    },
+    {
+      "id": 302,
+      "name": "MongoDB",
+      "category": "Data & Infrastructure",
+      "icon": "SiMongodb",
+      "color": "#47a248",
+      "src": "/assets/img/sqlite3.png"
+    },
+    {
+      "id": 303,
+      "name": "Redis",
+      "category": "Data & Infrastructure",
+      "icon": "SiRedis",
+      "color": "#dc382d",
+      "src": "/assets/img/sqlite3.png"
+    },
+    {
+      "id": 304,
+      "name": "SQLite",
+      "category": "Data & Infrastructure",
+      "icon": "SiSqlite",
+      "color": "#38bdf8",
+      "src": "/assets/img/sqlite3.png"
+    },
+    {
+      "id": 305,
+      "name": "Docker",
+      "category": "Data & Infrastructure",
+      "icon": "SiDocker",
+      "color": "#2496ed",
+      "src": "/assets/img/git.png"
+    },
+    {
+      "id": 306,
+      "name": "Linux",
+      "category": "Data & Infrastructure",
+      "icon": "SiLinux",
+      "color": "#fcc624",
+      "src": "/assets/img/git.png"
+    },
+    {
+      "id": 307,
+      "name": "Git",
+      "category": "Data & Infrastructure",
+      "icon": "SiGit",
+      "color": "#f05032",
+      "src": "/assets/img/git.png"
+    },
+    {
+      "id": 308,
+      "name": "Firebase",
+      "category": "Data & Infrastructure",
+      "icon": "SiFirebase",
+      "color": "#ffca28",
+      "src": "/assets/img/mysql.png"
+    },
+    {
+      "id": 400,
+      "name": "PyTorch",
+      "category": "AI & Engineering",
+      "icon": "SiPytorch",
+      "color": "#ee4c2c",
       "src": "/assets/img/python.png"
+    },
+    {
+      "id": 401,
+      "name": "Whisper",
+      "category": "AI & Engineering",
+      "icon": "TbBrandOpenai",
+      "color": "#10a37f",
+      "src": "/assets/img/python.png"
+    },
+    {
+      "id": 402,
+      "name": "Transformers",
+      "category": "AI & Engineering",
+      "icon": "SiHuggingface",
+      "color": "#ffd21e",
+      "src": "/assets/img/python.png"
+    },
+    {
+      "id": 403,
+      "name": "Speech Recognition",
+      "category": "AI & Engineering",
+      "icon": "LuMic",
+      "color": "#f59e0b",
+      "src": "/assets/img/python.png"
+    },
+    {
+      "id": 404,
+      "name": "RAG",
+      "category": "AI & Engineering",
+      "icon": "TbHierarchy3",
+      "color": "#06b6d4",
+      "src": "/assets/img/python.png"
+    },
+    {
+      "id": 405,
+      "name": "REST APIs",
+      "category": "AI & Engineering",
+      "icon": "TbApi",
+      "color": "#a855f7",
+      "src": "/assets/img/nodejs.png"
+    },
+    {
+      "id": 406,
+      "name": "CI/CD",
+      "category": "AI & Engineering",
+      "icon": "TbInfinity",
+      "color": "#20c997",
+      "src": "/assets/img/git.png"
     }
   ],
   "experiences": [

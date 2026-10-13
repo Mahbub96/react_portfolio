@@ -33,6 +33,7 @@ export function getPortfolioFallback() {
       },
     }),
     Skills: wrap(legacyDb.skills || []),
+    CoreStrengths: wrap(legacyDb.coreStrengths || []),
     Experiences: wrap(legacyDb.experiences || []),
     Educations: wrap(legacyDb.educations || []),
     Projects: wrap(legacyDb.projects || []),

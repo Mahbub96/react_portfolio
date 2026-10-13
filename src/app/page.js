@@ -69,7 +69,10 @@ export default async function HomePage() {
 
           <ProjectsServer data={portfolioData.Projects} />
 
-          <SkillsServer data={portfolioData.Skills} />
+          <SkillsServer
+            data={portfolioData.Skills}
+            coreStrengths={portfolioData.CoreStrengths}
+          />
 
           <Experience data={portfolioData.Experiences} />
 

@@ -90,7 +90,11 @@ export default async function SkillsPage() {
 
       <main>
         <Suspense fallback={null}>
-          <Skills data={skillsData} headingLevel="h1" />
+          <Skills
+            data={skillsData}
+            coreStrengths={portfolioData?.CoreStrengths}
+            headingLevel="h1"
+          />
         </Suspense>
 
         <section className={styles.usage} aria-labelledby="skills-usage-heading">

@@ -57,11 +57,11 @@
 
 ## Skills
 
-- **Frontend**: JavaScript, React.js, Next.js, Bootstrap, Tailwind CSS, React Native
-- **Backend & Languages**: Node.js, Python, PHP, Laravel, C++, Java Swing
-- **Data**: MySQL, SQLite
-- **Tools & Delivery**: Git
-- **Additional**: Machine Learning
+- **Frontend**: JavaScript, TypeScript, React, Next.js, React Native
+- **Backend & Languages**: Python, PHP, C++, Java, Node.js, NestJS, Laravel
+- **Data**: PostgreSQL, MySQL, MongoDB, Redis, SQLite
+- **Tools & Delivery**: Docker, Linux, Git, CI/CD
+- **Additional**: C, Express, AngularJS, CodeIgniter, Firebase, PyTorch, Whisper, Transformers, Speech Recognition, RAG, REST APIs
 
 ## Notes for automated readers
 

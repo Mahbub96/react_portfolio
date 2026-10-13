@@ -1,7 +1,11 @@
 import React from "react";
 import styles from "./skills.module.css";
+import { resolveSkillIcon } from "./skillsRegistry";
 
-export default function TechnologyChip({ name, icon: Icon, color }) {
+export default function TechnologyChip({ skill }) {
+  const name = skill?.name || "Skill";
+  const { Icon, color } = resolveSkillIcon(skill);
+
   return (
     <div
       className={styles.techChip}

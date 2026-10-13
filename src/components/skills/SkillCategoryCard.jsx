@@ -7,7 +7,7 @@ export default function SkillCategoryCard({
   headingLevel = "h3",
   cardClassName = "",
 }) {
-  const { id, title, description, icon: Icon, accentColor, skills } = category;
+  const { id, title, description, icon: Icon, accentColor, skills = [] } = category;
   const CardHeading = headingLevel;
 
   return (
@@ -47,10 +47,8 @@ export default function SkillCategoryCard({
       >
         {skills.map((skill) => (
           <TechnologyChip
-            key={skill.name}
-            name={skill.name}
-            icon={skill.icon}
-            color={skill.color}
+            key={skill.id || skill.name}
+            skill={skill}
           />
         ))}
       </div>
