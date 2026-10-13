@@ -7,6 +7,23 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.0
+
+### Added
+- The Skills section has a new layout: a Core Strengths card (Backend & APIs, Full-Stack Engineering, Applied AI / ML) beside four grouped cards for Languages, Frameworks & Libraries, Data & Infrastructure, and AI & Engineering, each technology shown with its icon.
+- Skills and Core Strengths are now managed as portfolio content, grouped by each skill's category, with the built-in list used when no saved content exists.
+- Blog posts show a view count. A visit is counted once per browser session, admin visits are not counted, and `/blog/` shows total reads once there are any.
+- Clicking a blog post's cover image opens it full size with its caption; Escape or the close button dismisses it.
+- The navbar has a highlighted Blog button.
+
+### Changed
+- The skills list published for search engines and AI readers (`llms.txt`) reflects the updated skill set.
+- Blog post pages make better use of the available width.
+- Release notes behind the footer version badge are shown only to a signed-in admin; visitors see the version and build only.
+
+### Fixes
+- The deploy script's post-deploy checks no longer fail with a curl write error when verifying the RSS feed and sitemap.
+
 ## 1.5.0
 
 ### Added
