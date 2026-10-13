@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { LuArrowUpRight } from "react-icons/lu";
+import { LuArrowUpRight, LuEye } from "react-icons/lu";
 import { formatDate } from "@/lib/blog/posts.mjs";
 import BlogImage from "./BlogImage";
+import { formatViews } from "./BlogViewTracker";
 import styles from "@/app/blog/blog.module.css";
 
 /** Modern, compact Post card with 70% content / 30% image layout */
 export default function PostCard({ post, featured = false, headingLevel = 2, eager = false, variant = "list" }) {
   const Heading = `h${headingLevel}`;
   const hasCover = Boolean(post.coverImage);
+  const viewsCount = typeof post.views === "number" ? post.views : 0;
 
   return (
     <article
@@ -23,6 +25,11 @@ export default function PostCard({ post, featured = false, headingLevel = 2, eag
           <time dateTime={post.datePublished}>{formatDate(post.datePublished)}</time>
           <span className={styles.dot} aria-hidden="true" />
           <span className={styles.readTime}>{post.readingMinutes} min read</span>
+          <span className={styles.dot} aria-hidden="true" />
+          <span className={styles.cardViews} title={`${viewsCount.toLocaleString()} views`}>
+            <LuEye className={styles.viewIcon} aria-hidden="true" />
+            <span>{formatViews(viewsCount)} views</span>
+          </span>
         </div>
 
         <Heading className={styles.cardTitle}>

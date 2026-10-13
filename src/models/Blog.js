@@ -75,10 +75,12 @@ const BlogPostSchema = new mongoose.Schema(
 
     indexNow: { lastPingAt: Date, lastStatus: Number },
     source: { type: String, enum: ["cms", "markdown-import"], default: "cms" },
+    views: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true, minimize: false }
 );
 BlogPostSchema.index({ status: 1, "live.publishedAt": -1 });
+BlogPostSchema.index({ views: -1 });
 
 const BlogMediaSchema = new mongoose.Schema(
   {

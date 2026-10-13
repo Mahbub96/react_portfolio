@@ -11,6 +11,7 @@ import { absoluteUrl } from "@/lib/seo/urls.mjs";
 import { BLOG_PATH } from "@/lib/blog/posts.mjs";
 import { getPublishedPosts } from "@/lib/blog/posts.server.mjs";
 import { BLOG_DESCRIPTION } from "@/lib/blog/feeds.mjs";
+import { LuEye } from "react-icons/lu";
 import styles from "./blog.module.css";
 
 const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), { ssr: true });
@@ -34,6 +35,7 @@ export async function generateMetadata() {
 
 export default async function BlogIndexPage() {
   const posts = await getPublishedPosts();
+  const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
 
   const graph = buildPageGraph({
     path: BLOG_PATH,
@@ -54,7 +56,15 @@ export default async function BlogIndexPage() {
 
       <main className={styles.page}>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>Blog</p>
+          <div className={styles.heroTopRow}>
+            <p className={styles.eyebrow}>Blog</p>
+            {totalViews > 0 ? (
+              <span className={styles.heroStatsBadge} title={`${totalViews.toLocaleString()} total article reads`}>
+                <LuEye aria-hidden="true" />
+                <span>{totalViews.toLocaleString()} total reads</span>
+              </span>
+            ) : null}
+          </div>
           <h1 className={styles.heroTitle}>
             Engineering <span>notes</span>
           </h1>

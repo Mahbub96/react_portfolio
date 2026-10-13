@@ -9,6 +9,7 @@ import { absoluteUrl } from "@/lib/seo/urls.mjs";
 import { BLOG_PATH, formatDate, sameDay } from "@/lib/blog/posts.mjs";
 import prose from "@/components/blog/prose.module.css";
 import styles from "@/app/blog/blog.module.css";
+import BlogViewTracker from "@/components/blog/BlogViewTracker";
 
 /**
  * The article template shared by the public post page and the admin
@@ -76,6 +77,8 @@ export default function PostArticle({ post, related = [] }) {
                     ) : null}
                     <span className={styles.dot} aria-hidden="true" />
                     <span>{post.readingMinutes} min read</span>
+                    <span className={styles.dot} aria-hidden="true" />
+                    <BlogViewTracker slug={post.slug} initialViews={post.views} />
                   </p>
                 </div>
               </div>

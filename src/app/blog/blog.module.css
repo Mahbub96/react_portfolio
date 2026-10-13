@@ -28,6 +28,34 @@
 
 /* Index header ------------------------------------------------------------ */
 
+.heroTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.heroTopRow .eyebrow {
+  margin-bottom: 0;
+}
+
+.heroStatsBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.7rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+  background: var(--accent-softer);
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .hero {
   max-width: 680px;
   margin-bottom: 2rem;
@@ -304,6 +332,36 @@
 
 .readTime {
   color: var(--text-muted);
+}
+
+.cardViews {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.card:hover .cardViews {
+  color: var(--accent-primary);
+}
+
+.viewIcon {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.viewBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.viewBadge .viewIcon {
+  font-size: 0.9rem;
+  opacity: 1;
 }
 
 .cardTitle {

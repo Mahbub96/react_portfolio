@@ -21,6 +21,7 @@ export const BLOG_REVALIDATE_SECONDS = Number(process.env.BLOG_CACHE_SECONDS) ||
 
 const LIST_FIELDS = {
   slug: 1,
+  views: 1,
   "indexNow.lastPingAt": 1,
   "live.title": 1,
   "live.excerpt": 1,
@@ -44,6 +45,7 @@ function toPublicPost(doc, { full = false } = {}) {
   const post = {
     slug: doc.slug,
     path: postPath(doc.slug),
+    views: typeof doc.views === "number" ? doc.views : 0,
     title: live.title,
     metaTitle: live.metaTitle || "",
     description: live.metaDescription || live.excerpt || "",

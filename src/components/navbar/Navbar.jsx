@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import LoginModal from "../auth/LoginModal";
+import { LuSparkles } from "react-icons/lu";
 import styles from "./navbar.module.css";
 import { APP_VERSION, BUILD_NUMBER } from "@/config/version";
 
@@ -152,21 +153,41 @@ function Header({ data }) {
               }`}
             >
               <ul className={styles.navLinks}>
-                {navItems.map(({ id, label, number, href }) => (
-                  <li key={id}>
-                    {href ? (
-                      <a href={href}>
-                        <span className={styles.navNumber}>{number}.</span>
-                        {label}
-                      </a>
-                    ) : (
-                      <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
-                        <span className={styles.navNumber}>{number}.</span>
-                        {label}
-                      </a>
-                    )}
-                  </li>
-                ))}
+                {navItems.map(({ id, label, number, href }) => {
+                  const isBlog = id === "blog";
+                  return (
+                    <li key={id} className={isBlog ? styles.blogNavItem : undefined}>
+                      {href ? (
+                        <a
+                          href={href}
+                          className={isBlog ? styles.blogButtonLink : undefined}
+                        >
+                          {isBlog ? (
+                            <span className={styles.blogButtonWrapper}>
+                              <span className={styles.blogBadge}>
+                                <span className={styles.blogPulseDot} />
+                                NEW
+                              </span>
+                              <span className={styles.navNumber}>{number}.</span>
+                              <span className={styles.blogLabel}>{label}</span>
+                              <LuSparkles className={styles.blogSparkle} aria-hidden="true" />
+                            </span>
+                          ) : (
+                            <>
+                              <span className={styles.navNumber}>{number}.</span>
+                              {label}
+                            </>
+                          )}
+                        </a>
+                      ) : (
+                        <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
+                          <span className={styles.navNumber}>{number}.</span>
+                          {label}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
 
               <div className={styles.navButtons}>
