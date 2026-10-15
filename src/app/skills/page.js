@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import JsonLd from "@/components/seo/JsonLd";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
 import {
   buildProjectCatalog,
@@ -11,8 +12,20 @@ import {
   projectPath,
 } from "@/lib/seo/projectCatalog.mjs";
 import { groupSkills } from "@/lib/seo/skillCatalog.mjs";
-import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
+import {
+  LuCode,
+  LuLayers,
+  LuDatabase,
+  LuCpu,
+} from "react-icons/lu";
 import styles from "./skillsUsage.module.css";
+
+const CATEGORY_ICONS = {
+  Languages: LuCode,
+  "Frameworks & Libraries": LuLayers,
+  "Data & Infrastructure": LuDatabase,
+  "AI & Engineering": LuCpu,
+};
 
 export const dynamic = "force-dynamic";
 
@@ -107,17 +120,21 @@ export default async function SkillsPage() {
               <h2 id="skills-usage-heading" className={styles.heading}>
                 Project Cross-References
               </h2>
-              <p className={styles.intro}>
-                Each technology below links directly to production repositories and portfolio projects demonstrating real-world usage.
-              </p>
             </header>
 
             <div className={styles.usageGrid}>
               {usage
                 .filter(({ skills }) => skills.some(({ usedIn }) => usedIn.length))
-                .map(({ category, skills }) => (
-                  <article key={category} className={styles.usageCard}>
-                    <h3 className={styles.groupTitle}>{category}</h3>
+                .map(({ category, skills }) => {
+                  const CatIcon = CATEGORY_ICONS[category] || LuCode;
+                  return (
+                    <article key={category} className={styles.usageCard}>
+                      <div className={styles.cardHeader}>
+                        <div className={styles.cardIconBadge} aria-hidden="true">
+                          <CatIcon />
+                        </div>
+                        <h3 className={styles.groupTitle}>{category}</h3>
+                      </div>
                     <div className={styles.skillList}>
                       {skills
                         .filter(({ usedIn }) => usedIn.length)
@@ -144,8 +161,9 @@ export default async function SkillsPage() {
                           </div>
                         ))}
                     </div>
-                  </article>
-                ))}
+                    </article>
+                  );
+                })}
             </div>
           </div>
         </section>
