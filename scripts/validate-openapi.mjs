@@ -5,7 +5,7 @@
 
 import { readFileSync } from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 
 const rootDir = process.cwd();
 const jsonPath = path.join(rootDir, "public", "openapi.json");

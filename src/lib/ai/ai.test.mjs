@@ -199,13 +199,27 @@ test("parse: slug and tags are normalised", () => {
 });
 
 test("guards: invented links removed, invented numbers flagged", () => {
-  const r = parseAnswer("excerpt", '{"status":"ok","value":"See https://fake.example/paper and https://huggingface.co/openai/whisper-small — WER fell from 38.2% to 12.5%."}', guards);
+  const r = parseAnswer("excerpt", '{"status":"ok","value":"See https://fake.example/paper and https://huggingface.co/openai/whisper-small, where WER fell from 38.2% to 12.5%."}', guards);
   assert.doesNotMatch(r.value, /fake\.example/);
   assert.match(r.value, /huggingface\.co\/openai\/whisper-small/);
+  assert.doesNotMatch(r.value, /—|–/);
   assert.ok(r.warnings.some((w) => w.includes("https://fake.example/paper")));
   assert.ok(r.warnings.some((w) => w.includes("12.5%") && !w.includes("38.2%")));
   assert.deepEqual(unverifiedNumbers("Trained 3 epochs on 500 clips in 2026", "500 clips"), ["2026"]);
   assert.equal(guardUrls("[paper](https://x.example/p) here", "", []).text, "paper here");
+});
+
+test("parse: em dashes and en dashes are converted to natural human punctuation", () => {
+  const answer = '{"status":"ok","value":"The architecture is fully modular — reducing memory overhead."}';
+  const r = parseAnswer("excerpt", answer, guards);
+  assert.equal(r.status, "ok");
+  assert.doesNotMatch(r.value, /—|–/);
+  assert.match(r.value, /The architecture is fully modular, reducing memory overhead/);
+
+  const md = parseAnswer("body.expand", "We tested multiple pipelines — the local runner performed best.", guards);
+  assert.equal(md.status, "ok");
+  assert.doesNotMatch(md.value, /—|–/);
+  assert.match(md.value, /We tested multiple pipelines, the local runner performed best/);
 });
 
 test("parse: markdown body actions", () => {
@@ -216,8 +230,20 @@ test("parse: markdown body actions", () => {
   assert.deepEqual(parseAnswer("body.expand", `${INSUFFICIENT_MARKER} Nothing selected.`), { status: "insufficient_context", reason: "Nothing selected." });
 });
 
+test("parse: code snippet preserves indentation and trims fences", () => {
+  const answer = '{"status":"ok","value":"```python\\ndef calculate_wer(ref, hyp):\\n    return 0.12\\n```"}';
+  const r = parseAnswer("codeSnippet", answer, guards);
+  assert.equal(r.status, "ok");
+  assert.equal(r.value, "def calculate_wer(ref, hyp):\n    return 0.12");
+
+  const rawAnswer = "```javascript\nfunction hello() {\n  return 'world';\n}\n```";
+  const r2 = parseAnswer("codeSnippet", rawAnswer, guards);
+  assert.equal(r2.status, "ok");
+  assert.equal(r2.value, "function hello() {\n  return 'world';\n}");
+});
+
 test("every target has a spec the validator understands", () => {
-  for (const target of TARGETS) assert.ok(["text", "slug", "tags", "markdown"].includes(FIELD_SPECS[target].kind), target);
+  for (const target of TARGETS) assert.ok(["text", "slug", "tags", "markdown", "code"].includes(FIELD_SPECS[target].kind), target);
 });
 
 /* limiter and cache ----------------------------------------------------------------------- */

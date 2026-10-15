@@ -18,6 +18,8 @@ function formatLine(spec) {
       return `a JSON array of at most ${spec.maxItems} strings, each at most ${spec.maxItem} characters`;
     case "markdown":
       return "Markdown (## and ### headings, paragraphs, - bullet lists). No front matter, no code fences around the whole answer, no images";
+    case "code":
+      return `clean code in a single JSON string, at most ${spec.max} characters, no markdown fences inside value`;
     default:
       return `a single plain-text string${spec.min ? ` of ${spec.min}-${spec.max}` : ` of at most ${spec.max}`} characters, no Markdown`;
   }
@@ -39,11 +41,15 @@ export function buildMessages({ target, payload, rules, author = "Mahbub Alam", 
 
   const system = [
     `You fill one field of a blog post editor for ${author}'s blog on ${site}. Posts can be about any subject.`,
+    "Style: Write in natural, relatable, human-like language with conversational rhythm, exactly like an experienced engineer or writer explaining practical ideas. Avoid breathless hype, marketing clichés ('revolutionize', 'game-changer', 'delve into', 'unleash', 'powerhouse'), and artificial corporate filler.",
+    "Crucial punctuation rule: Never use em dashes (—) or en dashes (–) anywhere in sentences or paragraphs. Always use commas, periods, colons, or parentheses instead.",
     "",
     "Rules from the site owner (follow them strictly):",
     rules,
     "",
     `Target field: ${target}`,
+    ...(payload.language ? [`Requested programming language: ${payload.language}`] : []),
+    ...(payload.variant ? [`Callout style: ${payload.variant}`] : []),
     `What to write: ${spec.instruction}`,
     `Format: ${formatLine(spec)}. The format above takes precedence over any rule about citations.`,
     ...(markdown
@@ -53,6 +59,7 @@ export function buildMessages({ target, payload, rules, author = "Mahbub Alam", 
           "Context: the server has checked that the fields contain enough to write this field (this overrides any rule above about insufficient context). Do not refuse.",
           "Describing what the subject is (for example that a named product is an infant formula, or that a tool is a speech model) and naming its field or category is expected, not guessing.",
           "If the post has no body yet, write about what the post covers, as announced by the title (e.g. \"A look at the possible downsides of X and what readers should know\"), without stating its findings.",
+          "For coverAlt or imageAlt, describe what the image represents based on the post topic, title, and caption. You do not need to view image files. Never refuse with 'I cannot see the image'.",
           "Never add claims, results, numbers, dates, names or sources that the fields do not contain.",
         ]),
     "",
@@ -61,7 +68,9 @@ export function buildMessages({ target, payload, rules, author = "Mahbub Alam", 
     contract,
   ].join("\n");
 
-  const user = `<fields>\n${JSON.stringify(payload, null, 2)}\n</fields>\n\nWrite the "${target}" field.`;
+  const user = markdown
+    ? `<fields>\n${JSON.stringify(payload, null, 2)}\n</fields>\n\nWrite the "${target}" field in Markdown.`
+    : `<fields>\n${JSON.stringify(payload, null, 2)}\n</fields>\n\nWrite the "${target}" field as a single JSON object: {"status":"ok","value":<value>}.`;
   return [
     { role: "system", content: system },
     { role: "user", content: user },

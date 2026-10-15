@@ -1145,10 +1145,26 @@
   margin-top: 0.6em;
 }
 
-.calloutPicker {
+.calloutHeader {
   position: absolute;
-  top: -0.6rem;
-  right: -0.4rem;
+  top: -0.75rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(-20%);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.calloutWrap:hover .calloutHeader,
+.calloutWrap:focus-within .calloutHeader {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.calloutPicker {
   display: flex;
   gap: 0.1rem;
   padding: 0.15rem;
@@ -1158,14 +1174,6 @@
   box-shadow: var(--shadow-md);
   font-family: var(--font-sans);
   font-size: 0.7rem;
-  opacity: 0;
-  transform: translateY(-50%);
-  transition: opacity var(--transition-fast);
-}
-
-.calloutWrap:hover .calloutPicker,
-.calloutWrap:focus-within .calloutPicker {
-  opacity: 1;
 }
 
 .calloutPicker button {
@@ -1176,6 +1184,7 @@
   color: var(--text-secondary);
   font: inherit;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .calloutPicker button[aria-pressed="true"] {
@@ -1183,22 +1192,89 @@
   color: var(--accent-primary);
 }
 
+.calloutActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.3rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--background-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.calloutRemoveBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.calloutRemoveBtn:hover {
+  background: var(--accent-softer);
+  color: var(--status-error);
+}
+
 .codeWrap {
   position: relative;
 }
 
-.langSelect {
+.codeToolbar {
   position: absolute;
-  top: -0.55rem;
-  right: -0.6rem;
-  padding: 0.2rem 0.4rem;
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--radius-sm);
+  top: -0.75rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 10;
   background: var(--background-secondary);
-  color: var(--text-muted);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  padding: 0.15rem 0.35rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.langSelect {
+  padding: 0.2rem 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   cursor: pointer;
+  outline: none;
+}
+
+.codeActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.codeRemoveBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.codeRemoveBtn:hover {
+  background: var(--accent-softer);
+  color: var(--status-error);
 }
 
 /* Floating "+" and slash menu ----------------------------------------------------------- */
@@ -1381,5 +1457,49 @@
   background: var(--border-secondary);
   margin: 0 0.25rem;
   flex: none;
+}
+
+.formatBtnDanger:hover {
+  background: var(--accent-softer);
+  color: var(--status-error);
+  border-color: var(--border-secondary);
+}
+
+.formatAiGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.formatAiBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.65rem;
+  height: 2rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--background-secondary);
+  color: var(--accent-primary);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.formatAiBtn:hover {
+  background: var(--accent-soft);
+  border-color: var(--border-primary);
+  transform: translateY(-1px);
+}
+
+.galleryAltRow {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
 }
 

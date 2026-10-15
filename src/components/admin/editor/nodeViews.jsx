@@ -140,7 +140,7 @@ export function FigureView({ node, updateAttributes, deleteNode, selected, edito
 
 /* Gallery ------------------------------------------------------------------------ */
 
-export function GalleryView({ node, updateAttributes, deleteNode, selected }) {
+export function GalleryView({ node, updateAttributes, deleteNode, selected, editor, getPos }) {
   const { images = [], columns, caption } = node.attrs;
   const [progress, upload] = useUpload();
   const fileRef = useRef(null);
@@ -183,13 +183,22 @@ export function GalleryView({ node, updateAttributes, deleteNode, selected }) {
             <button type="button" className={styles.galleryRemove} onClick={() => remove(index)} aria-label="Remove image">
               <LuX />
             </button>
-            <input
-              className={`${styles.galleryAlt} ${!image.alt ? styles.inputMissing : ""}`}
-              value={image.alt || ""}
-              placeholder="Alt text (required)"
-              onChange={(e) => update(index, { alt: e.target.value })}
-              maxLength={300}
-            />
+            <div className={styles.galleryAltRow}>
+              <input
+                className={`${styles.galleryAlt} ${!image.alt ? styles.inputMissing : ""}`}
+                value={image.alt || ""}
+                placeholder="Alt text (required)"
+                onChange={(e) => update(index, { alt: e.target.value })}
+                maxLength={300}
+              />
+              <AiAssist
+                target="imageAlt"
+                label="image alt text"
+                align="start"
+                extra={() => ({ image: { caption: caption || "", nearbyText: surroundingText(editor, getPos, node) } })}
+                onAccept={(alt) => update(index, { alt })}
+              />
+            </div>
           </div>
         ))}
         {images.length < 9 ? (
@@ -222,15 +231,45 @@ const CALLOUTS = [
   ["note", "Note"],
 ];
 
-export function CalloutView({ node, updateAttributes }) {
+export function CalloutView({ node, updateAttributes, deleteNode, editor, getPos }) {
   return (
     <NodeViewWrapper className={styles.calloutWrap}>
-      <div className={styles.calloutPicker} contentEditable={false} role="group" aria-label="Callout style">
-        {CALLOUTS.map(([value, label]) => (
-          <button key={value} type="button" aria-pressed={node.attrs.variant === value} onClick={() => updateAttributes({ variant: value })}>
-            {label}
+      <div className={styles.calloutHeader} contentEditable={false}>
+        <div className={styles.calloutPicker} role="group" aria-label="Callout style">
+          {CALLOUTS.map(([value, label]) => (
+            <button key={value} type="button" aria-pressed={node.attrs.variant === value} onClick={() => updateAttributes({ variant: value })}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className={styles.calloutActions}>
+          <AiAssist
+            target="calloutText"
+            label="callout note"
+            align="end"
+            extra={() => ({
+              variant: node.attrs.variant || "info",
+              nearbyText: surroundingText(editor, getPos, node),
+            })}
+            onAccept={(text) => {
+              if (typeof getPos === "function" && editor) {
+                const pos = getPos();
+                const from = pos + 1;
+                const to = pos + node.nodeSize - 1;
+                editor.chain().focus().deleteRange({ from, to }).insertContentAt(from, { type: "paragraph", content: [{ type: "text", text }] }).run();
+              }
+            }}
+          />
+          <button
+            type="button"
+            className={styles.calloutRemoveBtn}
+            onClick={deleteNode}
+            aria-label="Remove callout block"
+            title="Remove callout"
+          >
+            <LuTrash2 aria-hidden="true" />
           </button>
-        ))}
+        </div>
       </div>
       <NodeViewContent className={styles.calloutContent} />
     </NodeViewWrapper>
@@ -268,22 +307,51 @@ export function YouTubeView({ node, deleteNode, selected }) {
 
 /* Code -------------------------------------------------------------------------------- */
 
-export function CodeBlockView({ node, updateAttributes }) {
+export function CodeBlockView({ node, updateAttributes, deleteNode, editor, getPos }) {
   return (
     <NodeViewWrapper className={styles.codeWrap}>
-      <select
-        className={styles.langSelect}
-        contentEditable={false}
-        value={node.attrs.language || "plaintext"}
-        onChange={(e) => updateAttributes({ language: e.target.value })}
-        aria-label="Code language"
-      >
-        {CODE_LANGUAGES.map((lang) => (
-          <option key={lang.id} value={lang.id}>
-            {lang.label}
-          </option>
-        ))}
-      </select>
+      <div className={styles.codeToolbar} contentEditable={false}>
+        <select
+          className={styles.langSelect}
+          value={node.attrs.language || "plaintext"}
+          onChange={(e) => updateAttributes({ language: e.target.value })}
+          aria-label="Code language"
+        >
+          {CODE_LANGUAGES.map((lang) => (
+            <option key={lang.id} value={lang.id}>
+              {lang.label}
+            </option>
+          ))}
+        </select>
+        <div className={styles.codeActions}>
+          <AiAssist
+            target="codeSnippet"
+            label="code snippet"
+            align="end"
+            extra={() => ({
+              language: node.attrs.language || "plaintext",
+              nearbyText: surroundingText(editor, getPos, node),
+            })}
+            onAccept={(snippet) => {
+              if (typeof getPos === "function" && editor) {
+                const pos = getPos();
+                const from = pos + 1;
+                const to = pos + node.nodeSize - 1;
+                editor.chain().focus().deleteRange({ from, to }).insertContentAt(from, snippet).run();
+              }
+            }}
+          />
+          <button
+            type="button"
+            className={styles.codeRemoveBtn}
+            onClick={deleteNode}
+            aria-label="Remove code block"
+            title="Remove code block"
+          >
+            <LuTrash2 aria-hidden="true" />
+          </button>
+        </div>
+      </div>
       <NodeViewContent as="code" />
     </NodeViewWrapper>
   );

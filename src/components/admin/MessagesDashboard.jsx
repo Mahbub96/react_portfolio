@@ -427,6 +427,15 @@ export default function MessagesDashboard() {
                 <span>Delete Inquiry</span>
               </button>
 
+              <button
+                type="button"
+                className={styles.actionButton}
+                onClick={() => setSelectedMessage(null)}
+              >
+                <LuX aria-hidden="true" />
+                <span>Cancel</span>
+              </button>
+
               <a
                 href={`mailto:${selectedMessage.email}?subject=Re:%20${encodeURIComponent(
                   selectedMessage.subject

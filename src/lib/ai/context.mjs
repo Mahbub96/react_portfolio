@@ -46,6 +46,8 @@ export function buildPayload(input) {
   };
   if (input.selection) payload.selection = cap(input.selection, SELECTION_CHAR_LIMIT);
   if (input.nearbyText) payload.nearbyText = cap(input.nearbyText, NEARBY_CHAR_LIMIT);
+  if (input.language) payload.language = clean(input.language, 50);
+  if (input.variant) payload.variant = clean(input.variant, 50);
   if (input.image) {
     payload.image = { caption: clean(input.image.caption, 500), nearbyText: cap(input.image.nearbyText, NEARBY_CHAR_LIMIT) };
   }

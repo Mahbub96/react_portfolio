@@ -8,7 +8,7 @@
 
 import { writeFileSync, mkdirSync, readFileSync } from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 
 const rootDir = process.cwd();
 const pkg = JSON.parse(readFileSync(path.join(rootDir, "package.json"), "utf8"));
@@ -46,7 +46,8 @@ const spec = {
   ],
   tags: [
     { name: "Authentication", description: "Admin session authentication, rate-limited login, session validation, and logout audit" },
-    { name: "Portfolio", description: "Portfolio dynamic content management (Skills, Projects, Education, Experience, Contact)" },
+    { name: "Portfolio", description: "Public portfolio data endpoints and default data seeding" },
+    { name: "Portfolio - Admin", description: "Admin Portfolio CMS: manage Projects, Skills, Experiences, Educations, CoreStrengths, Certifications, Achievements, reordering, visibility, and Singletons" },
     { name: "Blog - Admin", description: "Full-featured blog CMS: creation, editing with optimistic locking, publication, SEO audit, tags, media, and AI drafting" },
     { name: "Blog - Public", description: "Public blog reader endpoints: view counters and tracking" },
     { name: "Contact & Inquiries", description: "Inquiry submission, rate limiting, SMTP dispatch, and admin message management" },
@@ -741,6 +742,507 @@ const spec = {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
               },
             },
+          },
+        },
+      },
+    },
+
+    // -------------------------------------------------------------------------
+    // PORTFOLIO - ADMIN CMS
+    // -------------------------------------------------------------------------
+    "/api/admin/portfolio": {
+      get: {
+        operationId: "getAdminPortfolioAll",
+        summary: "Get all portfolio collections with hidden items",
+        description: "Admin-only. Returns all portfolio collections (including drafts and hidden items) along with singleton flags.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        responses: {
+          200: {
+            description: "Dictionary of all portfolio collections",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    collections: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+    },
+
+    "/api/admin/portfolio/{collectionName}": {
+      get: {
+        operationId: "getAdminPortfolioCollection",
+        summary: "Get all items in a portfolio collection",
+        description: "Admin-only. Retrieves all items in the specified collection including hidden/unpublished items.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: ["Projects", "Skills", "CoreStrengths", "Experiences", "Educations", "Certifications", "Achievements"],
+            },
+            description: "Target collection name",
+            example: "Projects",
+          },
+        ],
+        responses: {
+          200: {
+            description: "List of items in collection",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    collectionName: { type: "string" },
+                    items: { type: "array", items: { type: "object" } },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+      post: {
+        operationId: "createAdminPortfolioItem",
+        summary: "Create a new item in a portfolio collection",
+        description: "Admin-only. Validates input schema with Zod, assigns unique ID, appends item, and automatically triggers on-demand revalidation for relevant portfolio pages.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: ["Projects", "Skills", "CoreStrengths", "Experiences", "Educations", "Certifications", "Achievements"],
+            },
+            example: "Projects",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { type: "object", description: "Portfolio item fields matching the collection schema" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Item successfully created",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    item: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Validation error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+    },
+
+    "/api/admin/portfolio/{collectionName}/reorder": {
+      put: {
+        operationId: "reorderAdminPortfolioItems",
+        summary: "Reorder items in a portfolio collection",
+        description: "Admin-only. Reorders items in the collection to match the order of IDs in `orderedIds` array.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: ["Projects", "Skills", "CoreStrengths", "Experiences", "Educations", "Certifications", "Achievements"],
+            },
+            example: "Projects",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["orderedIds"],
+                properties: {
+                  orderedIds: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Ordered list of item IDs",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Reordering successful",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    items: { type: "array", items: { type: "object" } },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+    },
+
+    "/api/admin/portfolio/{collectionName}/{documentId}": {
+      get: {
+        operationId: "getAdminPortfolioItemById",
+        summary: "Get single item by ID from collection",
+        description: "Admin-only. Retrieves a single item by its ID.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "Projects",
+          },
+          {
+            name: "documentId",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "project_1",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Item retrieved",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    item: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          404: {
+            description: "Item not found",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+      put: {
+        operationId: "updateAdminPortfolioItemById",
+        summary: "Update an item by ID in collection",
+        description: "Admin-only. Validates and updates the fields of an existing item matching documentId.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "Projects",
+          },
+          {
+            name: "documentId",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "project_1",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { type: "object", description: "Updated fields matching the collection schema" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Item successfully updated",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    item: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Validation error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          404: {
+            description: "Item not found",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+      delete: {
+        operationId: "deleteAdminPortfolioItemById",
+        summary: "Delete an item by ID from collection",
+        description: "Admin-only. Deletes the item identified by documentId from the specified collection.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "Projects",
+          },
+          {
+            name: "documentId",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "project_1",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Item deleted successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    deletedId: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          404: {
+            description: "Item not found",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+    },
+
+    "/api/admin/portfolio/{collectionName}/{documentId}/visibility": {
+      patch: {
+        operationId: "toggleAdminPortfolioItemVisibility",
+        summary: "Toggle published/hidden visibility of an item",
+        description: "Admin-only. Sets the published boolean flag of the item and invalidates page caches.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "collectionName",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "Projects",
+          },
+          {
+            name: "documentId",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "project_1",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  published: { type: "boolean", default: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Visibility updated",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    item: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          404: {
+            description: "Item not found",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+    },
+
+    "/api/admin/portfolio/singleton/{section}": {
+      get: {
+        operationId: "getAdminPortfolioSingleton",
+        summary: "Get singleton section data",
+        description: "Admin-only. Fetches the current singleton data object for profile, Banner, or Contact.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "section",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: ["profile", "Banner", "Contact"],
+            },
+            example: "profile",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Singleton section data",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    section: { type: "string" },
+                    data: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+        },
+      },
+      put: {
+        operationId: "updateAdminPortfolioSingleton",
+        summary: "Update singleton section data",
+        description: "Admin-only. Validates with Zod and updates the singleton document for profile, Banner, or Contact.",
+        tags: ["Portfolio - Admin"],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            name: "section",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+              enum: ["profile", "Banner", "Contact"],
+            },
+            example: "profile",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { type: "object", description: "Updated singleton fields" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Singleton updated successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    data: { type: "object" },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Validation error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
+          },
+          401: {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } },
           },
         },
       },
@@ -3401,6 +3903,171 @@ const spec = {
           projects: { type: "array", items: { type: "object" } },
           education: { type: "array", items: { type: "object" } },
           lastUpdate: { type: "string", format: "date-time", nullable: true },
+        },
+      },
+      PortfolioProjectItem: {
+        type: "object",
+        required: ["name", "desc"],
+        properties: {
+          id: { type: "string", example: "proj_1" },
+          name: { type: "string", example: "Next.js AI Portfolio" },
+          desc: { type: "string", example: "Full-stack personal portfolio and blog with CMS and AI writing assistant." },
+          src: { type: "string", example: "/assets/img/projects.png" },
+          lang: { type: "array", items: { type: "string" }, example: ["Next.js", "React", "MongoDB"] },
+          githubUrl: { type: "string", example: "https://github.com/mahbub96/react_portfolio" },
+          liveUrl: { type: "string", example: "https://mahbub.dev" },
+          downloadUrl: { type: "string" },
+          slug: { type: "string", example: "nextjs-ai-portfolio" },
+          featured: { type: "boolean", default: false },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioSkillItem: {
+        type: "object",
+        required: ["name", "category"],
+        properties: {
+          id: { type: "string", example: "skill_1" },
+          name: { type: "string", example: "React" },
+          category: {
+            type: "string",
+            enum: ["Languages", "Frameworks & Libraries", "Data & Infrastructure", "AI & Engineering"],
+            example: "Frameworks & Libraries",
+          },
+          icon: { type: "string", example: "SiReact" },
+          color: { type: "string", example: "#61dafb" },
+          src: { type: "string" },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioCoreStrengthItem: {
+        type: "object",
+        required: ["title", "description", "tech", "icon"],
+        properties: {
+          id: { type: "string", example: "strength_1" },
+          title: { type: "string", example: "Full-Stack Web Architecture" },
+          description: { type: "string", example: "Designing robust, scalable web applications with Next.js and Node.js." },
+          tech: { type: "string", example: "React, Next.js, Node.js, TypeScript" },
+          icon: { type: "string", example: "code" },
+          accentColor: { type: "string", example: "#38bdf8" },
+          glowBg: { type: "string", example: "rgba(56, 189, 248, 0.12)" },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioExperienceItem: {
+        type: "object",
+        required: ["name", "company", "time", "how"],
+        properties: {
+          id: { type: "string", example: "exp_1" },
+          name: { type: "string", example: "Software Engineer" },
+          company: { type: "string", example: "Tech Innovators Ltd." },
+          companyUrl: { type: "string", example: "https://example.com" },
+          time: { type: "string", example: "2023 - Present" },
+          startDate: { type: "string", example: "2023-01" },
+          endDate: { type: "string" },
+          current: { type: "boolean", default: true },
+          how: { type: "string", example: "Architected real-time microservices and optimized API throughput." },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioEducationItem: {
+        type: "object",
+        required: ["name", "degName", "time"],
+        properties: {
+          id: { type: "string", example: "edu_1" },
+          name: { type: "string", example: "University of Dhaka" },
+          degName: { type: "string", example: "B.Sc. in Computer Science and Engineering" },
+          Department: { type: "string", example: "Computer Science & Engineering" },
+          time: { type: "string", example: "2016 - 2020" },
+          cgpa: { type: "string", example: "3.85" },
+          Thesis: { type: "string", example: "Machine Learning Approaches in Natural Language Processing" },
+          group: { type: "string" },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioCertificationItem: {
+        type: "object",
+        required: ["title", "issuer"],
+        properties: {
+          id: { type: "string", example: "cert_1" },
+          title: { type: "string", example: "AWS Certified Solutions Architect" },
+          issuer: { type: "string", example: "Amazon Web Services" },
+          url: { type: "string", example: "https://aws.amazon.com/verification" },
+          issueDate: { type: "string", example: "2024" },
+          description: { type: "string" },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioAchievementItem: {
+        type: "object",
+        required: ["title", "description"],
+        properties: {
+          id: { type: "string", example: "achieve_1" },
+          title: { type: "string", example: "National Hackathon Champion" },
+          organization: { type: "string", example: "ICT Division Bangladesh" },
+          description: { type: "string", example: "Won 1st place developing an intelligent disaster response system." },
+          date: { type: "string", example: "2022" },
+          published: { type: "boolean", default: true },
+          order: { type: "integer", default: 0 },
+        },
+      },
+      PortfolioProfileSingleton: {
+        type: "object",
+        required: ["name", "title", "bio", "email", "location"],
+        properties: {
+          name: { type: "string", example: "Mahbub Alam" },
+          title: { type: "string", example: "Full Stack Software Engineer" },
+          bio: { type: "string", example: "Specializing in high-performance web systems and AI engineering." },
+          image: { type: "string", example: "/assets/img/profile.png" },
+          email: { type: "string", format: "email", example: "mahbubcse96@gmail.com" },
+          phone: { type: "string" },
+          location: { type: "string", example: "Dhaka, Bangladesh" },
+          github: { type: "string", example: "https://github.com/mahbub96" },
+          linkedin: { type: "string", example: "https://linkedin.com/in/md-mahbub-alam-6b751821b" },
+          twitter: { type: "string" },
+          company: { type: "string" },
+          website: { type: "string", example: "https://mahbub.dev" },
+        },
+      },
+      PortfolioBannerSingleton: {
+        type: "object",
+        required: ["name", "jobTitle", "headline", "location", "bio"],
+        properties: {
+          name: { type: "string", example: "Mahbub Alam" },
+          jobTitle: { type: "string", example: "Full Stack Software Engineer" },
+          headline: { type: "string", example: "Crafting scalable architectures and intelligent web solutions." },
+          location: { type: "string", example: "Dhaka, Bangladesh" },
+          bio: { type: "string", example: "Passionate about modern software engineering and developer tooling." },
+          socialLinks: {
+            type: "object",
+            properties: {
+              email: { type: "string", example: "mahbubcse96@gmail.com" },
+              github: { type: "string", example: "https://github.com/mahbub96" },
+              facebook: { type: "string" },
+              linkedin: { type: "string", example: "https://linkedin.com/in/md-mahbub-alam-6b751821b" },
+            },
+          },
+        },
+      },
+      PortfolioContactSingleton: {
+        type: "object",
+        required: ["contactInfo"],
+        properties: {
+          contactInfo: {
+            type: "object",
+            required: ["email"],
+            properties: {
+              email: { type: "string", format: "email", example: "mahbubcse96@gmail.com" },
+              location: { type: "string", example: "Dhaka, Bangladesh" },
+              website: { type: "string", example: "https://mahbub.dev" },
+              phone: { type: "string" },
+            },
+          },
         },
       },
     },

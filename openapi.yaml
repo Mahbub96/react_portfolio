@@ -21,11 +21,13 @@ tags:
   - name: Authentication
     description: Admin session authentication, rate-limited login, session validation, and logout audit
   - name: Portfolio
-    description: Portfolio dynamic content management (Skills, Projects, Education, Experience, Contact)
+    description: Public portfolio data endpoints and default data seeding
+  - name: Portfolio - Admin
+    description: 'Admin Portfolio CMS: manage Projects, Skills, Experiences, Educations, CoreStrengths, Certifications, Achievements, reordering, visibility, and Singletons'
   - name: Blog - Admin
-    description: "Full-featured blog CMS: creation, editing with optimistic locking, publication, SEO audit, tags, media, and AI drafting"
+    description: 'Full-featured blog CMS: creation, editing with optimistic locking, publication, SEO audit, tags, media, and AI drafting'
   - name: Blog - Public
-    description: "Public blog reader endpoints: view counters and tracking"
+    description: 'Public blog reader endpoints: view counters and tracking'
   - name: Contact & Inquiries
     description: Inquiry submission, rate limiting, SMTP dispatch, and admin message management
   - name: Analytics & Telemetry
@@ -67,13 +69,13 @@ paths:
                   type: string
                   format: date-time
                   description: Client timestamp of the attempt
-                  example: "2026-10-15T06:00:00.000Z"
+                  example: '2026-10-15T06:00:00.000Z'
                 userAgent:
                   type: string
                   description: Client User-Agent string
                   example: Mozilla/5.0 (X11; Linux x86_64)
       responses:
-        "200":
+        '200':
           description: Login successful; sets HTTP-only session cookie
           headers:
             Set-Cookie:
@@ -97,13 +99,13 @@ paths:
                   expiresAt:
                     type: string
                     format: date-time
-        "400":
+        '400':
           description: Missing username or password
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
-        "401":
+                $ref: '#/components/schemas/AuthErrorResponse'
+        '401':
           description: Invalid credentials
           content:
             application/json:
@@ -119,7 +121,7 @@ paths:
                   remainingAttempts:
                     type: integer
                     example: 3
-        "429":
+        '429':
           description: Account temporarily locked due to too many failed attempts
           content:
             application/json:
@@ -139,18 +141,18 @@ paths:
                     type: integer
                     description: Lockout duration in milliseconds
                     example: 900000
-        "500":
+        '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
-        "503":
+                $ref: '#/components/schemas/AuthErrorResponse'
+        '503':
           description: Admin configuration or database unavailable
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
+                $ref: '#/components/schemas/AuthErrorResponse'
     get:
       operationId: cleanupExpiredAuth
       summary: Clean up expired sessions and login records
@@ -160,7 +162,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: Cleanup completed successfully
           content:
             application/json:
@@ -170,18 +172,18 @@ paths:
                   message:
                     type: string
                     example: Cleanup completed
-        "401":
+        '401':
           description: Unauthorized - admin session cookie required
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Cleanup failed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/auth/session:
     get:
       operationId: checkAdminSession
@@ -190,7 +192,7 @@ paths:
       tags:
         - Authentication
       responses:
-        "200":
+        '200':
           description: Session status check
           content:
             application/json:
@@ -206,7 +208,7 @@ paths:
                   expiresAt:
                     type: string
                     format: date-time
-                    example: "2026-10-16T06:00:00.000Z"
+                    example: '2026-10-16T06:00:00.000Z'
   /api/auth/logout:
     post:
       operationId: adminLogout
@@ -215,7 +217,7 @@ paths:
       tags:
         - Authentication
       responses:
-        "200":
+        '200':
           description: Logout successful and cookie cleared
           content:
             application/json:
@@ -253,7 +255,7 @@ paths:
             default: admin_forced
             example: security_precaution
       responses:
-        "200":
+        '200':
           description: All user sessions terminated
           content:
             application/json:
@@ -269,24 +271,24 @@ paths:
                   sessionsTerminated:
                     type: integer
                     example: 2
-        "400":
+        '400':
           description: Missing username parameter
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
-        "401":
+                $ref: '#/components/schemas/AuthErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
-        "500":
+                $ref: '#/components/schemas/AuthErrorResponse'
+        '500':
           description: Server error terminating sessions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
+                $ref: '#/components/schemas/AuthErrorResponse'
   /api/auth/login-history:
     get:
       operationId: getLoginHistory
@@ -297,7 +299,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: Login audit logs and aggregate statistics
           content:
             application/json:
@@ -313,7 +315,7 @@ paths:
                       loginAttempts:
                         type: array
                         items:
-                          $ref: "#/components/schemas/LoginAttempt"
+                          $ref: '#/components/schemas/LoginAttempt'
                       statistics:
                         type: object
                         properties:
@@ -328,23 +330,23 @@ paths:
                             example: 3
                           successRate:
                             type: string
-                            example: "93.3"
+                            example: '93.3'
                       recentSuccessfulLogins:
                         type: array
                         items:
-                          $ref: "#/components/schemas/LoginAttempt"
-        "401":
+                          $ref: '#/components/schemas/LoginAttempt'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthErrorResponse"
+                $ref: '#/components/schemas/AuthErrorResponse'
   /api/portfolio:
     get:
       operationId: getPortfolioData
@@ -353,7 +355,7 @@ paths:
       tags:
         - Portfolio
       responses:
-        "200":
+        '200':
           description: Portfolio dataset dictionary
           content:
             application/json:
@@ -378,18 +380,18 @@ paths:
                       - name: React
                         level: 90
                         icon: react
-                    lastUpdate: "2026-10-10T12:00:00Z"
+                    lastUpdate: '2026-10-10T12:00:00Z'
                   Projects:
                     data:
                       - title: Whisper Bangla
                         description: ASR system
-                    lastUpdate: "2026-10-12T10:00:00Z"
-        "500":
+                    lastUpdate: '2026-10-12T10:00:00Z'
+        '500':
           description: Failed to fetch portfolio data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: addPortfolioItem
       summary: Add item to a portfolio collection
@@ -430,7 +432,7 @@ paths:
                       - Docker
                     github: https://github.com/mahbub96/distributed-engine
       responses:
-        "200":
+        '200':
           description: Item successfully added
           content:
             application/json:
@@ -440,30 +442,30 @@ paths:
                   id:
                     type: string
                     example: Projects_1729000000000_abc123xyz
-        "400":
+        '400':
           description: Invalid collection name, duplicate item, or missing payload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "403":
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
           description: Insufficient permissions or unauthorized host domain
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to add portfolio item
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/portfolio/{collectionName}/{documentId}:
     put:
       operationId: updatePortfolioItem
@@ -504,7 +506,7 @@ paths:
                   - Docker
                   - RabbitMQ
       responses:
-        "200":
+        '200':
           description: Item updated successfully
           content:
             application/json:
@@ -516,24 +518,24 @@ paths:
                     example: true
                   data:
                     type: object
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Document or collection item not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to update item
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deletePortfolioItem
       summary: Delete an item from a portfolio collection
@@ -556,7 +558,7 @@ paths:
             type: string
           example: Projects_1729000000000_abc123xyz
       responses:
-        "200":
+        '200':
           description: Item deleted successfully
           content:
             application/json:
@@ -566,24 +568,24 @@ paths:
                   success:
                     type: boolean
                     example: true
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Collection not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to delete item
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/portfolio/default-data:
     get:
       operationId: getDefaultDataStatus
@@ -592,7 +594,7 @@ paths:
       tags:
         - Portfolio
       responses:
-        "200":
+        '200':
           description: Endpoint ready
           content:
             application/json:
@@ -605,12 +607,12 @@ paths:
                   message:
                     type: string
                     example: Default data endpoint ready
-        "500":
+        '500':
           description: Database connection failed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: seedDefaultData
       summary: Seed default portfolio collections into database
@@ -618,7 +620,7 @@ paths:
       tags:
         - Portfolio
       responses:
-        "200":
+        '200':
           description: Default data successfully loaded
           content:
             application/json:
@@ -633,18 +635,509 @@ paths:
                     example: Default data population completed
                   results:
                     type: object
-        "403":
+        '403':
           description: Domain not authorized to trigger seed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to populate default data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio:
+    get:
+      operationId: getAdminPortfolioAll
+      summary: Get all portfolio collections with hidden items
+      description: Admin-only. Returns all portfolio collections (including drafts and hidden items) along with singleton flags.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Dictionary of all portfolio collections
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  collections:
+                    type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio/{collectionName}:
+    get:
+      operationId: getAdminPortfolioCollection
+      summary: Get all items in a portfolio collection
+      description: Admin-only. Retrieves all items in the specified collection including hidden/unpublished items.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - Projects
+              - Skills
+              - CoreStrengths
+              - Experiences
+              - Educations
+              - Certifications
+              - Achievements
+          description: Target collection name
+          example: Projects
+      responses:
+        '200':
+          description: List of items in collection
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  collectionName:
+                    type: string
+                  items:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      operationId: createAdminPortfolioItem
+      summary: Create a new item in a portfolio collection
+      description: Admin-only. Validates input schema with Zod, assigns unique ID, appends item, and automatically triggers on-demand revalidation for relevant portfolio pages.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - Projects
+              - Skills
+              - CoreStrengths
+              - Experiences
+              - Educations
+              - Certifications
+              - Achievements
+          example: Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Portfolio item fields matching the collection schema
+      responses:
+        '200':
+          description: Item successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  item:
+                    type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio/{collectionName}/reorder:
+    put:
+      operationId: reorderAdminPortfolioItems
+      summary: Reorder items in a portfolio collection
+      description: Admin-only. Reorders items in the collection to match the order of IDs in `orderedIds` array.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - Projects
+              - Skills
+              - CoreStrengths
+              - Experiences
+              - Educations
+              - Certifications
+              - Achievements
+          example: Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orderedIds
+              properties:
+                orderedIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Ordered list of item IDs
+      responses:
+        '200':
+          description: Reordering successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  items:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio/{collectionName}/{documentId}:
+    get:
+      operationId: getAdminPortfolioItemById
+      summary: Get single item by ID from collection
+      description: Admin-only. Retrieves a single item by its ID.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Projects
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: project_1
+      responses:
+        '200':
+          description: Item retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  item:
+                    type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateAdminPortfolioItemById
+      summary: Update an item by ID in collection
+      description: Admin-only. Validates and updates the fields of an existing item matching documentId.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Projects
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: project_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Updated fields matching the collection schema
+      responses:
+        '200':
+          description: Item successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  item:
+                    type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteAdminPortfolioItemById
+      summary: Delete an item by ID from collection
+      description: Admin-only. Deletes the item identified by documentId from the specified collection.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Projects
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: project_1
+      responses:
+        '200':
+          description: Item deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  deletedId:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio/{collectionName}/{documentId}/visibility:
+    patch:
+      operationId: toggleAdminPortfolioItemVisibility
+      summary: Toggle published/hidden visibility of an item
+      description: Admin-only. Sets the published boolean flag of the item and invalidates page caches.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: collectionName
+          in: path
+          required: true
+          schema:
+            type: string
+          example: Projects
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: project_1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                published:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Visibility updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  item:
+                    type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/admin/portfolio/singleton/{section}:
+    get:
+      operationId: getAdminPortfolioSingleton
+      summary: Get singleton section data
+      description: Admin-only. Fetches the current singleton data object for profile, Banner, or Contact.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: section
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - profile
+              - Banner
+              - Contact
+          example: profile
+      responses:
+        '200':
+          description: Singleton section data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  section:
+                    type: string
+                  data:
+                    type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateAdminPortfolioSingleton
+      summary: Update singleton section data
+      description: Admin-only. Validates with Zod and updates the singleton document for profile, Banner, or Contact.
+      tags:
+        - Portfolio - Admin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: section
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - profile
+              - Banner
+              - Contact
+          example: profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Updated singleton fields
+      responses:
+        '200':
+          description: Singleton updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/contact:
     post:
       operationId: sendContactMessage
@@ -688,7 +1181,7 @@ paths:
                   description: Message content
                   example: Hi Mahbub, I came across your portfolio and would love to discuss a consulting opportunity for our backend migration.
       responses:
-        "200":
+        '200':
           description: Message successfully received and/or emailed
           content:
             application/json:
@@ -707,7 +1200,7 @@ paths:
                       - sent
                       - saved_locally
                     example: sent
-        "400":
+        '400':
           description: Validation failure (invalid characters, length violations, disposable email)
           content:
             application/json:
@@ -719,7 +1212,7 @@ paths:
                     example: All fields are required
                   details:
                     type: object
-        "429":
+        '429':
           description: Rate limit exceeded
           content:
             application/json:
@@ -732,12 +1225,12 @@ paths:
                   retryAfter:
                     type: string
                     example: 15 minutes
-        "500":
+        '500':
           description: Unexpected error during message processing
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     options:
       operationId: contactCorsPreflight
       summary: CORS preflight for contact endpoint
@@ -745,7 +1238,7 @@ paths:
       tags:
         - Contact & Inquiries
       responses:
-        "200":
+        '200':
           description: CORS preflight successful
   /api/admin/messages:
     get:
@@ -777,7 +1270,7 @@ paths:
             type: string
           description: Search keyword matching name, email, subject, or message
       responses:
-        "200":
+        '200':
           description: List of contact messages and stats
           content:
             application/json:
@@ -787,7 +1280,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: "#/components/schemas/ContactMessage"
+                      $ref: '#/components/schemas/ContactMessage'
                   stats:
                     type: object
                     properties:
@@ -803,18 +1296,18 @@ paths:
                       failed:
                         type: integer
                         example: 0
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to retrieve messages
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/messages/{id}:
     get:
       operationId: getContactMessageById
@@ -833,7 +1326,7 @@ paths:
           description: MongoDB ObjectId of the contact message
           example: 670c1d2e3f4a5b6c7d8e9f01
       responses:
-        "200":
+        '200':
           description: Contact message details
           content:
             application/json:
@@ -841,25 +1334,25 @@ paths:
                 type: object
                 properties:
                   message:
-                    $ref: "#/components/schemas/ContactMessage"
-        "401":
+                    $ref: '#/components/schemas/ContactMessage'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Message not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     patch:
       operationId: updateContactMessageStatus
       summary: Update inquiry workflow status
@@ -893,7 +1386,7 @@ paths:
                     - failed
                   example: sent
       responses:
-        "200":
+        '200':
           description: Status successfully updated
           content:
             application/json:
@@ -910,30 +1403,30 @@ paths:
                         type: string
                       status:
                         type: string
-        "400":
+        '400':
           description: Invalid status value
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Message not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteContactMessage
       summary: Delete contact inquiry
@@ -950,7 +1443,7 @@ paths:
             type: string
           example: 670c1d2e3f4a5b6c7d8e9f01
       responses:
-        "200":
+        '200':
           description: Inquiry deleted successfully
           content:
             application/json:
@@ -963,24 +1456,24 @@ paths:
                   message:
                     type: string
                     example: Inquiry deleted successfully
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Message not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/posts:
     get:
       operationId: listBlogPosts
@@ -1010,7 +1503,7 @@ paths:
             type: string
           description: Search filter for title or slug
       responses:
-        "200":
+        '200':
           description: Array of blog posts summary
           content:
             application/json:
@@ -1020,13 +1513,13 @@ paths:
                   posts:
                     type: array
                     items:
-                      $ref: "#/components/schemas/BlogPostSummary"
-        "401":
+                      $ref: '#/components/schemas/BlogPostSummary'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: createBlogPost
       summary: Create a new draft blog post
@@ -1047,7 +1540,7 @@ paths:
                   description: Initial title for the post
                   example: Building MCP Servers for High-Scale Production
       responses:
-        "200":
+        '200':
           description: Draft created successfully
           content:
             application/json:
@@ -1055,13 +1548,13 @@ paths:
                 type: object
                 properties:
                   post:
-                    $ref: "#/components/schemas/BlogPost"
-        "401":
+                    $ref: '#/components/schemas/BlogPost'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/posts/{id}:
     get:
       operationId: getBlogPostById
@@ -1080,7 +1573,7 @@ paths:
           description: BlogPost MongoDB ObjectId
           example: 670c1d2e3f4a5b6c7d8e9f02
       responses:
-        "200":
+        '200':
           description: Full blog post document
           content:
             application/json:
@@ -1088,19 +1581,19 @@ paths:
                 type: object
                 properties:
                   post:
-                    $ref: "#/components/schemas/BlogPost"
-        "401":
+                    $ref: '#/components/schemas/BlogPost'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     patch:
       operationId: updateBlogPost
       summary: Autosave / update blog post
@@ -1121,9 +1614,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BlogPostPatch"
+              $ref: '#/components/schemas/BlogPostPatch'
       responses:
-        "200":
+        '200':
           description: Post updated successfully
           content:
             application/json:
@@ -1131,25 +1624,25 @@ paths:
                 type: object
                 properties:
                   post:
-                    $ref: "#/components/schemas/BlogPost"
-        "400":
+                    $ref: '#/components/schemas/BlogPost'
+        '400':
           description: Schema validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
           description: Version mismatch conflict (post was modified elsewhere)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteBlogPost
       summary: Delete a blog post
@@ -1166,7 +1659,7 @@ paths:
             type: string
           example: 670c1d2e3f4a5b6c7d8e9f02
       responses:
-        "200":
+        '200':
           description: Post deleted
           content:
             application/json:
@@ -1176,18 +1669,18 @@ paths:
                   success:
                     type: boolean
                     example: true
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/posts/{id}/publish:
     post:
       operationId: publishBlogPost
@@ -1215,9 +1708,9 @@ paths:
                   type: string
                   format: date-time
                   description: ISO 8601 datetime with timezone offset for scheduled release
-                  example: "2026-10-20T09:00:00+06:00"
+                  example: '2026-10-20T09:00:00+06:00'
       responses:
-        "200":
+        '200':
           description: Post successfully published or scheduled
           content:
             application/json:
@@ -1225,25 +1718,25 @@ paths:
                 type: object
                 properties:
                   post:
-                    $ref: "#/components/schemas/BlogPost"
-        "400":
+                    $ref: '#/components/schemas/BlogPost'
+        '400':
           description: Checklist failed or validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/posts/{id}/unpublish:
     post:
       operationId: unpublishBlogPost
@@ -1261,7 +1754,7 @@ paths:
             type: string
           example: 670c1d2e3f4a5b6c7d8e9f02
       responses:
-        "200":
+        '200':
           description: Post reverted to draft
           content:
             application/json:
@@ -1269,19 +1762,19 @@ paths:
                 type: object
                 properties:
                   post:
-                    $ref: "#/components/schemas/BlogPost"
-        "401":
+                    $ref: '#/components/schemas/BlogPost'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/posts/{id}/check:
     get:
       operationId: checkPostSeo
@@ -1299,7 +1792,7 @@ paths:
             type: string
           example: 670c1d2e3f4a5b6c7d8e9f02
       responses:
-        "200":
+        '200':
           description: Pre-publish checklist results
           content:
             application/json:
@@ -1323,18 +1816,18 @@ paths:
                         message:
                           type: string
                           example: Title length is optimal
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/slug-check:
     get:
       operationId: checkBlogSlug
@@ -1359,7 +1852,7 @@ paths:
             type: string
           description: Current post ID to exclude from uniqueness check
       responses:
-        "200":
+        '200':
           description: Slug check status
           content:
             application/json:
@@ -1372,12 +1865,12 @@ paths:
                   slug:
                     type: string
                     example: mcp-server-architecture
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/tags:
     get:
       operationId: listBlogTags
@@ -1388,7 +1881,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: List of tags
           content:
             application/json:
@@ -1406,12 +1899,12 @@ paths:
                       - Next.js
                       - Node.js
                       - Python
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/media:
     get:
       operationId: listBlogMedia
@@ -1422,7 +1915,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: Recent blog media items
           content:
             application/json:
@@ -1432,13 +1925,13 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: "#/components/schemas/BlogMediaItem"
-        "401":
+                      $ref: '#/components/schemas/BlogMediaItem'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: uploadBlogImage
       summary: Upload new blog image with responsive variants
@@ -1471,7 +1964,7 @@ paths:
                   description: Original filename
                   example: system-architecture-diagram.png
       responses:
-        "200":
+        '200':
           description: Image uploaded and stored
           content:
             application/json:
@@ -1479,19 +1972,19 @@ paths:
                 type: object
                 properties:
                   media:
-                    $ref: "#/components/schemas/ImageRef"
-        "401":
+                    $ref: '#/components/schemas/ImageRef'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "413":
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
           description: Payload larger than 8MB
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/media/{id}:
     post:
       operationId: uploadBlogImageVariant
@@ -1525,7 +2018,7 @@ paths:
                   format: binary
                   description: Social crop file binary
       responses:
-        "200":
+        '200':
           description: Variant added successfully
           content:
             application/json:
@@ -1533,31 +2026,31 @@ paths:
                 type: object
                 properties:
                   media:
-                    $ref: "#/components/schemas/ImageRef"
-        "401":
+                    $ref: '#/components/schemas/ImageRef'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Image not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "413":
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
           description: Variant larger than 4MB
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "422":
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
           description: No image file received in request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteBlogMedia
       summary: Delete an uploaded image
@@ -1574,7 +2067,7 @@ paths:
             type: string
           example: 670c1d2e3f4a5b6c7d8e9f03
       responses:
-        "200":
+        '200':
           description: Image deleted
           content:
             application/json:
@@ -1584,20 +2077,20 @@ paths:
                   deleted:
                     type: boolean
                     example: true
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Image not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
-          description: "Conflict: Image is currently referenced by posts"
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 'Conflict: Image is currently referenced by posts'
           content:
             application/json:
               schema:
@@ -1635,7 +2128,7 @@ paths:
                   description: YouTube watch or short URL
                   example: https://www.youtube.com/watch?v=dQw4w9WgXcQ
       responses:
-        "200":
+        '200':
           description: Embed data prepared
           content:
             application/json:
@@ -1652,18 +2145,18 @@ paths:
                     type: string
                     nullable: true
                     example: /uploads/blog/youtube-dQw4w9WgXcQ.jpg
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "422":
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
           description: Not a valid YouTube video URL
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/admin/blog/ai/generate:
     post:
       operationId: generateAiFieldOrBody
@@ -1678,9 +2171,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AiGenerateRequest"
+              $ref: '#/components/schemas/AiGenerateRequest'
       responses:
-        "200":
+        '200':
           description: AI generation response (JSON or application/x-ndjson stream)
           content:
             application/json:
@@ -1706,20 +2199,20 @@ paths:
             application/x-ndjson:
               schema:
                 type: string
-                description: "Stream of newline-delimited JSON events: {type:'chunk',text:'...'} followed by {type:'done',...}"
-        "401":
+                description: 'Stream of newline-delimited JSON events: {type:''chunk'',text:''...''} followed by {type:''done'',...}'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "413":
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
           description: Post content exceeds payload limit (2MB)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "429":
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
           description: AI rate limit or daily quota exceeded
           content:
             application/json:
@@ -1744,7 +2237,7 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: AI service status
           content:
             application/json:
@@ -1766,12 +2259,12 @@ paths:
                       minute:
                         type: integer
                         example: 10
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/blog/views:
     get:
       operationId: getBlogViews
@@ -1788,7 +2281,7 @@ paths:
           description: Optional blog post slug
           example: whisper-bangla-guarded-fine-tuning
       responses:
-        "200":
+        '200':
           description: View count data
           content:
             application/json:
@@ -1813,18 +2306,18 @@ paths:
                       type: integer
                     example:
                       whisper-bangla-guarded-fine-tuning: 342
-        "404":
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: incrementBlogViews
       summary: Increment view count for a blog post
@@ -1845,7 +2338,7 @@ paths:
                   description: Blog post slug
                   example: whisper-bangla-guarded-fine-tuning
       responses:
-        "200":
+        '200':
           description: View recorded or ignored if admin
           content:
             application/json:
@@ -1866,29 +2359,29 @@ paths:
                     enum:
                       - admin_session
                     example: admin_session
-        "400":
+        '400':
           description: Missing slug
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Post not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/analytics:
     get:
       operationId: getAnalyticsDashboard
       summary: Get comprehensive analytics dashboard data
-      description: "Admin-only. Aggregates metrics for the specified time range (default: 14 days), including total counts, mouse/keyboard event counts, top pages with dwell time and scroll depths, device breakdown, browser share, countries, component interaction hotspots, hourly traffic, and session statistics."
+      description: 'Admin-only. Aggregates metrics for the specified time range (default: 14 days), including total counts, mouse/keyboard event counts, top pages with dwell time and scroll depths, device breakdown, browser share, countries, component interaction hotspots, hourly traffic, and session statistics.'
       tags:
         - Analytics & Telemetry
       security:
@@ -1902,24 +2395,24 @@ paths:
             default: 14
           description: Lookback period in days
       responses:
-        "200":
+        '200':
           description: Analytics dashboard metrics
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnalyticsDashboardData"
-        "401":
+                $ref: '#/components/schemas/AnalyticsDashboardData'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error fetching analytics
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/analytics/track:
     post:
       operationId: trackAnalyticsRecord
@@ -1932,9 +2425,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AnalyticsRecordInput"
+              $ref: '#/components/schemas/AnalyticsRecordInput'
       responses:
-        "200":
+        '200':
           description: Analytics record saved
           content:
             application/json:
@@ -1944,12 +2437,12 @@ paths:
                   success:
                     type: boolean
                     example: true
-        "500":
+        '500':
           description: Failed to record analytics
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: getTrackEndpointInfo
       summary: Analytics tracking endpoint info
@@ -1957,7 +2450,7 @@ paths:
       tags:
         - Analytics & Telemetry
       responses:
-        "200":
+        '200':
           description: Endpoint description
           content:
             application/json:
@@ -1996,9 +2489,9 @@ paths:
                   type: array
                   maxItems: 100
                   items:
-                    $ref: "#/components/schemas/AnalyticsEvent"
+                    $ref: '#/components/schemas/AnalyticsEvent'
       responses:
-        "200":
+        '200':
           description: Batch events ingested
           content:
             application/json:
@@ -2014,12 +2507,12 @@ paths:
                   ignored:
                     type: string
                     example: authenticated_user
-        "500":
+        '500':
           description: Failed to process batch
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: getBatchEndpointInfo
       summary: Analytics batch ingestion format info
@@ -2027,7 +2520,7 @@ paths:
       tags:
         - Analytics & Telemetry
       responses:
-        "200":
+        '200':
           description: Batch endpoint description
           content:
             application/json:
@@ -2053,11 +2546,11 @@ paths:
           application/json:
             schema:
               oneOf:
-                - $ref: "#/components/schemas/AnalyticsEvent"
+                - $ref: '#/components/schemas/AnalyticsEvent'
                 - type: array
                   maxItems: 100
                   items:
-                    $ref: "#/components/schemas/AnalyticsEvent"
+                    $ref: '#/components/schemas/AnalyticsEvent'
                 - type: object
                   required:
                     - events
@@ -2066,9 +2559,9 @@ paths:
                       type: array
                       maxItems: 100
                       items:
-                        $ref: "#/components/schemas/AnalyticsEvent"
+                        $ref: '#/components/schemas/AnalyticsEvent'
       responses:
-        "200":
+        '200':
           description: Events saved
           content:
             application/json:
@@ -2084,12 +2577,12 @@ paths:
                   ignored:
                     type: string
                     example: authenticated_user
-        "500":
+        '500':
           description: Event processing failed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: getEventsEndpointInfo
       summary: Analytics events endpoint info
@@ -2097,7 +2590,7 @@ paths:
       tags:
         - Analytics & Telemetry
       responses:
-        "200":
+        '200':
           description: Events format info
           content:
             application/json:
@@ -2140,7 +2633,7 @@ paths:
             default: 14
           description: Days range
       responses:
-        "200":
+        '200':
           description: Heatmap coordinate dataset
           content:
             application/json:
@@ -2161,29 +2654,29 @@ paths:
                         x:
                           type: number
                           example: 450
-                        "y":
+                        'y':
                           type: number
                           example: 820
                         value:
                           type: number
                           example: 5
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to fetch heatmap data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/analytics/live:
     get:
       operationId: getLiveSessions
       summary: Get real-time active visitors
-      description: "Admin-only. Lists visitors active within the last N minutes (default: 5 minutes) with current page, duration, and geographic location."
+      description: 'Admin-only. Lists visitors active within the last N minutes (default: 5 minutes) with current page, duration, and geographic location.'
       tags:
         - Analytics & Telemetry
       security:
@@ -2197,7 +2690,7 @@ paths:
             default: 5
           description: Active window duration in minutes
       responses:
-        "200":
+        '200':
           description: Live visitors data
           content:
             application/json:
@@ -2214,18 +2707,18 @@ paths:
                     type: array
                     items:
                       type: object
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/analytics/sessions:
     get:
       operationId: listAnalyticsSessions
@@ -2249,7 +2742,7 @@ paths:
             type: integer
             default: 30
       responses:
-        "200":
+        '200':
           description: List of sessions
           content:
             application/json:
@@ -2263,18 +2756,18 @@ paths:
                     type: array
                     items:
                       type: object
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/analytics/sessions/{id}/replay:
     get:
       operationId: getSessionReplay
@@ -2293,7 +2786,7 @@ paths:
           description: Session identifier
           example: sess_1729000000_abc123
       responses:
-        "200":
+        '200':
           description: Session replay timeline dataset
           content:
             application/json:
@@ -2309,30 +2802,30 @@ paths:
                     type: array
                     items:
                       type: object
-        "400":
+        '400':
           description: Missing session ID
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
           description: Session replay data not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/visitors:
     post:
       operationId: trackVisitor
@@ -2345,9 +2838,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VisitorBeaconInput"
+              $ref: '#/components/schemas/VisitorBeaconInput'
       responses:
-        "200":
+        '200':
           description: Visitor logged
           content:
             application/json:
@@ -2357,12 +2850,12 @@ paths:
                   success:
                     type: boolean
                     example: true
-        "500":
+        '500':
           description: Failed to record visitor
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: getVisitorStats
       summary: Get aggregated visitor demographic statistics
@@ -2372,24 +2865,24 @@ paths:
       security:
         - cookieAuth: []
       responses:
-        "200":
+        '200':
           description: Aggregated visitor statistics
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VisitorStatsResponse"
-        "401":
+                $ref: '#/components/schemas/VisitorStatsResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to fetch stats
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/cv:
     get:
       operationId: getCvJson
@@ -2398,18 +2891,18 @@ paths:
       tags:
         - Resume & CV
       responses:
-        "200":
+        '200':
           description: Structured CV document
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CvDocument"
-        "500":
+                $ref: '#/components/schemas/CvDocument'
+        '500':
           description: Failed to build CV data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/resume:
     get:
       operationId: downloadResumePdf
@@ -2418,25 +2911,25 @@ paths:
       tags:
         - Resume & CV
       responses:
-        "200":
+        '200':
           description: Resume PDF file binary stream
           content:
             application/pdf:
               schema:
                 type: string
                 format: binary
-        "404":
+        '404':
           description: Static resume file not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to generate resume
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       operationId: downloadResumePdfPost
       summary: Download resume as PDF (POST alias)
@@ -2444,7 +2937,7 @@ paths:
       tags:
         - Resume & CV
       responses:
-        "200":
+        '200':
           description: Resume PDF file stream
           content:
             application/pdf:
@@ -2482,7 +2975,7 @@ paths:
                   default: profile
                   description: Item ID within collection
       responses:
-        "200":
+        '200':
           description: Image successfully uploaded and updated
           content:
             application/json:
@@ -2500,24 +2993,24 @@ paths:
                   message:
                     type: string
                     example: Image uploaded successfully with comprehensive SEO metadata
-        "400":
+        '400':
           description: No file provided, invalid type, or file larger than 2MB
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
           description: Failed to upload image
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     cookieAuth:
@@ -2638,7 +3131,7 @@ components:
         variants:
           type: array
           items:
-            $ref: "#/components/schemas/ImageVariant"
+            $ref: '#/components/schemas/ImageVariant'
         width:
           type: integer
           example: 1920
@@ -2681,7 +3174,7 @@ components:
         variants:
           type: array
           items:
-            $ref: "#/components/schemas/ImageVariant"
+            $ref: '#/components/schemas/ImageVariant'
     BlogPostSummary:
       type: object
       properties:
@@ -2755,7 +3248,7 @@ components:
           type: string
           nullable: true
         coverImage:
-          $ref: "#/components/schemas/ImageRef"
+          $ref: '#/components/schemas/ImageRef'
         tags:
           type: array
           items:
@@ -2823,7 +3316,7 @@ components:
           type: string
           nullable: true
         coverImage:
-          $ref: "#/components/schemas/ImageRef"
+          $ref: '#/components/schemas/ImageRef'
         tags:
           type: array
           maxItems: 10
@@ -2964,7 +3457,7 @@ components:
               x:
                 type: number
                 example: 420
-              "y":
+              'y':
                 type: number
                 example: 750
               target:
@@ -2977,7 +3470,7 @@ components:
             properties:
               x:
                 type: number
-              "y":
+              'y':
                 type: number
               t:
                 type: number
@@ -2998,7 +3491,7 @@ components:
         type:
           type: string
           example: click
-          description: "Event type: click, scroll, hover, input, view"
+          description: 'Event type: click, scroll, hover, input, view'
         sessionId:
           type: string
           example: sess_1729000000_abc
@@ -3259,3 +3752,353 @@ components:
           type: string
           format: date-time
           nullable: true
+    PortfolioProjectItem:
+      type: object
+      required:
+        - name
+        - desc
+      properties:
+        id:
+          type: string
+          example: proj_1
+        name:
+          type: string
+          example: Next.js AI Portfolio
+        desc:
+          type: string
+          example: Full-stack personal portfolio and blog with CMS and AI writing assistant.
+        src:
+          type: string
+          example: /assets/img/projects.png
+        lang:
+          type: array
+          items:
+            type: string
+          example:
+            - Next.js
+            - React
+            - MongoDB
+        githubUrl:
+          type: string
+          example: https://github.com/mahbub96/react_portfolio
+        liveUrl:
+          type: string
+          example: https://mahbub.dev
+        downloadUrl:
+          type: string
+        slug:
+          type: string
+          example: nextjs-ai-portfolio
+        featured:
+          type: boolean
+          default: false
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioSkillItem:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        id:
+          type: string
+          example: skill_1
+        name:
+          type: string
+          example: React
+        category:
+          type: string
+          enum:
+            - Languages
+            - Frameworks & Libraries
+            - Data & Infrastructure
+            - AI & Engineering
+          example: Frameworks & Libraries
+        icon:
+          type: string
+          example: SiReact
+        color:
+          type: string
+          example: '#61dafb'
+        src:
+          type: string
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioCoreStrengthItem:
+      type: object
+      required:
+        - title
+        - description
+        - tech
+        - icon
+      properties:
+        id:
+          type: string
+          example: strength_1
+        title:
+          type: string
+          example: Full-Stack Web Architecture
+        description:
+          type: string
+          example: Designing robust, scalable web applications with Next.js and Node.js.
+        tech:
+          type: string
+          example: React, Next.js, Node.js, TypeScript
+        icon:
+          type: string
+          example: code
+        accentColor:
+          type: string
+          example: '#38bdf8'
+        glowBg:
+          type: string
+          example: rgba(56, 189, 248, 0.12)
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioExperienceItem:
+      type: object
+      required:
+        - name
+        - company
+        - time
+        - how
+      properties:
+        id:
+          type: string
+          example: exp_1
+        name:
+          type: string
+          example: Software Engineer
+        company:
+          type: string
+          example: Tech Innovators Ltd.
+        companyUrl:
+          type: string
+          example: https://example.com
+        time:
+          type: string
+          example: 2023 - Present
+        startDate:
+          type: string
+          example: 2023-01
+        endDate:
+          type: string
+        current:
+          type: boolean
+          default: true
+        how:
+          type: string
+          example: Architected real-time microservices and optimized API throughput.
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioEducationItem:
+      type: object
+      required:
+        - name
+        - degName
+        - time
+      properties:
+        id:
+          type: string
+          example: edu_1
+        name:
+          type: string
+          example: University of Dhaka
+        degName:
+          type: string
+          example: B.Sc. in Computer Science and Engineering
+        Department:
+          type: string
+          example: Computer Science & Engineering
+        time:
+          type: string
+          example: 2016 - 2020
+        cgpa:
+          type: string
+          example: '3.85'
+        Thesis:
+          type: string
+          example: Machine Learning Approaches in Natural Language Processing
+        group:
+          type: string
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioCertificationItem:
+      type: object
+      required:
+        - title
+        - issuer
+      properties:
+        id:
+          type: string
+          example: cert_1
+        title:
+          type: string
+          example: AWS Certified Solutions Architect
+        issuer:
+          type: string
+          example: Amazon Web Services
+        url:
+          type: string
+          example: https://aws.amazon.com/verification
+        issueDate:
+          type: string
+          example: '2024'
+        description:
+          type: string
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioAchievementItem:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        id:
+          type: string
+          example: achieve_1
+        title:
+          type: string
+          example: National Hackathon Champion
+        organization:
+          type: string
+          example: ICT Division Bangladesh
+        description:
+          type: string
+          example: Won 1st place developing an intelligent disaster response system.
+        date:
+          type: string
+          example: '2022'
+        published:
+          type: boolean
+          default: true
+        order:
+          type: integer
+          default: 0
+    PortfolioProfileSingleton:
+      type: object
+      required:
+        - name
+        - title
+        - bio
+        - email
+        - location
+      properties:
+        name:
+          type: string
+          example: Mahbub Alam
+        title:
+          type: string
+          example: Full Stack Software Engineer
+        bio:
+          type: string
+          example: Specializing in high-performance web systems and AI engineering.
+        image:
+          type: string
+          example: /assets/img/profile.png
+        email:
+          type: string
+          format: email
+          example: mahbubcse96@gmail.com
+        phone:
+          type: string
+        location:
+          type: string
+          example: Dhaka, Bangladesh
+        github:
+          type: string
+          example: https://github.com/mahbub96
+        linkedin:
+          type: string
+          example: https://linkedin.com/in/md-mahbub-alam-6b751821b
+        twitter:
+          type: string
+        company:
+          type: string
+        website:
+          type: string
+          example: https://mahbub.dev
+    PortfolioBannerSingleton:
+      type: object
+      required:
+        - name
+        - jobTitle
+        - headline
+        - location
+        - bio
+      properties:
+        name:
+          type: string
+          example: Mahbub Alam
+        jobTitle:
+          type: string
+          example: Full Stack Software Engineer
+        headline:
+          type: string
+          example: Crafting scalable architectures and intelligent web solutions.
+        location:
+          type: string
+          example: Dhaka, Bangladesh
+        bio:
+          type: string
+          example: Passionate about modern software engineering and developer tooling.
+        socialLinks:
+          type: object
+          properties:
+            email:
+              type: string
+              example: mahbubcse96@gmail.com
+            github:
+              type: string
+              example: https://github.com/mahbub96
+            facebook:
+              type: string
+            linkedin:
+              type: string
+              example: https://linkedin.com/in/md-mahbub-alam-6b751821b
+    PortfolioContactSingleton:
+      type: object
+      required:
+        - contactInfo
+      properties:
+        contactInfo:
+          type: object
+          required:
+            - email
+          properties:
+            email:
+              type: string
+              format: email
+              example: mahbubcse96@gmail.com
+            location:
+              type: string
+              example: Dhaka, Bangladesh
+            website:
+              type: string
+              example: https://mahbub.dev
+            phone:
+              type: string

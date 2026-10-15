@@ -20,20 +20,55 @@ const URL_RE = /\bhttps?:\/\/[^\s<>()"'\]]+/gi;
 const NUMBER_RE = /(?<![\w.])\d+(?:[.,]\d+)*\s?%?|\b\d\b(?=\s?%)/g;
 
 function extractJson(text) {
-  const trimmed = String(text).trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  if (!text) return null;
+  const str = String(text).trim();
+
+  // 1. Direct parse
+  try {
+    return JSON.parse(str);
+  } catch {}
+
+  // 2. Look for json code fences anywhere in the string
+  const fence = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fence) {
+    try {
+      return JSON.parse(fence[1].trim());
+    } catch {}
+  }
+
+  const trimmed = str.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
   try {
     return JSON.parse(trimmed);
-  } catch {
-    const start = trimmed.indexOf("{");
-    const end = trimmed.lastIndexOf("}");
-    if (start !== -1 && end > start) {
+  } catch {}
+
+  // 3. Outermost { ... }
+  const start = trimmed.indexOf("{");
+  const end = trimmed.lastIndexOf("}");
+  if (start !== -1 && end > start) {
+    const candidate = trimmed.slice(start, end + 1);
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      // 4. Try lenient fixes: trailing commas, unescaped literal newlines
       try {
-        return JSON.parse(trimmed.slice(start, end + 1));
-      } catch {
-        // fall through
-      }
+        const fixed = candidate
+          .replace(/,\s*([}\]])/g, "$1")
+          .replace(/\n(?=(?:(?:[^"]*"){2})*[^"]*"[^"]*$)/g, "\\n");
+        return JSON.parse(fixed);
+      } catch {}
     }
   }
+
+  // 5. Outermost [ ... ] for array values (e.g. tags)
+  const arrStart = trimmed.indexOf("[");
+  const arrEnd = trimmed.lastIndexOf("]");
+  if (arrStart !== -1 && arrEnd > arrStart) {
+    try {
+      const arr = JSON.parse(trimmed.slice(arrStart, arrEnd + 1));
+      return { status: "ok", value: arr };
+    } catch {}
+  }
+
   return null;
 }
 
@@ -72,10 +107,24 @@ export function unverifiedNumbers(text, inputText) {
   return [...found];
 }
 
+export function removeEmDashes(text) {
+  if (!text || typeof text !== "string") return text;
+  return text
+    .replace(/\s*—\s*/g, ", ")
+    .replace(/\s*–\s*/g, ", ")
+    .replace(/\s*--\s*/g, ", ")
+    .replace(/,\s*,+/g, ",")
+    .replace(/,\s*\./g, ".")
+    .replace(/,\s*:/g, ":")
+    .replace(/,\s*;/g, ";");
+}
+
 function cleanText(value) {
-  return String(value ?? "")
+  return removeEmDashes(String(value ?? ""))
     .replace(/[\r\n\t]+/g, " ")
     .replace(/\s{2,}/g, " ")
+    .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
+    .replace(/^(?:alt text|image alt|cover alt)[:\-\s]*/i, "")
     .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
     .trim();
 }
@@ -88,11 +137,12 @@ export function parseAnswer(target, rawText, { inputText = "", inputLinks = [] }
   const warnings = [];
 
   if (spec.kind === "markdown") {
-    const text = String(rawText || "").trim().replace(/^```(?:markdown|md)?\s*\n/i, "").replace(/\n```\s*$/, "").trim();
+    let text = String(rawText || "").trim().replace(/^```(?:markdown|md)?\s*\n/i, "").replace(/\n```\s*$/, "").trim();
     if (text.startsWith(INSUFFICIENT_MARKER)) {
       return { status: "insufficient_context", reason: text.slice(INSUFFICIENT_MARKER.length).trim() || "Not enough to work from." };
     }
     if (!text) throw new AiOutputError("The AI returned an empty answer.");
+    text = removeEmDashes(text);
     const guarded = guardUrls(text.replace(/!\[[^\]]*\]\([^)]*\)/g, ""), inputText, inputLinks);
     if (guarded.removed.length) warnings.push(`Removed links that were not in your post: ${guarded.removed.join(", ")}`);
     const numbers = unverifiedNumbers(guarded.text, inputText);
@@ -101,15 +151,75 @@ export function parseAnswer(target, rawText, { inputText = "", inputLinks = [] }
   }
 
   const data = extractJson(rawText);
-  if (!data || typeof data !== "object") throw new AiOutputError("The AI answer was not in the expected format. Try again.");
-  if (data.status === "insufficient_context") {
-    return { status: "insufficient_context", reason: cleanText(data.reason).slice(0, 200) || "Not enough to work from." };
-  }
-  if (data.value === undefined || data.value === null) throw new AiOutputError("The AI answer was empty. Try again.");
-
   let value;
+
+  if (data && typeof data === "object") {
+    if (data.status === "insufficient_context" || data.status === "error" || (!data.value && (data.reason || data.message || data.error))) {
+      const reason = cleanText(data.reason || data.message || data.error || "").slice(0, 200);
+      return { status: "insufficient_context", reason: reason || "Not enough context to generate this field." };
+    }
+    // Check value or alternative keys the model might have returned
+    value = data.value !== undefined ? data.value : (
+      data[target] !== undefined ? data[target] : (
+        data.result !== undefined ? data.result : (
+          data.suggestion !== undefined ? data.suggestion : (
+            data.text !== undefined ? data.text : (
+              data.output !== undefined ? data.output : undefined
+            )
+          )
+        )
+      )
+    );
+  }
+
+  // If no JSON was extracted or value was not found in JSON, fall back to plain text
+  if (value === undefined || value === null) {
+    if (spec.kind === "code") {
+      const fenceMatch = String(rawText || "").match(/```[a-zA-Z0-9_-]*\s*([\s\S]*?)\s*```/i);
+      if (fenceMatch) {
+        value = fenceMatch[1].trim();
+      }
+    }
+
+    if (value === undefined || value === null) {
+      const rawClean = String(rawText || "")
+        .replace(/<think>[\s\S]*?<\/think>/gi, "")
+        .replace(/<\/?(?:fields|context|output|response|result|answer|value)>/gi, "")
+        .replace(/^```(?:json|markdown|text)?\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
+
+      // Check if the raw text is an obvious refusal or error
+      if (
+        /^I (?:cannot|can't|am unable to|do not have|must decline)/i.test(rawClean) ||
+        /^Sorry,?(?: I)?/i.test(rawClean)
+      ) {
+        throw new AiOutputError("The AI answer was not in the expected format. Try again.");
+      }
+
+      // Strip leading conversational phrases like "Here is a suggested title:"
+      const stripped = rawClean
+        .replace(/^(?:here(?:'s| is) (?:a |the )?(?:suggested |recommended )?(?:title|excerpt|meta title|meta description|slug|tag|tags|description|answer|alt text|cover alt|code|code snippet)?[:\-\s]*)/i, "")
+        .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
+        .trim();
+
+      if (stripped) {
+        if (spec.kind === "tags") {
+          value = stripped.split(/[\n,]+/).map((t) => t.replace(/^[-*•\d.)\s]+/, "").trim()).filter(Boolean);
+        } else {
+          value = stripped;
+        }
+      }
+    }
+  }
+
+  if (value === undefined || value === null || (typeof value === "string" && !value.trim())) {
+    throw new AiOutputError("The AI answer was not in the expected format. Try again.");
+  }
+
+  const extractedValue = value;
   if (spec.kind === "tags") {
-    const list = Array.isArray(data.value) ? data.value : String(data.value).split(",");
+    const list = Array.isArray(extractedValue) ? extractedValue : String(extractedValue).split(",");
     const seen = new Set();
     value = list
       .map((tag) => cleanText(tag).replace(/^#/, "").slice(0, spec.maxItem))
@@ -117,11 +227,19 @@ export function parseAnswer(target, rawText, { inputText = "", inputLinks = [] }
       .slice(0, spec.maxItems);
     if (!value.length) throw new AiOutputError("The AI returned no usable tags. Try again.");
   } else if (spec.kind === "slug") {
-    value = slugify(cleanText(data.value));
+    value = slugify(cleanText(extractedValue));
     if (value.length > spec.max) value = value.slice(0, spec.max).replace(/-[^-]*$/, "");
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) throw new AiOutputError("The AI returned an unusable URL slug. Try again.");
+  } else if (spec.kind === "code") {
+    let codeStr = String(extractedValue || "")
+      .replace(/^```[a-zA-Z0-9_-]*\s*\n?/i, "")
+      .replace(/\n?```\s*$/i, "")
+      .trim();
+    if (!codeStr) throw new AiOutputError("The AI returned an empty code snippet. Try again.");
+    if (codeStr.length > spec.max) codeStr = codeStr.slice(0, spec.max);
+    value = codeStr;
   } else {
-    const guarded = guardUrls(cleanText(data.value), inputText, inputLinks);
+    const guarded = guardUrls(cleanText(extractedValue), inputText, inputLinks);
     if (guarded.removed.length) warnings.push(`Removed links that were not in your post: ${guarded.removed.join(", ")}`);
     value = truncate(guarded.text, spec.max);
     if (!value) throw new AiOutputError("The AI answer was empty. Try again.");

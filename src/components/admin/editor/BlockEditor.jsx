@@ -35,6 +35,7 @@ import {
   LuStickyNote,
   LuStrikethrough,
   LuTable,
+  LuTrash2,
   LuTriangleAlert,
   LuUnlink,
   LuSparkles,
@@ -391,9 +392,20 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
       if (!e || !assist?.enabled) return;
       const { from, to } = e.state.selection;
       const doc = e.state.doc;
-      const selection = target === "body.outline" ? "" : doc.textBetween(from, to, "\n\n", " ");
-      const nearbyText = `${doc.textBetween(Math.max(0, from - 600), from, "\n", " ")}\n…\n${doc.textBetween(to, Math.min(doc.content.size, to + 600), "\n", " ")}`;
-      const range = target === "body.outline" ? { from: to, to } : { from, to };
+      let selection = target === "body.outline" ? "" : doc.textBetween(from, to, "\n\n", " ");
+      let rangeFrom = from;
+      let rangeTo = to;
+      if (target !== "body.outline" && !selection.trim()) {
+        const { $from } = e.state.selection;
+        const blockNode = $from.parent;
+        if (blockNode && blockNode.isTextblock && blockNode.textContent.trim()) {
+          rangeFrom = $from.start();
+          rangeTo = $from.end();
+          selection = blockNode.textContent;
+        }
+      }
+      const nearbyText = `${doc.textBetween(Math.max(0, rangeFrom - 600), rangeFrom, "\n", " ")}\n…\n${doc.textBetween(rangeTo, Math.min(doc.content.size, rangeTo + 600), "\n", " ")}`;
+      const range = target === "body.outline" ? { from: to, to } : { from: rangeFrom, to: rangeTo };
       setDraft({ target, phase: "streaming", text: "", range });
       try {
         const result = await assist.streamBody(target, { selection, nearbyText }, (text) =>
@@ -413,6 +425,39 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     },
     []
   );
+
+  const removeCurrentBlock = useCallback(() => {
+    const e = editorRef.current;
+    if (!e) return;
+
+    if (e.state.selection.node) {
+      e.chain().focus().deleteSelection().run();
+      return;
+    }
+
+    const { $from } = e.state.selection;
+    let targetDepth = $from.depth;
+    while (targetDepth > 1) {
+      const name = $from.node(targetDepth).type.name;
+      if (["codeBlock", "callout", "table", "blockquote", "bulletList", "orderedList"].includes(name)) {
+        break;
+      }
+      targetDepth--;
+    }
+
+    if (targetDepth >= 1) {
+      const node = $from.node(targetDepth);
+      const from = $from.before(targetDepth);
+      const to = from + node.nodeSize;
+      if (e.state.doc.childCount <= 1 && targetDepth === 1) {
+        e.chain().focus().clearContent().insertContent({ type: "paragraph" }).run();
+      } else {
+        e.chain().focus().deleteRange({ from, to }).run();
+      }
+    } else {
+      e.chain().focus().deleteSelection().run();
+    }
+  }, []);
 
   const acceptDraft = useCallback(() => {
     const e = editorRef.current;
@@ -570,6 +615,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     { label: "List", icon: LuList, run: () => editor.chain().focus("end").toggleBulletList().run() },
     { label: "Quote", icon: LuQuote, run: () => editor.chain().focus("end").toggleBlockquote().run() },
     { label: "Code", icon: LuSquareCode, run: () => editor.chain().focus("end").setCodeBlock().run() },
+    { label: "Callout", icon: LuStickyNote, run: () => editor.chain().focus("end").setCallout().run() },
     { label: "YouTube", icon: LuYoutube, run: () => setYoutubeOpen(true) },
   ];
 
@@ -660,6 +706,14 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
         >
           <LuSquareCode aria-hidden="true" />
         </button>
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${editor.isActive("callout") ? styles.formatBtnActive : ""}`}
+          onClick={() => editor.chain().focus().setCallout().run()}
+          title="Callout Box"
+        >
+          <LuStickyNote aria-hidden="true" />
+        </button>
         <span className={styles.formatDivider} />
         <button
           type="button"
@@ -685,6 +739,46 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
         >
           <LuYoutube aria-hidden="true" />
         </button>
+        <span className={styles.formatDivider} />
+        <button
+          type="button"
+          className={`${styles.formatBtn} ${styles.formatBtnDanger}`}
+          onClick={removeCurrentBlock}
+          title="Remove current block"
+          aria-label="Remove current block"
+        >
+          <LuTrash2 aria-hidden="true" />
+        </button>
+
+        {ai?.enabled ? (
+          <div className={styles.formatAiGroup}>
+            <span className={styles.formatDivider} />
+            <button
+              type="button"
+              className={styles.formatAiBtn}
+              onClick={() => runBodyAction("body.outline")}
+              title="Generate post outline from notes"
+            >
+              <LuSparkles aria-hidden="true" /> AI Outline
+            </button>
+            <button
+              type="button"
+              className={styles.formatAiBtn}
+              onClick={() => runBodyAction("body.expand")}
+              title="Expand on current block or selection"
+            >
+              <LuWandSparkles aria-hidden="true" /> AI Write
+            </button>
+            <button
+              type="button"
+              className={styles.formatAiBtn}
+              onClick={() => runBodyAction("body.improve")}
+              title="Refine tone and flow of current block"
+            >
+              <LuCheck aria-hidden="true" /> AI Polish
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className={prose.bleed}>

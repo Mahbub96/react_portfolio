@@ -21,6 +21,8 @@ export const generateSchema = z.object({
     .default({}),
   selection: text(20000),
   nearbyText: text(5000),
+  language: text(50),
+  variant: text(50),
   image: z.object({ caption: text(1000), nearbyText: text(5000) }).optional(),
   // "Try again": skip the answer cache (still counts against the limits).
   fresh: z.boolean().optional(),

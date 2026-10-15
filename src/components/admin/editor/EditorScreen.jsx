@@ -228,6 +228,20 @@ export default function EditorScreen({ id }) {
     }
   };
 
+  const handleCancel = async () => {
+    if (autosave.status === "dirty") {
+      const ok = await confirm({
+        title: "Discard unsaved changes?",
+        body: "You have unsaved changes in this post. Leaving now will discard edits made since the last save.",
+        confirmLabel: "Discard & Exit",
+        danger: true,
+      });
+      if (!ok) return;
+    }
+    clearBackup(id);
+    router.push("/admin/posts/");
+  };
+
   // Every field the AI may use as context, by name.
   const aiContext = useCallback(() => {
     const f = fieldsRef.current || {};
@@ -289,7 +303,7 @@ export default function EditorScreen({ id }) {
       <header className={styles.bar}>
         <button
           type="button"
-          onClick={() => router.push("/admin/posts/")}
+          onClick={handleCancel}
           className={styles.backBtn}
           aria-label="Back to all posts"
           title="Back to all posts"
@@ -310,6 +324,14 @@ export default function EditorScreen({ id }) {
         </div>
         <div className={styles.barEnd}>
           <span className={styles.words}>{words} words · {Math.max(1, Math.round(words / 220))} min</span>
+          <button
+            type="button"
+            className={`${admin.btn} ${admin.btnGhost} ${admin.btnSmall}`}
+            onClick={handleCancel}
+            title="Cancel editing and return to posts"
+          >
+            Cancel
+          </button>
           <button type="button" className={`${admin.btn} ${admin.btnGhost} ${admin.btnSmall}`} onClick={preview}>
             <LuEye aria-hidden="true" /> <span className={styles.hideNarrow}>Preview</span>
           </button>

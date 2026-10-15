@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { LuCheck, LuImage, LuLoaderCircle, LuUpload } from "react-icons/lu";
+import { LuCheck, LuImage, LuLoaderCircle, LuUpload, LuX } from "react-icons/lu";
 import styles from "./portfolioDashboard.module.css";
 
 export default function SingletonEditor({
@@ -17,6 +17,14 @@ export default function SingletonEditor({
   const [savingBanner, setSavingBanner] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState("profile");
+
+  useEffect(() => {
+    setProfile(profileData || {});
+  }, [profileData]);
+
+  useEffect(() => {
+    setBanner(bannerData || {});
+  }, [bannerData]);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -112,14 +120,25 @@ export default function SingletonEditor({
               <h3 className={styles.editorTitle}>Personal Profile Information</h3>
               <p className={styles.editorSub}>Used across the About page, footer, structured metadata, and CV.</p>
             </div>
-            <button
-              type="submit"
-              className={`${styles.btn} ${styles.btnPrimary}`}
-              disabled={savingProfile}
-            >
-              {savingProfile ? <LuLoaderCircle className={styles.spin} /> : <LuCheck />}
-              <span>Save Profile</span>
-            </button>
+            <div className={styles.editorHeadActions}>
+              <button
+                type="button"
+                className={`${styles.btn} ${styles.btnGhost}`}
+                onClick={() => setProfile(profileData || {})}
+                disabled={savingProfile}
+                title="Discard unsaved changes to profile"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                disabled={savingProfile}
+              >
+                {savingProfile ? <LuLoaderCircle className={styles.spin} /> : <LuCheck />}
+                <span>Save Profile</span>
+              </button>
+            </div>
           </div>
 
           <div className={styles.imageUploadSection} style={{ marginBottom: "1.5rem" }}>
@@ -285,14 +304,25 @@ export default function SingletonEditor({
               <h3 className={styles.editorTitle}>Hero Banner Configuration</h3>
               <p className={styles.editorSub}>Displayed on the prominent hero section of mahbub.dev.</p>
             </div>
-            <button
-              type="submit"
-              className={`${styles.btn} ${styles.btnPrimary}`}
-              disabled={savingBanner}
-            >
-              {savingBanner ? <LuLoaderCircle className={styles.spin} /> : <LuCheck />}
-              <span>Save Banner</span>
-            </button>
+            <div className={styles.editorHeadActions}>
+              <button
+                type="button"
+                className={`${styles.btn} ${styles.btnGhost}`}
+                onClick={() => setBanner(bannerData || {})}
+                disabled={savingBanner}
+                title="Discard unsaved changes to banner"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                disabled={savingBanner}
+              >
+                {savingBanner ? <LuLoaderCircle className={styles.spin} /> : <LuCheck />}
+                <span>Save Banner</span>
+              </button>
+            </div>
           </div>
 
           <div className={styles.fieldRow}>
