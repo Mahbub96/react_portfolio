@@ -802,8 +802,8 @@
 @media (max-width: 768px) {
   .bannerSection {
     min-height: auto !important;
-    padding: 3rem var(--spacing-md) 3.5rem !important;
-    margin-top: 70px;
+    padding: 2.25rem 0.85rem 3rem !important;
+    margin-top: 60px;
     width: 100%;
     max-width: 100vw;
   }
@@ -893,10 +893,10 @@
   }
 
   .profileCard {
-    max-width: 310px;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.25rem 1rem;
   }
 
   .statsSection {
@@ -994,7 +994,8 @@
 
   .heroActions .ctaButton,
   .secondaryCta {
-    width: min(100%, 260px);
+    width: 100%;
+    max-width: 100%;
   }
 
   .statsSection {
@@ -1201,40 +1202,58 @@
 /* Mobile premium tuning */
 @media (max-width: 640px) {
   .bannerSection {
-    padding: calc(1.45rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-left)) 2.35rem max(1rem, env(safe-area-inset-right)) !important;
+    padding: calc(1.35rem + env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-left)) 2.25rem max(0.75rem, env(safe-area-inset-right)) !important;
     min-height: auto !important;
+  }
+
+  .bannerContainer {
+    width: 100%;
+    max-width: 100%;
   }
 
   .heroContent {
     gap: 1.25rem;
+    width: 100%;
   }
 
   .heroCopy {
     gap: 0.72rem;
+    width: 100%;
+    align-items: center;
+    text-align: center;
   }
 
   .heroEyebrow {
     font-size: clamp(0.62rem, 2.8vw, 0.68rem);
     line-height: 1.55;
+    text-align: center;
+    width: 100%;
   }
 
   .name {
     font-size: clamp(2.25rem, 14vw, 3.05rem);
     letter-spacing: -0.075em;
     line-height: 0.94;
+    text-align: center;
+    width: 100%;
   }
 
   .jobTitle {
     font-size: clamp(0.95rem, 4.1vw, 1.12rem);
     line-height: 1.22;
+    text-align: center;
+    width: 100%;
   }
 
   .heroIntro {
     font-size: 0.92rem;
     line-height: 1.58;
+    text-align: center;
+    width: 100%;
   }
 
   .capabilityPills {
+    width: 100%;
     justify-content: center;
     gap: 0.45rem;
   }
@@ -1245,25 +1264,62 @@
     font-size: 0.68rem;
   }
 
-  .profileCard {
-    max-width: min(100%, 332px);
-    border-radius: 1.15rem;
-    padding: 0.95rem;
+  .heroHighlights {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .heroActions > * {
-    width: min(100%, 310px);
-    min-height: 44px;
+  .highlightItem {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .profileCard {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 1.15rem;
+    padding: 1.25rem 1rem;
+    margin: 0 auto;
+  }
+
+  .heroActions {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .heroActions > *,
+  .heroActions .ctaButton,
+  .secondaryCta {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
   }
 }
 
 @media (max-width: 380px) {
   .bannerSection {
     padding-top: 1.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
 
   .profileCard {
     max-width: 100%;
+    width: 100%;
+    padding: 1rem 0.75rem;
   }
 
   .profileImageContainer {

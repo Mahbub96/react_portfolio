@@ -7,6 +7,21 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.1
+
+### Added
+- Block-level AI suggestions for code snippet descriptions, language detection, and callout content directly within the rich text editor.
+- Dedicated block deletion actions on custom editor nodes (code blocks, callouts) and quick-action toolbar.
+- Cancel buttons across blog edit, post creation, and portfolio admin forms to make navigation smoother.
+
+### Changed
+- Hero banner layout on mobile viewports now spans the full available screen width with clean, balanced edge gutters, removing restrictive width caps on the profile card and action buttons.
+- Career highlight pills and call-to-action buttons stretch naturally to fit mobile screens comfortably.
+- Production and staging server AI configurations updated to leverage NVIDIA NIM high-performance models with strict guidelines for natural, human-like language without em dashes.
+
+### Fixes
+- Fixed mobile viewport layout where the hero profile card and action buttons were restricted to narrow fixed pixel widths on mobile devices.
+
 ## 1.6.0
 
 ### Added
