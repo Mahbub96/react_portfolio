@@ -7,7 +7,7 @@ import { EducationCardAdmin, EducationAddButton } from "./EducationAdminControls
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Educations component for better SEO
-function Educations({ data }) {
+function Educations({ data, headingLevel = "h2" }) {
   // Use server data for rendering
   const education = Array.isArray(data?.data) ? [...data.data] : [];
 
@@ -21,7 +21,7 @@ function Educations({ data }) {
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
             <HarmonicHeading
-              as="h2"
+              as={headingLevel}
               id="education-heading"
               text="Education"
             >

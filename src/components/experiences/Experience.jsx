@@ -7,7 +7,7 @@ import { ExperienceCardAdmin, ExperienceAddButton } from "./ExperienceAdminContr
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Experience component for better SEO
-function Experience({ data }) {
+function Experience({ data, headingLevel = "h2" }) {
   // Use server data for rendering
   const experiences = Array.isArray(data?.data) ? [...data.data].reverse() : [];
 
@@ -96,7 +96,7 @@ function Experience({ data }) {
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
             <HarmonicHeading
-              as="h2"
+              as={headingLevel}
               id="experience-heading"
               text="Where I've Worked"
             >

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
+import { getPortfolioData } from "@/lib/getPortfolioData";
 import JsonLd from "@/components/seo/JsonLd";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
@@ -20,7 +21,6 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
 });
 
 const TITLE = "Contact";
-// Neutral on purpose: no availability, hiring or freelance wording.
 const DESCRIPTION = `Get in touch with ${SITE_AUTHOR.name}, ${SITE_AUTHOR.jobTitle} in ${SITE_AUTHOR.location} — email or send a message through the contact form.`;
 
 export const metadata = pageMetadata({
@@ -29,7 +29,9 @@ export const metadata = pageMetadata({
   description: DESCRIPTION,
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const portfolioData = await getPortfolioData();
+
   const graph = buildPageGraph({
     path: "/contact/",
     name: `${TITLE} — ${SITE_AUTHOR.name}`,
@@ -53,7 +55,7 @@ export default function ContactPage() {
       </main>
 
       <Suspense fallback={null}>
-        <Footer />
+        <Footer data={portfolioData} />
       </Suspense>
     </div>
   );
