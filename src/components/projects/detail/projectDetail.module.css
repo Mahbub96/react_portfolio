@@ -26,7 +26,7 @@
 
 .breadcrumb a:hover,
 .breadcrumb a:focus-visible {
-  color: var(--accent-primary, #64ffda);
+  color: var(--accent-primary);
 }
 
 .breadcrumb [aria-current="page"] {
@@ -185,7 +185,7 @@
 
 .backLink:hover,
 .backLink:focus-visible {
-  color: var(--accent-primary, #64ffda);
+  color: var(--accent-primary);
 }
 
 @media (max-width: 600px) {
