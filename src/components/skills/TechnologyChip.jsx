@@ -79,32 +79,34 @@ export default function TechnologyChip({ skill }) {
       tabIndex={0}
       aria-label={`${name} skill`}
     >
-      {/* Floating Hover Card / Tooltip revealing full card details */}
-      <div className={styles.chipHoverView} role="tooltip" aria-hidden="true">
-        {Icon && (
-          <span
-            className={styles.hoverViewIcon}
-            style={{ "--brand-color": color || "currentColor" }}
-          >
-            <Icon />
-          </span>
-        )}
-        <div className={styles.hoverViewContent}>
-          <span className={styles.hoverViewName}>{name}</span>
-          <div className={styles.hoverViewMeta}>
-            {category && <span className={styles.hoverViewCategory}>{category}</span>}
+      {/* Floating Hover Card / Tooltip revealing full card details (logged-in admin only) */}
+      {auth && (
+        <div className={styles.chipHoverView} role="tooltip" aria-hidden="true">
+          {Icon && (
             <span
-              className={
-                isPublished
-                  ? styles.hoverBadgePublic
-                  : styles.hoverBadgeHidden
-              }
+              className={styles.hoverViewIcon}
+              style={{ "--brand-color": color || "currentColor" }}
             >
-              {isPublished ? "Visible" : "Hidden"}
+              <Icon />
             </span>
+          )}
+          <div className={styles.hoverViewContent}>
+            <span className={styles.hoverViewName}>{name}</span>
+            <div className={styles.hoverViewMeta}>
+              {category && <span className={styles.hoverViewCategory}>{category}</span>}
+              <span
+                className={
+                  isPublished
+                    ? styles.hoverBadgePublic
+                    : styles.hoverBadgeHidden
+                }
+              >
+                {isPublished ? "Visible" : "Hidden"}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {Icon && (
         <span
