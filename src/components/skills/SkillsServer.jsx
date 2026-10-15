@@ -4,6 +4,7 @@ import HarmonicHeading from "../HarmonicHeading";
 import CoreStrengthsCard from "./CoreStrengthsCard";
 import SkillCategoryCard from "./SkillCategoryCard";
 import SkillsClient from "./SkillsClient";
+import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 import {
   CATEGORY_METADATA,
   normalizeSkillCategory,
@@ -77,7 +78,8 @@ export default function SkillsServer({
       aria-labelledby="skills-heading"
     >
       <div className="container">
-        {/* Editorial Section Header */}
+        <SectionAdminProvider collectionName="Skills">
+          {/* Editorial Section Header */}
         <header className={styles.sectionHeader}>
           <div className={styles.eyebrow}>
             <span className={styles.eyebrowBar} aria-hidden="true" />
@@ -137,8 +139,9 @@ export default function SkillsServer({
           />
         </div>
 
-        {/* Client-side admin controls (rendered only when authenticated) */}
-        <SkillsClient skills={rawSkills} />
+          {/* Client-side admin controls (rendered only when authenticated) */}
+          <SkillsClient skills={rawSkills} />
+        </SectionAdminProvider>
       </div>
     </section>
   );

@@ -1,17 +1,26 @@
+"use client";
+
 import React from "react";
 import styles from "./skills.module.css";
 import { LuCode, LuTerminal, LuServer, LuAppWindow, LuBrain } from "react-icons/lu";
+import {
+  AdminCardOverlay,
+  AdminAddCard,
+  useSectionAdmin,
+} from "@/components/admin/contextual/PortfolioContextualControls";
 
 const CAPABILITY_ICONS = {
   server: LuServer,
   window: LuAppWindow,
   brain: LuBrain,
+  code: LuCode,
 };
 
 export default function CoreStrengthsCard({
   coreStrengths = [],
   headingLevel = "h3",
 }) {
+  const { openAdd, openEdit, ModalComponent } = useSectionAdmin("CoreStrengths");
   const CardHeading = headingLevel;
   const BlockHeading = `h${Math.min(
     (Number(String(headingLevel).replace(/\D/g, "")) || 3) + 1,
@@ -45,16 +54,27 @@ export default function CoreStrengthsCard({
       <div className={styles.capabilityList} role="list">
         {blocks.map((block) => {
           const Icon = CAPABILITY_ICONS[block.icon] || LuServer;
+          const isPublished = block.published !== false;
           return (
             <div
               key={block.id || block.title}
               className={styles.capabilityBlock}
+              style={{
+                position: "relative",
+                opacity: !isPublished ? 0.65 : 1,
+                borderStyle: !isPublished ? "dashed" : undefined,
+              }}
               role="listitem"
             >
+              <AdminCardOverlay
+                collectionName="CoreStrengths"
+                item={block}
+                onEdit={openEdit}
+              />
               <div
                 className={styles.capabilityIconWrapper}
                 style={{
-                  "--accent-glow": block.glowBg || "rgba(32, 201, 151, 0.12)",
+                  "--accent-glow": block.glowBg || "var(--accent-softer)",
                   "--accent-color": block.accentColor || "var(--accent-primary)",
                 }}
                 aria-hidden="true"
@@ -74,6 +94,17 @@ export default function CoreStrengthsCard({
           );
         })}
       </div>
+
+      <div style={{ marginTop: "0.5rem" }}>
+        <AdminAddCard
+          collectionName="CoreStrengths"
+          label="Core Strength"
+          onAdd={openAdd}
+          isTimeline={true}
+        />
+      </div>
+
+      {ModalComponent}
 
       <div className={styles.coreFooter}>
         <span className={styles.terminalPrompt} aria-hidden="true">

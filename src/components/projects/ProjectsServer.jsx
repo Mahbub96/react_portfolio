@@ -3,6 +3,7 @@ import styles from "./projects.module.css";
 import Project from "./Project";
 import ProjectsAddCard from "./ProjectsAddCard";
 import HarmonicHeading from "../HarmonicHeading";
+import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Projects component for better SEO
 const ProjectsServer = ({ data }) => {
@@ -44,34 +45,36 @@ const ProjectsServer = ({ data }) => {
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 
-          <div
-            className={styles.projectsGrid}
-            role="list"
-            aria-label="Portfolio projects grid"
-          >
-            {projects.length > 0 ? (
-              projects.map((project, index) => (
-                <div
-                  key={project.id}
-                  className={styles.projectListItem}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  role="listitem"
-                  aria-label={`${project.name} project card`}
-                >
-                  <Project
-                    project={project}
-                    index={index}
-                  />
+          <SectionAdminProvider collectionName="Projects">
+            <div
+              className={styles.projectsGrid}
+              role="list"
+              aria-label="Portfolio projects grid"
+            >
+              {projects.length > 0 ? (
+                projects.map((project, index) => (
+                  <div
+                    key={project.id}
+                    className={styles.projectListItem}
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                    role="listitem"
+                    aria-label={`${project.name} project card`}
+                  >
+                    <Project
+                      project={project}
+                      index={index}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className={styles.noProjects}>
+                  <p>No projects available at the moment.</p>
+                  <p>Check back soon for new additions to the portfolio!</p>
                 </div>
-              ))
-            ) : (
-              <div className={styles.noProjects}>
-                <p>No projects available at the moment.</p>
-                <p>Check back soon for new additions to the portfolio!</p>
-              </div>
-            )}
-            <ProjectsAddCard />
-          </div>
+              )}
+              <ProjectsAddCard />
+            </div>
+          </SectionAdminProvider>
         </div>
       </section>
     </>

@@ -183,6 +183,34 @@
   color: var(--text-primary);
 }
 
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-secondary);
+  background: var(--accent-softer);
+  color: var(--accent-primary);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+}
+
+.modalFooterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
 .iconBtn {
   display: inline-flex;
   align-items: center;
@@ -392,26 +420,28 @@
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   background: color-mix(in srgb, var(--background-primary) 85%, transparent);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .modalCard {
   width: 100%;
   max-width: 640px;
-  max-height: 90vh;
+  max-height: min(90vh, 850px);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-lg);
-  background: var(--background-card);
-  box-shadow: var(--shadow-xl);
+  background: var(--background-secondary);
+  box-shadow: var(--shadow-premium), var(--shadow-xl);
   overflow: hidden;
+  position: relative;
 }
 
 .modalHeader {
@@ -421,6 +451,8 @@
   gap: 1rem;
   padding: 1.5rem 1.75rem 1.25rem;
   border-bottom: 1px solid var(--border-secondary);
+  background: var(--background-tertiary);
+  flex-shrink: 0;
 }
 
 .modalTitle {
@@ -598,6 +630,69 @@
 
 .spin {
   animation: spin 1s linear infinite;
+}
+
+.quickChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.quickChipLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-right: 0.25rem;
+}
+
+.quickChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--background-elevated);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quickChip:hover {
+  background: var(--accent-softer);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.helperText {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+.fieldActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.inlineHelperBtn {
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.inlineHelperBtn:hover {
+  opacity: 0.85;
 }
 
 @keyframes spin {

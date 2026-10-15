@@ -4,6 +4,7 @@ import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
 import { ExperienceCardAdmin, ExperienceAddButton } from "./ExperienceAdminControls";
+import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Experience component for better SEO
 function Experience({ data }) {
@@ -127,93 +128,95 @@ function Experience({ data }) {
             )}
           </header>
 
-          <div className={styles.timelineContainer}>
-            <div className={styles.verticalLine} aria-hidden="true"></div>
+          <SectionAdminProvider collectionName="Experiences">
+            <div className={styles.timelineContainer}>
+              <div className={styles.verticalLine} aria-hidden="true"></div>
 
-            {experiences.length > 0 ? (
-              experiences.map((experience, index) => (
-                <div
-                  key={experience.id || `experience-${index}`}
-                  className={`${styles.timelineItem} ${
-                    index % 2 === 0 ? styles.left : styles.right
-                  } ${styles.animateInTimeline}`}
-                  style={{ animationDelay: `${index * 0.2}s` }}
-                >
-                  <div className={styles.timelineContent}>
-                    <ExperienceCardAdmin experience={experience} />
-                    <div
-                      className={styles.timelineDot}
-                      aria-hidden="true"
-                    ></div>
+              {experiences.length > 0 ? (
+                experiences.map((experience, index) => (
+                  <div
+                    key={experience.id || `experience-${index}`}
+                    className={`${styles.timelineItem} ${
+                      index % 2 === 0 ? styles.left : styles.right
+                    } ${styles.animateInTimeline}`}
+                    style={{ animationDelay: `${index * 0.2}s` }}
+                  >
+                    <div className={styles.timelineContent}>
+                      <ExperienceCardAdmin experience={experience} />
+                      <div
+                        className={styles.timelineDot}
+                        aria-hidden="true"
+                      ></div>
 
-                    {/* Experience Date */}
-                    <time
-                      className={styles.date}
-                      dateTime={
-                        experience.startDate ||
-                        experience.time?.split("-")[0] ||
-                        experience.time
-                      }
-                    >
-                      <HarmonicChip text={experience.time} />
-                    </time>
+                      {/* Experience Date */}
+                      <time
+                        className={styles.date}
+                        dateTime={
+                          experience.startDate ||
+                          experience.time?.split("-")[0] ||
+                          experience.time
+                        }
+                      >
+                        <HarmonicChip text={experience.time} />
+                      </time>
 
-                    {/* Job Title */}
-                    <h3
-                      className={styles.title}
-                      id={`experience-${experience.id || index}-title`}
-                    >
-                      {experience.name}
-                    </h3>
+                      {/* Job Title */}
+                      <h3
+                        className={styles.title}
+                        id={`experience-${experience.id || index}-title`}
+                      >
+                        {experience.name}
+                      </h3>
 
-                    {/* Job Description */}
-                    <p className={styles.description}>
-                      {experience.how}
-                    </p>
+                      {/* Job Description */}
+                      <p className={styles.description}>
+                        {experience.how}
+                      </p>
 
-                    {/* Company Information */}
-                    {experience.company && (
-                      <div className={styles.companyInfo}>
-                        <span
-                          className={styles.companyName}
-                        >
-                          <HarmonicChip text={experience.company} />
-                        </span>
-                        {experience.companyUrl && (
-                          <a
-                            href={experience.companyUrl}
-                            className={styles.companyUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Visit ${experience.company} website`}
+                      {/* Company Information */}
+                      {experience.company && (
+                        <div className={styles.companyInfo}>
+                          <span
+                            className={styles.companyName}
                           >
-                            <HarmonicChip text="Company Website" />
-                          </a>
-                        )}
-                      </div>
-                    )}
+                            <HarmonicChip text={experience.company} />
+                          </span>
+                          {experience.companyUrl && (
+                            <a
+                              href={experience.companyUrl}
+                              className={styles.companyUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Visit ${experience.company} website`}
+                            >
+                              <HarmonicChip text="Company Website" />
+                            </a>
+                          )}
+                        </div>
+                      )}
 
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.noExperience}>
-                <div className={styles.noExperienceIcon}>💼</div>
-                <h3>Experience Coming Soon</h3>
-                <p>I'm building my professional experience. Check back soon!</p>
-                <div className={styles.placeholderExperience}>
-                  <div className={styles.placeholderTimeline}>
-                    <div className={styles.placeholderDot}></div>
-                    <div className={styles.placeholderContent}>
-                      <div className={styles.placeholderTitle}></div>
-                      <div className={styles.placeholderDesc}></div>
+                ))
+              ) : (
+                <div className={styles.noExperience}>
+                  <div className={styles.noExperienceIcon}>💼</div>
+                  <h3>Experience Coming Soon</h3>
+                  <p>I'm building my professional experience. Check back soon!</p>
+                  <div className={styles.placeholderExperience}>
+                    <div className={styles.placeholderTimeline}>
+                      <div className={styles.placeholderDot}></div>
+                      <div className={styles.placeholderContent}>
+                        <div className={styles.placeholderTitle}></div>
+                        <div className={styles.placeholderDesc}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-            <ExperienceAddButton />
-          </div>
+              )}
+              <ExperienceAddButton />
+            </div>
+          </SectionAdminProvider>
         </div>
       </section>
     </>

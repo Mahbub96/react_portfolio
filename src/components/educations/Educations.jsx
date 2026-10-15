@@ -4,6 +4,7 @@ import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
 import { EducationCardAdmin, EducationAddButton } from "./EducationAdminControls";
+import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Educations component for better SEO
 function Educations({ data }) {
@@ -34,8 +35,9 @@ function Educations({ data }) {
             <div className={styles.headerLine} aria-hidden="true"></div>
           </header>
 
-          <div className={styles.timelineContainer}>
-            <div className={styles.verticalLine} aria-hidden="true"></div>
+          <SectionAdminProvider collectionName="Educations">
+            <div className={styles.timelineContainer}>
+              <div className={styles.verticalLine} aria-hidden="true"></div>
 
             {education.length > 0 ? (
               education.map((edu, index) => (
@@ -142,8 +144,9 @@ function Educations({ data }) {
                 </div>
               </div>
             )}
-            <EducationAddButton />
-          </div>
+              <EducationAddButton />
+            </div>
+          </SectionAdminProvider>
         </div>
       </section>
     </>
