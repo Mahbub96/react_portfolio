@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import { buildCV } from "@/lib/cvBuilder";
 import JsonLd from "@/components/seo/JsonLd";
@@ -6,6 +8,10 @@ import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 import PrintButton from "./PrintButton";
 import styles from "./resume.module.css";
+
+const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
+  ssr: true,
+});
 
 // Rebuild hourly; the CV only changes when the portfolio data changes.
 export const revalidate = 3600;
@@ -78,8 +84,12 @@ export default async function ResumePage() {
   });
 
   return (
-    <div className={styles.wrapper}>
-      <JsonLd data={graph} />
+    <div className={styles.resumePage}>
+      <Suspense fallback={null}>
+        <Navbar />
+      </Suspense>
+      <div className={styles.wrapper} style={{ paddingTop: "5.5rem" }}>
+        <JsonLd data={graph} />
       <div className={styles.toolbar}>
         <p className={styles.toolbarNote}>
           Generated from live portfolio data
@@ -216,6 +226,7 @@ export default async function ResumePage() {
           </section>
         )}
       </article>
+      </div>
     </div>
   );
 }

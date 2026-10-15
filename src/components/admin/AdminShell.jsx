@@ -29,7 +29,7 @@ export default function AdminShell({ children }) {
       <div className={styles.shell}>
         {isEditor ? null : (
           <header className={styles.topbar}>
-            <Link href="/admin/posts/" className={styles.brand}>
+            <Link href="/" className={styles.brand} title="Back to Portfolio Home">
               <span className={styles.brandMark}>
                 <span>&lt;</span>Mahbub<span>/&gt;</span>
               </span>

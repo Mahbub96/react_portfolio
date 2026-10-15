@@ -1,4 +1,14 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import NextDynamic from "next/dynamic";
+
+const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
+  ssr: true,
+});
+
+const Footer = NextDynamic(() => import("@/components/Footer"), {
+  ssr: true,
+});
 
 /**
  * Custom 404.
@@ -15,20 +25,28 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <main
-      className="container"
-      style={{ minHeight: "60vh", padding: "8rem 1.5rem 4rem", textAlign: "center" }}
-    >
-      <h1>Page not found</h1>
-      <p style={{ color: "var(--text-secondary)", margin: "1rem 0 2rem" }}>
-        The page you were looking for does not exist or has moved.
-      </p>
-      <nav aria-label="Helpful links" style={{ display: "flex", gap: "1.5rem", justifyContent: "center", flexWrap: "wrap" }}>
-        <Link href="/">Home</Link>
-        <Link href="/projects/">Projects</Link>
-        <Link href="/resume/">Resume</Link>
-        <Link href="/contact/">Contact</Link>
-      </nav>
-    </main>
+    <div>
+      <Suspense fallback={null}>
+        <Navbar />
+      </Suspense>
+      <main
+        className="container"
+        style={{ minHeight: "60vh", padding: "8rem 1.5rem 4rem", textAlign: "center" }}
+      >
+        <h1>Page not found</h1>
+        <p style={{ color: "var(--text-secondary)", margin: "1rem 0 2rem" }}>
+          The page you were looking for does not exist or has moved.
+        </p>
+        <nav aria-label="Helpful links" style={{ display: "flex", gap: "1.5rem", justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/">Home</Link>
+          <Link href="/projects/">Projects</Link>
+          <Link href="/resume/">Resume</Link>
+          <Link href="/contact/">Contact</Link>
+        </nav>
+      </main>
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
+    </div>
   );
 }

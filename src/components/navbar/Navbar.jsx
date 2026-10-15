@@ -111,13 +111,15 @@ function Header({ data }) {
     { id: "skills", label: "Skills", number: "03" },
     { id: "experience", label: "Experience", number: "04" },
     { id: "education", label: "Education", number: "05" },
-    // Contact is reached through the "Get in Touch" button.
-    { id: "blog", label: "Blog", number: "06", href: "/blog/" },
+    // Public visitors see Blog; logged-in owners use Admin directly
+    ...(!auth
+      ? [{ id: "blog", label: "Blog", number: "06", href: "/blog/" }]
+      : []),
     // Owner-only links once signed in
     ...(auth && isLoaded
       ? [
-          { id: "analytics", label: "Analytics", number: "07", href: "/analytics/" },
-          { id: "write", label: "Write", number: "08", href: "/admin/posts/" },
+          { id: "analytics", label: "Analytics", number: "06", href: "/analytics/" },
+          { id: "admin", label: "Admin", number: "07", href: "/admin/portfolio/" },
         ]
       : []),
   ];

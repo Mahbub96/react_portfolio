@@ -24,6 +24,8 @@ export const POST = adminPortfolioRoute(async (request, { params }, user) => {
     revalidatePath("/projects");
     revalidatePath("/skills");
     revalidatePath("/about");
+    revalidatePath("/experience");
+    revalidatePath("/education");
   } catch {
     // Ignore in non-edge contexts
   }

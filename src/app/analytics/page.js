@@ -22,6 +22,7 @@ import SessionReplayPlayer from "@/components/analytics/SessionReplayPlayer";
 import UserJourneyFlow from "@/components/analytics/UserJourneyFlow";
 import MultiModeHeatmap from "@/components/analytics/MultiModeHeatmap";
 import LiveActivityFeed from "@/components/analytics/LiveActivityFeed";
+import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/Footer";
 
 const AnalyticsPage = () => {
@@ -31,10 +32,13 @@ const AnalyticsPage = () => {
   // --- Loading State ---
   if (loading) {
     return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}>
-          <FaChartBar className={styles.spinnerIcon} />
-          <span>Loading analytics engine...</span>
+      <div>
+        <Navbar />
+        <div className={styles.loadingContainer} style={{ paddingTop: "5.5rem" }}>
+          <div className={styles.loadingSpinner}>
+            <FaChartBar className={styles.spinnerIcon} />
+            <span>Loading analytics engine...</span>
+          </div>
         </div>
       </div>
     );
@@ -43,14 +47,17 @@ const AnalyticsPage = () => {
   // --- Error State ---
   if (error) {
     return (
-      <div className={styles.errorContainer}>
-        <div className={styles.errorMessage}>
-          <FaChartBar size={48} color="#ef4444" />
-          <h3>Error Loading Analytics</h3>
-          <p>{error}</p>
-          <button className={styles.retryBtn} onClick={fetchStats}>
-            <FaSync /> Retry
-          </button>
+      <div>
+        <Navbar />
+        <div className={styles.errorContainer} style={{ paddingTop: "5.5rem" }}>
+          <div className={styles.errorMessage}>
+            <FaChartBar size={48} color="#ef4444" />
+            <h3>Error Loading Analytics</h3>
+            <p>{error}</p>
+            <button className={styles.retryBtn} onClick={fetchStats}>
+              <FaSync /> Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -85,9 +92,11 @@ const AnalyticsPage = () => {
   const totalPageviews = stats.dailyTrends?.pageViews?.current || 0;
 
   return (
-    <div className={styles.analyticsPage}>
-      {/* 🧭 1. Header with Home Link & Live Status */}
-      <AnalyticsHeader onRefresh={fetchStats} />
+    <div>
+      <Navbar />
+      <div className={styles.analyticsPage} style={{ paddingTop: "5.5rem" }}>
+        {/* 🧭 1. Header with Home Link & Live Status */}
+        <AnalyticsHeader onRefresh={fetchStats} />
 
       <main className={styles.dashboardContainer}>
         {/* 🎛️ Category Navigation Switcher */}
@@ -204,6 +213,7 @@ const AnalyticsPage = () => {
 
       {/* ⚓ 3. Portfolio Footer Integration */}
       <Footer />
+      </div>
     </div>
   );
 };

@@ -16,6 +16,8 @@ export const PATCH = adminPortfolioRoute(async (request, { params }, user) => {
     revalidatePath("/projects");
     revalidatePath("/skills");
     revalidatePath("/about");
+    revalidatePath("/experience");
+    revalidatePath("/education");
   } catch {}
 
   return { success: true, ...result };

@@ -30,6 +30,8 @@ export const PUT = adminPortfolioRoute(async (request, { params }, user) => {
     revalidatePath("/projects");
     revalidatePath("/skills");
     revalidatePath("/about");
+    revalidatePath("/experience");
+    revalidatePath("/education");
   } catch {}
 
   return { success: true, ...result };
@@ -44,6 +46,8 @@ export const DELETE = adminPortfolioRoute(async (request, { params }, user) => {
     revalidatePath("/projects");
     revalidatePath("/skills");
     revalidatePath("/about");
+    revalidatePath("/experience");
+    revalidatePath("/education");
   } catch {}
 
   return { success: true, ...result };

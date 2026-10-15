@@ -330,6 +330,11 @@
   .entrySub a::after {
     content: "";
   }
+
+  .resumePage :global(header),
+  .resumePage :global(nav) {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------ *
