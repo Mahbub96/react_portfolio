@@ -1,4 +1,7 @@
-import legacyDb from "../../db.json";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const legacyDb = require("../../db.json");
 
 function wrap(data) {
   return { data, lastUpdate: new Date() };

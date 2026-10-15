@@ -1,0 +1,648 @@
+[
+  {
+    "_id": "6aae5d6e9e2772503cab93fe",
+    "collectionName": "profile",
+    "data": {
+      "name": "Mahbub Alam",
+      "title": "Software Engineer | Full-Stack, Backend & Applied AI",
+      "bio": "Software Engineer building full-stack, backend, cloud-enabled, and applied AI solutions across enterprise, healthcare, education, and automation-focused systems.",
+      "image": "/assets/img/profile.png",
+      "email": "mahbubcse96@gmail.com",
+      "phone": "+880-1784-310996",
+      "location": "Dhaka, Bangladesh",
+      "github": "https://github.com/mahbub96",
+      "linkedin": "https://www.linkedin.com/in/mahbubcse96",
+      "twitter": "https://twitter.com/mahbubcse96",
+      "company": "Brotecs Technologies Ltd.",
+      "companyUrl": "https://brotecs.com",
+      "website": "https://mahbub.dev"
+    },
+    "lastUpdate": "2026-10-13T16:51:13.130Z",
+    "createdAt": "2026-09-19T10:01:18.908Z",
+    "updatedAt": "2026-10-13T16:51:13.130Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab9400",
+    "collectionName": "Skills",
+    "data": [
+      {
+        "id": 100,
+        "name": "JavaScript",
+        "category": "Languages",
+        "icon": "SiJavascript",
+        "color": "#f7df1e",
+        "src": "/assets/img/javaScript.png"
+      },
+      {
+        "id": 101,
+        "name": "TypeScript",
+        "category": "Languages",
+        "icon": "SiTypescript",
+        "color": "#3178c6",
+        "src": "/assets/img/javaScript.png"
+      },
+      {
+        "id": 102,
+        "name": "Python",
+        "category": "Languages",
+        "icon": "SiPython",
+        "color": "#3776ab",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 103,
+        "name": "PHP",
+        "category": "Languages",
+        "icon": "SiPhp",
+        "color": "#777bb4",
+        "src": "/assets/img/php.png"
+      },
+      {
+        "id": 104,
+        "name": "C++",
+        "category": "Languages",
+        "icon": "SiCplusplus",
+        "color": "#00599c",
+        "src": "/assets/img/c++.png"
+      },
+      {
+        "id": 105,
+        "name": "Java",
+        "category": "Languages",
+        "icon": "FaJava",
+        "color": "#f89820",
+        "src": "/assets/img/swings.png"
+      },
+      {
+        "id": 106,
+        "name": "C",
+        "category": "Languages",
+        "icon": "SiC",
+        "color": "#a8b9cc",
+        "src": "/assets/img/c++.png"
+      },
+      {
+        "id": 200,
+        "name": "Node.js",
+        "category": "Frameworks & Libraries",
+        "icon": "SiNodedotjs",
+        "color": "#5fa04e",
+        "src": "/assets/img/nodejs.png"
+      },
+      {
+        "id": 201,
+        "name": "NestJS",
+        "category": "Frameworks & Libraries",
+        "icon": "SiNestjs",
+        "color": "#ea2845",
+        "src": "/assets/img/nodejs.png"
+      },
+      {
+        "id": 202,
+        "name": "Express",
+        "category": "Frameworks & Libraries",
+        "icon": "SiExpress",
+        "color": "currentColor",
+        "src": "/assets/img/nodejs.png"
+      },
+      {
+        "id": 203,
+        "name": "React",
+        "category": "Frameworks & Libraries",
+        "icon": "SiReact",
+        "color": "#61dafb",
+        "src": "/assets/img/react.png"
+      },
+      {
+        "id": 204,
+        "name": "Next.js",
+        "category": "Frameworks & Libraries",
+        "icon": "SiNextdotjs",
+        "color": "currentColor",
+        "src": "/assets/img/react.png"
+      },
+      {
+        "id": 205,
+        "name": "Laravel",
+        "category": "Frameworks & Libraries",
+        "icon": "SiLaravel",
+        "color": "#ff2d20",
+        "src": "/assets/img/php.png"
+      },
+      {
+        "id": 206,
+        "name": "React Native",
+        "category": "Frameworks & Libraries",
+        "icon": "TbBrandReactNative",
+        "color": "#61dafb",
+        "src": "/assets/img/react-native.png"
+      },
+      {
+        "id": 207,
+        "name": "AngularJS",
+        "category": "Frameworks & Libraries",
+        "icon": "SiAngular",
+        "color": "#dd0031",
+        "src": "/assets/img/react.png"
+      },
+      {
+        "id": 208,
+        "name": "CodeIgniter",
+        "category": "Frameworks & Libraries",
+        "icon": "SiCodeigniter",
+        "color": "#ee4623",
+        "src": "/assets/img/php.png"
+      },
+      {
+        "id": 300,
+        "name": "PostgreSQL",
+        "category": "Data & Infrastructure",
+        "icon": "SiPostgresql",
+        "color": "#4169e1",
+        "src": "/assets/img/mysql.png"
+      },
+      {
+        "id": 301,
+        "name": "MySQL",
+        "category": "Data & Infrastructure",
+        "icon": "SiMysql",
+        "color": "#4479a1",
+        "src": "/assets/img/mysql.png"
+      },
+      {
+        "id": 302,
+        "name": "MongoDB",
+        "category": "Data & Infrastructure",
+        "icon": "SiMongodb",
+        "color": "#47a248",
+        "src": "/assets/img/sqlite3.png"
+      },
+      {
+        "id": 303,
+        "name": "Redis",
+        "category": "Data & Infrastructure",
+        "icon": "SiRedis",
+        "color": "#dc382d",
+        "src": "/assets/img/sqlite3.png"
+      },
+      {
+        "id": 304,
+        "name": "SQLite",
+        "category": "Data & Infrastructure",
+        "icon": "SiSqlite",
+        "color": "#38bdf8",
+        "src": "/assets/img/sqlite3.png"
+      },
+      {
+        "id": 305,
+        "name": "Docker",
+        "category": "Data & Infrastructure",
+        "icon": "SiDocker",
+        "color": "#2496ed",
+        "src": "/assets/img/git.png"
+      },
+      {
+        "id": 306,
+        "name": "Linux",
+        "category": "Data & Infrastructure",
+        "icon": "SiLinux",
+        "color": "#fcc624",
+        "src": "/assets/img/git.png"
+      },
+      {
+        "id": 307,
+        "name": "Git",
+        "category": "Data & Infrastructure",
+        "icon": "SiGit",
+        "color": "#f05032",
+        "src": "/assets/img/git.png"
+      },
+      {
+        "id": 308,
+        "name": "Firebase",
+        "category": "Data & Infrastructure",
+        "icon": "SiFirebase",
+        "color": "#ffca28",
+        "src": "/assets/img/mysql.png"
+      },
+      {
+        "id": 400,
+        "name": "PyTorch",
+        "category": "AI & Engineering",
+        "icon": "SiPytorch",
+        "color": "#ee4c2c",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 401,
+        "name": "Whisper",
+        "category": "AI & Engineering",
+        "icon": "TbBrandOpenai",
+        "color": "#10a37f",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 402,
+        "name": "Transformers",
+        "category": "AI & Engineering",
+        "icon": "SiHuggingface",
+        "color": "#ffd21e",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 403,
+        "name": "Speech Recognition",
+        "category": "AI & Engineering",
+        "icon": "LuMic",
+        "color": "#f59e0b",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 404,
+        "name": "RAG",
+        "category": "AI & Engineering",
+        "icon": "TbHierarchy3",
+        "color": "#06b6d4",
+        "src": "/assets/img/python.png"
+      },
+      {
+        "id": 405,
+        "name": "REST APIs",
+        "category": "AI & Engineering",
+        "icon": "TbApi",
+        "color": "#a855f7",
+        "src": "/assets/img/nodejs.png"
+      },
+      {
+        "id": 406,
+        "name": "CI/CD",
+        "category": "AI & Engineering",
+        "icon": "TbInfinity",
+        "color": "#20c997",
+        "src": "/assets/img/git.png"
+      }
+    ],
+    "lastUpdate": "2026-10-15T15:20:16.439Z",
+    "createdAt": "2026-09-19T10:01:18.911Z",
+    "updatedAt": "2026-10-15T15:20:16.439Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab9402",
+    "collectionName": "Experiences",
+    "data": [
+      {
+        "id": 1,
+        "name": "Software Engineer Intern",
+        "time": "September 2023 - March 2024",
+        "how": "Assisted in developing web application modules, fixing bugs, improving UI flows, working with databases, and learning production software development practices.",
+        "company": "Brotecs Technologies Ltd.",
+        "companyUrl": "https://brotecs.com",
+        "startDate": "2023-09",
+        "endDate": "2024-03"
+      },
+      {
+        "id": 2,
+        "name": "Junior Software Engineer I",
+        "time": "March 2024 - March 2025",
+        "how": "Developed full-stack application features, backend APIs, database-driven modules, dashboards, authentication flows, authorization logic, reporting features, and integration workflows.",
+        "company": "Brotecs Technologies Ltd.",
+        "companyUrl": "https://brotecs.com",
+        "startDate": "2024-03",
+        "endDate": "2025-03"
+      },
+      {
+        "id": 3,
+        "name": "Junior Software Engineer II",
+        "time": "March 2025 - Present",
+        "how": "Develop and maintain full-stack web applications and backend services across enterprise, healthcare, education, ERP, and automation-focused systems with secure workflows, performance improvements, CI/CD, and maintainable architecture.",
+        "company": "Brotecs Technologies Ltd.",
+        "companyUrl": "https://brotecs.com",
+        "startDate": "2025-03",
+        "endDate": "Present"
+      }
+    ],
+    "lastUpdate": "2026-10-13T16:51:13.140Z",
+    "createdAt": "2026-09-19T10:01:18.913Z",
+    "updatedAt": "2026-10-13T16:51:13.141Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab9404",
+    "collectionName": "Educations",
+    "data": [
+      {
+        "id": 1,
+        "time": "2019 - 2022",
+        "name": "Stamford University Bangladesh",
+        "degName": "Bachelor of Science",
+        "cgpa": "3.70 out of 4.00",
+        "Department": "Computer Science and Engineering",
+        "group": "Science",
+        "Thesis": "Speech Emotion Recognition Using Deep Learning"
+      },
+      {
+        "id": 2,
+        "time": "2014 - 2016",
+        "name": "BAF Shaheen College, Jessore",
+        "degName": "Higher Secondary Certificate (HSC)",
+        "cgpa": "4.00 out of 5.00",
+        "Department": "Science",
+        "group": "Science",
+        "Thesis": "N/A"
+      },
+      {
+        "id": 3,
+        "time": "2009 - 2014",
+        "name": "Shyamkur High School",
+        "degName": "Secondary School Certificate (SSC)",
+        "cgpa": "4.44 out of 5.00",
+        "Department": "Science",
+        "group": "Science",
+        "Thesis": "N/A"
+      }
+    ],
+    "lastUpdate": "2026-10-13T16:51:13.141Z",
+    "createdAt": "2026-09-19T10:01:18.913Z",
+    "updatedAt": "2026-10-13T16:51:13.141Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab9406",
+    "collectionName": "Projects",
+    "data": [
+      {
+        "id": 1,
+        "name": "LinkLens — Enterprise Link Intelligence Platform",
+        "src": "/assets/img/project-linklens.png",
+        "desc": "Enterprise-grade smart link and redirect intelligence platform with sub-5ms Redis hot-path routing, ClickHouse forensic analytics, QR generation, RBAC workspaces, webhooks, and self-hosted zero-cost geo/device intelligence.",
+        "lang": [
+          "NestJS",
+          "Next.js",
+          "TypeScript",
+          "PostgreSQL",
+          "Redis",
+          "ClickHouse",
+          "Prisma",
+          "Docker"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/LinkLens",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 2,
+        "name": "Bangla & English ASR Studio",
+        "src": "/assets/img/project-bangla-asr.png",
+        "desc": "End-to-end speech recognition studio for Bangla and English with Whisper inference, live microphone transcription, batch processing, WER/CER benchmarking, dataset validation, and LoRA/QLoRA fine-tuning workflows for GPU training clusters.",
+        "lang": [
+          "Python",
+          "Whisper",
+          "faster-whisper",
+          "Gradio",
+          "Transformers",
+          "LoRA",
+          "Audio Processing",
+          "ML Evaluation"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/bangla-asr-pipeline",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 3,
+        "name": "Local Vocal Agent",
+        "src": "/assets/img/project-local-vocal.png",
+        "desc": "Privacy-first local AI voice workspace with FastAPI, React/Vite, Ollama, SQLite and Chroma memory, Faster Whisper STT, TTS, streaming chat, search tools, file workspace, and permission-aware assistant workflows.",
+        "lang": [
+          "FastAPI",
+          "React",
+          "Ollama",
+          "SQLite",
+          "ChromaDB",
+          "Whisper",
+          "TTS",
+          "RAG"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/Local-vocal-agent",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 4,
+        "name": "Advanced Finance Tracker",
+        "src": "/assets/img/project-finance-tracker.png",
+        "desc": "Production-grade offline-first finance platform with Expo React Native, local SQLite storage, typed money utilities, budgeting, transactions, accounts, goals, recurring flows, analytics, AI insight planning, and a NestJS API foundation.",
+        "lang": [
+          "React Native",
+          "Expo",
+          "TypeScript",
+          "SQLite",
+          "NestJS",
+          "PostgreSQL",
+          "Prisma",
+          "Jest"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/Advance-Finance-Tracker",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 5,
+        "name": "Healthcare & Medical Applications",
+        "src": "/assets/img/project-healthcare.png",
+        "desc": "Production-focused healthcare and medical application modules including multi-role workflows, dashboards, secure access, reporting, and payment-related integrations.",
+        "lang": [
+          "React.js",
+          "Node.js",
+          "Laravel",
+          "MySQL",
+          "MongoDB"
+        ],
+        "githubUrl": "",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 6,
+        "name": "Enterprise & School Management Systems",
+        "src": "/assets/img/project-enterprise-school.png",
+        "desc": "Academic and enterprise management modules covering student, faculty, administrative, reporting, and business workflow features.",
+        "lang": [
+          "Laravel",
+          "React.js",
+          "Node.js",
+          "MySQL"
+        ],
+        "githubUrl": "",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 7,
+        "name": "Real-Time Chat Application",
+        "src": "/assets/img/project-chat.jpg",
+        "desc": "Real-time chat application with instant messaging, modern UI, and socket-based communication between users.",
+        "lang": [
+          "React.js",
+          "Node.js",
+          "Socket.io",
+          "CSS"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/chat-application",
+        "liveUrl": "",
+        "downloadUrl": ""
+      },
+      {
+        "id": 8,
+        "name": "React Portfolio",
+        "src": "/assets/img/project-portfolio.jpg",
+        "desc": "Personal portfolio built with React/Next.js, responsive UI, SEO metadata, server-rendered sections, and admin-managed content.",
+        "lang": [
+          "Next.js",
+          "React.js",
+          "CSS",
+          "MongoDB"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/react_portfolio",
+        "liveUrl": "https://mahbub.dev",
+        "downloadUrl": ""
+      },
+      {
+        "id": 9,
+        "name": "Test-Buddy",
+        "src": "/assets/img/project-testbuddy.png",
+        "desc": "React-based test and exam management demo application built for a university software engineering course.",
+        "lang": [
+          "React.js",
+          "HTML",
+          "CSS",
+          "JavaScript"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/Test-Buddy",
+        "liveUrl": "https://testbuddy.mahbub.dev",
+        "downloadUrl": ""
+      },
+      {
+        "id": 10,
+        "name": "Blood Donation Management System",
+        "src": "/assets/img/project-blood-donation.png",
+        "desc": "Java desktop application for managing blood donor records, blood bank information, and request tracking with SQLite storage.",
+        "lang": [
+          "Java",
+          "SQLite",
+          "Java Swing"
+        ],
+        "githubUrl": "https://github.com/Mahbub96/BloodDonationManagementSystem",
+        "liveUrl": "",
+        "downloadUrl": ""
+      }
+    ],
+    "lastUpdate": "2026-10-13T16:51:13.142Z",
+    "createdAt": "2026-09-19T10:01:18.914Z",
+    "updatedAt": "2026-10-13T16:51:13.142Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab9408",
+    "collectionName": "Banner",
+    "data": {
+      "name": "Mahbub Alam",
+      "jobTitle": "Software Engineer | Full-Stack, Backend & Applied AI",
+      "location": "Dhaka, Bangladesh",
+      "bio": "Software Engineer building full-stack, backend, cloud-enabled, and applied AI solutions across enterprise, healthcare, education, and automation-focused systems.",
+      "headline": "I build maintainable web applications, backend APIs, and practical AI-enabled systems for real business workflows.",
+      "socialLinks": {
+        "email": "mahbubcse96@gmail.com",
+        "github": "https://github.com/mahbub96",
+        "facebook": "https://fb.me/MahbubCSE96",
+        "linkedin": "https://www.linkedin.com/in/mahbubcse96"
+      }
+    },
+    "lastUpdate": "2026-10-13T16:51:13.136Z",
+    "createdAt": "2026-09-19T10:01:18.914Z",
+    "updatedAt": "2026-10-13T16:51:13.136Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab940a",
+    "collectionName": "About",
+    "data": {
+      "title": "About Me",
+      "description": "Software Engineer with professional experience in full-stack and backend application development, production workflows, cloud-enabled systems, and applied AI interests.",
+      "skills": [
+        "React",
+        "Next.js",
+        "Node.js",
+        "Python",
+        "FastAPI",
+        "Laravel",
+        "MySQL",
+        "Docker"
+      ]
+    },
+    "lastUpdate": "2026-10-13T16:51:13.142Z",
+    "createdAt": "2026-09-19T10:01:18.915Z",
+    "updatedAt": "2026-10-13T16:51:13.142Z",
+    "__v": 0
+  },
+  {
+    "_id": "6aae5d6e9e2772503cab940c",
+    "collectionName": "Contact",
+    "data": {
+      "title": "Get In Touch",
+      "description": "For professional communication, technical collaboration, or project discussions, feel free to contact me.",
+      "email": "mahbubcse96@gmail.com",
+      "phone": "+880-1784-310996",
+      "location": "Dhaka, Bangladesh",
+      "contactInfo": {
+        "email": "mahbubcse96@gmail.com",
+        "phone": "+880-1784-310996",
+        "location": "Dhaka, Bangladesh",
+        "website": "https://mahbub.dev"
+      }
+    },
+    "lastUpdate": "2026-10-13T16:51:13.143Z",
+    "createdAt": "2026-09-19T10:01:18.916Z",
+    "updatedAt": "2026-10-13T16:51:13.143Z",
+    "__v": 0
+  },
+  {
+    "_id": "6ace6181114704be9b425838",
+    "collectionName": "CoreStrengths",
+    "__v": 0,
+    "createdAt": "2026-10-13T16:51:13.137Z",
+    "data": [
+      {
+        "id": "backend-apis",
+        "title": "Backend & APIs",
+        "description": "Building reliable backend services, APIs, and maintainable application architectures.",
+        "tech": "Node.js · NestJS · Express",
+        "icon": "server",
+        "accentColor": "#38bdf8",
+        "glowBg": "rgba(56, 189, 248, 0.12)"
+      },
+      {
+        "id": "fullstack",
+        "title": "Full-Stack Engineering",
+        "description": "Developing modern web applications with practical frontend and backend integration.",
+        "tech": "React · Next.js · TypeScript",
+        "icon": "window",
+        "accentColor": "#20c997",
+        "glowBg": "rgba(32, 201, 151, 0.12)"
+      },
+      {
+        "id": "ai-ml",
+        "title": "Applied AI / ML",
+        "description": "Building intelligent systems with machine learning, deep learning, and speech technologies.",
+        "tech": "Python · PyTorch · Whisper",
+        "icon": "brain",
+        "accentColor": "#a855f7",
+        "glowBg": "rgba(168, 85, 247, 0.12)"
+      }
+    ],
+    "lastUpdate": "2026-10-13T16:51:13.137Z",
+    "updatedAt": "2026-10-13T16:51:13.137Z"
+  }
+]

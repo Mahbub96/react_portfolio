@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./projects.module.css";
 import Project from "./Project";
+import ProjectsAddCard from "./ProjectsAddCard";
 import HarmonicHeading from "../HarmonicHeading";
 
 // Server-side Projects component for better SEO
@@ -69,6 +70,7 @@ const ProjectsServer = ({ data }) => {
                 <p>Check back soon for new additions to the portfolio!</p>
               </div>
             )}
+            <ProjectsAddCard />
           </div>
         </div>
       </section>

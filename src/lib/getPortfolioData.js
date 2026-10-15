@@ -2,18 +2,29 @@ import connectDB from "@/lib/mongodb";
 import PortfolioData from "@/models/PortfolioData";
 import { getPortfolioFallback } from "@/lib/portfolioFallback";
 
-function transformPortfolioRows(portfolioData) {
+function transformPortfolioRows(portfolioData, { includeHidden = false } = {}) {
   const transformedData = {};
   portfolioData.forEach((item) => {
+    let content = item.data;
+    if (Array.isArray(content)) {
+      if (!includeHidden) {
+        content = content.filter((entry) => entry && entry.published !== false);
+      }
+      content = [...content].sort((a, b) => {
+        const orderA = typeof a.order === "number" ? a.order : 0;
+        const orderB = typeof b.order === "number" ? b.order : 0;
+        return orderA - orderB;
+      });
+    }
     transformedData[item.collectionName] = {
-      data: item.data,
+      data: content,
       lastUpdate: item.lastUpdate,
     };
   });
   return transformedData;
 }
 
-export async function getPortfolioData() {
+export async function getPortfolioData(options = {}) {
   try {
     const db = await connectDB();
     let portfolioData = [];
@@ -22,7 +33,25 @@ export async function getPortfolioData() {
       portfolioData = await PortfolioData.find({}).lean();
     }
 
-    const transformedData = transformPortfolioRows(portfolioData);
+    let includeHidden = options?.includeHidden;
+    if (includeHidden === undefined) {
+      try {
+        const { cookies } = await import("next/headers");
+        const cookieStore = cookies();
+        const adminCookie =
+          cookieStore.get("__Host-mahbub_admin")?.value ||
+          cookieStore.get("admin_session")?.value;
+        if (adminCookie) {
+          includeHidden = true;
+        }
+      } catch {
+        includeHidden = false;
+      }
+    }
+
+    const transformedData = transformPortfolioRows(portfolioData, {
+      includeHidden: Boolean(includeHidden),
+    });
     if (Object.keys(transformedData).length === 0) {
       return getPortfolioFallback();
     }

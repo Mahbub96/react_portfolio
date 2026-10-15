@@ -14,6 +14,8 @@ import styles from "./projects.module.css";
 import ProjectModal from "./ProjectModal";
 import HarmonicChip from "@/components/HarmonicChip";
 import { projectSlug } from "@/lib/seo/slug.mjs";
+import { AdminCardOverlay, useSectionAdmin } from "@/components/admin/contextual/PortfolioContextualControls";
+import contextualStyles from "@/components/admin/contextual/contextual.module.css";
 
 // titleAs: h3 under the homepage's h2 "Projects"; the standalone /projects
 // page (h1) passes "h2" so the heading outline stays sequential.
@@ -21,6 +23,7 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
   const { name, desc, src, lang, to, id } = project;
   const [imageError, setImageError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { openEdit, ModalComponent } = useSectionAdmin("Projects");
 
   const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
   const liveUrl = project.liveUrl || (to && to !== "#" ? to : null);
@@ -75,12 +78,14 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
 
   return (
     <article
-      className={styles.projectCard}
+      className={`${styles.projectCard} ${project.published === false ? contextualStyles.cardHidden : ""}`}
       style={{
         animationDelay: `${idx * 0.1}s`,
       }}
       aria-labelledby={`project-${id || idx}-title`}
     >
+      <AdminCardOverlay collectionName="Projects" item={project} onEdit={openEdit} />
+      {ModalComponent}
       {/* Project Image with Click-to-Modal Preview */}
       <div
         className={styles.projectImage}

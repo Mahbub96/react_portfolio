@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 
 // JWT configuration
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';

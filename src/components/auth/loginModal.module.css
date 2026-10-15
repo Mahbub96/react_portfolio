@@ -153,6 +153,41 @@
   color: var(--text-secondary, #666);
 }
 
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  padding-right: 44px;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary, #888);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: color 0.2s ease;
+}
+
+.eyeButton:hover {
+  color: var(--accent-primary, #64ffda);
+}
+
+.eyeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .error {
   color: #ff6464;
   font-size: 0.9rem;

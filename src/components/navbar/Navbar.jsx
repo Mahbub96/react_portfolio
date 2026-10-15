@@ -166,7 +166,7 @@ function Header({ data }) {
                             <span className={styles.blogButtonWrapper}>
                               <span className={styles.blogBadge}>
                                 <span className={styles.blogPulseDot} />
-                                NEW
+                                {/* NEW */}
                               </span>
                               <span className={styles.navNumber}>{number}.</span>
                               <span className={styles.blogLabel}>{label}</span>

@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { LuEye, LuEyeOff } from "react-icons/lu";
 import { useDataContext } from "../../contexts/useAllContext";
 import styles from "./loginModal.module.css";
 
 function LoginModal({ show, onHide }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(5);
@@ -18,6 +20,7 @@ function LoginModal({ show, onHide }) {
     if (!show) {
       setUsername("");
       setPassword("");
+      setShowPassword(false);
       setError("");
       setIsLoading(false);
     }
@@ -57,6 +60,7 @@ function LoginModal({ show, onHide }) {
         onHide();
         setUsername("");
         setPassword("");
+        setShowPassword(false);
         setError("");
         setRemainingAttempts(5);
         setIsLockedOut(false);
@@ -135,16 +139,27 @@ function LoginModal({ show, onHide }) {
           
           <div className={styles.formGroup}>
             <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              required
-              disabled={isLoading || isLockedOut}
-              autoComplete="current-password"
-            />
+            <div className={styles.passwordWrapper}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                required
+                disabled={isLoading || isLockedOut}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className={styles.eyeButton}
+                onClick={() => setShowPassword((prev) => !prev)}
+                disabled={isLoading || isLockedOut}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <LuEyeOff /> : <LuEye />}
+              </button>
+            </div>
           </div>
           
           {error && (

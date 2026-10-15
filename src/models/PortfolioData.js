@@ -15,6 +15,8 @@ const PortfolioDataSchema = new mongoose.Schema(
         "About",
         "Contact",
         "CoreStrengths",
+        "Certifications",
+        "Achievements",
       ],
     },
     data: {

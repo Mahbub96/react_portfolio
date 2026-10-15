@@ -3,6 +3,7 @@ import styles from "./educations.module.css";
 import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
+import { EducationCardAdmin, EducationAddButton } from "./EducationAdminControls";
 
 // Server-side Educations component for better SEO
 function Educations({ data }) {
@@ -46,6 +47,7 @@ function Educations({ data }) {
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className={styles.timelineContent}>
+                    <EducationCardAdmin education={edu} />
                     <div
                       className={styles.timelineDot}
                       aria-hidden="true"
@@ -140,6 +142,7 @@ function Educations({ data }) {
                 </div>
               </div>
             )}
+            <EducationAddButton />
           </div>
         </div>
       </section>

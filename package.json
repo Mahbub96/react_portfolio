@@ -16,6 +16,8 @@
     "openapi:validate": "node scripts/validate-openapi.mjs",
     "admin:hash": "node scripts/hash-password.mjs",
     "test:blog": "node --test \"src/lib/blog/*.test.mjs\" \"src/lib/ai/*.test.mjs\"",
+    "test:portfolio": "node --env-file=.env.local --test \"src/lib/portfolio/*.test.mjs\"",
+    "test": "npm run test:blog && npm run test:portfolio",
     "blog:import": "node scripts/import-markdown-posts.mjs",
     "start": "next start",
     "lint": "next lint",

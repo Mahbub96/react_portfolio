@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
-import connectDB from "@/lib/mongodb";
-import AdminSession from "@/models/AdminSession";
-import { generateToken, secureResponse, verifyToken } from "@/lib/auth";
-import { ADMIN_CONFIG, ADMIN_ROLES } from "@/config/admin";
+import connectDB from "./mongodb.js";
+import AdminSession from "../models/AdminSession.js";
+import { generateToken, secureResponse, verifyToken } from "./auth.js";
+import { ADMIN_CONFIG, ADMIN_ROLES } from "../config/admin.js";
 
 /**
  * Admin sessions live in an httpOnly cookie, never in localStorage, so page
@@ -24,6 +24,15 @@ function cookieOptions(expires) {
     path: "/",
     expires,
   };
+}
+
+function getCookieValue(request, name) {
+  if (request?.cookies?.get) {
+    return request.cookies.get(name)?.value;
+  }
+  const cookieHeader = request?.headers?.get?.("cookie") || "";
+  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 export function getClientIP(request) {
@@ -87,7 +96,7 @@ export async function requireAdmin(request) {
     if (!SAFE_METHODS.has(request.method) && !isSameOrigin(request)) {
       return { valid: false, status: 403, error: "Cross-origin request rejected" };
     }
-    const user = await resolveSession(request.cookies.get(ADMIN_COOKIE)?.value);
+    const user = await resolveSession(getCookieValue(request, ADMIN_COOKIE));
     if (!user) {
       return { valid: false, status: 401, error: "Authentication required" };
     }
@@ -120,7 +129,7 @@ export async function getAdminFromCookies() {
 
 /** True when the request carries an admin cookie (verified or not). */
 export function hasAdminCookie(request) {
-  return Boolean(request.cookies.get(ADMIN_COOKIE)?.value);
+  return Boolean(getCookieValue(request, ADMIN_COOKIE));
 }
 
 /** Create a revocable session for `username`; pass the result to setSessionCookie. */
@@ -153,7 +162,7 @@ export function setSessionCookie(response, { token, expiresAt }) {
 
 /** Revoke the request's session (if any) and clear the cookie on `response`. */
 export async function endAdminSession(request, response) {
-  const token = request.cookies.get(ADMIN_COOKIE)?.value;
+  const token = getCookieValue(request, ADMIN_COOKIE);
   const claims = token ? verifyToken(token) : null;
   let session = null;
 

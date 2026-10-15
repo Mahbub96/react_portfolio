@@ -3,6 +3,7 @@ import styles from "./experience.module.css";
 import ThreeDots from "../ThreeDots";
 import HarmonicHeading from "../HarmonicHeading";
 import HarmonicChip from "@/components/HarmonicChip";
+import { ExperienceCardAdmin, ExperienceAddButton } from "./ExperienceAdminControls";
 
 // Server-side Experience component for better SEO
 function Experience({ data }) {
@@ -139,6 +140,7 @@ function Experience({ data }) {
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className={styles.timelineContent}>
+                    <ExperienceCardAdmin experience={experience} />
                     <div
                       className={styles.timelineDot}
                       aria-hidden="true"
@@ -210,6 +212,7 @@ function Experience({ data }) {
                 </div>
               </div>
             )}
+            <ExperienceAddButton />
           </div>
         </div>
       </section>

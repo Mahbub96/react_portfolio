@@ -1,0 +1,157 @@
+/* On-Site Contextual Admin Controls — Strictly Using Theme Tokens */
+
+.actionsOverlay {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--background-primary) 85%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+  opacity: 0.85;
+  transition: opacity var(--transition-fast), border-color var(--transition-fast);
+}
+
+.actionsOverlay:hover {
+  opacity: 1;
+  border-color: var(--accent-primary);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.actionBtn:hover {
+  color: var(--text-primary);
+  background: var(--accent-softer);
+}
+
+.actionBtnActive {
+  color: var(--accent-primary);
+}
+
+.actionBtnDanger:hover {
+  color: var(--accent-primary);
+  background: var(--accent-soft);
+}
+
+.hiddenBadge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 20;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--background-elevated);
+  border: 1px dashed var(--border-secondary);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.cardHidden {
+  opacity: 0.72;
+  border: 1px dashed var(--border-secondary) !important;
+}
+
+.cardHidden:hover {
+  opacity: 1;
+}
+
+/* Subtle Add Card */
+.addCard {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  border: 2px dashed var(--border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--background-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.addCard:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-softer);
+  transform: translateY(-2px);
+}
+
+.addIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--background-elevated);
+  border: 1px solid var(--border-secondary);
+  color: var(--accent-primary);
+  font-size: 1.35rem;
+  transition: all var(--transition-fast);
+}
+
+.addCard:hover .addIcon {
+  border-color: var(--accent-primary);
+  background: var(--accent-soft);
+  transform: scale(1.08);
+}
+
+.addLabel {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Horizontal timeline Add button */
+.timelineAddBtn {
+  margin: 1.5rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border: 1px dashed var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--background-card);
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timelineAddBtn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
