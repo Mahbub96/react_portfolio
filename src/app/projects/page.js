@@ -16,9 +16,12 @@ const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
   ssr: true,
 });
 
-const Projects = NextDynamic(() => import("@/components/projects/Projects"), {
-  ssr: true,
-});
+const ProjectsServer = NextDynamic(
+  () => import("@/components/projects/ProjectsServer"),
+  {
+    ssr: true,
+  }
+);
 
 const Footer = NextDynamic(() => import("@/components/Footer"), {
   ssr: true,
@@ -61,9 +64,9 @@ export default async function ProjectsPage() {
         <Navbar />
       </Suspense>
 
-      <main className="container">
+      <main role="main" style={{ paddingTop: "5rem" }}>
         <Suspense fallback={null}>
-          <Projects data={projectsData} headingLevel="h1" />
+          <ProjectsServer data={projectsData} headingLevel="h1" />
         </Suspense>
       </main>
 

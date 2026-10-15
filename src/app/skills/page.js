@@ -88,7 +88,7 @@ export default async function SkillsPage() {
         <Navbar />
       </Suspense>
 
-      <main>
+      <main role="main" style={{ paddingTop: "5rem" }}>
         <Suspense fallback={null}>
           <Skills
             data={skillsData}
@@ -98,41 +98,56 @@ export default async function SkillsPage() {
         </Suspense>
 
         <section className={styles.usage} aria-labelledby="skills-usage-heading">
-          <h2 id="skills-usage-heading" className={styles.heading}>
-            Where these skills are used
-          </h2>
-          <p className={styles.intro}>
-            {SITE_AUTHOR.name} works mainly on backend services and APIs, full-stack
-            web applications and applied AI. Each technology below links to the
-            projects in this portfolio that use it.
-          </p>
+          <div className="container">
+            <header className={styles.usageHeader}>
+              <div className={styles.eyebrow}>
+                <span className={styles.eyebrowBar} aria-hidden="true" />
+                <span className={styles.eyebrowText}>APPLIED ENGINEERING</span>
+              </div>
+              <h2 id="skills-usage-heading" className={styles.heading}>
+                Project Cross-References
+              </h2>
+              <p className={styles.intro}>
+                Each technology below links directly to production repositories and portfolio projects demonstrating real-world usage.
+              </p>
+            </header>
 
-          {usage
-            .filter(({ skills }) => skills.some(({ usedIn }) => usedIn.length))
-            .map(({ category, skills }) => (
-            <div key={category} className={styles.group}>
-              <h3 className={styles.groupTitle}>{category}</h3>
-              <ul className={styles.list}>
-                {skills.filter(({ usedIn }) => usedIn.length).map(({ name, usedIn }) => (
-                  <li key={name} className={styles.item}>
-                    <span className={styles.skill}>{name}</span>
-                    <span className={styles.projects}>
-                        {usedIn.map((project, index) => (
-                          <span key={project.slug}>
-                            {index > 0 ? ", " : ""}
-                            {isIndexableProject(project) ? (
-                              <Link href={projectPath(project)}>{project.name}</Link>
-                            ) : (
-                              project.name
-                            )}
-                          </span>
+            <div className={styles.usageGrid}>
+              {usage
+                .filter(({ skills }) => skills.some(({ usedIn }) => usedIn.length))
+                .map(({ category, skills }) => (
+                  <article key={category} className={styles.usageCard}>
+                    <h3 className={styles.groupTitle}>{category}</h3>
+                    <div className={styles.skillList}>
+                      {skills
+                        .filter(({ usedIn }) => usedIn.length)
+                        .map(({ name, usedIn }) => (
+                          <div key={name} className={styles.skillRow}>
+                            <span className={styles.skillBadge}>{name}</span>
+                            <div className={styles.projectPills}>
+                              {usedIn.map((project) =>
+                                isIndexableProject(project) ? (
+                                  <Link
+                                    key={project.slug}
+                                    href={projectPath(project)}
+                                    className={styles.projectPill}
+                                  >
+                                    {project.name}
+                                  </Link>
+                                ) : (
+                                  <span key={project.slug} className={styles.projectPillStatic}>
+                                    {project.name}
+                                  </span>
+                                )
+                              )}
+                            </div>
+                          </div>
                         ))}
-                    </span>
-                  </li>
+                    </div>
+                  </article>
                 ))}
-              </ul>
             </div>
-          ))}
+          </div>
         </section>
       </main>
 

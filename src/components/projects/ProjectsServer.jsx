@@ -6,7 +6,7 @@ import HarmonicHeading from "../HarmonicHeading";
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
 // Server-side Projects component for better SEO
-const ProjectsServer = ({ data }) => {
+const ProjectsServer = ({ data, headingLevel = "h2" }) => {
   // Validate and normalize projects data
   const validateProjectsData = (projectsData) => {
     if (!projectsData || !Array.isArray(projectsData)) {
@@ -31,7 +31,7 @@ const ProjectsServer = ({ data }) => {
         <div className="container">
           <header className={`${styles.sectionHeader} ${styles.animateIn}`}>
             <HarmonicHeading
-              as="h2"
+              as={headingLevel}
               id="projects-heading"
               text="Projects"
             >
@@ -62,7 +62,8 @@ const ProjectsServer = ({ data }) => {
                   >
                     <Project
                       project={project}
-                      index={index}
+                      idx={index}
+                      titleAs={headingLevel === "h1" ? "h2" : "h3"}
                     />
                   </div>
                 ))

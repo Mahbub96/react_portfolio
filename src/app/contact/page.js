@@ -46,7 +46,7 @@ export default function ContactPage() {
         <Navbar />
       </Suspense>
 
-      <main className="container">
+      <main role="main" style={{ paddingTop: "5rem" }}>
         <Suspense fallback={null}>
           <Contact headingLevel="h1" />
         </Suspense>
