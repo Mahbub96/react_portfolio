@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LuArrowUpRight, LuEye } from "react-icons/lu";
 import { formatDate } from "@/lib/blog/posts.mjs";
 import BlogImage from "./BlogImage";
-import { formatViews } from "./BlogViewTracker";
+import { formatViews } from "@/lib/blog/formatViews.mjs";
 import styles from "@/app/blog/blog.module.css";
 
 /** Modern, compact Post card with 70% content / 30% image layout */

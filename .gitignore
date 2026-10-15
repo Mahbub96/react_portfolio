@@ -180,3 +180,7 @@ public/feed.xml
 
 # Local blog uploads (production writes to $SERVER_DIR/uploads/blog)
 .uploads/
+
+# Root temporary preview assets
+/og.jpg
+/ogp.webp

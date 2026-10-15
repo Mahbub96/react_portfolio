@@ -65,6 +65,21 @@ async function writeVariant(relDir, name, buffer) {
 }
 
 /**
+ * Social-card file name.
+ *
+ * Keyed by the crop's OWN content hash, not just the parent image's. The og
+ * crop is the one file a user re-uploads to correct (a centre crop that cut
+ * off the title, say), and `writeVariant` refuses to overwrite an existing
+ * name — so a parent-keyed name silently kept serving the old crop. Hashing
+ * the crop itself gives the replacement a new immutable URL, which also lets
+ * social scrapers and the CDN see it as a genuinely new image.
+ */
+function ogName(short, buffer, ext) {
+  const ogHash = createHash("sha256").update(buffer).digest("hex").slice(0, 12);
+  return `${short}-og-${ogHash}.${ext}`;
+}
+
+/**
  * Store an image's variants (largest first is not required) and an optional
  * 1200x630 social-card crop. Returns the BlogMedia document.
  *
@@ -100,7 +115,7 @@ export async function storeImage(BlogMedia, { variants, og = null, kind = "image
     stored.push({ width: item.width, height: item.height, bytes: item.buffer.length, src });
   }
 
-  const ogSrc = og ? await writeVariant(relDir, `${short}-og.${ogInfo.ext}`, og) : undefined;
+  const ogSrc = og ? await writeVariant(relDir, ogName(short, og, ogInfo.ext), og) : undefined;
 
   return (
     await BlogMedia.create({
@@ -134,7 +149,13 @@ export async function addImageVariant(BlogMedia, id, buffer, { og = false } = {}
 
   if (og) {
     if (info.width !== 1200 || info.height !== 630) throw new MediaError("Social image must be 1200x630");
-    media.ogSrc = await writeVariant(relDir, `${short}-og.${info.ext}`, buffer);
+    const previous = media.ogSrc;
+    media.ogSrc = await writeVariant(relDir, ogName(short, buffer, info.ext), buffer);
+    // Replacing the crop: drop the superseded file so corrections do not
+    // accumulate orphans on the server.
+    if (previous && previous !== media.ogSrc) {
+      await rm(join(uploadDir(), previous.slice(UPLOAD_URL_PREFIX.length)), { force: true });
+    }
   } else {
     const ratio = media.width / media.height;
     if (info.width >= media.width) throw new MediaError("A size must be smaller than the original");

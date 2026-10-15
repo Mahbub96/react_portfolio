@@ -2,18 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
+import { formatViews } from "@/lib/blog/formatViews.mjs";
 import styles from "@/app/blog/blog.module.css";
 
-export function formatViews(num) {
-  const count = typeof num === "number" && !isNaN(num) ? num : 0;
-  if (count >= 1000000) {
-    return (count / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-  }
-  if (count >= 1000) {
-    return (count / 1000).toFixed(1).replace(/\.0$/, "") + "k";
-  }
-  return count.toLocaleString();
-}
+// Formatting lives in @/lib/blog/formatViews.mjs so server components
+// (PostCard) can import it too. Re-exported here for existing importers.
+export { formatViews };
 
 export default function BlogViewTracker({ slug, initialViews = 0 }) {
   const [views, setViews] = useState(initialViews || 0);

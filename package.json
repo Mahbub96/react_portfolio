@@ -12,6 +12,8 @@
     "build": "next build",
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "seo:indexnow": "node scripts/indexnow.mjs",
+    "openapi:generate": "node scripts/generate-openapi.mjs",
+    "openapi:validate": "node scripts/validate-openapi.mjs",
     "admin:hash": "node scripts/hash-password.mjs",
     "test:blog": "node --test \"src/lib/blog/*.test.mjs\" \"src/lib/ai/*.test.mjs\"",
     "blog:import": "node scripts/import-markdown-posts.mjs",
