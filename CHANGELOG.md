@@ -7,6 +7,12 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.5
+
+### Fixed
+- Adjusted "On this page" sticky Table of Contents positioning and headroom to prevent tucking under the navbar on scroll.
+- Enhanced desktop sidebar sticky offset with fluid clamp positioning for optimal vertical placement.
+
 ## 1.6.4
 
 ### Added

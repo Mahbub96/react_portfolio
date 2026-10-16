@@ -804,7 +804,7 @@
   border-radius: var(--radius-lg);
   background: var(--background-card);
   position: sticky;
-  top: 4.75rem;
+  top: 5.25rem;
   z-index: 80;
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow-md);
@@ -858,10 +858,12 @@
   .tocSide {
     display: block;
     position: sticky;
-    top: 5.5rem;
+    top: clamp(6.75rem, 14vh, 8.5rem);
     align-self: start;
-    max-height: calc(100vh - 7rem);
+    max-height: calc(100vh - 9.5rem);
     overflow-y: auto;
+    padding-top: 0.35rem;
+    padding-bottom: 1.5rem;
     scrollbar-width: thin;
     scrollbar-color: var(--border-secondary) transparent;
   }
