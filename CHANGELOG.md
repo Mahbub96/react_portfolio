@@ -7,6 +7,15 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.3
+
+### Added
+- Client-side pagination with "See More" and "Show Less" controls across portfolio sections:
+  - Projects grid initially presents 2 rows (6 cards) on desktop with "See More Projects" (+N remaining) and smooth scroll "Show Less" toggle.
+  - Where I've Worked (Experience) timeline displays the top 3 rows initially with frontend expansion and smooth scroll.
+  - Education timeline displays the top 3 rows initially with frontend expansion and smooth scroll.
+- Interactive technology stack continuation pill (`...`) on project cards with quick tooltip and full tech stack details modal.
+
 ## 1.6.2
 
 ### Changed

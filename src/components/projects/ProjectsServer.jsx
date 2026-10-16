@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./projects.module.css";
 import Project from "./Project";
-import ProjectsAddCard from "./ProjectsAddCard";
+import ProjectsGridClient from "./ProjectsGridClient";
 import HarmonicHeading from "../HarmonicHeading";
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 
@@ -46,35 +46,10 @@ const ProjectsServer = ({ data, headingLevel = "h2" }) => {
           </header>
 
           <SectionAdminProvider collectionName="Projects">
-            <div
-              className={styles.projectsGrid}
-              role="list"
-              aria-label="Portfolio projects grid"
-            >
-              {projects.length > 0 ? (
-                projects.map((project, index) => (
-                  <div
-                    key={project.id}
-                    className={styles.projectListItem}
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                    role="listitem"
-                    aria-label={`${project.name} project card`}
-                  >
-                    <Project
-                      project={project}
-                      idx={index}
-                      titleAs={headingLevel === "h1" ? "h2" : "h3"}
-                    />
-                  </div>
-                ))
-              ) : (
-                <div className={styles.noProjects}>
-                  <p>No projects available at the moment.</p>
-                  <p>Check back soon for new additions to the portfolio!</p>
-                </div>
-              )}
-              <ProjectsAddCard />
-            </div>
+            <ProjectsGridClient
+              projects={projects}
+              headingLevel={headingLevel}
+            />
           </SectionAdminProvider>
         </div>
       </section>

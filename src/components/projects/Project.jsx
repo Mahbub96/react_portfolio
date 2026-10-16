@@ -26,6 +26,10 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
   const { openEdit, ModalComponent } = useSectionAdmin("Projects");
 
   const technologies = Array.isArray(lang) ? lang : (lang || "").split(", ");
+  const MAX_CARD_TECH = 5;
+  const visibleTech = technologies.slice(0, MAX_CARD_TECH);
+  const remainingCount = technologies.length - MAX_CARD_TECH;
+  const hasMore = remainingCount > 0;
   const liveUrl = project.liveUrl || (to && to !== "#" ? to : null);
   const githubUrl = project.githubUrl || null;
   const downloadUrl = project.downloadUrl || null;
@@ -146,7 +150,7 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
 
         {/* Technologies Stack */}
         <div className={styles.techStack} aria-label="Technologies used">
-          {technologies.map((tech, index) => (
+          {visibleTech.map((tech, index) => (
             <span
               key={index}
               className={styles.techTag}
@@ -154,6 +158,28 @@ function Project({ project, idx = 0, titleAs: TitleTag = "h3" }) {
               <HarmonicChip text={tech.trim()} />
             </span>
           ))}
+          {hasMore && (
+            <span
+              className={`${styles.techTag} ${styles.moreTag}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalOpen(true);
+              }}
+              title={`+${remainingCount} more technologies — click to view all`}
+              aria-label={`View ${remainingCount} more technologies`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsModalOpen(true);
+                }
+              }}
+            >
+              <HarmonicChip text="..." />
+            </span>
+          )}
         </div>
 
       </div>
