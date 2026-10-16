@@ -7,6 +7,20 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.4
+
+### Added
+- On-demand AI translation for blog posts into natural, fluent Bengali (বাংলা) powered by NVIDIA NIM LLaMA 3.2 11B Vision Instruct model.
+- Permanent MongoDB caching (`translations.bn`) for instant (sub-50ms) retrieval on subsequent visits without repeated AI token consumption.
+- Interactive language dropdown in blog posts featuring an in-flight `Stop` button allowing readers to cancel translation at any time via `AbortController`.
+- Entire blog card is now fully clickable, seamlessly navigating to the article when clicking the cover image, title, excerpt, metadata, or reading action button.
+- Sticky "On this page" Table of Contents pinned to the viewport on both desktop and mobile screens.
+
+### Security
+- Added strict defense-in-depth HTML sanitization for AI-generated translations to prevent stored XSS, script injection, and event handler poisoning.
+- Protected unpublished drafts from unauthorized translation enumeration and shielded translation routes with per-IP rate limiting and admin-only force refresh privileges.
+- Enforced strict HTTPS transport and hardened security headers (HSTS, CSP, nosniff, frame-ancestors).
+
 ## 1.6.3
 
 ### Added
