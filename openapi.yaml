@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Mahbub Portfolio & CMS API
-  version: 1.6.1
+  version: 1.6.2
   description: Comprehensive REST API specification for Mahbub Alam's Portfolio, Blog CMS, Visitor Analytics, Interaction Tracking, and Inquiry Management. Designed specifically for AI Agents, Model Context Protocol (MCP) tool servers, and automated development workflows.
   contact:
     name: Mahbub Alam

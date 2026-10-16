@@ -7,6 +7,11 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.2
+
+### Changed
+- Project card technology pills are now capped at a clean two-row maximum across all screen sizes. This keeps project cards visually consistent and balanced, while the full technology stack remains accessible by clicking the project preview image or the Details button.
+
 ## 1.6.1
 
 ### Added
