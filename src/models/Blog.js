@@ -76,6 +76,7 @@ const BlogPostSchema = new mongoose.Schema(
     indexNow: { lastPingAt: Date, lastStatus: Number },
     source: { type: String, enum: ["cms", "markdown-import"], default: "cms" },
     views: { type: Number, default: 0, min: 0 },
+    translations: { type: mongoose.Schema.Types.Mixed, default: () => ({}) },
   },
   { timestamps: true, minimize: false }
 );

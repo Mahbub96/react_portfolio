@@ -12,8 +12,10 @@ export default function PostCard({ post, featured = false, headingLevel = 2, eag
   const viewsCount = typeof post.views === "number" ? post.views : 0;
 
   return (
-    <article
+    <Link
+      href={post.path}
       className={`${styles.card} ${featured ? styles.featured : ""} ${variant === "grid" ? styles.gridCard : styles.listCard} ${!hasCover ? styles.noCover : ""}`}
+      aria-label={post.title}
     >
       <div className={styles.cardBody}>
         <div className={styles.cardMetaTop}>
@@ -33,9 +35,7 @@ export default function PostCard({ post, featured = false, headingLevel = 2, eag
         </div>
 
         <Heading className={styles.cardTitle}>
-          <Link href={post.path}>
-            {post.title}
-          </Link>
+          {post.title}
         </Heading>
 
         {post.excerpt ? (
@@ -68,6 +68,6 @@ export default function PostCard({ post, featured = false, headingLevel = 2, eag
           />
         </div>
       ) : null}
-    </article>
+    </Link>
   );
 }
