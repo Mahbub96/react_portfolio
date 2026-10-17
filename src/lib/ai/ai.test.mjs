@@ -36,7 +36,7 @@ test("config: valid values are used, invalid ones fall back with a warning", () 
   assert.equal(c.model, "meta/llama-3.3-70b-instruct");
   assert.equal(c.ratePerMin, 40);
   assert.equal(c.dailyLimit, 300);
-  assert.equal(c.timeoutMs, 25000);
+  assert.equal(c.timeoutMs, 45000);
   assert.equal(c.baseUrl, "https://integrate.api.nvidia.com/v1");
   assert.equal(c.disableThinking, false);
   assert.equal(warnings.length, 3);

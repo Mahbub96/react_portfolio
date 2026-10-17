@@ -11,7 +11,7 @@
  */
 import { readFileSync } from "node:fs";
 
-export const DEFAULT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b";
+export const DEFAULT_MODEL = "meta/llama-3.2-11b-vision-instruct";
 export const DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1";
 const MAX_RULES_BYTES = 4096;
 
@@ -81,7 +81,7 @@ export function loadAiConfig(env = process.env, { warn = (m) => console.warn(`[a
     ratePerMin: intSetting(env, "AI_RATE_PER_MIN", 30, 1, 1000, warn),
     dailyLimit: intSetting(env, "AI_DAILY_LIMIT", 300, 0, 1_000_000, warn),
     maxTokens: intSetting(env, "AI_MAX_TOKENS", 600, 50, 8000, warn),
-    timeoutMs: intSetting(env, "AI_TIMEOUT_MS", 25000, 2000, 120000, warn),
+    timeoutMs: intSetting(env, "AI_TIMEOUT_MS", 45000, 2000, 120000, warn),
     // Reasoning models (e.g. Nemotron) answer faster and cleaner with
     // thinking off; set AI_DISABLE_THINKING=0 for models that reject the flag.
     disableThinking: (env.AI_DISABLE_THINKING ?? "1").trim() !== "0",

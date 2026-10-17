@@ -184,7 +184,7 @@ export async function translatePostToBangla(post, targetLang = "bn", options = {
     const translationModel =
       options.model ||
       (process.env.NIM_TRANSLATION_MODEL || "").trim() ||
-      "meta/llama-3.1-8b-instruct";
+      "meta/llama-3.2-11b-vision-instruct";
     const timeoutMs = options.timeoutMs ?? 120000;
     const translationConfig = {
       ...config,
