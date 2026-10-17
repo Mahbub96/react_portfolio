@@ -7,6 +7,24 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.7
+
+### Security
+- Added defense-in-depth LLM response sanitization across all AI generation endpoints (`sanitizePlainText`, `sanitizeMarkdown`, `sanitizeTags`, `sanitizeCodeSnippet`, `sanitizeLlmResponse`) to eliminate prompt injection and executable script/HTML payloads.
+- Centralized LLM request body construction (`createLlmRequestBody`, `validateMessages`) across all AI routes for uniform prompt hygiene and structured validation.
+
+### Fixed
+- Fixed **React Error #310** (hook mismatch crash) in `AiAssist.jsx` by lifting hook references above conditional feature checks.
+- Fixed 504 Gateway Timeout during blog post translation by removing artificial 35s timeout limits, setting a resilient 90s route timeout, and configuring reasoning-capable models with `disableThinking: true` to prevent token starvation.
+- Relaxed strict body action word-count constraints in the blog editor, allowing instant section generation and improvement on short phrases, headings, and post outlines without displaying "Select the text to improve."
+- Fixed AI Body Draft preview panel docking and viewport overflow in the blog editor.
+
+### Added
+- Interactive floating block action menu in the rich text editor with quick actions: Insert (`+`), Write section with AI (`✨`), Heading (`H2`), Subheading (`H3`), and Delete block (`🗑️`).
+- Quick clear buttons (`✕`) for post Title and Excerpt inputs in the blog editor.
+- Block deletion trigger inside the inline floating bubble toolbar.
+- Enhanced subheader/excerpt input visibility and contrast in the editor canvas.
+
 ## 1.6.6
 
 ### Added
