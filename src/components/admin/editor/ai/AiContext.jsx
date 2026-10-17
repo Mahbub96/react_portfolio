@@ -36,8 +36,11 @@ export function AiProvider({ getContext, children }) {
   }, []);
 
   const noteError = useCallback((error) => {
-    const retryAfter = Number(error?.body?.retryAfter || error?.retryAfter || 0);
-    if (error?.status === 429 && retryAfter) setBlockedUntil(Date.now() + retryAfter * 1000);
+    let retryAfter = Number(error?.body?.retryAfter || error?.retryAfter || 0);
+    if (error?.status === 429) {
+      if (!Number.isFinite(retryAfter) || retryAfter <= 0) retryAfter = 20;
+      setBlockedUntil(Date.now() + retryAfter * 1000);
+    }
   }, []);
 
   /** Short field: resolves to { status, value, warnings } or throws ApiError. */

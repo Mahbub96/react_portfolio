@@ -49,7 +49,11 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
 
   if (!ai?.enabled) return null;
 
+  const inFlightRef = useRef(false);
+
   const run = async (fresh = false) => {
+    if (inFlightRef.current || state.phase === "loading" || blocked) return;
+    inFlightRef.current = true;
     setState({ phase: "loading" });
     try {
       const result = await ai.suggest(target, typeof extra === "function" ? extra() : extra || {}, { fresh });
@@ -57,6 +61,8 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
     } catch (error) {
       if (error.status === 401) return;
       setState({ phase: "error", message: error.message });
+    } finally {
+      inFlightRef.current = false;
     }
   };
 
