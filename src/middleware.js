@@ -91,9 +91,9 @@ export function middleware(request) {
       windowMs = 900000; // 15 minutes for login
       maxRequests = 10; // 10 requests per 15 minutes
     } else if (pathname.startsWith('/api/admin/blog/ai/generate')) {
-      // Second line of defence; the AI service enforces AI_RATE_PER_MIN itself.
+      // Hard gate: strictly at most 30 requests per minute
       windowMs = 60000;
-      maxRequests = (Number.parseInt(process.env.AI_RATE_PER_MIN, 10) || 30) + 5;
+      maxRequests = 30;
     } else if (pathname.startsWith('/api/admin/blog/media')) {
       windowMs = 60000;
       maxRequests = 60; // image variants upload one request each
@@ -111,16 +111,19 @@ export function middleware(request) {
     const identifier = `${clientIP}:${pathname}`;
     
     if (!checkRateLimit(identifier, windowMs, maxRequests)) {
+      const retryAfterSeconds = Math.max(1, Math.ceil(windowMs / 1000));
       return new NextResponse(
         JSON.stringify({ 
-          error: 'Too many requests', 
-          retryAfter: Math.ceil(windowMs / 60000) + ' minutes' 
+          error: pathname.startsWith('/api/admin/blog/ai/generate')
+            ? 'Too many AI requests. Limit is 30 requests per minute.'
+            : 'Too many requests', 
+          retryAfter: retryAfterSeconds 
         }),
         { 
           status: 429,
           headers: {
             'Content-Type': 'application/json',
-            'Retry-After': Math.ceil(windowMs / 1000).toString(),
+            'Retry-After': retryAfterSeconds.toString(),
           }
         }
       );

@@ -39,14 +39,14 @@ test("config: disabled without key, defaults everywhere", () => {
 test("config: valid values are used, invalid ones fall back with a warning", () => {
   const warnings = [];
   const c = loadAiConfig(
-    { NVIDIA_API_KEY: "nvapi-x", NIM_MODEL: "meta/llama-3.3-70b-instruct", AI_RATE_PER_MIN: "40", AI_DAILY_LIMIT: "abc", AI_TIMEOUT_MS: "1", NIM_BASE_URL: "http://evil.example/v1", AI_DISABLE_THINKING: "0" },
+    { NVIDIA_API_KEY: "nvapi-x", NIM_MODEL: "meta/llama-3.3-70b-instruct", AI_RATE_PER_MIN: "25", AI_DAILY_LIMIT: "abc", AI_TIMEOUT_MS: "1", NIM_BASE_URL: "http://evil.example/v1", AI_DISABLE_THINKING: "0" },
     { warn: (m) => warnings.push(m) }
   );
   assert.equal(c.enabled, true);
   assert.equal(c.model, "meta/llama-3.3-70b-instruct");
-  assert.equal(c.ratePerMin, 40);
+  assert.equal(c.ratePerMin, 25);
   assert.equal(c.dailyLimit, 300);
-  assert.equal(c.timeoutMs, 25000);
+  assert.equal(c.timeoutMs, 45000);
   assert.equal(c.baseUrl, "https://integrate.api.nvidia.com/v1");
   assert.equal(c.disableThinking, false);
   assert.equal(warnings.length, 3);

@@ -70,7 +70,11 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
 
   if (!ai?.enabled) return null;
 
-  const run = async () => {
+  const inFlightRef = useRef(false);
+
+  const run = async (fresh = false) => {
+    if (inFlightRef.current || state.phase === "streaming" || blocked) return;
+    inFlightRef.current = true;
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -79,7 +83,7 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
 
     try {
       const extraData = typeof extra === "function" ? extra() : extra || {};
-      const result = await ai.suggest(target, extraData, {
+      const result = await ai.suggest(target, { ...extraData, ...(fresh ? { fresh: true } : {}) }, {
         onChunk: (raw) => {
           const val = partialValue(raw, kind);
           setState((s) => (s.phase === "streaming" ? { ...s, raw, value: val } : s));
@@ -99,6 +103,7 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
       if (error.status === 401) return;
       setState({ phase: "error", message: error.message });
     } finally {
+      inFlightRef.current = false;
       if (abortRef.current === controller) {
         abortRef.current = null;
       }

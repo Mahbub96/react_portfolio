@@ -7,6 +7,16 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.6.6
+
+### Added
+- Background auto-translation upon post publish/update, pre-generating Bengali translations directly into MongoDB for 0ms visitor latency.
+- CLI batch translation tool (`scripts/translate-posts.mjs`, runnable via `pnpm blog:translate`) to pre-translate existing published articles into MongoDB.
+
+### Performance & Reliability
+- Switched default translation model to `meta/llama-3.1-8b-instruct`, yielding 5-10× faster generation speed (10-15s completion) and eliminating Cloudflare/Nginx gateway timeouts.
+- Added a 35-second timeout guard to the public translation API route to prevent 504 Gateway Timeout errors on edge cases.
+
 ## 1.6.5
 
 ### Fixed
