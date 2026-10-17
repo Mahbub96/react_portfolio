@@ -178,12 +178,13 @@ export async function translatePostToBangla(post, targetLang = "bn", options = {
     const translationModel =
       options.model ||
       (process.env.NIM_TRANSLATION_MODEL || "").trim() ||
-      "meta/llama-3.2-11b-vision-instruct";
+      config.model ||
+      "nvidia/nemotron-3-super-120b-a12b";
     const timeoutMs = options.timeoutMs ?? 120000;
     const translationConfig = {
       ...config,
       model: translationModel,
-      disableThinking: false,
+      disableThinking: options.disableThinking !== undefined ? Boolean(options.disableThinking) : config.disableThinking,
       timeoutMs: Math.max(config.timeoutMs, timeoutMs),
     };
     const result = await complete(translationConfig, messages, { maxTokens });
