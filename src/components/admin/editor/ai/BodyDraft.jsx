@@ -56,10 +56,18 @@ export default function BodyDraft({ draft, onAccept, onDiscard }) {
         </div>
       ) : null}
 
+      {phase === "info" || phase === "error" ? (
+        <div className={styles.actions}>
+          <button type="button" className={styles.primary} onClick={onDiscard}>
+            Got it
+          </button>
+        </div>
+      ) : null}
+
       {phase === "ready" ? (
         <div className={styles.actions}>
           <button type="button" className={styles.primary} onClick={onAccept}>
-            <LuCheck aria-hidden="true" /> {target === "body.outline" ? "Insert" : "Replace selection"}
+            <LuCheck aria-hidden="true" /> {target === "body.outline" ? "Insert" : "Insert / Replace"}
           </button>
           <button type="button" onClick={onDiscard}>
             Discard

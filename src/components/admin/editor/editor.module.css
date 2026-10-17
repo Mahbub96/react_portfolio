@@ -428,6 +428,26 @@
   outline: none;
 }
 
+.fieldClearBtn {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  margin-top: 0.35rem;
+  flex: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.fieldClearBtn:hover {
+  color: var(--accent-error);
+  background: color-mix(in srgb, var(--accent-error) 12%, transparent);
+}
+
 .excerptInline {
   display: block;
   flex: 1;
@@ -436,9 +456,11 @@
   overflow: hidden;
   border: 0;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  opacity: 0.92;
   font: inherit;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
+  font-weight: 450;
   line-height: 1.6;
   resize: none;
 }
@@ -1278,6 +1300,67 @@
 }
 
 /* Floating "+" and slash menu ----------------------------------------------------------- */
+
+.floatingActionGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--background-secondary);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(8px);
+}
+
+.floatingAiBtn {
+  display: grid;
+  width: 1.85rem;
+  height: 1.85rem;
+  place-items: center;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-full);
+  background: var(--accent-softer);
+  color: var(--accent-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.floatingAiBtn:hover,
+.floatingAiBtn:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary);
+  color: var(--background-primary);
+  outline: none;
+  transform: scale(1.08);
+}
+
+.floatingActionBtn {
+  display: grid;
+  width: 1.85rem;
+  height: 1.85rem;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.floatingActionBtn:hover,
+.floatingActionBtn:focus-visible {
+  color: var(--text-primary);
+  background: var(--background-card);
+  outline: none;
+}
+
+.floatingDeleteBtn:hover,
+.floatingDeleteBtn:focus-visible {
+  color: var(--accent-error);
+  background: color-mix(in srgb, var(--accent-error) 15%, transparent);
+}
 
 .plusButton {
   display: grid;

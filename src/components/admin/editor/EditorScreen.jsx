@@ -482,6 +482,17 @@ export default function EditorScreen({ id }) {
                   }
                 }}
               />
+              {fields.title ? (
+                <button
+                  type="button"
+                  className={styles.fieldClearBtn}
+                  onClick={() => update({ title: "" })}
+                  title="Clear title"
+                  aria-label="Clear title"
+                >
+                  <LuX aria-hidden="true" />
+                </button>
+              ) : null}
               <AiAssist target="title" label="title" onAccept={(title) => update({ title })} />
             </div>
             <div className={styles.fieldRow}>
@@ -501,6 +512,17 @@ export default function EditorScreen({ id }) {
                   }
                 }}
               />
+              {fields.excerpt ? (
+                <button
+                  type="button"
+                  className={styles.fieldClearBtn}
+                  onClick={() => update({ excerpt: "" })}
+                  title="Clear excerpt"
+                  aria-label="Clear excerpt"
+                >
+                  <LuX aria-hidden="true" />
+                </button>
+              ) : null}
               <AiAssist target="excerpt" label="excerpt" onAccept={(excerpt) => update({ excerpt })} />
             </div>
           </div>

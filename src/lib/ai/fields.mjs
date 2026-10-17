@@ -95,17 +95,17 @@ export const FIELD_SPECS = {
   "body.outline": {
     kind: "markdown",
     instruction: "A realistic, production-grade post outline with Markdown ## and ### headings and concise technical bullet points. Logical structure: Context & Problem -> Constraints & Design Decisions -> Implementation Deep Dive -> Trade-offs & Production Lessons.",
-    need: (p) => (p.post.title && words(p.body) >= 30 ? null : "Write a title and at least 30 words of notes first."),
+    need: (p) => (p.post.title && (p.post.excerpt || words(p.body) >= 20) ? null : "Write a title and at least 30 words of notes first."),
   },
   "body.expand": {
     kind: "markdown",
-    instruction: "Expand the selected text into rich, pragmatic engineering prose maintaining the author's technical voice. Provide clear technical rationale, operational considerations, and trade-offs while strictly preserving all claims and facts.",
-    need: (p) => (words(p.selection) >= 5 ? null : "Select at least a sentence to expand."),
+    instruction: "Write or expand rich, pragmatic prose for this section or topic. If a selection or subheading is given, develop it fully with practical insights, trade-offs, and clear explanation. If no specific selection is provided, write the next logical section of the article using the post's title, excerpt, and headings.",
+    need: (p) => (p.selection?.trim() || (p.post.title && p.post.excerpt) || words(p.body) >= 5 ? null : "Select text or add a title and excerpt first."),
   },
   "body.improve": {
     kind: "markdown",
-    instruction: "Refine the selected text to senior engineer standards: eliminate passive phrasing, cut redundant words, clarify technical mechanics, and sharpen sentence flow while preserving exact meaning.",
-    need: (p) => (words(p.selection) >= 3 ? null : "Select the text to improve."),
+    instruction: "Refine and polish the text: eliminate passive phrasing, cut redundant words, clarify technical mechanics, and sharpen sentence flow while preserving exact meaning.",
+    need: (p) => (p.selection?.trim() || words(p.nearbyText) >= 1 ? null : "Select or place cursor in the text to improve."),
   },
 };
 

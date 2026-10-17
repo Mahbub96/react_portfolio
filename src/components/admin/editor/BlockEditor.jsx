@@ -91,7 +91,9 @@ const SLASH_ITEMS = [
 ];
 
 const AI_ITEMS = [
-  { group: "AI assist", title: "Outline from my notes", hint: "Headings from what you wrote", icon: LuSparkles, keys: "ai outline structure", action: "ai:body.outline" },
+  { group: "AI assist", title: "Write section with AI", hint: "Draft text for current section or topic", icon: LuWandSparkles, keys: "ai write draft generate expand", action: "ai:body.expand" },
+  { group: "AI assist", title: "Generate post outline", hint: "Headings and structure from title/notes", icon: LuSparkles, keys: "ai outline structure", action: "ai:body.outline" },
+  { group: "AI assist", title: "Polish with AI", hint: "Refine tone, clarity, and flow", icon: LuCheck, keys: "ai polish improve refine", action: "ai:body.improve" },
 ];
 
 function filterItems(query, withAi = false) {
@@ -159,7 +161,7 @@ function Btn({ active, label, onClick, children }) {
   );
 }
 
-function BubbleToolbar({ editor, onAi }) {
+function BubbleToolbar({ editor, onAi, onRemove }) {
   const [mode, setMode] = useState(null); // null | "link" | "style"
   const [href, setHref] = useState("");
   const state = useEditorState({
@@ -256,8 +258,14 @@ function BubbleToolbar({ editor, onAi }) {
             {onAi ? (
               <>
                 <span className={styles.toolbarDivider} />
-                <Btn label="Expand with AI" onClick={() => onAi("body.expand")}><LuSparkles /></Btn>
+                <Btn label="Write / Expand with AI" onClick={() => onAi("body.expand")}><LuSparkles /></Btn>
                 <Btn label="Improve wording with AI" onClick={() => onAi("body.improve")}><LuWandSparkles /></Btn>
+              </>
+            ) : null}
+            {onRemove ? (
+              <>
+                <span className={styles.toolbarDivider} />
+                <Btn label="Delete block" onClick={onRemove}><LuTrash2 /></Btn>
               </>
             ) : null}
           </>
@@ -832,12 +840,52 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
           return empty && $from.depth === 1 && $from.parent.type.name === "paragraph" && $from.parent.content.size === 0;
         }}
       >
-        <button type="button" className={styles.plusButton} aria-label="Insert block" title="Insert block" onClick={() => editor.chain().focus().insertContent("/").run()}>
-          <LuPlus />
-        </button>
+        <div className={styles.floatingActionGroup}>
+          <button type="button" className={styles.plusButton} aria-label="Insert block" title="Insert block (/)" onClick={() => editor.chain().focus().insertContent("/").run()}>
+            <LuPlus />
+          </button>
+          {ai?.enabled ? (
+            <button
+              type="button"
+              className={styles.floatingAiBtn}
+              aria-label="Write section with AI"
+              title="Write section with AI"
+              onClick={() => runBodyAction("body.expand")}
+            >
+              <LuSparkles />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className={styles.floatingActionBtn}
+            aria-label="Add heading"
+            title="Heading 2"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          >
+            <LuHeading2 />
+          </button>
+          <button
+            type="button"
+            className={styles.floatingActionBtn}
+            aria-label="Add subheading"
+            title="Subheading 3"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          >
+            <LuHeading3 />
+          </button>
+          <button
+            type="button"
+            className={`${styles.floatingActionBtn} ${styles.floatingDeleteBtn}`}
+            aria-label="Delete block"
+            title="Delete block"
+            onClick={removeCurrentBlock}
+          >
+            <LuTrash2 />
+          </button>
+        </div>
       </FloatingMenu>
 
-      <BubbleToolbar editor={editor} onAi={ai?.enabled ? runBodyAction : null} />
+      <BubbleToolbar editor={editor} onAi={ai?.enabled ? runBodyAction : null} onRemove={removeCurrentBlock} />
       <BodyDraft draft={draft} onAccept={acceptDraft} onDiscard={discardDraft} />
       <SlashMenu state={slash} onPick={pickSlash} onHover={(index) => setSlash((s) => ({ ...s, index }))} />
 

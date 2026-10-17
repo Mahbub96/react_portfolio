@@ -236,14 +236,15 @@
 /* Body assistant review panel */
 .bodyPanel {
   position: fixed;
-  bottom: 1.25rem;
+  bottom: 2.25rem;
   left: 50%;
-  z-index: 130;
+  z-index: 1000;
   display: grid;
-  width: min(680px, calc(100vw - 2rem));
-  max-height: 60vh;
-  gap: 0.7rem;
-  padding: 1rem;
+  width: min(720px, calc(100vw - 2rem));
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+  gap: 0.8rem;
+  padding: 1.15rem;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-xl);
   background: var(--background-secondary);

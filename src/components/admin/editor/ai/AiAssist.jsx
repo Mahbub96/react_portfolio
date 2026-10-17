@@ -30,6 +30,7 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
   const wrapRef = useRef(null);
   const popoverRef = useRef(null);
   const abortRef = useRef(null);
+  const inFlightRef = useRef(false);
 
   const stop = () => {
     abortRef.current?.abort();
@@ -69,8 +70,6 @@ export default function AiAssist({ target, label, extra, onAccept, align = "end"
   }, []);
 
   if (!ai?.enabled) return null;
-
-  const inFlightRef = useRef(false);
 
   const run = async (fresh = false) => {
     if (inFlightRef.current || state.phase === "streaming" || blocked) return;
