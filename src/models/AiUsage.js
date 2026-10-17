@@ -9,7 +9,7 @@ const AiUsageSchema = new mongoose.Schema(
   {
     target: String,
     model: String,
-    status: { type: String, enum: ["ok", "insufficient_context", "invalid_output", "provider_error"] },
+    status: { type: String, enum: ["ok", "insufficient_context", "invalid_output", "provider_error", "cancelled"] },
     promptTokens: Number,
     completionTokens: Number,
     ms: Number,

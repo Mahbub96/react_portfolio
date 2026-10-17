@@ -7,7 +7,8 @@ import { FIELD_SPECS, TARGETS, missingContext } from "./fields.mjs";
 import { buildMessages, INSUFFICIENT_MARKER } from "./prompt.mjs";
 import { AiProviderError, complete, stream, stripThinking } from "./nim.mjs";
 import { guardUrls, parseAnswer, unverifiedNumbers } from "./validate.mjs";
-import { createAnswerCache, createMinuteLimiter } from "./limiter.mjs";
+import { createMinuteLimiter } from "./limiter.mjs";
+import { partialValue } from "./partial.mjs";
 
 const quiet = { warn: () => {} };
 const doc = (...content) => ({ type: "doc", content });
@@ -175,6 +176,84 @@ test("stream: SSE chunks, <think> hidden across chunk boundaries", async () => {
   assert.equal(stripThinking("</think>answer"), "answer");
 });
 
+test("stream: request body includes stream_options", async () => {
+  let seenBody;
+  const fetchImpl = async (url, init) => {
+    seenBody = JSON.parse(init.body);
+    const body = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ choices: [{ delta: { content: "ok" } }] })}\n\ndata: [DONE]\n\n`));
+        controller.close();
+      },
+    });
+    return new Response(body, { status: 200, headers: { "content-type": "text/event-stream" } });
+  };
+  const it = stream(config, [], { fetchImpl });
+  for await (const _ of it) {}
+  assert.equal(seenBody.stream, true);
+  assert.deepEqual(seenBody.stream_options, { include_usage: true });
+});
+
+test("stream: idle timeout firing mid-stream gives a 504 AiProviderError", async () => {
+  const shortConfig = { ...config, timeoutMs: 30 };
+  const body = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ choices: [{ delta: { content: "starting-answer" } }] })}\n\n`));
+    },
+  });
+  const fetchImpl = async () => new Response(body, { status: 200, headers: { "content-type": "text/event-stream" } });
+  const it = stream(shortConfig, [], { fetchImpl });
+  const step = await it.next();
+  assert.equal(step.value, "starting");
+  await assert.rejects(
+    async () => {
+      await it.next();
+    },
+    (e) => e instanceof AiProviderError && e.status === 504 && e.message.includes("stopped mid-answer")
+  );
+});
+
+test("stream: slow stream past timeoutMs total does not abort", async () => {
+  const shortConfig = { ...config, timeoutMs: 50 };
+  const body = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i < 3; i++) {
+        await new Promise((r) => setTimeout(r, 20));
+        controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ choices: [{ delta: { content: `content-chunk-${i}` } }] })}\n\n`));
+      }
+      controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+      controller.close();
+    },
+  });
+  const fetchImpl = async () => new Response(body, { status: 200, headers: { "content-type": "text/event-stream" } });
+  const it = stream(shortConfig, [], { fetchImpl });
+  let text = "";
+  for await (const chunk of it) {
+    text += chunk;
+  }
+  assert.equal(text, "content-chunk-0content-chunk-1content-chunk-2");
+});
+
+test("stream: caller abort gives code: cancelled", async () => {
+  const abortController = new AbortController();
+  const body = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ choices: [{ delta: { content: "first-chunk-content" } }] })}\n\n`));
+    },
+  });
+  const fetchImpl = async () => new Response(body, { status: 200, headers: { "content-type": "text/event-stream" } });
+  const it = stream(config, [], { fetchImpl, signal: abortController.signal });
+  const step = await it.next();
+  assert.equal(step.value, "first-chunk-");
+  abortController.abort();
+  await assert.rejects(
+    async () => {
+      await it.next();
+    },
+    (e) => e instanceof AiProviderError && e.code === "cancelled"
+  );
+});
+
 /* validation --------------------------------------------------------------------------- */
 
 const guards = { inputText: NOTES + " https://huggingface.co/openai/whisper-small", inputLinks: [] };
@@ -262,13 +341,26 @@ test("minute limiter: rolling window with retry-after", () => {
   assert.equal(limiter.remaining(), 2);
 });
 
-test("answer cache: same fields reuse the answer for 10 minutes", () => {
-  let t = 0;
-  const cache = createAnswerCache({ now: () => t });
-  const key = cache.key("title", { a: 1 }, "m");
-  assert.notEqual(key, cache.key("title", { a: 2 }, "m"));
-  cache.set(key, { value: "x" });
-  assert.deepEqual(cache.get(key), { value: "x" });
-  t = 10 * 60_000 + 1;
-  assert.equal(cache.get(key), null);
+test("partialValue: extracts partial strings, decodes escapes, handles unfinished tags", () => {
+  assert.equal(partialValue("", "text"), "");
+  assert.equal(partialValue('{"status":"ok"', "text"), "");
+  assert.deepEqual(partialValue('{"status":"ok"', "tags"), []);
+
+  assert.equal(partialValue('{"status":"ok","value":"Hello Wor', "text"), "Hello Wor");
+  assert.equal(partialValue('{"status":"ok","value":"Hello World"}', "text"), "Hello World");
+
+  assert.equal(
+    partialValue('{"status":"ok","value":"Line 1\\nLine 2 and \\"quotes\\" and \\\\backslash and \\t tab', "text"),
+    'Line 1\nLine 2 and "quotes" and \\backslash and \t tab'
+  );
+  assert.equal(partialValue('{"status":"ok","value":"Ampersand \\u0026 more', "text"), "Ampersand & more");
+  assert.equal(partialValue('{"status":"ok","value":"Ampersand \\u00', "text"), "Ampersand ");
+  assert.equal(partialValue('{"status":"ok","value":"Trailing \\', "text"), "Trailing ");
+
+  assert.equal(partialValue('{"status":"ok","value":["Next.js", "React", "Type', "tags").length, 2);
+  assert.deepEqual(partialValue('{"status":"ok","value":["Next.js", "React", "Type', "tags"), ["Next.js", "React"]);
+  assert.deepEqual(partialValue('{"status":"ok","value":["Next.js", "React", "TypeScript"]}', "tags"), ["Next.js", "React", "TypeScript"]);
+  assert.deepEqual(partialValue('{"status":"ok","value":[]}', "tags"), []);
+
+  assert.equal(partialValue("## Heading\nParagraph", "markdown"), "## Heading\nParagraph");
 });

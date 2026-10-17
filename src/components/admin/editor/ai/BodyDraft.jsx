@@ -48,6 +48,14 @@ export default function BodyDraft({ draft, onAccept, onDiscard }) {
         </ul>
       ) : null}
 
+      {phase === "streaming" ? (
+        <div className={styles.actions}>
+          <button type="button" onClick={onDiscard}>
+            Stop
+          </button>
+        </div>
+      ) : null}
+
       {phase === "ready" ? (
         <div className={styles.actions}>
           <button type="button" className={styles.primary} onClick={onAccept}>

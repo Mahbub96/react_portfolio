@@ -336,6 +336,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
   const aiEnabledRef = useRef(false);
   aiEnabledRef.current = Boolean(ai?.enabled);
   const [draft, setDraft] = useState(null);
+  const bodyAbortRef = useRef(null);
   const fileRef = useRef(null);
   const [slash, setSlash] = useState({ items: [], index: 0, rect: null, command: null });
   const slashRef = useRef(slash);
@@ -390,6 +391,8 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
       const e = editorRef.current;
       const assist = aiRef.current;
       if (!e || !assist?.enabled) return;
+      if (bodyAbortRef.current) return;
+
       const { from, to } = e.state.selection;
       const doc = e.state.doc;
       let selection = target === "body.outline" ? "" : doc.textBetween(from, to, "\n\n", " ");
@@ -406,10 +409,17 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
       }
       const nearbyText = `${doc.textBetween(Math.max(0, rangeFrom - 600), rangeFrom, "\n", " ")}\n…\n${doc.textBetween(rangeTo, Math.min(doc.content.size, rangeTo + 600), "\n", " ")}`;
       const range = target === "body.outline" ? { from: to, to } : { from: rangeFrom, to: rangeTo };
+
+      const controller = new AbortController();
+      bodyAbortRef.current = controller;
       setDraft({ target, phase: "streaming", text: "", range });
+
       try {
-        const result = await assist.streamBody(target, { selection, nearbyText }, (text) =>
-          setDraft((d) => (d ? { ...d, text } : d))
+        const result = await assist.streamBody(
+          target,
+          { selection, nearbyText },
+          (text) => setDraft((d) => (d ? { ...d, text } : d)),
+          { signal: controller.signal }
         );
         setDraft((d) =>
           d
@@ -419,8 +429,16 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
             : d
         );
       } catch (error) {
+        if (controller.signal.aborted || error.name === "AbortError" || error.code === "cancelled") {
+          setDraft(null);
+          return;
+        }
         if (error.status === 401) return;
         setDraft((d) => (d ? { ...d, phase: "error", error: error.message } : d));
+      } finally {
+        if (bodyAbortRef.current === controller) {
+          bodyAbortRef.current = null;
+        }
       }
     },
     []
@@ -459,8 +477,20 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     }
   }, []);
 
+  const discardDraft = useCallback(() => {
+    if (bodyAbortRef.current) {
+      bodyAbortRef.current.abort();
+      bodyAbortRef.current = null;
+    }
+    setDraft(null);
+  }, []);
+
   const acceptDraft = useCallback(() => {
     const e = editorRef.current;
+    if (bodyAbortRef.current) {
+      bodyAbortRef.current.abort();
+      bodyAbortRef.current = null;
+    }
     if (!e || !draft?.text) return setDraft(null);
     const content = markdownToDoc(draft.text).content;
     const size = e.state.doc.content.size;
@@ -469,6 +499,15 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
     e.chain().focus().insertContentAt(from === to ? from : { from, to }, content).run();
     setDraft(null);
   }, [draft]);
+
+  useEffect(() => {
+    return () => {
+      if (bodyAbortRef.current) {
+        bodyAbortRef.current.abort();
+        bodyAbortRef.current = null;
+      }
+    };
+  }, []);
 
   const requestBlock = useCallback(
     (action) => {
@@ -799,7 +838,7 @@ const BlockEditor = forwardRef(function BlockEditor({ content, bodyFont, onChang
       </FloatingMenu>
 
       <BubbleToolbar editor={editor} onAi={ai?.enabled ? runBodyAction : null} />
-      <BodyDraft draft={draft} onAccept={acceptDraft} onDiscard={() => setDraft(null)} />
+      <BodyDraft draft={draft} onAccept={acceptDraft} onDiscard={discardDraft} />
       <SlashMenu state={slash} onPick={pickSlash} onHover={(index) => setSlash((s) => ({ ...s, index }))} />
 
       {uploading ? (

@@ -9,9 +9,9 @@ import connectDB from "@/lib/mongodb";
 import { aiUsageModel } from "@/models/AiUsage";
 import { aiConfig } from "./config.mjs";
 import { buildPayload, inputLinks, inputText } from "./context.mjs";
-import { FIELD_SPECS, isTarget, missingContext } from "./fields.mjs";
-import { createAnswerCache, createMinuteLimiter } from "./limiter.mjs";
-import { AiProviderError, complete, stream } from "./nim.mjs";
+import { isTarget, missingContext } from "./fields.mjs";
+import { createMinuteLimiter } from "./limiter.mjs";
+import { AiProviderError, stream } from "./nim.mjs";
 import { buildMessages } from "./prompt.mjs";
 import { AiOutputError, parseAnswer } from "./validate.mjs";
 
@@ -24,7 +24,6 @@ export class AiError extends Error {
 }
 
 let limiter = null;
-const cache = createAnswerCache();
 const minuteLimiter = () => (limiter ||= createMinuteLimiter(aiConfig().ratePerMin));
 
 /** Start of the current day in Dhaka (UTC+6, no DST), where the owner works. */
@@ -61,8 +60,8 @@ export async function aiStatus() {
 }
 
 /**
- * Checks shared by short and streamed requests. Resolves to either an early
- * result (no provider call) or what the caller needs to call the provider.
+ * Checks shared by all requests. Resolves to either an early result (no
+ * provider call) or what the caller needs to call the provider.
  */
 async function prepare(input) {
   const config = aiConfig();
@@ -72,10 +71,6 @@ async function prepare(input) {
   const payload = buildPayload(input);
   const reason = missingContext(input.target, payload);
   if (reason) return { early: { status: "insufficient_context", reason, warnings: [] } };
-
-  const cacheKey = cache.key(input.target, payload, config.model);
-  const cached = input.fresh ? null : cache.get(cacheKey);
-  if (cached) return { early: { ...cached, cached: true } };
 
   if (config.dailyLimit) {
     const used = await usedToday();
@@ -92,7 +87,6 @@ async function prepare(input) {
   return {
     config,
     payload,
-    cacheKey,
     messages: buildMessages({ target: input.target, payload, rules: config.rules }),
     guards: { inputText: inputText(payload), inputLinks: inputLinks(input.fields?.contentJson) },
   };
@@ -101,51 +95,22 @@ async function prepare(input) {
 function providerError(error) {
   if (error instanceof AiProviderError) {
     const status = [429, 504].includes(error.status) ? error.status : 502;
-    return new AiError(error.message, status, { retryAfter: error.retryAfter, code: "provider" });
+    return new AiError(error.message, status, { retryAfter: error.retryAfter, code: error.code || "provider" });
   }
   return error;
 }
 
-/** Short fields (title, excerpt, meta, slug, tags, alt text). */
-export async function generateField(input) {
-  if (FIELD_SPECS[input.target]?.kind === "markdown") throw new AiError("Use the streaming endpoint for body actions.", 422);
-  const prep = await prepare(input);
-  if (prep.early) return prep.early;
-
-  const started = Date.now();
-  const base = { target: input.target, model: prep.config.model };
-  let answer;
-  try {
-    answer = await complete(prep.config, prep.messages);
-  } catch (error) {
-    await record({ ...base, status: "provider_error", ms: Date.now() - started });
-    throw providerError(error);
-  }
-  const usage = { promptTokens: answer.usage?.prompt_tokens, completionTokens: answer.usage?.completion_tokens, ms: Date.now() - started };
-  try {
-    const result = parseAnswer(input.target, answer.text, prep.guards);
-    await record({ ...base, ...usage, status: result.status });
-    if (result.status === "ok") cache.set(prep.cacheKey, result);
-    return result;
-  } catch (error) {
-    await record({ ...base, ...usage, status: "invalid_output" });
-    if (error instanceof AiOutputError) throw new AiError(error.message, 502, { code: "invalid_output" });
-    throw error;
-  }
-}
-
 /**
- * Body actions. Resolves to { early } or { chunks, finish }: iterate chunks
- * to stream Markdown, then await finish(fullText) for the validated result.
+ * Streaming completion for all targets (short fields and body actions).
+ * Resolves to { early } or { chunks, finish }.
  */
-export async function startBodyStream(input) {
-  if (FIELD_SPECS[input.target]?.kind !== "markdown") throw new AiError("Not a body action.", 422);
+export async function startStream(input, { signal } = {}) {
   const prep = await prepare(input);
   if (prep.early) return { early: prep.early };
 
   const started = Date.now();
   const base = { target: input.target, model: prep.config.model };
-  const iterator = stream(prep.config, prep.messages);
+  const iterator = stream(prep.config, prep.messages, { signal });
 
   async function* chunks() {
     try {
@@ -158,17 +123,29 @@ export async function startBodyStream(input) {
         yield value;
       }
     } catch (error) {
-      await record({ ...base, status: "provider_error", ms: Date.now() - started });
+      const usage = {
+        promptTokens: chunks.usage?.prompt_tokens,
+        completionTokens: chunks.usage?.completion_tokens,
+        ms: Date.now() - started,
+      };
+      if (error instanceof AiProviderError && error.code === "cancelled") {
+        await record({ ...base, ...usage, status: "cancelled" });
+        throw new AiError(error.message, 499, { code: "cancelled" });
+      }
+      await record({ ...base, ...usage, status: "provider_error" });
       throw providerError(error);
     }
   }
 
   async function finish(fullText) {
-    const usage = { promptTokens: chunks.usage?.prompt_tokens, completionTokens: chunks.usage?.completion_tokens, ms: Date.now() - started };
+    const usage = {
+      promptTokens: chunks.usage?.prompt_tokens,
+      completionTokens: chunks.usage?.completion_tokens,
+      ms: Date.now() - started,
+    };
     try {
       const result = parseAnswer(input.target, fullText, prep.guards);
       await record({ ...base, ...usage, status: result.status });
-      if (result.status === "ok") cache.set(prep.cacheKey, result);
       return result;
     } catch (error) {
       await record({ ...base, ...usage, status: "invalid_output" });
@@ -180,8 +157,21 @@ export async function startBodyStream(input) {
   return { chunks: chunks(), finish };
 }
 
+/** Short fields compatibility wrapper. */
+export async function generateField(input, options = {}) {
+  const started = await startStream(input, options);
+  if (started.early) return started.early;
+  let full = "";
+  for await (const chunk of started.chunks) {
+    full += chunk;
+  }
+  return started.finish(full);
+}
+
+/** Body stream compatibility alias. */
+export const startBodyStream = startStream;
+
 /** Tests only. */
 export function resetAiState() {
   limiter = null;
-  cache.clear();
 }

@@ -11,7 +11,7 @@
  */
 import { readFileSync } from "node:fs";
 
-export const DEFAULT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b";
+export const DEFAULT_MODEL = "nvidia/nemotron-3-super-120b-a12b";
 export const DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1";
 const MAX_RULES_BYTES = 4096;
 
