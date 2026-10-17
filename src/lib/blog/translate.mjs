@@ -10,6 +10,7 @@
  */
 import { aiConfig } from "../ai/config.mjs";
 import { complete, AiProviderError } from "../ai/nim.mjs";
+import { sanitizePlainText } from "../ai/sanitize.mjs";
 
 export class TranslationError extends Error {
   constructor(message, status = 500, extra = {}) {
@@ -106,15 +107,8 @@ export function sanitizeTranslatedHtml(html) {
   return clean.trim();
 }
 
-/** Plain text cleaner: removes all HTML tags and forbidden dashes */
-export function sanitizePlainText(text) {
-  if (!text || typeof text !== "string") return "";
-  return text
-    .replace(/<[^>]+>/g, "")
-    .replace(/[—–]/g, ", ")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
+/** Plain text cleaner: centralized sanitizer for plain text and em dashes */
+export { sanitizePlainText };
 
 
 

@@ -151,15 +151,17 @@ function parseFinishedTags(str) {
   return items;
 }
 
+import { sanitizePlainText, sanitizeMarkdown, sanitizeTags } from "./sanitize.mjs";
+
 /**
- * Extracts the value so far from raw streaming text.
+ * Extracts the value so far from raw streaming text and sanitizes it against injection.
  *
  * @param {string} raw   Cumulative response text from provider
  * @param {string} kind  FIELD_SPECS[target]?.kind ("text"|"slug"|"tags"|"markdown"|"code")
- * @returns {string|string[]} Partial value
+ * @returns {string|string[]} Sanitized partial value
  */
 export function partialValue(raw, kind) {
-  if (kind === "markdown") return raw || "";
+  if (kind === "markdown") return sanitizeMarkdown(raw || "");
   if (!raw) return kind === "tags" ? [] : "";
 
   const valueMatch = raw.match(/"value"\s*:\s*/);
@@ -169,9 +171,12 @@ export function partialValue(raw, kind) {
 
   if (kind === "tags") {
     if (!remainder.startsWith("[")) return [];
-    return parseFinishedTags(remainder);
+    const tags = parseFinishedTags(remainder);
+    return sanitizeTags(tags);
   }
 
   if (!remainder.startsWith('"')) return "";
-  return parsePartialString(remainder.slice(1));
+  const parsed = parsePartialString(remainder.slice(1));
+  if (kind === "code") return parsed;
+  return sanitizePlainText(parsed, { preserveNewlines: true, trim: false });
 }

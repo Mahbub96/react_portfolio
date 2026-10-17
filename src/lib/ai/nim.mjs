@@ -23,17 +23,10 @@ export function stripThinking(text) {
   return out.replace(/^\s*<think>[\s\S]*$/i, "").trim();
 }
 
+import { createLlmRequestBody } from "./request.mjs";
+
 function requestBody(config, messages, { maxTokens, stream }) {
-  return {
-    model: config.model,
-    messages,
-    max_tokens: maxTokens,
-    temperature: 0.3,
-    top_p: 0.9,
-    stream,
-    ...(stream ? { stream_options: { include_usage: true } } : {}),
-    ...(config.disableThinking ? { chat_template_kwargs: { enable_thinking: false } } : {}),
-  };
+  return createLlmRequestBody(config, messages, { maxTokens, stream });
 }
 
 async function post(config, body, fetchImpl, signal) {
@@ -60,6 +53,7 @@ async function post(config, body, fetchImpl, signal) {
     });
   } catch (error) {
     if (signal?.aborted) throw error;
+    if (error instanceof AiProviderError || error?.name === "LlmRequestError") throw error;
     if (error.name === "TimeoutError" || error.name === "AbortError" || controller.signal.aborted) {
       throw new AiProviderError("The AI service took too long to answer. Try again.", { status: 504 });
     }
@@ -141,7 +135,7 @@ export async function* stream(config, messages, { maxTokens = config.maxTokens *
       }
       throw new AiProviderError("The AI service stopped mid-answer.", { status: 504 });
     }
-    if (error instanceof AiProviderError) {
+    if (error instanceof AiProviderError || error?.name === "LlmRequestError") {
       throw error;
     }
     throw new AiProviderError("The AI service could not be reached.", { status: 502 });

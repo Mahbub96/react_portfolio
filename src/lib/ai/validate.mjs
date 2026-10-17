@@ -107,26 +107,18 @@ export function unverifiedNumbers(text, inputText) {
   return [...found];
 }
 
-export function removeEmDashes(text) {
-  if (!text || typeof text !== "string") return text;
-  return text
-    .replace(/\s*—\s*/g, ", ")
-    .replace(/\s*–\s*/g, ", ")
-    .replace(/\s*--\s*/g, ", ")
-    .replace(/,\s*,+/g, ",")
-    .replace(/,\s*\./g, ".")
-    .replace(/,\s*:/g, ":")
-    .replace(/,\s*;/g, ";");
-}
+import {
+  sanitizePlainText,
+  sanitizeMarkdown,
+  sanitizeTags,
+  sanitizeCodeSnippet,
+  removeEmDashes,
+} from "./sanitize.mjs";
+
+export { removeEmDashes };
 
 function cleanText(value) {
-  return removeEmDashes(String(value ?? ""))
-    .replace(/[\r\n\t]+/g, " ")
-    .replace(/\s{2,}/g, " ")
-    .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
-    .replace(/^(?:alt text|image alt|cover alt)[:\-\s]*/i, "")
-    .replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
-    .trim();
+  return sanitizePlainText(value);
 }
 
 /**
@@ -142,7 +134,7 @@ export function parseAnswer(target, rawText, { inputText = "", inputLinks = [] }
       return { status: "insufficient_context", reason: text.slice(INSUFFICIENT_MARKER.length).trim() || "Not enough to work from." };
     }
     if (!text) throw new AiOutputError("The AI returned an empty answer.");
-    text = removeEmDashes(text);
+    text = sanitizeMarkdown(text);
     const guarded = guardUrls(text.replace(/!\[[^\]]*\]\([^)]*\)/g, ""), inputText, inputLinks);
     if (guarded.removed.length) warnings.push(`Removed links that were not in your post: ${guarded.removed.join(", ")}`);
     const numbers = unverifiedNumbers(guarded.text, inputText);
@@ -219,25 +211,15 @@ export function parseAnswer(target, rawText, { inputText = "", inputLinks = [] }
 
   const extractedValue = value;
   if (spec.kind === "tags") {
-    const list = Array.isArray(extractedValue) ? extractedValue : String(extractedValue).split(",");
-    const seen = new Set();
-    value = list
-      .map((tag) => cleanText(tag).replace(/^#/, "").slice(0, spec.maxItem))
-      .filter((tag) => tag && !seen.has(tag.toLowerCase()) && seen.add(tag.toLowerCase()))
-      .slice(0, spec.maxItems);
+    value = sanitizeTags(extractedValue, { maxItems: spec.maxItems, maxItem: spec.maxItem });
     if (!value.length) throw new AiOutputError("The AI returned no usable tags. Try again.");
   } else if (spec.kind === "slug") {
     value = slugify(cleanText(extractedValue));
     if (value.length > spec.max) value = value.slice(0, spec.max).replace(/-[^-]*$/, "");
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) throw new AiOutputError("The AI returned an unusable URL slug. Try again.");
   } else if (spec.kind === "code") {
-    let codeStr = String(extractedValue || "")
-      .replace(/^```[a-zA-Z0-9_-]*\s*\n?/i, "")
-      .replace(/\n?```\s*$/i, "")
-      .trim();
-    if (!codeStr) throw new AiOutputError("The AI returned an empty code snippet. Try again.");
-    if (codeStr.length > spec.max) codeStr = codeStr.slice(0, spec.max);
-    value = codeStr;
+    value = sanitizeCodeSnippet(extractedValue, { max: spec.max });
+    if (!value) throw new AiOutputError("The AI returned an empty code snippet. Try again.");
   } else {
     const guarded = guardUrls(cleanText(extractedValue), inputText, inputLinks);
     if (guarded.removed.length) warnings.push(`Removed links that were not in your post: ${guarded.removed.join(", ")}`);

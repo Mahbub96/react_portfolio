@@ -9,6 +9,15 @@ import { AiProviderError, complete, stream, stripThinking } from "./nim.mjs";
 import { guardUrls, parseAnswer, unverifiedNumbers } from "./validate.mjs";
 import { createMinuteLimiter } from "./limiter.mjs";
 import { partialValue } from "./partial.mjs";
+import {
+  sanitizePlainText,
+  sanitizeMarkdown,
+  sanitizeTags,
+  sanitizeCodeSnippet,
+  sanitizeLlmResponse,
+  removeEmDashes,
+} from "./sanitize.mjs";
+import { createLlmRequestBody, validateMessages, LlmRequestError } from "./request.mjs";
 
 const quiet = { warn: () => {} };
 const doc = (...content) => ({ type: "doc", content });
@@ -364,3 +373,76 @@ test("partialValue: extracts partial strings, decodes escapes, handles unfinishe
 
   assert.equal(partialValue("## Heading\nParagraph", "markdown"), "## Heading\nParagraph");
 });
+
+/* sanitization and injection prevention ------------------------------------------------ */
+
+test("sanitizePlainText: removes scripts, HTML, dangerous schemes, and em dashes", () => {
+  const injection = ' <script>alert("pwned")</script><b>Hello</b> World—2026 <img src=x onerror=alert(1)> javascript:void(0) ';
+  const clean = sanitizePlainText(injection);
+  assert.equal(clean, "Hello World, 2026 void(0)");
+  assert.doesNotMatch(clean, /<script|<img|onerror|alert|—/);
+
+  // Prefixes and outer quotes trimmed
+  assert.equal(sanitizePlainText('"Alt text: A neural network diagram"'), "A neural network diagram");
+  assert.equal(sanitizePlainText("''"), "");
+});
+
+test("sanitizeMarkdown: neutralizes scripts, iframes, inline events, and dangerous links", () => {
+  const dirtyMd = `## Title\n<script>evil()</script>\n<iframe src="https://evil.com"></iframe>\n[Bad Link](javascript:alert(1))\nSafe [Good Link](https://example.com)\nParagraph with <span onclick="steal()">text</span>.`;
+  const cleanMd = sanitizeMarkdown(dirtyMd);
+  assert.match(cleanMd, /^## Title/);
+  assert.match(cleanMd, /\[Bad Link\]\(#\)/);
+  assert.match(cleanMd, /\[Good Link\]\(https:\/\/example\.com\)/);
+  assert.doesNotMatch(cleanMd, /<script|<iframe|evil\(\)|onclick|steal/);
+});
+
+test("sanitizeTags: cleans, deduplicates, and strips hashtags and HTML", () => {
+  const dirtyTags = ["#React", "<b>React</b>", "#Next.js", "AI", "<script>bad</script>"];
+  const cleanTags = sanitizeTags(dirtyTags);
+  assert.deepEqual(cleanTags, ["React", "Next.js", "AI"]);
+});
+
+test("sanitizeCodeSnippet: trims fences and enforces length bounds", () => {
+  const fenced = "```python\nprint('hello')\n```";
+  assert.equal(sanitizeCodeSnippet(fenced), "print('hello')");
+});
+
+test("sanitizeLlmResponse: dispatches based on target spec kind", () => {
+  assert.equal(sanitizeLlmResponse("text", "<b>Clean</b>—Text"), "Clean, Text");
+  assert.deepEqual(sanitizeLlmResponse("tags", ["#AI", "AI"]), ["AI"]);
+  assert.equal(sanitizeLlmResponse("code", "```js\nconst x = 1;\n```"), "const x = 1;");
+});
+
+/* centralized request body ------------------------------------------------------------- */
+
+test("validateMessages: checks roles, types, and structure", () => {
+  assert.deepEqual(validateMessages([]), []);
+  assert.throws(() => validateMessages("not-an-array"), LlmRequestError);
+  assert.throws(() => validateMessages([{ role: "unknown", content: "hi" }]), LlmRequestError);
+  assert.throws(() => validateMessages([{ role: "user", content: 123 }]), LlmRequestError);
+
+  const valid = validateMessages([{ role: "user", content: "hello" }]);
+  assert.deepEqual(valid, [{ role: "user", content: "hello" }]);
+});
+
+test("createLlmRequestBody: constructs standardized payload with bounds and options", () => {
+  const config = { model: "meta/llama-3.3-70b-instruct", disableThinking: true };
+  const messages = [{ role: "user", content: "Summarize this post" }];
+
+  const bodyStream = createLlmRequestBody(config, messages, {
+    maxTokens: 500,
+    stream: true,
+    temperature: 0.7,
+  });
+
+  assert.equal(bodyStream.model, "meta/llama-3.3-70b-instruct");
+  assert.equal(bodyStream.stream, true);
+  assert.deepEqual(bodyStream.stream_options, { include_usage: true });
+  assert.deepEqual(bodyStream.chat_template_kwargs, { enable_thinking: false });
+  assert.equal(bodyStream.max_tokens, 500);
+  assert.equal(bodyStream.temperature, 0.7);
+
+  // Model required
+  assert.throws(() => createLlmRequestBody({}, messages), LlmRequestError);
+});
+
