@@ -19,6 +19,7 @@
     "test:portfolio": "node --env-file=.env.local --test \"src/lib/portfolio/*.test.mjs\"",
     "test": "npm run test:blog && npm run test:portfolio",
     "blog:import": "node scripts/import-markdown-posts.mjs",
+    "blog:translate": "node scripts/translate-posts.mjs",
     "start": "next start",
     "lint": "next lint",
     "seed": "node scripts/seedProjects.js",

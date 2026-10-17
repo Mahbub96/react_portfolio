@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { collectionPrefix } from "@/lib/blog/env.mjs";
+import { collectionPrefix } from "../lib/blog/env.mjs";
 
 /**
  * Blog collections. Names carry the environment prefix (see lib/blog/env),

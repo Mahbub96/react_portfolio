@@ -85,9 +85,9 @@ export async function GET(request, { params }) {
       });
     }
 
-    // 2. If not cached, translate with AI service
+    // 2. If not cached, translate with AI service (capped at 35s so Nginx/Cloudflare never 504)
     const contentToTranslate = post.live || post;
-    const translation = await translatePostToBangla(contentToTranslate, lang);
+    const translation = await translatePostToBangla(contentToTranslate, lang, { timeoutMs: 35000 });
 
     const translationData = {
       ...translation,

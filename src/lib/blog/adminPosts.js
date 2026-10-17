@@ -14,6 +14,7 @@ import { emptyDoc, LIMITS } from "./schema.mjs";
 import { isValidSlug, slugFromTitle } from "./slug.mjs";
 import { postDescription, validateForPublish } from "./validate.mjs";
 import { pingSearchEngines, refreshBlog } from "./revalidate.mjs";
+import { translatePostToBangla } from "./translate.mjs";
 
 export class BlogError extends Error {
   constructor(message, status = 400, details = undefined) {
@@ -225,7 +226,50 @@ export async function publishPost(id, { publishedAt } = {}) {
     if (status) await BlogPost.updateOne({ _id: post._id }, { indexNow: { lastPingAt: new Date(), lastStatus: status } });
   }
 
+  // Auto-translate to Bangla in background upon publish so translations are instantly ready for readers
+  syncPostTranslation(post, "bn").catch((err) => {
+    console.error(`[Blog] Background translation error for ${post.slug}:`, err.message);
+  });
+
   return { post: toEditorPost(post.toObject()), warnings: check.warnings };
+}
+
+/**
+ * Automatically translates a post to the target language (default: Bangla)
+ * and saves it directly into MongoDB cache.
+ */
+export async function syncPostTranslation(postOrId, lang = "bn", options = {}) {
+  try {
+    const { BlogPost } = await models();
+    let post = postOrId;
+    if (!post || typeof post !== "object" || !post._id) {
+      post = await BlogPost.findById(postOrId);
+    }
+    if (!post) return null;
+
+    const contentToTranslate = post.live || post;
+    if (!contentToTranslate?.html && !contentToTranslate?.title) {
+      return null;
+    }
+
+    const translation = await translatePostToBangla(contentToTranslate, lang, options);
+    const translationData = {
+      ...translation,
+      lang,
+      sourceVersion: post.liveVersion || post.version || 1,
+      translatedAt: new Date(),
+    };
+
+    await BlogPost.updateOne(
+      { _id: post._id },
+      { $set: { [`translations.${lang}`]: translationData } }
+    );
+    console.log(`[Blog Translation] Successfully generated ${lang} translation for "${post.slug}"`);
+    return translationData;
+  } catch (error) {
+    console.error(`[Blog Translation] Could not translate post "${postOrId?.slug || postOrId}":`, error.message);
+    return null;
+  }
 }
 
 export async function unpublishPost(id) {

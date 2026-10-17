@@ -125,7 +125,7 @@ export function sanitizePlainText(text) {
  * @param {string} targetLang - Target language code (currently "bn")
  * @returns {Promise<{ title: string, excerpt: string, html: string, toc: Array }>}
  */
-export async function translatePostToBangla(post, targetLang = "bn") {
+export async function translatePostToBangla(post, targetLang = "bn", options = {}) {
   if (targetLang !== "bn") {
     throw new TranslationError(`Unsupported target language: ${targetLang}`, 400);
   }
@@ -182,12 +182,15 @@ export async function translatePostToBangla(post, targetLang = "bn") {
   try {
     const maxTokens = Math.min(Math.max(config.maxTokens * 4, 4000), 8000);
     const translationModel =
-      (process.env.NIM_TRANSLATION_MODEL || "").trim() || "meta/llama-3.2-11b-vision-instruct";
+      options.model ||
+      (process.env.NIM_TRANSLATION_MODEL || "").trim() ||
+      "meta/llama-3.1-8b-instruct";
+    const timeoutMs = options.timeoutMs ?? 120000;
     const translationConfig = {
       ...config,
       model: translationModel,
       disableThinking: false,
-      timeoutMs: Math.max(config.timeoutMs, 120000),
+      timeoutMs: Math.max(config.timeoutMs, timeoutMs),
     };
     const result = await complete(translationConfig, messages, { maxTokens });
     const parsed = extractJson(result.text);
