@@ -84,7 +84,17 @@ export default function ProfileImageWithModal({
           height={220}
           priority
         />
+        <div className={bannerStyles.holographicAvatarRing} aria-hidden="true" />
         <div className={bannerStyles.profileGlow} aria-hidden="true" />
+        <span className={`${bannerStyles.floating3DChip} ${bannerStyles.chipTopRight}`} aria-hidden="true">
+          ⚛️ React
+        </span>
+        <span className={`${bannerStyles.floating3DChip} ${bannerStyles.chipBottomLeft}`} aria-hidden="true">
+          🚀 Next.js
+        </span>
+        <span className={`${bannerStyles.floating3DChip} ${bannerStyles.chipBottomRight}`} aria-hidden="true">
+          🤖 Applied AI
+        </span>
         <div className={bannerStyles.zoomHint} aria-hidden="true">
           <HiOutlineArrowsExpand />
         </div>

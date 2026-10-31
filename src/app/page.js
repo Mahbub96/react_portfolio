@@ -11,6 +11,7 @@ import ProjectsServer from "@/components/projects/ProjectsServer";
 import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/seo/JsonLd";
+import CyberGridBackground from "@/components/CyberGridBackground";
 
 import VisitorAnalytics from "@/components/VisitorAnalytics";
 import VisitorCounter from "@/components/VisitorCounter";
@@ -57,6 +58,8 @@ export default async function HomePage() {
         <JsonLd data={graph} />
 
         <Navbar />
+
+        <CyberGridBackground />
 
         <main className="home" role="main">
           <BannerServer

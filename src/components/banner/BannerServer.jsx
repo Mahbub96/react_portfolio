@@ -16,6 +16,7 @@ import DownloadResumeButton from "./DownloadResumeButton";
 import HarmonicName from "./HarmonicName";
 import HarmonicChip from "./HarmonicChip";
 import ProfileImageWithModal from "./ProfileImageWithModal";
+import TiltCard3D from "@/components/ui/TiltCard3D";
 import { getResumeConfig } from "@/lib/resumeConfig";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 
@@ -197,11 +198,17 @@ const BannerServer = ({
               </div>
             </div>
 
-            <aside
-              className={styles.profileCard}
-              aria-label={`${name} portfolio snapshot`}
+            <TiltCard3D
+              className={styles.profileTiltWrapper}
+              maxTilt={10}
+              glare={true}
+              scale={1.02}
             >
-              <ProfileImageWithModal
+              <aside
+                className={styles.profileCard}
+                aria-label={`${name} portfolio snapshot`}
+              >
+                <ProfileImageWithModal
                 profileImage={profileImage}
                 name={name}
                 jobTitle={jobTitle}
@@ -234,21 +241,22 @@ const BannerServer = ({
                   {
                     icon: FaBriefcase,
                     number: `${experience.years}+`,
-                    label: "Years Engineering",
+                    label: "Experience",
                   },
                   {
                     icon: FaCode,
                     number: `${projectCount}+`,
-                    label: "Shipped Projects",
+                    label: "Projects",
                   },
                   {
                     icon: FaBuilding,
-                    number: company,
-                    label: "Currently At",
+                    number: company.length > 14 ? company.replace(/\s+Technologies(\s+Ltd\.?)?/i, " Tech") : company,
+                    fullNumber: company,
+                    label: "Company",
                     href: companyUrl,
                   },
                 ].map((stat) => (
-                  <div key={stat.label} className={styles.statItem}>
+                  <div key={stat.label} className={styles.statItem} title={stat.fullNumber || stat.number}>
                     <stat.icon className={styles.statIcon} aria-hidden="true" />
                     {stat.href ? (
                       <a
@@ -300,6 +308,7 @@ const BannerServer = ({
                 ))}
               </div>
             </aside>
+          </TiltCard3D>
           </div>
         </div>
       </section>

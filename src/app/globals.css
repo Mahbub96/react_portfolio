@@ -69,6 +69,13 @@
   --shadow-premium: 0 24px 80px rgba(0, 0, 0, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
+  /* 3D Depth & Spatial Tokens */
+  --perspective-default: 1000px;
+  --perspective-deep: 1400px;
+  --shadow-3d-card: 0 18px 40px -12px rgba(0, 0, 0, 0.65), 0 0 24px -4px rgba(32, 201, 151, 0.22);
+  --shadow-3d-hover: 0 28px 60px -18px rgba(0, 0, 0, 0.8), 0 0 35px 2px rgba(45, 212, 191, 0.32);
+  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%);
+
   /* Spacing System */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -167,6 +174,9 @@
   --shadow-glow-strong: 0 0 40px rgba(13, 148, 136, 0.3);
   --shadow-premium: 0 24px 70px rgba(15, 23, 42, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-3d-card: 0 16px 36px -12px rgba(15, 23, 42, 0.16), 0 0 20px -4px rgba(13, 148, 136, 0.2);
+  --shadow-3d-hover: 0 26px 54px -16px rgba(15, 23, 42, 0.24), 0 0 30px 2px rgba(13, 148, 136, 0.3);
+  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 100%);
 
   --gradient-primary: linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #0f766e 100%);
   --gradient-text: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);

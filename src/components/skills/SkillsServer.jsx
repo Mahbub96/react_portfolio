@@ -4,6 +4,7 @@ import HarmonicHeading from "../HarmonicHeading";
 import CoreStrengthsCard from "./CoreStrengthsCard";
 import SkillCategoryCard from "./SkillCategoryCard";
 import SkillsClient from "./SkillsClient";
+import SkillsViewManager from "./SkillsViewManager";
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 import {
   CATEGORY_METADATA,
@@ -98,46 +99,48 @@ export default function SkillsServer({
           </p>
         </header>
 
-        {/* 3-Column Asymmetric Bento Grid (Dynamic from DB) */}
-        <div
-          className={styles.bentoGrid}
-          role="region"
-          aria-label="Skills & Technologies Overview"
-        >
-          {/* Column 1: Core Strengths (Spans 2 rows on desktop) */}
-          <CoreStrengthsCard
-            coreStrengths={rawCoreStrengths}
-            headingLevel={cardHeadingLevel}
-          />
+        {/* 3D Sphere & Bento Grid View Manager */}
+        <SkillsViewManager skills={rawSkills}>
+          <div
+            className={styles.bentoGrid}
+            role="region"
+            aria-label="Skills & Technologies Overview"
+          >
+            {/* Column 1: Core Strengths (Spans 2 rows on desktop) */}
+            <CoreStrengthsCard
+              coreStrengths={rawCoreStrengths}
+              headingLevel={cardHeadingLevel}
+            />
 
-          {/* Column 2, Row 1: Languages */}
-          <SkillCategoryCard
-            category={languagesCategory}
-            headingLevel={cardHeadingLevel}
-            cardClassName={styles.languagesCard}
-          />
+            {/* Column 2, Row 1: Languages */}
+            <SkillCategoryCard
+              category={languagesCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.languagesCard}
+            />
 
-          {/* Column 3, Row 1: Frameworks & Libraries */}
-          <SkillCategoryCard
-            category={frameworksCategory}
-            headingLevel={cardHeadingLevel}
-            cardClassName={styles.frameworksCard}
-          />
+            {/* Column 3, Row 1: Frameworks & Libraries */}
+            <SkillCategoryCard
+              category={frameworksCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.frameworksCard}
+            />
 
-          {/* Column 2, Row 2: Data & Infrastructure */}
-          <SkillCategoryCard
-            category={dataCategory}
-            headingLevel={cardHeadingLevel}
-            cardClassName={styles.dataCard}
-          />
+            {/* Column 2, Row 2: Data & Infrastructure */}
+            <SkillCategoryCard
+              category={dataCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.dataCard}
+            />
 
-          {/* Column 3, Row 2: AI & Engineering */}
-          <SkillCategoryCard
-            category={aiCategory}
-            headingLevel={cardHeadingLevel}
-            cardClassName={styles.aiCard}
-          />
-        </div>
+            {/* Column 3, Row 2: AI & Engineering */}
+            <SkillCategoryCard
+              category={aiCategory}
+              headingLevel={cardHeadingLevel}
+              cardClassName={styles.aiCard}
+            />
+          </div>
+        </SkillsViewManager>
 
           {/* Client-side admin controls (rendered only when authenticated) */}
           <SkillsClient skills={rawSkills} />
