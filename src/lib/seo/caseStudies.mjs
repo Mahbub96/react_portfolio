@@ -13,6 +13,10 @@
  * CONTENT RULE: every statement must be verifiable from the project's public
  * repository/README. No invented metrics, users or outcomes. Design targets
  * are described as targets, not as measured results.
+ *
+ * `highlight` is the condensed problem → design → decision summary shown on
+ * the homepage case-study cards. It only restates facts from the fields
+ * below it; keep the two in sync when either changes.
  */
 
 export const CASE_STUDIES = {
@@ -21,6 +25,17 @@ export const CASE_STUDIES = {
     headline: "LinkLens — self-hosted link intelligence and smart redirect engine",
     summary:
       "LinkLens is a self-hosted link management and redirect platform built with NestJS, Redis, ClickHouse and Next.js, separating a fast redirect path from asynchronous analytics.",
+    highlight: {
+      category: "Backend · Platform",
+      tagline: "A self-hosted link platform that separates a fast redirect path from asynchronous analytics.",
+      problem:
+        "Typical shorteners resolve every click against the relational database and pay third-party APIs for geolocation — both bottleneck latency and cost.",
+      design:
+        "Redirects resolve from Redis without touching PostgreSQL; each click goes to a BullMQ queue, is enriched by workers and stream-inserted into ClickHouse.",
+      decisionLabel: "Trade-off",
+      decision:
+        "Self-hosted MaxMind data instead of a paid geo API — periodic dataset updates in exchange for zero per-request cost.",
+    },
     keywords: [
       "URL shortener",
       "smart redirects",
@@ -66,6 +81,17 @@ export const CASE_STUDIES = {
     headline: "Bangla & English ASR Studio — Whisper transcription, evaluation and fine-tuning",
     summary:
       "A local-first speech-to-text studio and Whisper fine-tuning pipeline for Bangla and English: transcription UI, batch jobs, WER/CER benchmarking and guarded LoRA training.",
+    highlight: {
+      category: "Applied AI · Speech",
+      tagline: "Whisper transcription, WER/CER evaluation and guarded LoRA fine-tuning for Bangla and mixed Banglish audio.",
+      problem:
+        "Bangla can be misdetected as another Indic language, and fine-tuning without a fixed baseline gives no evidence the new model is better.",
+      design:
+        "FastAPI backend and React operator UI, CLI scripts for GPU servers, and Docker stacks for CPU and NVIDIA GPU.",
+      decisionLabel: "Decision",
+      decision:
+        "The pipeline never auto-replaces the production model — it reports a verdict and the final call stays manual.",
+    },
     keywords: [
       "Bangla speech recognition",
       "Bengali ASR",

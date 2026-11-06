@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { DM_Sans, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./globals.css";
@@ -13,11 +13,28 @@ import {
   SITE_ORIGIN,
 } from "@/lib/seo/siteConfig.mjs";
 
-const inter = Inter({
+// Calm Depth type system: Space Grotesk for headings, DM Sans for body copy,
+// JetBrains Mono for small technical labels. Exposed as CSS variables and
+// consumed through --font-display / --font-sans / --font-mono in globals.css.
+const bodyFont = DM_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-body",
+});
+
+const displayFont = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+  variable: "--font-heading",
+});
+
+const monoFont = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  variable: "--font-code",
 });
 
 const siteVerification = Object.fromEntries(
@@ -31,7 +48,10 @@ const siteVerification = Object.fromEntries(
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a192f",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F5F1" },
+    { media: "(prefers-color-scheme: dark)", color: "#0D1715" },
+  ],
 };
 
 /**
@@ -87,21 +107,26 @@ export const metadata = {
     ],
   },
   other: {
-    "msapplication-TileColor": "#0a192f",
+    "msapplication-TileColor": "#0E7C6B",
   },
 };
 
-// Runs before first paint so a saved light theme never flashes dark.
-// Mirrors ThemeProvider: dark unless localStorage says "light".
-const THEME_SCRIPT = `try{document.documentElement.setAttribute("data-theme",localStorage.getItem("theme")==="light"?"light":"dark")}catch(e){}`;
+// Runs before first paint so a saved dark theme never flashes light.
+// Mirrors ThemeProvider: light unless localStorage says "dark".
+const THEME_SCRIPT = `try{document.documentElement.setAttribute("data-theme",localStorage.getItem("color-theme")==="dark"?"dark":"light")}catch(e){}`;
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="light"
+      className={`${bodyFont.variable} ${displayFont.variable} ${monoFont.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className={inter.className} suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true}>
         <DataContextProvider>
           <ThemeProvider>
             {children}

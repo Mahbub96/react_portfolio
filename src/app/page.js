@@ -3,15 +3,14 @@ import { getPortfolioData } from "@/lib/getPortfolioData";
 import LoadingScreen from "@/components/LoadingScreen";
 
 import Navbar from "@/components/navbar/Navbar";
-import BannerServer from "@/components/banner/BannerServer";
-import SkillsServer from "@/components/skills/SkillsServer";
-import Experience from "@/components/experiences/Experience";
-import Educations from "@/components/educations/Educations";
-import ProjectsServer from "@/components/projects/ProjectsServer";
-import Contact from "@/components/contact/Contact";
+import HomeHero from "@/components/home/HomeHero";
+import HomePrinciples from "@/components/home/HomePrinciples";
+import HomeWork from "@/components/home/HomeWork";
+import HomeCareer from "@/components/home/HomeCareer";
+import HomeStack from "@/components/home/HomeStack";
+import HomeEducationContact from "@/components/home/HomeEducationContact";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/seo/JsonLd";
-import CyberGridBackground from "@/components/CyberGridBackground";
 
 import VisitorAnalytics from "@/components/VisitorAnalytics";
 import VisitorCounter from "@/components/VisitorCounter";
@@ -39,7 +38,10 @@ export const metadata = pageMetadata({
 export default async function HomePage() {
   try {
     const portfolioData = await getPortfolioData();
-    const profile = portfolioData.profile?.data || {};
+    const listOf = (key) =>
+      Array.isArray(portfolioData[key]?.data) ? portfolioData[key].data : [];
+    const experiences = listOf("Experiences");
+    const educations = listOf("Educations");
 
     const graph = buildPageGraph({
       path: "/",
@@ -59,30 +61,13 @@ export default async function HomePage() {
 
         <Navbar />
 
-        <CyberGridBackground />
-
         <main className="home" role="main">
-          <BannerServer
-            data={portfolioData.Banner}
-            profileImage={profile.image}
-            profile={profile}
-            experiences={portfolioData.Experiences?.data}
-            projects={portfolioData.Projects?.data}
-          />
-
-          <ProjectsServer data={portfolioData.Projects} />
-
-          <SkillsServer
-            data={portfolioData.Skills}
-            coreStrengths={portfolioData.CoreStrengths}
-          />
-
-          <Experience data={portfolioData.Experiences} />
-
-          <Educations data={portfolioData.Educations} />
-
-          <Contact />
-
+          <HomeHero experiences={experiences} educations={educations} />
+          <HomePrinciples />
+          <HomeWork projects={listOf("Projects")} />
+          <HomeCareer experiences={experiences} />
+          <HomeStack skills={listOf("Skills")} />
+          <HomeEducationContact educations={educations} />
           <Footer data={portfolioData} />
         </main>
 

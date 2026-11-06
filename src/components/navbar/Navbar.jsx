@@ -1,263 +1,181 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { LuLock, LuLogOut, LuMoon, LuSun } from "react-icons/lu";
 import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import LoginModal from "../auth/LoginModal";
-import { LuSparkles } from "react-icons/lu";
+import DownloadResumeButton from "../banner/DownloadResumeButton";
 import styles from "./navbar.module.css";
 import { APP_VERSION, BUILD_NUMBER } from "@/config/version";
+import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
 
-function Header({ data }) {
+const NAV_HEIGHT = 68;
+
+function Header() {
   const { auth, logout, isLoaded } = useDataContext();
   const { isDarkMode, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const menuRef = useRef(null);
+  const toggleRef = useRef(null);
 
-  // Extract name from database data
-  const profile = data?.profile?.data || {};
-  const bannerData = data?.Banner?.data || {};
-  const name = profile.name || bannerData.name || "Mahbub Alam";
-
-  // Close menu when clicking outside
+  // Close the mobile menu on outside click or Escape.
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    if (!isMenuOpen) return undefined;
+    const onPointer = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !toggleRef.current?.contains(event.target)
+      ) {
         setIsMenuOpen(false);
       }
     };
-
-    if (isMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const onKey = (event) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
     };
-  }, [isMenuOpen]);
-
-  // Close menu on escape key
-  useEffect(() => {
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        setIsMenuOpen(false);
-      }
-    };
-
-    if (isMenuOpen) {
-      document.addEventListener("keydown", handleEscape);
-    }
-
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
     };
   }, [isMenuOpen]);
 
   // Prevent background scroll while the mobile menu is open.
   useEffect(() => {
-    if (typeof document === "undefined") return;
-
     document.body.classList.toggle("nav-menu-open", isMenuOpen);
-
-    return () => {
-      document.body.classList.remove("nav-menu-open");
-    };
+    return () => document.body.classList.remove("nav-menu-open");
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Links point at "/#section" so they also work from sub-pages (where the
   // section does not exist and the browser should navigate home). Only when
   // the section is on the current page is the click intercepted for smooth
   // scrolling.
   const handleNavClick = (e, sectionId) => {
-    if (typeof window !== "undefined" && typeof document !== "undefined") {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        e.preventDefault();
-        const navHeight = 70; // Approximate navbar height
-        const sectionTop = section.offsetTop - navHeight;
-        window.scrollTo({
-          top: sectionTop,
-          behavior: "smooth",
-        });
-        setIsMenuOpen(false);
-      }
-    }
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    e.preventDefault();
+    window.scrollTo({ top: section.offsetTop - NAV_HEIGHT, behavior: "smooth" });
+    setIsMenuOpen(false);
   };
-
-  const handleLogout = () => {
-    logout(); // Call the logout function from context
-  };
-
-  // Add scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const header = document.querySelector(`.${styles.header}`);
-      if (header) {
-        if (window.scrollY > 50) {
-          header.classList.add(styles.scrolled);
-        } else {
-          header.classList.remove(styles.scrolled);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navItems = [
-    { id: "about", label: "About", number: "01" },
-    { id: "projects", label: "Projects", number: "02" },
-    { id: "skills", label: "Skills", number: "03" },
-    { id: "experience", label: "Experience", number: "04" },
-    { id: "education", label: "Education", number: "05" },
-    // Public visitors see Blog; logged-in owners use Admin directly
-    ...(!auth
-      ? [{ id: "blog", label: "Blog", number: "06", href: "/blog/" }]
-      : []),
-    // Owner-only links once signed in
+    { id: "projects", label: "Work" },
+    { id: "experience", label: "Experience" },
+    { id: "skills", label: "Stack" },
+    { id: "blog", label: "Writing", href: "/blog/" },
+    { id: "about-page", label: "About", href: "/about/" },
     ...(auth && isLoaded
       ? [
-          { id: "analytics", label: "Analytics", number: "06", href: "/analytics/" },
-          { id: "admin", label: "Admin", number: "07", href: "/admin/portfolio/" },
+          { id: "analytics", label: "Analytics", href: "/analytics/" },
+          { id: "admin", label: "Admin", href: "/admin/portfolio/" },
         ]
       : []),
   ];
 
   return (
     <>
-      <header className={styles.header}>
-        <nav className={styles.navbar}>
-          <div className={styles.container}>
-            <a className={styles.logo} href="/">
-              <span className={styles.bracket}>{"<"}</span>
-              {name}
-              <span className={styles.bracket}>{"/>"}</span>
-            </a>
+      <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
+        <nav className={styles.inner} aria-label="Primary">
+          <a className={styles.brand} href="/">
+            <span className={styles.mark} aria-hidden="true">
+              MA
+            </span>
+            <span className={styles.brandText}>
+              {SITE_AUTHOR.name}
+              <small>{SITE_AUTHOR.jobTitle}</small>
+            </span>
+          </a>
 
-            <button
-              className={`${styles.menuButton} ${
-                isMenuOpen ? styles.active : ""
-              }`}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle navigation"
-              aria-expanded={isMenuOpen}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-
-            <div
-              ref={menuRef}
-              className={`${styles.navContent} ${
-                isMenuOpen ? styles.show : ""
-              }`}
-            >
-              <ul className={styles.navLinks}>
-                {navItems.map(({ id, label, number, href }) => {
-                  const isBlog = id === "blog";
-                  return (
-                    <li key={id} className={isBlog ? styles.blogNavItem : undefined}>
-                      {href ? (
-                        <a
-                          href={href}
-                          className={isBlog ? styles.blogButtonLink : undefined}
-                        >
-                          {isBlog ? (
-                            <span className={styles.blogButtonWrapper}>
-                              <span className={styles.blogBadge}>
-                                <span className={styles.blogPulseDot} />
-                                {/* NEW */}
-                              </span>
-                              <span className={styles.navNumber}>{number}.</span>
-                              <span className={styles.blogLabel}>{label}</span>
-                              <LuSparkles className={styles.blogSparkle} aria-hidden="true" />
-                            </span>
-                          ) : (
-                            <>
-                              <span className={styles.navNumber}>{number}.</span>
-                              {label}
-                            </>
-                          )}
-                        </a>
-                      ) : (
-                        <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
-                          <span className={styles.navNumber}>{number}.</span>
-                          {label}
-                        </a>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className={styles.navButtons}>
-                {isLoaded && (
-                  <>
-                    {auth ? (
-                      <button
-                        className={styles.authButton}
-                        onClick={handleLogout}
-                      >
-                        Log Out
-                      </button>
-                    ) : (
-                      <a
-                        href="/#contact"
-                        className={styles.authButton}
-                        onClick={(e) => handleNavClick(e, "contact")}
-                      >
-                        Get in Touch
-                      </a>
-                    )}
-                  </>
-                )}
-                {isLoaded && !auth && (
-                  <button
-                    className={styles.themeButton}
-                    onClick={() => setShowLoginModal(true)}
-                    title="Admin Login / Analytics"
-                    aria-label="Admin Login"
-                  >
-                    <span style={{ fontSize: "1.05rem", lineHeight: 1 }}>
-                      🔐
-                    </span>
-                  </button>
-                )}
-                <button
-                  className={styles.themeButton}
-                  onClick={toggleTheme}
-                  aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
-                >
-                  {isDarkMode ? (
-                    <span style={{ fontSize: "1.2rem", lineHeight: 1 }}>
-                      ☀️
-                    </span>
+          <div
+            ref={menuRef}
+            id="primary-navigation"
+            className={`${styles.menu} ${isMenuOpen ? styles.open : ""}`}
+          >
+            <ul className={styles.links}>
+              {navItems.map(({ id, label, href }) => (
+                <li key={id}>
+                  {href ? (
+                    <a href={href}>{label}</a>
                   ) : (
-                    <span style={{ fontSize: "1.2rem", lineHeight: 1 }}>
-                      🌙
-                    </span>
+                    <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
+                      {label}
+                    </a>
                   )}
-                </button>
-              </div>
+                </li>
+              ))}
+            </ul>
 
-              {/* Mobile Drawer Version Indicator */}
-              <div className={styles.mobileVersionWrapper}>
-                <span className={styles.mobileVersionBadge}>
-                  v{APP_VERSION} • Build {BUILD_NUMBER}
-                </span>
-              </div>
+            <div className={styles.actions}>
+              {isLoaded && auth && (
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={logout}
+                  title="Log out"
+                  aria-label="Log out"
+                >
+                  <LuLogOut aria-hidden="true" />
+                </button>
+              )}
+              {isLoaded && !auth && (
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => setShowLoginModal(true)}
+                  title="Owner login"
+                  aria-label="Owner login"
+                >
+                  <LuLock aria-hidden="true" />
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.iconButton}
+                onClick={toggleTheme}
+                aria-label={`Switch to ${isDarkMode ? "light" : "dark"} theme`}
+                title={`Switch to ${isDarkMode ? "light" : "dark"} theme`}
+              >
+                {isDarkMode ? <LuSun aria-hidden="true" /> : <LuMoon aria-hidden="true" />}
+              </button>
+              <DownloadResumeButton
+                className={styles.resume}
+                label="Résumé"
+                showIcon={false}
+                fileName="Mahbub_Alam_Resume.pdf"
+              />
             </div>
+
+            <p className={styles.version}>
+              v{APP_VERSION} • Build {BUILD_NUMBER}
+            </p>
           </div>
+
+          <button
+            ref={toggleRef}
+            type="button"
+            className={`${styles.menuButton} ${isMenuOpen ? styles.menuButtonOpen : ""}`}
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={isMenuOpen}
+            aria-controls="primary-navigation"
+          >
+            <span />
+            <span />
+          </button>
         </nav>
       </header>
 
-      {/* Admin Login Modal */}
-      <LoginModal
-        show={showLoginModal}
-        onHide={() => setShowLoginModal(false)}
-      />
+      <LoginModal show={showLoginModal} onHide={() => setShowLoginModal(false)} />
     </>
   );
 }

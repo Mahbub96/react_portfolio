@@ -7,6 +7,21 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.7.0
+
+### Changed
+- Redesigned the homepage around engineering work ("Calm Depth"): a hero with a layered Product → Services & AI → Data system diagram, an engineering-habits section, case studies laid out as problem → design → trade-off, a career progression across roles, the stack grouped by layer, and education with a plain contact card.
+- New site-wide colour system and typography: a light "Mist Paper" theme is now the default, with a "Night Teal" dark theme on the toggle. Headings use Space Grotesk, body text DM Sans and labels JetBrains Mono. Other pages pick up the new palette automatically.
+- Rebuilt the navigation bar: simpler links (Work, Experience, Stack, Writing, About), icon buttons for theme and owner login, a Résumé download, and a full-screen menu on mobile.
+- The theme choice is only saved when a visitor toggles it, so first-time visitors always see the light theme.
+
+### Added
+- Interactive 3D tilt on project cards, a 3D skills sphere view on the Skills page, and a refreshed profile card on the About page.
+- Homepage case-study diagrams for LinkLens (request path) and the Bangla & English ASR Studio (guarded training workflow).
+
+### Fixed
+- The mobile menu now opens as a full-screen panel instead of being clipped inside the navigation bar.
+
 ## 1.6.7
 
 ### Security

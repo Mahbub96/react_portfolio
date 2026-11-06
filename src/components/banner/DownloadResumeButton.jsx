@@ -7,6 +7,9 @@ import styles from "./banner.module.css";
 export default function DownloadResumeButton({
   fileName = "Resume.pdf",
   resumeMode = "dynamic",
+  className,
+  label = "Download Resume",
+  showIcon = true,
 }) {
   const [loading, setLoading] = useState(false);
   const isStatic = resumeMode === "static";
@@ -50,12 +53,12 @@ export default function DownloadResumeButton({
     <button
       type="button"
       onClick={handleDownload}
-      className={styles.ctaButton}
+      className={className || styles.ctaButton}
       disabled={loading}
       aria-busy={loading}
     >
-      <FaFileDownload />
-      <span>{loading ? loadingLabel : "Download Resume"}</span>
+      {showIcon && <FaFileDownload aria-hidden="true" />}
+      <span>{loading ? loadingLabel : label}</span>
     </button>
   );
 }
