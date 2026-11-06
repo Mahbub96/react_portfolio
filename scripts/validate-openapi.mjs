@@ -8,7 +8,7 @@ import path from "path";
 import * as yaml from "js-yaml";
 
 const rootDir = process.cwd();
-const jsonPath = path.join(rootDir, "public", "openapi.json");
+const jsonPath = path.join(rootDir, "docs", "openapi.json");
 const yamlPath = path.join(rootDir, "openapi.yaml");
 
 console.log("=== Validating OpenAPI 3.1 Specification ===");

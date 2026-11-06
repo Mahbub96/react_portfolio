@@ -24,7 +24,7 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
 });
 
 const TITLE = "Skills & Technologies";
-const DESCRIPTION = `Languages, frameworks and tools ${SITE_AUTHOR.name} uses — Node.js, NestJS, Python, FastAPI, React, Next.js, PostgreSQL, Docker — and core technical strengths.`;
+const DESCRIPTION = `Languages, frameworks and tools ${SITE_AUTHOR.name} uses (Node.js, NestJS, Python, FastAPI, React, Next.js, PostgreSQL, Docker) and core technical strengths.`;
 
 export const metadata = pageMetadata({
   path: "/skills/",

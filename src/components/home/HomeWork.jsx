@@ -5,20 +5,14 @@ import { ItemAdmin, AddItem } from "./HomeAdmin";
 import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioContextualControls";
 import { buildProjectCatalog, projectPath } from "@/lib/seo/projectCatalog.mjs";
 import { caseStudyFor } from "@/lib/seo/caseStudies.mjs";
+import { CASE_DIAGRAMS } from "./CaseDiagrams";
 
 /**
  * Selected work. Projects that have a written case study AND a diagram get a
  * full problem → design → trade-off card; every other project is a compact
  * row. All copy comes from caseStudies.mjs / the CMS — nothing invented here.
  */
-const DIAGRAMS = {
-  linklens: { label: "REQUEST PATH", note: "read ≠ write", Component: RequestPathDiagram },
-  "bangla-and-english-asr-studio": {
-    label: "GUARDED TRAINING WORKFLOW",
-    note: "fixed test split",
-    Component: TrainingWorkflowDiagram,
-  },
-};
+const DIAGRAMS = CASE_DIAGRAMS;
 
 const MAX_LIST_TECH = 3;
 // The homepage lists a few more projects; the full set lives on /projects/.
@@ -43,7 +37,7 @@ export default function HomeWork({ projects = [] }) {
           kicker="Selected work"
           id="work-heading"
           title="Case studies: the problem, the design, the trade-offs."
-          intro="Each project is described from its public repository — architecture and decisions, not just a stack list."
+          intro="Each project is described from its public repository: the architecture and the decisions behind it, as well as the stack."
         />
 
         <SectionAdminProvider collectionName="Projects">
@@ -140,88 +134,5 @@ function CaseCard({ project }) {
         <Diagram />
       </div>
     </article>
-  );
-}
-
-function Flow({ nodes }) {
-  return (
-    <div className={styles.flowRow}>
-      {nodes.map(([title, sub], index) => (
-        <React.Fragment key={title}>
-          {index > 0 && <span className={styles.flowArrow} aria-hidden="true" />}
-          <div className={styles.flowNode}>
-            <b>{title}</b>
-            <span>{sub}</span>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
-  );
-}
-
-/** LinkLens: the redirect never waits on analytics (from the case study). */
-function RequestPathDiagram() {
-  return (
-    <div className={styles.lanes}>
-      <div className={`${styles.lane} ${styles.laneHot}`}>
-        <span className={styles.laneLabel}>HOT PATH · USER WAITS</span>
-        <Flow
-          nodes={[
-            ["Click", "/:slug"],
-            ["NestJS", "redirect engine"],
-            ["Redis", "link rules"],
-            ["Redirect", "to target"],
-          ]}
-        />
-      </div>
-      <p className={styles.laneSplit}>
-        <i />
-        publish event · non-blocking
-        <i />
-      </p>
-      <div className={`${styles.lane} ${styles.laneCold}`}>
-        <span className={styles.laneLabel}>COLD PATH · ASYNC</span>
-        <Flow
-          nodes={[
-            ["BullMQ", "queue"],
-            ["Workers", "geo · device"],
-            ["ClickHouse", "analytics"],
-            ["Dashboards", "live feed"],
-          ]}
-        />
-      </div>
-    </div>
-  );
-}
-
-/** ASR Studio: the guarded fine-tuning workflow (from the case study). */
-function TrainingWorkflowDiagram() {
-  const steps = [
-    "Back up model",
-    "Baseline WER/CER",
-    "LoRA fine-tune",
-    "Re-evaluate",
-    "Side-by-side diff",
-    "Confusion analysis",
-  ];
-  return (
-    <div>
-      <ol className={styles.pipe}>
-        {steps.map((step, index) => (
-          <li key={step} className={index === 2 ? styles.pipeKey : undefined}>
-            <span>STEP {index + 1}</span>
-            <b>{step}</b>
-          </li>
-        ))}
-      </ol>
-      <div className={styles.verdict}>
-        <span className={styles.verdictGood}>New better</span>
-        <span>Mixed</span>
-        <span className={styles.verdictWarn}>Old better</span>
-      </div>
-      <p className={styles.gate}>
-        <span>GATE</span>A person decides before any model is replaced.
-      </p>
-    </div>
   );
 }

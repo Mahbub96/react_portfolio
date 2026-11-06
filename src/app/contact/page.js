@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import JsonLd from "@/components/seo/JsonLd";
+import pageStyles from "@/components/page/page.module.css";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
@@ -48,9 +49,9 @@ export default async function ContactPage() {
         <Navbar />
       </Suspense>
 
-      <main role="main" style={{ paddingTop: "5rem" }}>
+      <main role="main" className={pageStyles.page}>
         <Suspense fallback={null}>
-          <Contact headingLevel="h1" />
+          <Contact />
         </Suspense>
       </main>
 

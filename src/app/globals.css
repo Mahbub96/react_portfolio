@@ -745,6 +745,12 @@ body.nav-menu-open {
   touch-action: none;
 }
 
+/* Contact dialog open: keep the page behind it still. */
+html.dialog-open,
+html.dialog-open body {
+  overflow: hidden;
+}
+
 button,
 a,
 input,

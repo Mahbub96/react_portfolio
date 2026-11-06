@@ -177,7 +177,7 @@ async function main() {
   const releases = await readReleaseNotes(version);
 
   // buildInfo.json is bundled into the app, so it only carries a flag; the
-  // notes themselves go to public/release-notes.json (step 5).
+  // notes themselves go to src/config/releaseNotes.json (step 5).
   const buildInfo = {
     version,
     buildNumber,
@@ -191,8 +191,15 @@ async function main() {
   await mkdir(dirname(TARGET_FILE), { recursive: true });
   await writeFile(TARGET_FILE, JSON.stringify(buildInfo, null, 2) + "\n", "utf8");
 
-  // 5. Release notes as a static file, fetched only when the footer badge is
-  // opened — keeps changelog text out of every page's indexed HTML.
+  // 5. Release notes. The full notes go to src/config/releaseNotes.json, which is
+  // imported only by the admin-only /api/admin/release-notes/ route, so the
+  // changelog never ships to visitors. The public file carries just the build
+  // identity (used to compare the live build with HEAD before a deploy).
+  await writeFile(
+    join(ROOT, "src", "config", "releaseNotes.json"),
+    JSON.stringify({ releases }, null, 2) + "\n",
+    "utf8"
+  );
   await writeFile(
     join(ROOT, "public", "release-notes.json"),
     JSON.stringify(
@@ -201,7 +208,6 @@ async function main() {
         buildNumber: buildInfo.buildNumber,
         commitHash: buildInfo.commitHash,
         buildDate: buildInfo.buildDate,
-        releases,
       },
       null,
       2

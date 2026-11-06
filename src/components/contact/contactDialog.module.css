@@ -1,0 +1,122 @@
+.dialog {
+  /* Explicit centring: the global reset zeroes the UA "margin: auto" on <dialog>. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(600px, calc(100vw - 24px));
+  height: fit-content;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--elev-3);
+  overflow: hidden;
+}
+
+.dialog[open] {
+  animation: rise 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  margin: 0;
+  font: 600 24px/1.2 var(--font-display);
+  color: var(--ink);
+  outline: none;
+}
+
+.lead {
+  margin: 8px 0 6px;
+  color: var(--ink-2);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.email {
+  font: 500 14px var(--font-mono);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.email:hover {
+  text-decoration: underline;
+}
+
+.close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus-visible {
+  color: var(--ink);
+  border-color: var(--line-strong);
+  background: var(--surface-2);
+  outline: none;
+}
+
+.body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 28px 26px;
+}
+
+@media (max-width: 560px) {
+  .header {
+    padding: 20px 20px 14px;
+  }
+
+  .body {
+    padding: 16px 20px 22px;
+  }
+
+  .title {
+    font-size: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open] {
+    animation: none;
+  }
+}

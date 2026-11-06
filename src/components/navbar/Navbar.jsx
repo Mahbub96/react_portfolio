@@ -4,6 +4,7 @@ import { LuLock, LuLogOut, LuMoon, LuSun } from "react-icons/lu";
 import { useDataContext } from "../../contexts/useAllContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import LoginModal from "../auth/LoginModal";
+import ContactDialog from "../contact/ContactDialog";
 import DownloadResumeButton from "../banner/DownloadResumeButton";
 import styles from "./navbar.module.css";
 import { APP_VERSION, BUILD_NUMBER } from "@/config/version";
@@ -19,6 +20,12 @@ function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
+  const contactRef = useRef(null);
+
+  const openContact = () => {
+    setIsMenuOpen(false);
+    contactRef.current?.open();
+  };
 
   // Close the mobile menu on outside click or Escape.
   useEffect(() => {
@@ -68,12 +75,16 @@ function Header() {
     setIsMenuOpen(false);
   };
 
+  // "About" scrolls to the homepage hero (id="about"); the /about/ page stays
+  // for search engines and is linked from the footer. "Contact" opens the
+  // contact form dialog from any page.
   const navItems = [
+    { id: "about", label: "About" },
     { id: "projects", label: "Work" },
     { id: "experience", label: "Experience" },
     { id: "skills", label: "Stack" },
     { id: "blog", label: "Writing", href: "/blog/" },
-    { id: "about-page", label: "About", href: "/about/" },
+    { id: "contact", label: "Contact", action: openContact },
     ...(auth && isLoaded
       ? [
           { id: "analytics", label: "Analytics", href: "/analytics/" },
@@ -102,9 +113,13 @@ function Header() {
             className={`${styles.menu} ${isMenuOpen ? styles.open : ""}`}
           >
             <ul className={styles.links}>
-              {navItems.map(({ id, label, href }) => (
+              {navItems.map(({ id, label, href, action }) => (
                 <li key={id}>
-                  {href ? (
+                  {action ? (
+                    <button type="button" className={styles.linkButton} onClick={action} aria-haspopup="dialog">
+                      {label}
+                    </button>
+                  ) : href ? (
                     <a href={href}>{label}</a>
                   ) : (
                     <a href={`/#${id}`} onClick={(e) => handleNavClick(e, id)}>
@@ -176,6 +191,7 @@ function Header() {
       </header>
 
       <LoginModal show={showLoginModal} onHide={() => setShowLoginModal(false)} />
+      <ContactDialog ref={contactRef} />
     </>
   );
 }

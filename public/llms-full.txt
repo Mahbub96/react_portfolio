@@ -40,7 +40,7 @@ LinkLens is a self-hosted link management and redirect platform built with NestJ
 
 #### The problem
 
-Typical URL shorteners resolve every click against a transactional relational database and call paid third-party APIs for geolocation. Both become the bottleneck — in latency and in cost — as click volume grows.
+Typical URL shorteners resolve every click against a transactional relational database and call paid third-party APIs for geolocation. Both become the bottleneck for latency and cost as click volume grows.
 
 LinkLens was designed so that the redirect itself never waits on the database or on analytics, and so that geo/device enrichment costs nothing per request.
 
@@ -86,7 +86,7 @@ A local-first speech-to-text studio and Whisper fine-tuning pipeline for Bangla 
 
 Off-the-shelf Whisper models work well in general, but production Bangla and mixed Bangla/English (Banglish) audio raises practical problems: Bangla can be misdetected as another Indic language, and mixed-language speech needs controlled decoding and repeatable evaluation.
 
-Fine-tuning without a fixed baseline creates a grey area — there is no evidence that the new model is actually better than the one it replaces.
+Fine-tuning without a fixed baseline creates a grey area: there is no evidence that the new model is actually better than the one it replaces.
 
 #### Architecture and approach
 

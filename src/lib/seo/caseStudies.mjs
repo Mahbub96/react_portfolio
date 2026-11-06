@@ -29,12 +29,12 @@ export const CASE_STUDIES = {
       category: "Backend · Platform",
       tagline: "A self-hosted link platform that separates a fast redirect path from asynchronous analytics.",
       problem:
-        "Typical shorteners resolve every click against the relational database and pay third-party APIs for geolocation — both bottleneck latency and cost.",
+        "Typical shorteners resolve every click against the relational database and pay third-party APIs for geolocation. Both become bottlenecks for latency and cost.",
       design:
         "Redirects resolve from Redis without touching PostgreSQL; each click goes to a BullMQ queue, is enriched by workers and stream-inserted into ClickHouse.",
       decisionLabel: "Trade-off",
       decision:
-        "Self-hosted MaxMind data instead of a paid geo API — periodic dataset updates in exchange for zero per-request cost.",
+        "Self-hosted MaxMind data instead of a paid geo API: periodic dataset updates in exchange for zero per-request cost.",
     },
     keywords: [
       "URL shortener",
@@ -46,7 +46,7 @@ export const CASE_STUDIES = {
       "link analytics",
     ],
     problem: [
-      "Typical URL shorteners resolve every click against a transactional relational database and call paid third-party APIs for geolocation. Both become the bottleneck — in latency and in cost — as click volume grows.",
+      "Typical URL shorteners resolve every click against a transactional relational database and call paid third-party APIs for geolocation. Both become the bottleneck for latency and cost as click volume grows.",
       "LinkLens was designed so that the redirect itself never waits on the database or on analytics, and so that geo/device enrichment costs nothing per request.",
     ],
     approach: [
@@ -90,7 +90,7 @@ export const CASE_STUDIES = {
         "FastAPI backend and React operator UI, CLI scripts for GPU servers, and Docker stacks for CPU and NVIDIA GPU.",
       decisionLabel: "Decision",
       decision:
-        "The pipeline never auto-replaces the production model — it reports a verdict and the final call stays manual.",
+        "The pipeline never auto-replaces the production model. It reports a verdict, and the final call stays manual.",
     },
     keywords: [
       "Bangla speech recognition",
@@ -103,7 +103,7 @@ export const CASE_STUDIES = {
     ],
     problem: [
       "Off-the-shelf Whisper models work well in general, but production Bangla and mixed Bangla/English (Banglish) audio raises practical problems: Bangla can be misdetected as another Indic language, and mixed-language speech needs controlled decoding and repeatable evaluation.",
-      "Fine-tuning without a fixed baseline creates a grey area — there is no evidence that the new model is actually better than the one it replaces.",
+      "Fine-tuning without a fixed baseline creates a grey area: there is no evidence that the new model is actually better than the one it replaces.",
     ],
     approach: [
       "A React operator UI for microphone and file transcription, batch jobs, benchmarks, diagnostics and training controls.",
@@ -136,6 +136,18 @@ export const CASE_STUDIES = {
     headline: "Local Vocal Agent — a privacy-first local AI voice assistant",
     summary:
       "A full-stack voice assistant that runs locally: FastAPI and React, an Ollama-hosted LLM, speech-to-text and text-to-speech, and SQLite plus Chroma memory.",
+    highlight: {
+      category: "Applied AI · Local-first",
+      tagline:
+        "A full-stack voice assistant that runs locally: Ollama LLM, speech-to-text, text-to-speech and SQLite + Chroma memory.",
+      problem:
+        "Most voice assistants send audio and conversation history to a cloud service.",
+      design:
+        "FastAPI backend and React UI, LLM inference through Ollama, Faster Whisper speech-to-text, and SQLite plus Chroma memory.",
+      decisionLabel: "Decision",
+      decision:
+        "Local-first by design: models run under Ollama on the host instead of a hosted API.",
+    },
     keywords: [
       "local AI assistant",
       "voice assistant",
@@ -177,6 +189,18 @@ export const CASE_STUDIES = {
     headline: "Advanced Finance Tracker — offline-first personal finance app",
     summary:
       "An offline-first personal finance app built with Expo React Native and SQLite on the device, plus a NestJS and PostgreSQL API for multi-device sync.",
+    highlight: {
+      category: "Mobile · Offline-first",
+      tagline:
+        "An offline-first finance app with SQLite on the device and a NestJS + PostgreSQL API for multi-device sync.",
+      problem:
+        "Most finance apps keep the ledger only in the cloud, so they are slow without a connection.",
+      design:
+        "The ledger lives in SQLite on the phone; a NestJS + Prisma + PostgreSQL API syncs multiple devices.",
+      decisionLabel: "Decision",
+      decision:
+        "Money is handled as integer/scaled-decimal strings rather than floating point, so totals never accumulate rounding errors.",
+    },
     keywords: [
       "offline-first",
       "React Native",

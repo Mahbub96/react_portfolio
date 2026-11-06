@@ -9,7 +9,7 @@ const PRINCIPLES = [
   },
   {
     title: "Evidence over opinion",
-    body: "Baselines, logs and measurements decide — not guesses.",
+    body: "Baselines, logs and measurements decide, not guesses.",
   },
   {
     title: "Simple, then scalable",

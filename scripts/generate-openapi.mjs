@@ -1,7 +1,7 @@
 /**
  * Generate OpenAPI 3.1.0 specification files:
  *   - openapi.yaml (root workspace)
- *   - public/openapi.json (public web access)
+ *   - docs/openapi.json (local reference only; not served by the site)
  *
  * Fully typed and documented for Model Context Protocol (MCP) servers and AI tool calling.
  */
@@ -4075,11 +4075,11 @@ const spec = {
 };
 
 // Output file paths
-const jsonPath = path.join(rootDir, "public", "openapi.json");
+// The spec maps admin routes, so it stays out of public/ (never served by the site).
+const jsonPath = path.join(rootDir, "docs", "openapi.json");
 const yamlPath = path.join(rootDir, "openapi.yaml");
 
-// Ensure public directory exists
-mkdirSync(path.join(rootDir, "public"), { recursive: true });
+mkdirSync(path.join(rootDir, "docs"), { recursive: true });
 
 // 1. Write formatted JSON
 const jsonContent = JSON.stringify(spec, null, 2);

@@ -15,6 +15,7 @@ import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import {
   findProjectBySlug,
+  indexableProjects,
   isIndexableProject,
   projectPath,
 } from "@/lib/seo/projectCatalog.mjs";
@@ -26,6 +27,7 @@ import { absoluteUrl } from "@/lib/seo/urls.mjs";
 
 import ProjectDetail from "@/components/projects/detail/ProjectDetail";
 import JsonLd from "@/components/seo/JsonLd";
+import pageStyles from "@/components/page/page.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +49,17 @@ async function loadProjects() {
 
 function shortName(name = "") {
   return String(name).split(/\s+[\u2013\u2014:]\s+/)[0].trim() || name;
+}
+
+/** The case study after `slug` in catalogue order (wrapping), for the footer link. */
+function nextCaseStudy(projects, slug) {
+  const studies = indexableProjects(projects);
+  if (studies.length < 2) return null;
+  const index = studies.findIndex((p) => p.slug === slug);
+  const next = studies[(index + 1) % studies.length];
+  if (!next || next.slug === slug) return null;
+  const headline = caseStudyFor(next.slug)?.headline || next.name;
+  return { href: projectPath(next), name: shortName(headline) };
 }
 
 function describe(project, caseStudy) {
@@ -89,6 +102,7 @@ export default async function ProjectDetailPage({ params }) {
   const caseStudy = caseStudyFor(project.slug);
   const path = projectPath(project);
   const name = caseStudy?.headline || project.name;
+  const next = nextCaseStudy(projects, project.slug);
 
   const graph = buildPageGraph({
     path,
@@ -117,8 +131,8 @@ export default async function ProjectDetailPage({ params }) {
         <Navbar />
       </Suspense>
 
-      <main>
-        <ProjectDetail project={project} caseStudy={caseStudy} />
+      <main className={pageStyles.page}>
+        <ProjectDetail project={project} caseStudy={caseStudy} next={next} />
       </main>
 
       <Suspense fallback={null}>

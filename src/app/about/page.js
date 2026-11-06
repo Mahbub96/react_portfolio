@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import NextDynamic from "next/dynamic";
 import { getPortfolioData } from "@/lib/getPortfolioData";
 import JsonLd from "@/components/seo/JsonLd";
+import pageStyles from "@/components/page/page.module.css";
 import { pageMetadata } from "@/lib/seo/metadata.mjs";
 import { buildPageGraph, PERSON_ID } from "@/lib/seo/structuredData.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
@@ -16,12 +17,9 @@ const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
   ssr: true,
 });
 
-const BannerServer = NextDynamic(
-  () => import("@/components/banner/BannerServer"),
-  {
-    ssr: true,
-  }
-);
+const AboutView = NextDynamic(() => import("@/components/about/AboutView"), {
+  ssr: true,
+});
 
 const Footer = NextDynamic(() => import("@/components/Footer"), {
   ssr: true,
@@ -57,15 +55,9 @@ export default async function AboutPage() {
         <Navbar />
       </Suspense>
 
-      <main role="main" style={{ paddingTop: "5rem" }}>
+      <main role="main" className={pageStyles.page}>
         <Suspense fallback={null}>
-          <BannerServer
-            data={portfolioData.Banner}
-            profileImage={profile.image}
-            profile={profile}
-            experiences={portfolioData.Experiences?.data}
-            projects={portfolioData.Projects?.data}
-          />
+          <AboutView profileImage={profile.image} />
         </Suspense>
       </main>
 

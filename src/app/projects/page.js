@@ -9,6 +9,7 @@ import {
 } from "@/lib/seo/structuredData.mjs";
 import { indexableProjects } from "@/lib/seo/projectCatalog.mjs";
 import { SITE_AUTHOR } from "@/lib/seo/siteConfig.mjs";
+import pageStyles from "@/components/page/page.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +17,8 @@ const Navbar = NextDynamic(() => import("@/components/navbar/Navbar"), {
   ssr: true,
 });
 
-const ProjectsServer = NextDynamic(
-  () => import("@/components/projects/ProjectsServer"),
+const ProjectsIndex = NextDynamic(
+  () => import("@/components/projects/ProjectsIndex"),
   {
     ssr: true,
   }
@@ -28,7 +29,7 @@ const Footer = NextDynamic(() => import("@/components/Footer"), {
 });
 
 // Returns the Projects collection in the wrapper shape ({ data, lastUpdate })
-// that the Projects component expects, sharing the homepage's db.json fallback
+// that the projects index expects, sharing the homepage's db.json fallback
 // so this page never renders empty when MongoDB is unreachable.
 async function getProjectsData() {
   const portfolioData = await getPortfolioData();
@@ -64,9 +65,9 @@ export default async function ProjectsPage() {
         <Navbar />
       </Suspense>
 
-      <main role="main" style={{ paddingTop: "5rem" }}>
+      <main role="main" className={pageStyles.page}>
         <Suspense fallback={null}>
-          <ProjectsServer data={projectsData} headingLevel="h1" />
+          <ProjectsIndex projects={projectsData?.data || []} />
         </Suspense>
       </main>
 

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { FaFileDownload } from "react-icons/fa";
-import styles from "./banner.module.css";
 
 export default function DownloadResumeButton({
   fileName = "Resume.pdf",
@@ -53,7 +52,7 @@ export default function DownloadResumeButton({
     <button
       type="button"
       onClick={handleDownload}
-      className={className || styles.ctaButton}
+      className={className}
       disabled={loading}
       aria-busy={loading}
     >

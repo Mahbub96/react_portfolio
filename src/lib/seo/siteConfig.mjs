@@ -82,7 +82,7 @@ export const SITE_DESCRIPTION =
  * job-search wording cannot reappear on the public site through data edits.
  */
 export const CONTACT_MESSAGE =
-  "Questions about a project, a technical topic or something you saw here? Send a message and I'll get back to you.";
+  "Questions about a project, an article or the engineering behind it. Email is the quickest way; the form delivers to the same inbox.";
 
 /**
  * Current positioning. Deliberately excludes legacy VoIP/CodeIgniter framing:

@@ -95,7 +95,8 @@
   padding: 0;
 }
 
-.links a {
+.links a,
+.links .linkButton {
   display: inline-flex;
   align-items: center;
   min-height: 40px;
@@ -107,7 +108,17 @@
   text-decoration: none;
 }
 
-.links a:hover {
+/* "Contact" opens a dialog, so it is a button styled like the links. */
+.linkButton {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.links a:hover,
+.links .linkButton:hover {
   color: var(--ink);
   background: var(--surface-2);
 }
@@ -242,16 +253,19 @@
     border-bottom: 1px solid var(--line);
   }
 
-  .links a {
+  .links a,
+  .links .linkButton {
     width: 100%;
     min-height: 56px;
     padding: 0 4px;
     font: 600 20px/1 var(--font-display);
     color: var(--ink);
     border-radius: 0;
+    text-align: left;
   }
 
-  .links a:hover {
+  .links a:hover,
+  .links .linkButton:hover {
     background: transparent;
     color: var(--accent);
   }

@@ -31,7 +31,7 @@ export const ABOUT_FOCUS = [
   },
   {
     title: "Full-stack products",
-    text: "Web applications with React and Next.js, and mobile apps with React Native — from data model and API to the interface.",
+    text: "Web applications with React and Next.js, and mobile apps with React Native, from data model and API to the interface.",
   },
   {
     title: "Applied AI and speech",
@@ -39,12 +39,12 @@ export const ABOUT_FOCUS = [
   },
   {
     title: "Deployment and operations",
-    text: "Docker, Linux servers, Nginx, PM2 and Cloudflare — shipping applications to small, resource-constrained servers and keeping them observable and maintainable.",
+    text: "Docker, Linux servers, Nginx, PM2 and Cloudflare: shipping applications to small, resource-constrained servers and keeping them observable and maintainable.",
   },
 ];
 
 export const ABOUT_APPROACH = [
-  "Find the root cause before changing code, and back decisions with evidence — logs, measurements and tests.",
+  "Find the root cause before changing code, and back decisions with evidence: logs, measurements and tests.",
   "Prefer the simplest design that will scale, and avoid complexity the problem does not need.",
   "Treat maintainability, security and observability as part of the feature, not follow-up work.",
 ];

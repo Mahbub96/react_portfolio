@@ -109,16 +109,12 @@ export async function GET(request, { params }) {
       translation: translationData,
     });
   } catch (error) {
+    // Details stay in the server log; the public response never names the provider or config.
     console.error("Error in blog translation route:", error);
-    if (error instanceof TranslationError) {
-      return secureResponse(
-        { success: false, error: error.message, code: error.code },
-        error.status || 500
-      );
-    }
+    const status = error instanceof TranslationError && error.status && error.status < 500 ? error.status : 503;
     return secureResponse(
-      { success: false, error: error.message || "Failed to translate post" },
-      500
+      { success: false, error: "Translation is not available right now." },
+      status
     );
   }
 }

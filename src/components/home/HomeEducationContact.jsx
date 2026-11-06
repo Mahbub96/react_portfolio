@@ -36,7 +36,7 @@ export default function HomeEducationContact({ educations = [] }) {
                 </p>
                 {hasThesis && (
                   <p className={styles.thread}>
-                    Thesis: <b>{primary.Thesis}</b> — the start of a speech-AI thread
+                    Thesis: <b>{primary.Thesis}</b>. It started the speech-AI work
                     that continues in the ASR Studio and Local Vocal Agent.
                   </p>
                 )}

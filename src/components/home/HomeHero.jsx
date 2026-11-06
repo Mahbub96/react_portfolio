@@ -49,7 +49,7 @@ export default function HomeHero({ experiences = [], educations = [] }) {
           </p>
           <p className={styles.lede}>
             I design and build backend services, full-stack products and applied AI
-            systems — with a focus on clean architecture, measurable behaviour and
+            systems, with a focus on clean architecture, measurable behaviour and
             systems that stay maintainable in production.
           </p>
 

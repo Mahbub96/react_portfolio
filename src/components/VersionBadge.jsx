@@ -25,9 +25,9 @@ function InlineText({ text = "" }) {
  * build and every earlier version (parsed from CHANGELOG.md at build time),
  * newest first in a scrollable list.
  *
- * The notes are fetched from /release-notes.json only when the dialog opens:
- * rendering them into the footer would repeat changelog text on every page's
- * indexed HTML. The native <dialog> element provides focus handling,
+ * The notes come from the admin-only /api/admin/release-notes/ route and are
+ * fetched only when the dialog opens, so changelog text never reaches visitors
+ * or the indexed HTML. The native <dialog> element provides focus handling,
  * Escape-to-close and the backdrop.
  */
 export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) {
@@ -39,7 +39,10 @@ export default function VersionBadge({ version, buildNumber, hasReleaseNotes }) 
     if (state.status === "loaded" || state.status === "loading") return;
     setState({ status: "loading", data: null });
     try {
-      const response = await fetch("/release-notes.json", { cache: "no-cache" });
+      const response = await fetch("/api/admin/release-notes/", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
       if (!response.ok) throw new Error(String(response.status));
       setState({ status: "loaded", data: await response.json() });
     } catch {

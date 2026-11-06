@@ -7,6 +7,26 @@ Versioning: `A.M.m`
 
 Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/generate-build-info.mjs`).
 
+## 1.8.0
+
+### Changed
+- Rebuilt the inner pages in the Calm Depth style. `/projects/` opens with counts taken from the data, then the case studies with a category filter (All, Backend, Applied AI, Mobile) and a grid of other work.
+- Case-study pages now show the project facts and a screenshot first, then numbered sections (problem, architecture, features, decisions, stack) with a contents list that follows the reader. LinkLens and the ASR Studio reuse their homepage diagrams, and each page links to the next case study.
+- `/about/` and `/contact/` use the same page layout. The footer has four columns, and the version badge follows the light and dark themes.
+- The navigation bar now reads About, Work, Experience, Stack, Writing, Contact. About scrolls to the top of the homepage instead of opening a separate page; `/about/` stays available from the footer.
+- Tidied punctuation in the homepage, About and case-study copy.
+
+### Added
+- Contact form in a dialog, opened from Contact in the navigation bar on every page. It closes with Escape, the close button or a click outside, and keeps a half-written message if it is closed and reopened on the same page.
+
+### Security
+- Release notes are only served to the logged-in owner (`/api/admin/release-notes/`). The public `release-notes.json` now holds just the version, build number, commit and build date.
+- The OpenAPI specification is no longer published under `public/`; it is generated to `docs/openapi.json` for local use.
+- The public blog translation endpoint returns a generic message on failure; the details are kept in the server log.
+
+### Removed
+- Old project cards and modal, the previous banner components, the 3D tilt card and their styles, which no page used any more.
+
 ## 1.7.0
 
 ### Changed
