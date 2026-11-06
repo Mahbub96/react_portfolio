@@ -30,3 +30,15 @@ export function displayImage(src) {
   const match = path.match(OPTIMISED);
   return match ? `${match[1]}.webp` : path;
 }
+
+/**
+ * Small list thumbnail for `src`: the 320px WebP copy (~10 KB) of project
+ * screenshots (`cwebp -q 78 -resize 320 0 in.png -o <name>-320.webp`), so a
+ * row of thumbnails doesn't download the 1024px images.
+ */
+export function thumbImage(src) {
+  if (!src) return src;
+  const path = normalise(src);
+  const match = path.match(OPTIMISED);
+  return match && match[1].includes("/project-") ? `${match[1]}-320.webp` : displayImage(src);
+}

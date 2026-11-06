@@ -14,6 +14,7 @@ Build number: `YYYYMMDD-<commit count>` (generated at build time by `scripts/gen
 - Case-study pages now show the project facts and a screenshot first, then numbered sections (problem, architecture, features, decisions, stack) with a contents list that follows the reader. LinkLens and the ASR Studio reuse their homepage diagrams, and each page links to the next case study.
 - `/about/` and `/contact/` use the same page layout. The footer has four columns, and the version badge follows the light and dark themes.
 - The navigation bar now reads About, Work, Experience, Stack, Writing, Contact. About scrolls to the top of the homepage instead of opening a separate page; `/about/` stays available from the footer.
+- "Selected work" on the homepage is now a list that opens one project at a time. Closed rows show a small screenshot; an open row shows the problem, design and trade-off with the architecture diagram, or the full screenshot when there is no diagram.
 - Tidied punctuation in the homepage, About and case-study copy.
 
 ### Added

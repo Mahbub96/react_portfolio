@@ -6,17 +6,21 @@ import { SectionAdminProvider } from "@/components/admin/contextual/PortfolioCon
 import { buildProjectCatalog, projectPath } from "@/lib/seo/projectCatalog.mjs";
 import { caseStudyFor } from "@/lib/seo/caseStudies.mjs";
 import { CASE_DIAGRAMS } from "./CaseDiagrams";
+import WorkAccordion from "./WorkAccordion";
+import { displayImage, thumbImage } from "@/lib/displayImage";
 
 /**
- * Selected work. Projects that have a written case study AND a diagram get a
- * full problem → design → trade-off card; every other project is a compact
- * row. All copy comes from caseStudies.mjs / the CMS — nothing invented here.
+ * Selected work as an FAQ-style list: every project is a row, one open at a
+ * time, with a screenshot thumbnail while it is closed. Projects with a
+ * written case study open to problem → design → trade-off; the right side
+ * shows the architecture diagram when there is one, otherwise the full
+ * screenshot. All copy comes from caseStudies.mjs / the CMS.
  */
 const DIAGRAMS = CASE_DIAGRAMS;
 
-const MAX_LIST_TECH = 3;
-// The homepage lists a few more projects; the full set lives on /projects/.
-const MAX_LIST_ROWS = 4;
+const MAX_STACK = 7;
+// The homepage lists a handful of projects; the full set lives on /projects/.
+const MAX_ROWS = 6;
 
 export default function HomeWork({ projects = [] }) {
   const rawById = new Map(projects.filter(Boolean).map((p) => [String(p.id), p]));
@@ -26,8 +30,22 @@ export default function HomeWork({ projects = [] }) {
     study: caseStudyFor(project.slug),
   }));
 
-  const featured = catalog.filter((p) => p.study?.highlight && DIAGRAMS[p.slug]);
-  const rest = catalog.filter((p) => !featured.includes(p)).slice(0, MAX_LIST_ROWS);
+  // Case studies with a diagram first, then other case studies, then the rest.
+  const rank = (p) => (p.study?.highlight ? (DIAGRAMS[p.slug] ? 0 : 1) : 2);
+  const shown = [...catalog].sort((a, b) => rank(a) - rank(b)).slice(0, MAX_ROWS);
+
+  const items = shown.map((project) => {
+    const h = project.study?.highlight;
+    return {
+      key: project.slug,
+      name: shortName(project.name),
+      summary: h?.tagline || project.description,
+      meta: h?.category || project.stack.slice(0, 2).join(" · "),
+      thumb: project.image ? thumbImage(project.image) : null,
+      admin: <ItemAdmin collection="Projects" item={project.raw} />,
+      panel: h ? <CasePanel project={project} /> : <ProjectPanel project={project} />,
+    };
+  });
 
   return (
     <section id="projects" className={styles.section} aria-labelledby="work-heading">
@@ -41,37 +59,7 @@ export default function HomeWork({ projects = [] }) {
         />
 
         <SectionAdminProvider collectionName="Projects">
-          {featured.map((project) => (
-            <CaseCard key={project.slug} project={project} />
-          ))}
-
-          {rest.length > 0 && (
-            <ul className={styles.workList} aria-label="More projects">
-              {rest.map((project, index) => (
-                <li key={project.slug} className={styles.workRow}>
-                  <ItemAdmin collection="Projects" item={project.raw} />
-                  <span className={styles.mono}>
-                    {String(featured.length + index + 1).padStart(2, "0")}
-                  </span>
-                  <h3>
-                    <a href={projectPath(project)}>{shortName(project.name)}</a>
-                  </h3>
-                  <p>{project.description}</p>
-                  <div className={styles.chips}>
-                    {project.stack.slice(0, MAX_LIST_TECH).map((tech) => (
-                      <span key={tech} className={styles.chip}>
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <span className={styles.rowArrow} aria-hidden="true">
-                    ↗
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-
+          {items.length > 0 && <WorkAccordion items={items} />}
           <AddItem collection="Projects" label="Project" />
         </SectionAdminProvider>
 
@@ -87,20 +75,43 @@ function shortName(name = "") {
   return String(name).split(/\s+[\u2013\u2014]\s+/)[0];
 }
 
-function CaseCard({ project }) {
+function Chips({ items }) {
+  return (
+    <span className={styles.chips}>
+      {items.map((tech) => (
+        <span key={tech} className={styles.chip}>
+          {tech}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function Links({ project, label }) {
+  return (
+    <div className={styles.caseLinks}>
+      <a href={projectPath(project)}>{label} →</a>
+      {project.githubUrl && (
+        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+          GitHub ↗
+        </a>
+      )}
+    </div>
+  );
+}
+
+/** Case study: problem → design → trade-off, with the diagram when there is one. */
+function CasePanel({ project }) {
   const { study } = project;
   const h = study.highlight;
   const diagram = DIAGRAMS[project.slug];
-  const stack = Object.values(study.stackGroups || {}).flat().slice(0, 7);
-  const Diagram = diagram.Component;
+  const stack = Object.values(study.stackGroups || {}).flat().slice(0, MAX_STACK);
+  const Diagram = diagram?.Component;
+  const split = diagram || project.image;
 
   return (
-    <article className={styles.case} aria-labelledby={`case-${project.slug}`}>
-      <ItemAdmin collection="Projects" item={project.raw} />
-      <div className={styles.caseText}>
-        <p className={styles.caseCategory}>{h.category}</p>
-        <h3 id={`case-${project.slug}`}>{study.headline.split(" — ")[0]}</h3>
-        <p className={styles.caseTagline}>{h.tagline}</p>
+    <div className={`${styles.accBody} ${split ? styles.accBodySplit : ""}`}>
+      <div className={styles.accText}>
         <dl className={styles.caseFacts}>
           <dt>Problem</dt>
           <dd>{h.problem}</dd>
@@ -109,30 +120,58 @@ function CaseCard({ project }) {
           <dt>{h.decisionLabel || "Decision"}</dt>
           <dd>{h.decision}</dd>
           <dt>Stack</dt>
-          <dd className={styles.chips}>
-            {stack.map((tech) => (
-              <span key={tech} className={styles.chip}>
-                {tech}
-              </span>
-            ))}
+          <dd>
+            <Chips items={stack.length ? stack : project.stack.slice(0, MAX_STACK)} />
           </dd>
         </dl>
-        <div className={styles.caseLinks}>
-          <a href={projectPath(project)}>Read case study →</a>
-          {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-              GitHub ↗
-            </a>
-          )}
+        <Links project={project} label="Read case study" />
+      </div>
+      {diagram ? (
+        <div className={styles.caseViz}>
+          <p className={styles.vizHead}>
+            <span>{diagram.label}</span>
+            <span>{diagram.note}</span>
+          </p>
+          <Diagram />
         </div>
+      ) : (
+        project.image && <Shot project={project} />
+      )}
+    </div>
+  );
+}
+
+/** Full screenshot in an open row (lazy: only fetched once a row is near). */
+function Shot({ project }) {
+  return (
+    <figure className={styles.accShot}>
+      <img
+        src={displayImage(project.image)}
+        alt={`${shortName(project.name)} screenshot`}
+        width={1024}
+        height={576}
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+  );
+}
+
+/** Project without a written case study: description and stack. */
+function ProjectPanel({ project }) {
+  return (
+    <div className={`${styles.accBody} ${project.image ? styles.accBodySplit : ""}`}>
+      <div className={styles.accText}>
+        <p className={styles.accDesc}>{project.description}</p>
+        <dl className={styles.caseFacts}>
+          <dt>Stack</dt>
+          <dd>
+            <Chips items={project.stack.slice(0, MAX_STACK)} />
+          </dd>
+        </dl>
+        <Links project={project} label="View project" />
       </div>
-      <div className={styles.caseViz}>
-        <p className={styles.vizHead}>
-          <span>{diagram.label}</span>
-          <span>{diagram.note}</span>
-        </p>
-        <Diagram />
-      </div>
-    </article>
+      {project.image && <Shot project={project} />}
+    </div>
   );
 }
